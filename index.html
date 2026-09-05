@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Workout Coach Pro</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<style>
+*{box-sizing:border-box}
+:root{--bg:#f4f6f8;--card:#fff;--text:#111827;--muted:#667085;--line:#e4e7ec;--accent:#111827;--blue:#2563eb;--soft:#eef2ff;--danger:#b42318}
+:root.dark{--bg:#08111f;--card:#111827;--text:#f9fafb;--muted:#98a2b3;--line:#263244;--accent:#f9fafb;--soft:#172554;--danger:#fda29b}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+button,input,textarea{font:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:13px;padding:11px 13px;font-weight:750}
+button:active{transform:translateY(1px)}
+.hidden{display:none!important}
+.top{background:linear-gradient(135deg,#111827,#1f2937);color:#fff;padding:calc(18px + env(safe-area-inset-top)) 18px 18px;display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.top h1{margin:5px 0 3px;font-size:27px}.eyebrow,.label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:850;color:var(--muted)}.top .eyebrow{color:#cbd5e1}.sub{font-size:13px;color:#d1d5db}.build{font-size:11px;color:#9ca3af;margin-top:5px}
+.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px 12px;position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav button.active,.daytabs button.active{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+main{max-width:900px;margin:auto;padding:14px 14px calc(24px + env(safe-area-inset-bottom))}
+.view{display:none}.view.active{display:block}
+.daytabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}.daytabs span{display:block;font-size:11px;color:var(--muted);margin-top:2px}.daytabs button.active span{color:inherit;opacity:.8}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.hero h2{margin:4px 0}.muted,.tiny{color:var(--muted)}.tiny{font-size:12px;line-height:1.45}.row{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.chip{border-radius:999px;background:var(--soft)}
+.progress{height:9px;background:var(--line);border-radius:999px;overflow:hidden;margin-top:7px}.progress div{height:100%;width:0;background:linear-gradient(90deg,var(--blue),#22c55e)}
+.exercise{padding:0;overflow:hidden}.exhead{display:grid;grid-template-columns:106px 1fr;gap:14px;padding:16px}.exhead img{width:106px;height:94px;object-fit:cover;border-radius:14px;border:1px solid var(--line);background:#eef2ff}.exhead h3{margin:0 0 6px}
+.badge{display:inline-block;background:var(--soft);border-radius:999px;padding:5px 8px;font-size:12px;font-weight:700;margin:4px 4px 0 0}
+.actions{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 14px}
+.sets{border-top:1px solid var(--line)}.setrow{display:grid;grid-template-columns:38px 1fr 1fr 1fr 44px;gap:7px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--line)}
+.setrow.head{font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:850}.setrow input{min-width:0;width:100%;padding:9px 6px;text-align:center;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--text)}.check{width:38px;height:38px;padding:0}.check.done{background:#16a34a;color:#fff;border-color:#16a34a}
+.note{padding:12px}.note textarea,.search{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;background:transparent;color:var(--text)}.note textarea{min-height:58px}
+details{padding:0 14px 14px} summary{cursor:pointer;font-weight:800}.primary{background:var(--accent);color:var(--bg);border-color:var(--accent)}.danger{color:var(--danger)}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.libgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.lib{border:1px solid var(--line);border-radius:16px;padding:12px}.lib img{width:100%;border-radius:14px;border:1px solid var(--line);background:#eef2ff}.lib h4{margin:8px 0 4px}
+.historyitem{border:1px solid var(--line);border-radius:14px;padding:11px;margin-top:8px}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.52);z-index:30;display:flex;align-items:flex-end}.sheetcard{width:100%;max-width:900px;max-height:88vh;overflow:auto;margin:auto auto 0;background:var(--card);border-radius:22px 22px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom))}
+.timer{font-size:62px;text-align:center;font-weight:900;padding:18px;font-variant-numeric:tabular-nums}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--accent);color:var(--bg);padding:10px 14px;border-radius:999px;font-weight:800;z-index:50;max-width:90%;text-align:center}
+.privacy{border-left:4px solid #22c55e;padding-left:12px}
+@media(max-width:650px){.libgrid{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.exhead{grid-template-columns:82px 1fr}.exhead img{width:82px;height:76px}.setrow{grid-template-columns:32px 1fr 1fr 1fr 40px;padding-left:8px;padding-right:8px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <div class="eyebrow">INTERMEDIATE · MUSCLE + STRENGTH</div>
+    <h1>Workout Coach Pro</h1>
+    <div class="sub">Upper / Lower / Full Body · 3 Days / Week</div>
+    <div class="build">Clean build v4.0</div>
+  </div>
+  <button id="themeBtn">Dark</button>
+</header>
+
+<nav class="nav">
+  <button class="vtab active" data-view="today">Today</button>
+  <button class="vtab" data-view="history">History</button>
+  <button class="vtab" data-view="library">Library</button>
+  <button class="vtab" data-view="settings">Settings</button>
+</nav>
+
+<main>
+<section id="today" class="view active">
+  <div class="daytabs">
+    <button class="dtab active" data-day="monday">Mon<span>Upper</span></button>
+    <button class="dtab" data-day="wednesday">Wed<span>Lower</span></button>
+    <button class="dtab" data-day="friday">Fri<span>Full</span></button>
+  </div>
+
+  <section class="card hero">
+    <div class="label">Session</div>
+    <h2 id="sessionTitle"></h2>
+    <div id="focus" class="muted"></div>
+    <div class="row" style="margin-top:14px"><span>Session progress</span><strong id="pct">0%</strong></div>
+    <div class="progress"><div id="bar"></div></div>
+    <div class="chips">
+      <button id="warmBtn" class="chip">Warm-up</button>
+      <button id="coolBtn" class="chip">Cooldown</button>
+      <button id="sessionNoteBtn" class="chip">Session notes</button>
+    </div>
+  </section>
+
+  <div id="exerciseList"></div>
+
+  <section class="card">
+    <h3>Workout tools</h3>
+    <div class="grid2">
+      <button id="finishBtn" class="primary">Finish session</button>
+      <button id="exportBtn">Export data</button>
+      <label>Import backup<input id="importInput" type="file" accept="application/json" style="display:block;width:100%;margin-top:6px"></label>
+      <button id="resetBtn" class="danger">Reset current day</button>
+    </div>
+    <p class="tiny">Workout logs are stored in this browser on this device unless you export them.</p>
+  </section>
+</section>
+
+<section id="history" class="view">
+  <section class="card">
+    <h2>Workout History</h2>
+    <div id="historyList"></div>
+  </section>
+</section>
+
+<section id="library" class="view">
+  <section class="card">
+    <h2>Exercise Library</h2>
+    <input id="search" class="search" placeholder="Search exercises">
+    <div id="libraryList" class="libgrid" style="margin-top:12px"></div>
+  </section>
+</section>
+
+<section id="settings" class="view">
+  <section class="card">
+    <h2>Progression rule</h2>
+    <p>When you reach the top of the prescribed rep range on all working sets while staying inside the target RPE, increase the load slightly next session.</p>
+    <p class="tiny">RPE 10 means failure. This program intentionally keeps prescribed work below failure.</p>
+  </section>
+  <section class="card privacy">
+    <h2>Privacy</h2>
+    <p>This build contains no analytics, ads, trackers, external exercise-image requests, login, or cloud database.</p>
+    <p>Your workout logs remain in browser local storage on your device.</p>
+  </section>
+  <section class="card">
+    <h2>Version</h2>
+    <p><strong>Workout Coach Pro — Clean build v4.0</strong></p>
+    <p class="tiny">If you see this version label, GitHub Pages is serving the new build.</p>
+  </section>
+</section>
+</main>
+
+<div id="sheet" class="sheet hidden">
+  <div class="sheetcard">
+    <div class="row">
+      <div><div id="sheetLabel" class="label">DETAILS</div><h2 id="sheetTitle"></h2></div>
+      <button id="sheetClose">×</button>
+    </div>
+    <div id="sheetContent"></div>
+  </div>
+</div>
+
+<div id="timerSheet" class="sheet hidden">
+  <div class="sheetcard">
+    <div class="row">
+      <div><div class="label">REST TIMER</div><h2 id="timerTitle"></h2></div>
+      <button id="timerClose">×</button>
+    </div>
+    <div id="timerDisplay" class="timer">03:00</div>
+    <div class="chips">
+      <button class="preset" data-sec="60">1:00</button>
+      <button class="preset" data-sec="90">1:30</button>
+      <button class="preset" data-sec="120">2:00</button>
+      <button class="preset" data-sec="180">3:00</button>
+      <button class="preset" data-sec="240">4:00</button>
+    </div>
+    <div class="grid2" style="margin-top:12px">
+      <button id="timerToggle" class="primary">Start</button>
+      <button id="timerReset">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+const W = {"monday":{"title":"Monday \u00b7 Upper","focus":"Upper-body strength + hypertrophy","warmup":["5 minutes of easy cardio","Band pull-aparts \u00d7 20","Shoulder circles \u00d7 15 each direction","2\u20134 progressively heavier warm-up sets for bench press"],"cooldown":["3\u20135 minutes of easy walking","Gentle chest / lat stretch 30\u201345 sec","2 minutes of relaxed breathing"],"exercises":[{"name":"Barbell Bench Press","sets":4,"reps":"4\u20136","rpe":"7\u20138","rest":180,"muscles":"Chest, front delts, triceps","cues":["Plant your feet firmly","Keep shoulder blades pulled back","Lower under control and press smoothly"],"mistake":"Losing upper-back tightness or flaring elbows aggressively","alt":"Machine chest press or dumbbell bench press","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22260%22%20cy%3D%22115%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22145%22%20x2%3D%22260%22%20y2%3D%22300%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22205%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22315%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22175%22%20y2%3D%22240%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22345%22%20y2%3D%22240%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22165%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22355%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Lat Pulldown","sets":4,"reps":"5\u20138","rpe":"8","rest":150,"muscles":"Lats, upper back, biceps","cues":["Keep chest tall","Pull elbows toward your sides","Control the overhead stretch"],"mistake":"Using body swing to yank the bar down","alt":"Assisted pull-up","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22430%22%20y1%3D%2270%22%20x2%3D%22430%22%20y2%3D%22410%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%2214%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22255%22%20cy%3D%22120%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22150%22%20x2%3D%22255%22%20y2%3D%22300%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22300%22%20x2%3D%22205%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22300%22%20x2%3D%22305%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22205%22%20x2%3D%22190%22%20y2%3D%22155%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22205%22%20x2%3D%22320%22%20y2%3D%22155%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22175%22%20y1%3D%22150%22%20x2%3D%22335%22%20y2%3D%22150%22%20stroke%3D%22%232563eb%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Chest-Supported Row","sets":3,"reps":"6\u20138","rpe":"8","rest":120,"muscles":"Mid-back, lats, rear delts, biceps","cues":["Keep chest planted","Drive elbows back","Pause briefly near the torso"],"mistake":"Shrugging shoulders toward the ears","alt":"Seated cable row","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22430%22%20y1%3D%2270%22%20x2%3D%22430%22%20y2%3D%22410%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%2214%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22255%22%20cy%3D%22120%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22150%22%20x2%3D%22255%22%20y2%3D%22300%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22300%22%20x2%3D%22205%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22300%22%20x2%3D%22305%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22205%22%20x2%3D%22190%22%20y2%3D%22155%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22205%22%20x2%3D%22320%22%20y2%3D%22155%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22175%22%20y1%3D%22150%22%20x2%3D%22335%22%20y2%3D%22150%22%20stroke%3D%22%232563eb%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Incline Dumbbell Press","sets":3,"reps":"8\u201310","rpe":"8","rest":120,"muscles":"Upper chest, front delts, triceps","cues":["Use a moderate incline","Lower with control","Press without crashing the dumbbells together"],"mistake":"Using too steep an incline","alt":"Incline machine press","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22260%22%20cy%3D%22115%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22145%22%20x2%3D%22260%22%20y2%3D%22300%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22205%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22315%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22175%22%20y2%3D%22240%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22345%22%20y2%3D%22240%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22165%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22355%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Seated Dumbbell Shoulder Press","sets":3,"reps":"8\u201310","rpe":"8","rest":120,"muscles":"Delts, triceps","cues":["Brace your trunk","Press in a smooth arc","Control the lowering phase"],"mistake":"Overarching the lower back","alt":"Machine shoulder press","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22260%22%20cy%3D%22115%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22145%22%20x2%3D%22260%22%20y2%3D%22300%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22205%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22315%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22175%22%20y2%3D%22240%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22345%22%20y2%3D%22240%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22165%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22355%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Dumbbell Lateral Raise","sets":3,"reps":"12\u201315","rpe":"8\u20139","rest":75,"muscles":"Lateral delts","cues":["Lead with the elbows","Raise to about shoulder height","Use controlled reps"],"mistake":"Swinging the torso to move the weight","alt":"Cable lateral raise","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22260%22%20cy%3D%22115%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22145%22%20x2%3D%22260%22%20y2%3D%22300%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22205%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22315%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22150%22%20y2%3D%22190%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22370%22%20y2%3D%22190%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22165%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22355%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Cable Triceps Pressdown","sets":2,"reps":"10\u201312","rpe":"8\u20139","rest":75,"muscles":"Triceps","cues":["Keep elbows near your sides","Fully straighten the arms","Control the return"],"mistake":"Letting elbows drift forward","alt":"Rope pressdown","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22260%22%20cy%3D%22115%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22145%22%20x2%3D%22260%22%20y2%3D%22300%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22205%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22315%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22175%22%20y2%3D%22240%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22345%22%20y2%3D%22240%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22165%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22355%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22410%22%20y1%3D%2270%22%20x2%3D%22410%22%20y2%3D%22400%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%2214%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Cable Curl","sets":2,"reps":"10\u201312","rpe":"8\u20139","rest":75,"muscles":"Biceps","cues":["Keep elbows stable","Curl through a comfortable full range","Lower slowly"],"mistake":"Swinging the torso to cheat reps","alt":"EZ-bar curl","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22260%22%20cy%3D%22115%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22145%22%20x2%3D%22260%22%20y2%3D%22300%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22205%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22315%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22175%22%20y2%3D%22240%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22345%22%20y2%3D%22240%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22165%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22355%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"}]},"wednesday":{"title":"Wednesday \u00b7 Lower","focus":"Lower-body strength + hypertrophy","warmup":["5 minutes on a bike or treadmill","Bodyweight squats \u00d7 12","Hip hinges \u00d7 12","2\u20134 progressively heavier warm-up sets for squat"],"cooldown":["3\u20135 minutes of easy walking","Gentle quad / hamstring stretch 30\u201345 sec","2 minutes of relaxed breathing"],"exercises":[{"name":"Back Squat","sets":4,"reps":"4\u20136","rpe":"7\u20138","rest":180,"muscles":"Quads, glutes, adductors, core","cues":["Brace before each rep","Track knees in line with toes","Drive through the mid-foot"],"mistake":"Collapsing forward out of the bottom","alt":"Front squat or hack squat","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22270%22%20cy%3D%22120%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22270%22%20y1%3D%22150%22%20x2%3D%22245%22%20y2%3D%22285%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22245%22%20y1%3D%22285%22%20x2%3D%22180%22%20y2%3D%22350%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22180%22%20y1%3D%22350%22%20x2%3D%22145%22%20y2%3D%22420%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22245%22%20y1%3D%22285%22%20x2%3D%22330%22%20y2%3D%22330%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22330%22%20y1%3D%22330%22%20x2%3D%22365%22%20y2%3D%22420%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22215%22%20y1%3D%22240%22%20x2%3D%22150%22%20y2%3D%22315%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22270%22%20y1%3D%22220%22%20x2%3D%22360%22%20y2%3D%22315%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22110%22%20y1%3D%22350%22%20x2%3D%22400%22%20y2%3D%22350%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%2216%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2295%22%20cy%3D%22350%22%20r%3D%2218%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22415%22%20cy%3D%22350%22%20r%3D%2218%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Romanian Deadlift","sets":3,"reps":"6\u20138","rpe":"8","rest":150,"muscles":"Hamstrings, glutes, spinal erectors","cues":["Keep a slight knee bend","Push hips back","Keep the bar close to the legs"],"mistake":"Turning the movement into a squat","alt":"Dumbbell RDL","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22270%22%20cy%3D%22120%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22270%22%20y1%3D%22150%22%20x2%3D%22245%22%20y2%3D%22285%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22245%22%20y1%3D%22285%22%20x2%3D%22180%22%20y2%3D%22350%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22180%22%20y1%3D%22350%22%20x2%3D%22145%22%20y2%3D%22420%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22245%22%20y1%3D%22285%22%20x2%3D%22330%22%20y2%3D%22330%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22330%22%20y1%3D%22330%22%20x2%3D%22365%22%20y2%3D%22420%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22215%22%20y1%3D%22240%22%20x2%3D%22150%22%20y2%3D%22315%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22270%22%20y1%3D%22220%22%20x2%3D%22360%22%20y2%3D%22315%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22110%22%20y1%3D%22350%22%20x2%3D%22400%22%20y2%3D%22350%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%2216%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2295%22%20cy%3D%22350%22%20r%3D%2218%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22415%22%20cy%3D%22350%22%20r%3D%2218%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Leg Press","sets":3,"reps":"8\u201310","rpe":"8","rest":120,"muscles":"Quads, glutes","cues":["Keep the full foot on the platform","Control the depth","Drive evenly through both feet"],"mistake":"Letting the lower back round off the pad","alt":"Hack squat","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%22115%22%20y%3D%22290%22%20width%3D%22250%22%20height%3D%2228%22%20rx%3D%2214%22%20fill%3D%22%2394a3b8%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22175%22%20cy%3D%22235%22%20r%3D%2228%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22190%22%20y1%3D%22260%22%20x2%3D%22255%22%20y2%3D%22305%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22305%22%20x2%3D%22330%22%20y2%3D%22320%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22330%22%20y1%3D%22320%22%20x2%3D%22405%22%20y2%3D%22245%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22405%22%20y1%3D%22245%22%20x2%3D%22440%22%20y2%3D%22210%22%20stroke%3D%22%232563eb%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Lying Leg Curl","sets":3,"reps":"10\u201312","rpe":"8\u20139","rest":90,"muscles":"Hamstrings","cues":["Keep hips down","Curl smoothly","Control the lowering phase"],"mistake":"Jerking the pad up","alt":"Seated leg curl","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%22115%22%20y%3D%22290%22%20width%3D%22250%22%20height%3D%2228%22%20rx%3D%2214%22%20fill%3D%22%2394a3b8%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22175%22%20cy%3D%22235%22%20r%3D%2228%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22190%22%20y1%3D%22260%22%20x2%3D%22255%22%20y2%3D%22305%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22305%22%20x2%3D%22330%22%20y2%3D%22320%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22330%22%20y1%3D%22320%22%20x2%3D%22405%22%20y2%3D%22245%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22405%22%20y1%3D%22245%22%20x2%3D%22440%22%20y2%3D%22210%22%20stroke%3D%22%232563eb%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Bulgarian Split Squat","sets":3,"reps":"8\u201310 / leg","rpe":"8","rest":120,"muscles":"Quads, glutes, adductors","cues":["Use a stable stance","Drop mostly straight down","Drive through the front foot"],"mistake":"Using an unstable or overly narrow stance","alt":"Walking lunge","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22270%22%20cy%3D%22120%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22270%22%20y1%3D%22150%22%20x2%3D%22245%22%20y2%3D%22285%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22245%22%20y1%3D%22285%22%20x2%3D%22180%22%20y2%3D%22350%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22180%22%20y1%3D%22350%22%20x2%3D%22145%22%20y2%3D%22420%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22245%22%20y1%3D%22285%22%20x2%3D%22330%22%20y2%3D%22330%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22330%22%20y1%3D%22330%22%20x2%3D%22365%22%20y2%3D%22420%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22215%22%20y1%3D%22240%22%20x2%3D%22150%22%20y2%3D%22315%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22270%22%20y1%3D%22220%22%20x2%3D%22360%22%20y2%3D%22315%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22110%22%20y1%3D%22350%22%20x2%3D%22400%22%20y2%3D%22350%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%2216%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2295%22%20cy%3D%22350%22%20r%3D%2218%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22415%22%20cy%3D%22350%22%20r%3D%2218%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Leg Extension","sets":2,"reps":"10\u201315","rpe":"8\u20139","rest":75,"muscles":"Quads","cues":["Align the machine pivot with the knee","Extend smoothly","Pause briefly at the top"],"mistake":"Kicking the weight with momentum","alt":"Spanish squat","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%22115%22%20y%3D%22290%22%20width%3D%22250%22%20height%3D%2228%22%20rx%3D%2214%22%20fill%3D%22%2394a3b8%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22175%22%20cy%3D%22235%22%20r%3D%2228%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22190%22%20y1%3D%22260%22%20x2%3D%22255%22%20y2%3D%22305%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22305%22%20x2%3D%22330%22%20y2%3D%22320%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22330%22%20y1%3D%22320%22%20x2%3D%22405%22%20y2%3D%22245%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22405%22%20y1%3D%22245%22%20x2%3D%22440%22%20y2%3D%22210%22%20stroke%3D%22%232563eb%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Standing Calf Raise","sets":4,"reps":"10\u201315","rpe":"8\u20139","rest":75,"muscles":"Calves","cues":["Use a full stretch at the bottom","Rise through the big-toe side","Pause at the top"],"mistake":"Bouncing through the reps","alt":"Seated calf raise","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22260%22%20cy%3D%22115%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22145%22%20x2%3D%22260%22%20y2%3D%22300%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22205%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22315%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22175%22%20y2%3D%22240%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22345%22%20y2%3D%22240%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22165%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22355%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Cable Crunch","sets":3,"reps":"10\u201315","rpe":"8","rest":60,"muscles":"Abs","cues":["Round the upper trunk slightly","Keep hips mostly fixed","Exhale as you crunch"],"mistake":"Only hinging at the hips","alt":"Machine crunch","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22430%22%20y1%3D%2270%22%20x2%3D%22430%22%20y2%3D%22410%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%2214%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22255%22%20cy%3D%22120%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22150%22%20x2%3D%22255%22%20y2%3D%22300%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22300%22%20x2%3D%22205%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22300%22%20x2%3D%22305%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22205%22%20x2%3D%22190%22%20y2%3D%22155%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22205%22%20x2%3D%22320%22%20y2%3D%22155%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22175%22%20y1%3D%22150%22%20x2%3D%22335%22%20y2%3D%22150%22%20stroke%3D%22%232563eb%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"}]},"friday":{"title":"Friday \u00b7 Full Body","focus":"Full-body strength + hypertrophy","warmup":["5 minutes of easy cardio","3\u20134 minutes of dynamic mobility","Glute bridges \u00d7 12","2\u20134 progressively heavier warm-up sets for deadlift"],"cooldown":["3\u20135 minutes of easy walking","3 minutes of gentle full-body mobility","2 minutes of relaxed breathing"],"exercises":[{"name":"Deadlift","sets":3,"reps":"3\u20135","rpe":"7\u20138","rest":210,"muscles":"Glutes, hamstrings, back, traps","cues":["Brace and wedge into position","Keep the bar close","Push the floor away"],"mistake":"Letting the bar drift away from the body","alt":"Trap-bar deadlift","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22270%22%20cy%3D%22120%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22270%22%20y1%3D%22150%22%20x2%3D%22245%22%20y2%3D%22285%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22245%22%20y1%3D%22285%22%20x2%3D%22180%22%20y2%3D%22350%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22180%22%20y1%3D%22350%22%20x2%3D%22145%22%20y2%3D%22420%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22245%22%20y1%3D%22285%22%20x2%3D%22330%22%20y2%3D%22330%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22330%22%20y1%3D%22330%22%20x2%3D%22365%22%20y2%3D%22420%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22215%22%20y1%3D%22240%22%20x2%3D%22150%22%20y2%3D%22315%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22270%22%20y1%3D%22220%22%20x2%3D%22360%22%20y2%3D%22315%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22110%22%20y1%3D%22350%22%20x2%3D%22400%22%20y2%3D%22350%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%2216%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2295%22%20cy%3D%22350%22%20r%3D%2218%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22415%22%20cy%3D%22350%22%20r%3D%2218%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Barbell Bench Press","sets":3,"reps":"6\u20138","rpe":"8","rest":150,"muscles":"Chest, front delts, triceps","cues":["Plant your feet firmly","Keep shoulder blades pulled back","Lower under control and press smoothly"],"mistake":"Losing upper-back tightness","alt":"Machine chest press","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22260%22%20cy%3D%22115%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22145%22%20x2%3D%22260%22%20y2%3D%22300%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22205%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22315%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22175%22%20y2%3D%22240%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22345%22%20y2%3D%22240%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22165%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22355%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Hack Squat","sets":3,"reps":"6\u20138","rpe":"8","rest":150,"muscles":"Quads, glutes","cues":["Keep your back supported","Control the descent","Drive evenly through the foot"],"mistake":"Cutting the range of motion too short","alt":"Leg press","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22270%22%20cy%3D%22120%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22270%22%20y1%3D%22150%22%20x2%3D%22245%22%20y2%3D%22285%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22245%22%20y1%3D%22285%22%20x2%3D%22180%22%20y2%3D%22350%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22180%22%20y1%3D%22350%22%20x2%3D%22145%22%20y2%3D%22420%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22245%22%20y1%3D%22285%22%20x2%3D%22330%22%20y2%3D%22330%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22330%22%20y1%3D%22330%22%20x2%3D%22365%22%20y2%3D%22420%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22215%22%20y1%3D%22240%22%20x2%3D%22150%22%20y2%3D%22315%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22270%22%20y1%3D%22220%22%20x2%3D%22360%22%20y2%3D%22315%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22110%22%20y1%3D%22350%22%20x2%3D%22400%22%20y2%3D%22350%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%2216%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2295%22%20cy%3D%22350%22%20r%3D%2218%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22415%22%20cy%3D%22350%22%20r%3D%2218%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Neutral-Grip Lat Pulldown","sets":3,"reps":"8\u201310","rpe":"8","rest":120,"muscles":"Lats, upper back, biceps","cues":["Keep chest tall","Pull elbows down","Control the overhead stretch"],"mistake":"Leaning back so far it becomes a row","alt":"Neutral-grip pull-up","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22430%22%20y1%3D%2270%22%20x2%3D%22430%22%20y2%3D%22410%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%2214%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22255%22%20cy%3D%22120%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22150%22%20x2%3D%22255%22%20y2%3D%22300%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22300%22%20x2%3D%22205%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22300%22%20x2%3D%22305%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22205%22%20x2%3D%22190%22%20y2%3D%22155%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22205%22%20x2%3D%22320%22%20y2%3D%22155%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22175%22%20y1%3D%22150%22%20x2%3D%22335%22%20y2%3D%22150%22%20stroke%3D%22%232563eb%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Chest-Supported Row","sets":3,"reps":"8\u201310","rpe":"8","rest":120,"muscles":"Mid-back, lats, rear delts, biceps","cues":["Keep chest planted","Drive elbows back","Pause near the torso"],"mistake":"Shrugging the shoulders","alt":"Seated cable row","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22430%22%20y1%3D%2270%22%20x2%3D%22430%22%20y2%3D%22410%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%2214%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22255%22%20cy%3D%22120%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22150%22%20x2%3D%22255%22%20y2%3D%22300%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22300%22%20x2%3D%22205%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22300%22%20x2%3D%22305%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22205%22%20x2%3D%22190%22%20y2%3D%22155%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22205%22%20x2%3D%22320%22%20y2%3D%22155%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22175%22%20y1%3D%22150%22%20x2%3D%22335%22%20y2%3D%22150%22%20stroke%3D%22%232563eb%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Hip Thrust","sets":3,"reps":"8\u201310","rpe":"8","rest":120,"muscles":"Glutes, hamstrings","cues":["Keep ribs controlled","Drive through the heels","Pause at lockout"],"mistake":"Hyperextending the lower back","alt":"Glute bridge","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%22115%22%20y%3D%22290%22%20width%3D%22250%22%20height%3D%2228%22%20rx%3D%2214%22%20fill%3D%22%2394a3b8%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22175%22%20cy%3D%22235%22%20r%3D%2228%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22190%22%20y1%3D%22260%22%20x2%3D%22255%22%20y2%3D%22305%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22255%22%20y1%3D%22305%22%20x2%3D%22330%22%20y2%3D%22320%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22330%22%20y1%3D%22320%22%20x2%3D%22405%22%20y2%3D%22245%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22405%22%20y1%3D%22245%22%20x2%3D%22440%22%20y2%3D%22210%22%20stroke%3D%22%232563eb%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Lateral Raise","sets":3,"reps":"12\u201315","rpe":"8\u20139","rest":75,"muscles":"Lateral delts","cues":["Lead with the elbows","Keep the torso still","Use controlled reps"],"mistake":"Swinging or shrugging","alt":"Cable lateral raise","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22260%22%20cy%3D%22115%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22145%22%20x2%3D%22260%22%20y2%3D%22300%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22205%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22315%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22150%22%20y2%3D%22190%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22370%22%20y2%3D%22190%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22165%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22355%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Incline Dumbbell Curl","sets":2,"reps":"10\u201312","rpe":"8\u20139","rest":75,"muscles":"Biceps","cues":["Let the arms hang naturally","Supinate as you curl","Lower under control"],"mistake":"Rolling the shoulders forward","alt":"Preacher curl","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22260%22%20cy%3D%22115%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22145%22%20x2%3D%22260%22%20y2%3D%22300%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22205%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22315%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22175%22%20y2%3D%22240%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22345%22%20y2%3D%22240%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22165%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22355%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"},{"name":"Overhead Cable Triceps Extension","sets":2,"reps":"10\u201312","rpe":"8\u20139","rest":75,"muscles":"Triceps long head","cues":["Keep elbows mostly fixed","Use a comfortable stretch","Extend fully"],"mistake":"Letting the shoulders take over","alt":"Dumbbell overhead extension","image":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20460%22%3E%0A%20%20%20%20%3Crect%20width%3D%22520%22%20height%3D%22460%22%20rx%3D%2228%22%20fill%3D%22%23eef2ff%22%2F%3E%0A%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22260%22%20cy%3D%22115%22%20r%3D%2230%22%20fill%3D%22%23111827%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22145%22%20x2%3D%22260%22%20y2%3D%22300%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22205%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22300%22%20x2%3D%22315%22%20y2%3D%22410%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22205%22%20y2%3D%22105%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%22260%22%20y1%3D%22190%22%20x2%3D%22315%22%20y2%3D%22105%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22165%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22355%22%20cy%3D%22245%22%20r%3D%2216%22%20fill%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22472%22%20height%3D%22412%22%20rx%3D%2222%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"}]}};
+const KEY = "workoutCoachCleanV4";
+let state = JSON.parse(localStorage.getItem(KEY) || "{}");
+let day = localStorage.getItem(KEY + ".day") || "monday";
+let timer = {base:180, remaining:180, running:false, id:null};
+
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+function ds(){
+  state.days ??= {};
+  state.days[day] ??= {notes:"", ex:{}};
+  return state.days[day];
+}
+function hist(){ state.history ??= []; return state.history; }
+function esc(s){
+  return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#039;"}[m]));
+}
+function fmt(sec){ return `${Math.floor(sec/60)}:${String(sec%60).padStart(2,"0")}`; }
+function toast(msg){
+  const el = $("#toast");
+  el.textContent = msg;
+  el.classList.remove("hidden");
+  clearTimeout(el._t);
+  el._t = setTimeout(()=>el.classList.add("hidden"), 2200);
+}
+function showSheet(label,title,body){
+  $("#sheetLabel").textContent = label;
+  $("#sheetTitle").textContent = title;
+  $("#sheetContent").innerHTML = body;
+  $("#sheet").classList.remove("hidden");
+}
+
+function render(){
+  const spec = W[day], store = ds();
+  $$(".dtab").forEach(b => b.classList.toggle("active", b.dataset.day === day));
+  $("#sessionTitle").textContent = spec.title;
+  $("#focus").textContent = spec.focus;
+  const box = $("#exerciseList");
+  box.innerHTML = "";
+
+  spec.exercises.forEach((e,i)=>{
+    store.ex[i] ??= {sets:[], note:""};
+    while(store.ex[i].sets.length < e.sets){
+      store.ex[i].sets.push({weight:"", reps:"", rpe:"", done:false});
+    }
+    const s = store.ex[i];
+    const card = document.createElement("section");
+    card.className = "card exercise";
+    card.innerHTML = `
+      <div class="exhead">
+        <img src="${e.image}" alt="${esc(e.name)} illustration">
+        <div>
+          <h3>${i+1}. ${esc(e.name)}</h3>
+          <div class="tiny"><strong>${e.sets} sets · ${esc(e.reps)} reps · RPE ${esc(e.rpe)}</strong></div>
+          <span class="badge">${esc(e.muscles)}</span>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="tech" data-i="${i}">Technique</button>
+        <button class="rest" data-i="${i}">⏱ Rest ${fmt(e.rest)}</button>
+        <button class="clear" data-i="${i}">Clear</button>
+      </div>
+      <div class="sets">
+        <div class="setrow head"><div>Set</div><div>Weight</div><div>Reps</div><div>RPE</div><div>Done</div></div>
+        ${s.sets.slice(0,e.sets).map((r,j)=>`
+          <div class="setrow">
+            <strong>${j+1}</strong>
+            <input data-i="${i}" data-j="${j}" data-f="weight" inputmode="decimal" value="${esc(r.weight)}" placeholder="kg">
+            <input data-i="${i}" data-j="${j}" data-f="reps" inputmode="numeric" value="${esc(r.reps)}" placeholder="reps">
+            <input data-i="${i}" data-j="${j}" data-f="rpe" inputmode="decimal" value="${esc(r.rpe)}" placeholder="${esc(e.rpe)}">
+            <button class="check ${r.done ? "done":""}" data-check="${i}:${j}">${r.done ? "✓":""}</button>
+          </div>
+        `).join("")}
+      </div>
+      <div class="note"><textarea data-note="${i}" placeholder="Exercise notes...">${esc(s.note||"")}</textarea></div>
+      <details>
+        <summary>Quick cues</summary>
+        <ul>${e.cues.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+        <p class="tiny"><strong>Common mistake:</strong> ${esc(e.mistake)}</p>
+        <p class="tiny"><strong>Alternative:</strong> ${esc(e.alt)}</p>
+      </details>`;
+    box.appendChild(card);
+  });
+  save();
+  progress();
+}
+
+function progress(){
+  const spec = W[day], store = ds();
+  let total = 0, done = 0;
+  spec.exercises.forEach((e,i)=>{
+    total += e.sets;
+    done += (store.ex[i]?.sets || []).slice(0,e.sets).filter(x=>x.done).length;
+  });
+  const p = total ? Math.round(done/total*100) : 0;
+  $("#pct").textContent = p + "%";
+  $("#bar").style.width = p + "%";
+}
+
+function technique(i){
+  const e = W[day].exercises[i];
+  showSheet("EXERCISE GUIDE", e.name, `
+    <img src="${e.image}" alt="${esc(e.name)} illustration" style="width:100%;border-radius:16px;border:1px solid var(--line);background:#eef2ff">
+    <p><strong>Main muscles:</strong> ${esc(e.muscles)}</p>
+    <ul>${e.cues.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+    <p><strong>Common mistake:</strong> ${esc(e.mistake)}</p>
+    <p><strong>Alternative:</strong> ${esc(e.alt)}</p>
+  `);
+}
+
+function openTimer(i){
+  const e = W[day].exercises[i];
+  stopTimer();
+  timer.base = timer.remaining = e.rest;
+  $("#timerTitle").textContent = e.name;
+  $("#timerDisplay").textContent = fmt(timer.remaining);
+  $("#timerToggle").textContent = "Start";
+  $("#timerSheet").classList.remove("hidden");
+}
+function stopTimer(){
+  if(timer.id) clearInterval(timer.id);
+  timer.id = null;
+  timer.running = false;
+}
+function startTimer(){
+  if(timer.running) return;
+  timer.running = true;
+  $("#timerToggle").textContent = "Pause";
+  timer.id = setInterval(()=>{
+    timer.remaining--;
+    $("#timerDisplay").textContent = fmt(Math.max(0,timer.remaining));
+    if(timer.remaining <= 0){
+      stopTimer();
+      navigator.vibrate?.([200,100,200]);
+      toast("Rest complete");
+    }
+  },1000);
+}
+
+function finish(){
+  const spec = W[day], store = ds();
+  let total = 0, done = 0;
+  spec.exercises.forEach((e,i)=>{
+    total += e.sets;
+    done += (store.ex[i]?.sets || []).slice(0,e.sets).filter(x=>x.done).length;
+  });
+  const completion = total ? Math.round(done/total*100) : 0;
+  hist().push({day, title:spec.title, completion, date:new Date().toISOString()});
+  save();
+  renderHistory();
+  toast(`Session saved · ${completion}%`);
+}
+
+function renderHistory(){
+  const h = hist().slice().reverse();
+  $("#historyList").innerHTML = h.length
+    ? h.slice(0,30).map(x=>`
+      <div class="historyitem">
+        <strong>${esc(x.title)}</strong><br>
+        <span class="tiny">${new Date(x.date).toLocaleString()}</span><br>
+        Completion: ${x.completion}%
+      </div>`).join("")
+    : '<div class="historyitem">No sessions logged yet.</div>';
+}
+
+function allExercises(){
+  const out = [];
+  Object.values(W).forEach(d=>d.exercises.forEach(e=>{
+    if(!out.some(x=>x.name===e.name)) out.push(e);
+  }));
+  return out;
+}
+function renderLibrary(){
+  const q = ($("#search").value || "").toLowerCase();
+  $("#libraryList").innerHTML = allExercises()
+    .filter(e=>e.name.toLowerCase().includes(q))
+    .map(e=>`
+      <div class="lib">
+        <img src="${e.image}" alt="${esc(e.name)} illustration">
+        <h4>${esc(e.name)}</h4>
+        <div class="tiny">${esc(e.muscles)}</div>
+        <button class="libOpen" data-name="${esc(e.name)}" style="margin-top:8px">Open guide</button>
+      </div>`).join("");
+}
+
+document.addEventListener("click", ev=>{
+  const v = ev.target.closest(".vtab");
+  if(v){
+    $$(".vtab").forEach(b=>b.classList.toggle("active", b===v));
+    $$(".view").forEach(x=>x.classList.remove("active"));
+    $("#" + v.dataset.view).classList.add("active");
+    if(v.dataset.view==="history") renderHistory();
+    if(v.dataset.view==="library") renderLibrary();
+    return;
+  }
+  const d = ev.target.closest(".dtab");
+  if(d){
+    day = d.dataset.day;
+    localStorage.setItem(KEY + ".day", day);
+    render();
+    return;
+  }
+  const ch = ev.target.closest("[data-check]");
+  if(ch){
+    const [i,j] = ch.dataset.check.split(":").map(Number);
+    ds().ex[i].sets[j].done = !ds().ex[i].sets[j].done;
+    save(); render(); return;
+  }
+  const t = ev.target.closest(".tech");
+  if(t){ technique(Number(t.dataset.i)); return; }
+  const r = ev.target.closest(".rest");
+  if(r){ openTimer(Number(r.dataset.i)); return; }
+  const cl = ev.target.closest(".clear");
+  if(cl){
+    const i = Number(cl.dataset.i), e = W[day].exercises[i];
+    ds().ex[i] = {sets:Array.from({length:e.sets},()=>({weight:"",reps:"",rpe:"",done:false})), note:""};
+    save(); render(); return;
+  }
+  const lo = ev.target.closest(".libOpen");
+  if(lo){
+    const e = allExercises().find(x=>x.name===lo.dataset.name);
+    if(e){
+      showSheet("EXERCISE GUIDE", e.name, `
+        <img src="${e.image}" alt="${esc(e.name)} illustration" style="width:100%;border-radius:16px;border:1px solid var(--line);background:#eef2ff">
+        <p><strong>Main muscles:</strong> ${esc(e.muscles)}</p>
+        <ul>${e.cues.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+        <p><strong>Common mistake:</strong> ${esc(e.mistake)}</p>
+        <p><strong>Alternative:</strong> ${esc(e.alt)}</p>`);
+    }
+  }
+});
+
+document.addEventListener("input", ev=>{
+  if(ev.target.matches("input[data-i]")){
+    const i=+ev.target.dataset.i, j=+ev.target.dataset.j, f=ev.target.dataset.f;
+    ds().ex[i].sets[j][f] = ev.target.value;
+    save();
+  }
+  if(ev.target.matches("textarea[data-note]")){
+    ds().ex[+ev.target.dataset.note].note = ev.target.value;
+    save();
+  }
+  if(ev.target.id==="search") renderLibrary();
+});
+
+$("#warmBtn").onclick = ()=>showSheet("SESSION PREP", W[day].title + " Warm-up", "<ul>"+W[day].warmup.map(x=>`<li>${esc(x)}</li>`).join("")+"</ul>");
+$("#coolBtn").onclick = ()=>showSheet("SESSION WRAP-UP", W[day].title + " Cooldown", "<ul>"+W[day].cooldown.map(x=>`<li>${esc(x)}</li>`).join("")+"</ul>");
+$("#sessionNoteBtn").onclick = ()=>{
+  showSheet("SESSION NOTES", W[day].title, `
+    <textarea id="snote" style="width:100%;min-height:160px;border:1px solid var(--line);border-radius:12px;padding:10px;background:transparent;color:var(--text)">${esc(ds().notes||"")}</textarea>
+    <button id="saveSnote" class="primary" style="margin-top:10px">Save notes</button>`);
+  setTimeout(()=>$("#saveSnote").onclick=()=>{
+    ds().notes = $("#snote").value;
+    save();
+    $("#sheet").classList.add("hidden");
+    toast("Notes saved");
+  },0);
+};
+$("#sheetClose").onclick = ()=>$("#sheet").classList.add("hidden");
+$("#timerClose").onclick = ()=>{ stopTimer(); $("#timerSheet").classList.add("hidden"); };
+$("#timerToggle").onclick = ()=> timer.running ? (stopTimer(), $("#timerToggle").textContent="Resume") : startTimer();
+$("#timerReset").onclick = ()=>{ stopTimer(); timer.remaining=timer.base; $("#timerDisplay").textContent=fmt(timer.remaining); $("#timerToggle").textContent="Start"; };
+$$(".preset").forEach(b=>b.onclick=()=>{ stopTimer(); timer.base=timer.remaining=+b.dataset.sec; $("#timerDisplay").textContent=fmt(timer.remaining); $("#timerToggle").textContent="Start"; });
+
+$("#finishBtn").onclick = finish;
+$("#resetBtn").onclick = ()=>{
+  if(confirm("Reset all logs for this workout day?")){
+    state.days[day] = {notes:"", ex:{}};
+    save(); render();
+  }
+};
+$("#themeBtn").onclick = ()=>{
+  document.documentElement.classList.toggle("dark");
+  $("#themeBtn").textContent = document.documentElement.classList.contains("dark") ? "Light" : "Dark";
+};
+
+$("#exportBtn").onclick = ()=>{
+  const blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "workout-coach-backup.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+$("#importInput").onchange = async e=>{
+  const f = e.target.files[0];
+  if(!f) return;
+  try{
+    state = JSON.parse(await f.text());
+    save(); render(); renderHistory(); toast("Backup imported");
+  }catch{ alert("That backup file could not be imported."); }
+};
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load", ()=>navigator.serviceWorker.register("./sw.js"));
+}
+
+render();
+renderHistory();
+renderLibrary();
+</script>
+</body>
+</html>
