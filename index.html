@@ -51,7 +51,7 @@ details{padding:0 14px 14px} summary{cursor:pointer;font-weight:800}.primary{bac
     <div class="eyebrow">INTERMEDIATE · MUSCLE + STRENGTH</div>
     <h1>Workout Coach Pro</h1>
     <div class="sub">Upper / Lower / Full Body · 3 Days / Week</div>
-    <div class="build">Clean build v4.0</div>
+    <div class="build">Clean build v4.1</div>
   </div>
   <button id="themeBtn">Dark</button>
 </header>
@@ -126,7 +126,7 @@ details{padding:0 14px 14px} summary{cursor:pointer;font-weight:800}.primary{bac
   </section>
   <section class="card">
     <h2>Version</h2>
-    <p><strong>Workout Coach Pro — Clean build v4.0</strong></p>
+    <p><strong>Workout Coach Pro — Clean build v4.1</strong></p>
     <p class="tiny">If you see this version label, GitHub Pages is serving the new build.</p>
   </section>
 </section>
@@ -183,7 +183,8 @@ function ds(){
 }
 function hist(){ state.history ??= []; return state.history; }
 function esc(s){
-  return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#039;"}[m]));
+  const map = {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"};
+  return String(s).replace(/[&<>"']/g, m => map[m]);
 }
 function fmt(sec){ return `${Math.floor(sec/60)}:${String(sec%60).padStart(2,"0")}`; }
 function toast(msg){

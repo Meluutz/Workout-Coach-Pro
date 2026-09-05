@@ -1,4 +1,4 @@
-# Workout Coach Pro — Clean build v4.0
+# Workout Coach Pro — Clean build v4.1
 
 This is a complete clean rebuild for GitHub Pages.
 
@@ -21,7 +21,7 @@ For the cleanest install:
    - Folder: /(root)
 5. Wait for GitHub Pages to finish deploying.
 6. Open the site in a Private/Incognito window first.
-7. Confirm the Settings page says: "Workout Coach Pro — Clean build v4.0".
+7. Confirm the Settings page says: "Workout Coach Pro — Clean build v4.1".
 
 ## Why this build should be more reliable
 
@@ -43,3 +43,13 @@ The app has:
 - no external exercise image requests
 
 Workout logs are stored in the browser's local storage on the device.
+
+
+## v4.1 fix
+v4.1 fixes a JavaScript parsing bug in the HTML escaping helper that prevented the app from initializing.
+Symptoms of the old bug included:
+- blank session title
+- no exercise cards
+- buttons/tabs not responding
+
+The service-worker cache version was also changed so browsers will fetch the corrected build.
