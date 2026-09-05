@@ -4,9 +4,9 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#111827",
-  "theme_color": "#111827",
-  "description": "Upper / Lower / Full Body workout tracker",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "description": "3-day Upper / Lower / Full Body workout tracker with integrated visual boards",
   "icons": [
     {
       "src": "./icon-192.png",

@@ -1,55 +1,28 @@
-# Workout Coach Pro — Clean build v4.1
+# Workout Coach Pro — Visual guide build v4.2
 
-This is a complete clean rebuild for GitHub Pages.
+This build integrates the polished routine boards directly into the working PWA.
 
-## IMPORTANT: replace the old repository completely
+## Files included
+- index.html
+- manifest.webmanifest
+- sw.js
+- icon-192.png
+- icon-512.png
+- README.md
 
-For the cleanest install:
+## What's new
+- Monday, Wednesday, and Friday now use the polished visual boards
+- Library tab shows the full routine guide boards
+- Guide images are embedded directly in the app, so no external image file requests are needed
+- Local workout logging, notes, history, import/export, and rest timer are still included
 
-1. In your GitHub repository, delete the old app files.
-2. Upload ONLY these 6 files from this package:
-   - index.html
-   - manifest.webmanifest
-   - sw.js
-   - icon-192.png
-   - icon-512.png
-   - README.md
-3. Commit the changes.
-4. In Settings → Pages, keep:
-   - Source: Deploy from a branch
-   - Branch: main
-   - Folder: /(root)
-5. Wait for GitHub Pages to finish deploying.
-6. Open the site in a Private/Incognito window first.
-7. Confirm the Settings page says: "Workout Coach Pro — Clean build v4.1".
-
-## Why this build should be more reliable
-
-- All app CSS is inside index.html.
-- All app JavaScript is inside index.html.
-- All exercise illustrations are embedded directly inside index.html.
-- There is no app.js, styles.css, or img folder.
-- The service worker uses network-first navigation so future updates are less likely to get stuck behind an old cached page.
-- The service worker deletes older caches when activated.
+## GitHub update steps
+1. Upload/overwrite all 6 files in your GitHub Pages repo.
+2. Wait for GitHub Pages to redeploy.
+3. Open the site in a Private/Incognito window first.
+4. Confirm the Settings tab shows:
+   'Workout Coach Pro — Visual guide build v4.2'
 
 ## Privacy
-
-The app has:
-- no analytics
-- no ads
-- no tracking scripts
-- no login
-- no cloud database
-- no external exercise image requests
-
-Workout logs are stored in the browser's local storage on the device.
-
-
-## v4.1 fix
-v4.1 fixes a JavaScript parsing bug in the HTML escaping helper that prevented the app from initializing.
-Symptoms of the old bug included:
-- blank session title
-- no exercise cards
-- buttons/tabs not responding
-
-The service-worker cache version was also changed so browsers will fetch the corrected build.
+No analytics, no login, no cloud database, and no external image requests.
+Workout logs remain in the browser's local storage on the device.
