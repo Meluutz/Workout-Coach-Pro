@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
-  "description": "Local-first adaptive workout coach with exact training days, body profile, dynamic exercise visuals, training blocks, recovery, and undo/redo",
+  "description": "Local-first adaptive workout coach with exact workout days, profile tracking, a growing exact-match exercise visual library, training blocks, recovery, and undo/redo",
   "icons": [
     {
       "src": "./icon-192.png",

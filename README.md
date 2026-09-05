@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v6.2.1
+# Adaptive Workout Coach — v6.3.1
 
 ## New in v6
 - 4 / 6 / 8 week training-block engine
@@ -31,7 +31,7 @@ Upload/overwrite these six files in the repository root:
 - README.md
 
 After deployment, open in a Private/Incognito tab once and confirm Settings says:
-Adaptive Workout Coach — v6.2
+Adaptive Workout Coach — v6.3
 
 ## Notes
 The protected-area filters and recovery logic are conservative training rules, not medical diagnosis or rehabilitation programming.
@@ -74,3 +74,15 @@ The visual workout boards are reference graphics and may not exactly match a per
 - Exercise swaps immediately change the visual
 - If an exact image is unavailable, the app explicitly says so instead of showing the wrong exercise
 - Retains v6.1 undo/redo protections
+
+
+## v6.3 — Uniform visual library expansion
+- Integrated the new uniform exercise-card visual system
+- Added exact visuals for Push-Up, Pike Push-Up, Bodyweight Squat, Reverse Lunge, Glute Bridge, Plank, and Dead Bug
+- Replaced Bulgarian Split Squat and Standing Calf Raise with the new uniform visual style
+- Existing exact gym visuals remain available while the library transitions to the new uniform style
+- Added a visual-library coverage meter in Settings
+- Added a visual browser showing every exercise that currently has an exact match
+- Removed the obsolete full-day poster blobs from the app because generated plans now use exact exercise visuals
+- Exact-match rule remains: the app never shows another exercise's image as a substitute
+- Female and neutral avatar variants are planned for a later visual expansion once the exercise coverage is broader
