@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v6.1.1
+# Adaptive Workout Coach — v6.2.1
 
 ## New in v6
 - 4 / 6 / 8 week training-block engine
@@ -31,7 +31,7 @@ Upload/overwrite these six files in the repository root:
 - README.md
 
 After deployment, open in a Private/Incognito tab once and confirm Settings says:
-Adaptive Workout Coach — v6.1
+Adaptive Workout Coach — v6.2
 
 ## Notes
 The protected-area filters and recovery logic are conservative training rules, not medical diagnosis or rehabilitation programming.
@@ -55,3 +55,22 @@ The visual workout boards are reference graphics and may not exactly match a per
 - Manual rep/set/target changes are undoable
 - Profile edits that regenerate the plan are undoable
 - Undo history is stored locally on the device
+
+
+## v6.2 — Better onboarding, scheduling and exact visuals
+- Fixed desktop dark-mode native dropdown readability
+- Users choose the exact weekdays they want to train
+- Added Change workout days without regenerating exercises
+- Added age (optional)
+- Added sex (optional)
+- Added height with cm or feet/inches
+- Added bodyweight entry during onboarding
+- Added optional starting waist, chest, arm and thigh measurements
+- Starting body data is automatically added to Progress
+- Bodyweight can now be used for relative-strength display
+- Profile summary shows selected workout days and basic body profile
+- Generated plans use the user's selected weekdays instead of fixed defaults
+- Dynamic exercise visuals are tied to the exact exercise ID
+- Exercise swaps immediately change the visual
+- If an exact image is unavailable, the app explicitly says so instead of showing the wrong exercise
+- Retains v6.1 undo/redo protections
