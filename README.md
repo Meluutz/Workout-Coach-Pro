@@ -1,25 +1,28 @@
-# Adaptive Workout Coach v5.1
+# Adaptive Workout Coach — v6.0
 
-A local-first adaptive workout app for multiple users.
+## New in v6
+- 4 / 6 / 8 week mesocycle engine
+- Week and phase tracking
+- Automatic final-week deload prescription
+- Manual +1 / -1 rep controls
+- Manual + / - set controls
+- Full target editing for sets, rep range, RPE, and optional load
+- Original program target remains separate from user-adjusted target
+- Actual performance remains separate from both
+- "Why?" explanations for coaching recommendations
+- PR detection using estimated 1RM
+- Bodyweight and optional waist/chest/arm/thigh tracking
+- Bodyweight trend sparkline
+- Approximate muscle-group weekly volume dashboard
+- Weekly summaries and cycle progression
+- Smarter progression using performance + RPE + recovery
+- Exercise swapping
+- Backup export/import
+- v5 local data migration where possible
+- Local-first PWA; no accounts, analytics, trackers, or cloud database
 
-## Major features
-- First-run onboarding
-- Automatic 2–6 day workout generation
-- Equipment-aware exercise selection
-- Basic limitation-aware filtering
-- Dynamic exercise swapping
-- Set / reps / weight / RPE logging
-- Recovery check-ins
-- Automatic progression recommendations based on prior performance + readiness
-- Workout history
-- Exercise library
-- Embedded polished visual boards for Upper / Lower / Full Body reference days
-- Export backup
-- PWA install support
-- No account, analytics, trackers, or cloud database
-
-## GitHub Pages
-Upload all 6 files to the repository root:
+## Deploy on GitHub Pages
+Upload/overwrite these six files in the repository root:
 - index.html
 - manifest.webmanifest
 - sw.js
@@ -27,15 +30,9 @@ Upload all 6 files to the repository root:
 - icon-512.png
 - README.md
 
-Then use Settings → Pages → Deploy from a branch → main → /(root).
+After deployment, open in a Private/Incognito tab once and confirm Settings says:
+Adaptive Workout Coach — v6.0
 
-Open in a Private/Incognito tab first after deployment and confirm Settings shows:
-Adaptive Workout Coach — v5.1
-
-## Important
-The limitation filters are conservative exercise-selection rules, not medical advice or rehabilitation programming.
-
-
-## v5.1
-- Added backup import.
-- Protection filters no longer fall back to exercises tagged for a protected area when no safe candidate exists.
+## Notes
+The protected-area filters and recovery logic are conservative training rules, not medical diagnosis or rehabilitation programming.
+The visual workout boards are reference graphics and may not exactly match a personalized or swapped exercise list.

@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
-  "description": "Local-first adaptive workout planner and training tracker",
+  "description": "Local-first adaptive workout coach with mesocycles, PRs, recovery, and manual progression controls",
   "icons": [
     {
       "src": "./icon-192.png",
