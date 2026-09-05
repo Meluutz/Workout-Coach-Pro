@@ -1,12 +1,12 @@
 {
-  "name": "Workout Coach Pro",
-  "short_name": "Workout Pro",
+  "name": "Adaptive Workout Coach",
+  "short_name": "Workout Coach",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
-  "description": "3-day Upper / Lower / Full Body workout tracker with integrated visual boards",
+  "description": "Local-first adaptive workout planner and training tracker",
   "icons": [
     {
       "src": "./icon-192.png",

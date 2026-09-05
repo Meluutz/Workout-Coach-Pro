@@ -1,8 +1,25 @@
-# Workout Coach Pro — Visual guide build v4.2
+# Adaptive Workout Coach v5.1
 
-This build integrates the polished routine boards directly into the working PWA.
+A local-first adaptive workout app for multiple users.
 
-## Files included
+## Major features
+- First-run onboarding
+- Automatic 2–6 day workout generation
+- Equipment-aware exercise selection
+- Basic limitation-aware filtering
+- Dynamic exercise swapping
+- Set / reps / weight / RPE logging
+- Recovery check-ins
+- Automatic progression recommendations based on prior performance + readiness
+- Workout history
+- Exercise library
+- Embedded polished visual boards for Upper / Lower / Full Body reference days
+- Export backup
+- PWA install support
+- No account, analytics, trackers, or cloud database
+
+## GitHub Pages
+Upload all 6 files to the repository root:
 - index.html
 - manifest.webmanifest
 - sw.js
@@ -10,19 +27,15 @@ This build integrates the polished routine boards directly into the working PWA.
 - icon-512.png
 - README.md
 
-## What's new
-- Monday, Wednesday, and Friday now use the polished visual boards
-- Library tab shows the full routine guide boards
-- Guide images are embedded directly in the app, so no external image file requests are needed
-- Local workout logging, notes, history, import/export, and rest timer are still included
+Then use Settings → Pages → Deploy from a branch → main → /(root).
 
-## GitHub update steps
-1. Upload/overwrite all 6 files in your GitHub Pages repo.
-2. Wait for GitHub Pages to redeploy.
-3. Open the site in a Private/Incognito window first.
-4. Confirm the Settings tab shows:
-   'Workout Coach Pro — Visual guide build v4.2'
+Open in a Private/Incognito tab first after deployment and confirm Settings shows:
+Adaptive Workout Coach — v5.1
 
-## Privacy
-No analytics, no login, no cloud database, and no external image requests.
-Workout logs remain in the browser's local storage on the device.
+## Important
+The limitation filters are conservative exercise-selection rules, not medical advice or rehabilitation programming.
+
+
+## v5.1
+- Added backup import.
+- Protection filters no longer fall back to exercises tagged for a protected area when no safe candidate exists.
