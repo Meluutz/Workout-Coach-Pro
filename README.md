@@ -1,88 +1,35 @@
-# Adaptive Workout Coach — v6.3.1
+# Adaptive Workout Coach — v7.0.1
 
-## New in v6
-- 4 / 6 / 8 week training-block engine
-- Week and phase tracking
-- Automatic final-week deload prescription
-- Manual +1 / -1 rep controls
-- Manual + / - set controls
-- Full target editing for sets, rep range, RPE, and optional load
-- Original program target remains separate from user-adjusted target
-- Actual performance remains separate from both
-- "Why?" explanations for coaching recommendations
-- PR detection using estimated 1RM
-- Bodyweight and optional waist/chest/arm/thigh tracking
-- Bodyweight trend sparkline
-- Approximate muscle-group weekly volume dashboard
-- Weekly summaries and cycle progression
-- Smarter progression using performance + RPE + recovery
-- Exercise swapping
-- Backup export/import
-- v5 local data migration where possible
-- Local-first PWA; no accounts, analytics, trackers, or cloud database
+GitHub-ready PWA build.
 
-## Deploy on GitHub Pages
-Upload/overwrite these six files in the repository root:
-- index.html
-- manifest.webmanifest
-- sw.js
-- icon-192.png
-- icon-512.png
-- README.md
+## What changed
+- Expanded the core exercise database from 54 to **120 exercises**.
+- Bundled **120 exact-match exercise visuals**.
+- Added structured exercise metadata: movement/substitution group, equipment, target muscles, difficulty, fatigue cost, and joint-consideration tags.
+- Expanded swap choices across chest, back, shoulders, arms, legs, glutes, calves, and core.
+- Preserved local-first data storage, training blocks, progression logic, recovery check-ins, body tracking, exact weekday scheduling, and undo/redo.
+- Visuals are now external files under `assets/exercises/` instead of being embedded in `index.html`, making the app much easier to maintain.
+- Updated the service worker to cache viewed exercise visuals for offline reuse.
 
-After deployment, open in a Private/Incognito tab once and confirm Settings says:
-Adaptive Workout Coach — v6.3
+## Exact visual coverage
+This build uses a strict exact-match rule: it never shows a different exercise image as a substitute.
 
-## Notes
-The protected-area filters and recovery logic are conservative training rules, not medical diagnosis or rehabilitation programming.
-The visual workout boards are reference graphics and may not exactly match a personalized or swapped exercise list.
+Exact visuals bundled: **120/120**.
 
+All exercises in the 120-exercise database now have an exact mapped visual.
 
-## v6.0.1
-- User-facing term 'mesocycle' replaced with 'training block'.
-- All other behavior and terminology remain unchanged.
+## GitHub Pages upload
+Upload the **contents of this folder** to the repository root, preserving the `assets/exercises/` folder structure.
 
+Main files:
+- `index.html`
+- `manifest.webmanifest`
+- `sw.js`
+- `icon-192.png`
+- `icon-512.png`
+- `assets/exercises/`
 
-## v6.1 — Plan safety
-- Undo last plan-changing action
-- Redo an undone action
-- Keeps up to 12 recent local plan snapshots
-- Confirmation before advancing to the next week
-- Advance-week actions are undoable
-- Plan regeneration is undoable
-- Starting a new training block is undoable
-- Exercise swaps are undoable
-- Manual rep/set/target changes are undoable
-- Profile edits that regenerate the plan are undoable
-- Undo history is stored locally on the device
+If an older version still appears after deployment, open the site once in a private/incognito window or clear the old site's service worker/cache.
 
-
-## v6.2 — Better onboarding, scheduling and exact visuals
-- Fixed desktop dark-mode native dropdown readability
-- Users choose the exact weekdays they want to train
-- Added Change workout days without regenerating exercises
-- Added age (optional)
-- Added sex (optional)
-- Added height with cm or feet/inches
-- Added bodyweight entry during onboarding
-- Added optional starting waist, chest, arm and thigh measurements
-- Starting body data is automatically added to Progress
-- Bodyweight can now be used for relative-strength display
-- Profile summary shows selected workout days and basic body profile
-- Generated plans use the user's selected weekdays instead of fixed defaults
-- Dynamic exercise visuals are tied to the exact exercise ID
-- Exercise swaps immediately change the visual
-- If an exact image is unavailable, the app explicitly says so instead of showing the wrong exercise
-- Retains v6.1 undo/redo protections
-
-
-## v6.3 — Uniform visual library expansion
-- Integrated the new uniform exercise-card visual system
-- Added exact visuals for Push-Up, Pike Push-Up, Bodyweight Squat, Reverse Lunge, Glute Bridge, Plank, and Dead Bug
-- Replaced Bulgarian Split Squat and Standing Calf Raise with the new uniform visual style
-- Existing exact gym visuals remain available while the library transitions to the new uniform style
-- Added a visual-library coverage meter in Settings
-- Added a visual browser showing every exercise that currently has an exact match
-- Removed the obsolete full-day poster blobs from the app because generated plans now use exact exercise visuals
-- Exact-match rule remains: the app never shows another exercise's image as a substitute
-- Female and neutral avatar variants are planned for a later visual expansion once the exercise coverage is broader
+## Privacy
+Workout, recovery, profile, and body data remain stored locally in the browser using localStorage. This build adds no account system, analytics, or cloud sync.

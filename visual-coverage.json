@@ -1,0 +1,729 @@
+{
+  "version": "7.0.1",
+  "exercise_count": 120,
+  "exact_visual_count": 120,
+  "pending_visual_count": 0,
+  "pending": [],
+  "visuals": [
+    {
+      "id": "bb_bench",
+      "name": "Barbell Bench Press",
+      "path": "assets/exercises/bb_bench.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "db_bench",
+      "name": "Dumbbell Bench Press",
+      "path": "assets/exercises/db_bench.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "machine_press",
+      "name": "Machine Chest Press",
+      "path": "assets/exercises/machine_press.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "pushup",
+      "name": "Push-Up",
+      "path": "assets/exercises/pushup.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "db_floor",
+      "name": "Dumbbell Floor Press",
+      "path": "assets/exercises/db_floor.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "incline_db",
+      "name": "Incline Dumbbell Press",
+      "path": "assets/exercises/incline_db.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "incline_machine",
+      "name": "Incline Machine Press",
+      "path": "assets/exercises/incline_machine.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "feet_pushup",
+      "name": "Feet-Elevated Push-Up",
+      "path": "assets/exercises/feet_pushup.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "db_ohp",
+      "name": "Seated Dumbbell Shoulder Press",
+      "path": "assets/exercises/db_ohp.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "machine_ohp",
+      "name": "Machine Shoulder Press",
+      "path": "assets/exercises/machine_ohp.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "pike_pushup",
+      "name": "Pike Push-Up",
+      "path": "assets/exercises/pike_pushup.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "lat_pd",
+      "name": "Lat Pulldown",
+      "path": "assets/exercises/lat_pd.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "neutral_pd",
+      "name": "Neutral-Grip Lat Pulldown",
+      "path": "assets/exercises/neutral_pd.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "pullup",
+      "name": "Pull-Up / Assisted Pull-Up",
+      "path": "assets/exercises/pullup.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "chest_row",
+      "name": "Chest-Supported Row",
+      "path": "assets/exercises/chest_row.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "cable_row",
+      "name": "Seated Cable Row",
+      "path": "assets/exercises/cable_row.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "onearm_db_row",
+      "name": "One-Arm Dumbbell Row",
+      "path": "assets/exercises/onearm_db_row.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "inverted_row",
+      "name": "Inverted Row",
+      "path": "assets/exercises/inverted_row.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "back_squat",
+      "name": "Back Squat",
+      "path": "assets/exercises/back_squat.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "hack_squat",
+      "name": "Hack Squat",
+      "path": "assets/exercises/hack_squat.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "goblet_squat",
+      "name": "Goblet Squat",
+      "path": "assets/exercises/goblet_squat.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "body_squat",
+      "name": "Bodyweight Squat",
+      "path": "assets/exercises/body_squat.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "deadlift",
+      "name": "Deadlift",
+      "path": "assets/exercises/deadlift.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "rdl",
+      "name": "Romanian Deadlift",
+      "path": "assets/exercises/rdl.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "db_rdl",
+      "name": "Dumbbell Romanian Deadlift",
+      "path": "assets/exercises/db_rdl.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "single_rdl",
+      "name": "Single-Leg Romanian Deadlift",
+      "path": "assets/exercises/single_rdl.jpg",
+      "quality": "approved master-library thumbnail"
+    },
+    {
+      "id": "leg_press",
+      "name": "Leg Press",
+      "path": "assets/exercises/leg_press.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "leg_ext",
+      "name": "Leg Extension",
+      "path": "assets/exercises/leg_ext.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "stepup",
+      "name": "Step-Up",
+      "path": "assets/exercises/stepup.jpg",
+      "quality": "approved master-library thumbnail"
+    },
+    {
+      "id": "lying_curl",
+      "name": "Lying Leg Curl",
+      "path": "assets/exercises/lying_curl.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "seated_curl",
+      "name": "Seated Leg Curl",
+      "path": "assets/exercises/seated_curl.jpg",
+      "quality": "approved master-library thumbnail"
+    },
+    {
+      "id": "slider_curl",
+      "name": "Slider Hamstring Curl",
+      "path": "assets/exercises/slider_curl.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "bss",
+      "name": "Bulgarian Split Squat",
+      "path": "assets/exercises/bss.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "reverse_lunge",
+      "name": "Reverse Lunge",
+      "path": "assets/exercises/reverse_lunge.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "hip_thrust",
+      "name": "Hip Thrust",
+      "path": "assets/exercises/hip_thrust.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "db_hip",
+      "name": "Dumbbell Hip Thrust",
+      "path": "assets/exercises/db_hip.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "glute_bridge",
+      "name": "Glute Bridge",
+      "path": "assets/exercises/glute_bridge.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "db_lat_raise",
+      "name": "Dumbbell Lateral Raise",
+      "path": "assets/exercises/db_lat_raise.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "cable_lat_raise",
+      "name": "Cable Lateral Raise",
+      "path": "assets/exercises/cable_lat_raise.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "lean_raise",
+      "name": "Lean-Away Lateral Raise",
+      "path": "assets/exercises/lean_raise.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "reverse_fly",
+      "name": "Rear-Delt Fly",
+      "path": "assets/exercises/reverse_fly.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "band_pullapart",
+      "name": "Band Pull-Apart",
+      "path": "assets/exercises/band_pullapart.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "cable_curl",
+      "name": "Cable Curl",
+      "path": "assets/exercises/cable_curl.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "db_curl",
+      "name": "Dumbbell Curl",
+      "path": "assets/exercises/db_curl.jpg",
+      "quality": "approved master-library thumbnail"
+    },
+    {
+      "id": "incline_curl",
+      "name": "Incline Dumbbell Curl",
+      "path": "assets/exercises/incline_curl.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "band_curl",
+      "name": "Band Curl",
+      "path": "assets/exercises/band_curl.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "pressdown",
+      "name": "Cable Triceps Pressdown",
+      "path": "assets/exercises/pressdown.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "oh_cable_tri",
+      "name": "Overhead Cable Triceps Extension",
+      "path": "assets/exercises/oh_cable_tri.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "db_oh_tri",
+      "name": "Dumbbell Overhead Triceps Extension",
+      "path": "assets/exercises/db_oh_tri.jpg",
+      "quality": "approved master-library thumbnail"
+    },
+    {
+      "id": "diamond_pushup",
+      "name": "Close-Grip Push-Up",
+      "path": "assets/exercises/diamond_pushup.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "calf_raise",
+      "name": "Standing Calf Raise",
+      "path": "assets/exercises/calf_raise.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "cable_crunch",
+      "name": "Cable Crunch",
+      "path": "assets/exercises/cable_crunch.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "plank",
+      "name": "Plank",
+      "path": "assets/exercises/plank.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "deadbug",
+      "name": "Dead Bug",
+      "path": "assets/exercises/deadbug.jpg",
+      "quality": "exact legacy / approved"
+    },
+    {
+      "id": "cable_fly",
+      "name": "Cable Chest Fly",
+      "path": "assets/exercises/cable_fly.jpg",
+      "quality": "approved standalone"
+    },
+    {
+      "id": "pec_deck",
+      "name": "Pec Deck",
+      "path": "assets/exercises/pec_deck.jpg",
+      "quality": "approved standalone"
+    },
+    {
+      "id": "chest_dip",
+      "name": "Chest Dip",
+      "path": "assets/exercises/chest_dip.jpg",
+      "quality": "approved standalone"
+    },
+    {
+      "id": "tbar_row",
+      "name": "T-Bar Row",
+      "path": "assets/exercises/tbar_row.jpg",
+      "quality": "approved extracted standalone"
+    },
+    {
+      "id": "machine_row",
+      "name": "Machine Row",
+      "path": "assets/exercises/machine_row.jpg",
+      "quality": "approved extracted standalone"
+    },
+    {
+      "id": "face_pull",
+      "name": "Face Pull",
+      "path": "assets/exercises/face_pull.jpg",
+      "quality": "approved extracted standalone"
+    },
+    {
+      "id": "straight_arm_pd",
+      "name": "Straight-Arm Pulldown",
+      "path": "assets/exercises/straight_arm_pd.jpg",
+      "quality": "approved extracted standalone"
+    },
+    {
+      "id": "front_squat",
+      "name": "Front Squat",
+      "path": "assets/exercises/front_squat.jpg",
+      "quality": "approved extracted standalone"
+    },
+    {
+      "id": "trap_bar_deadlift",
+      "name": "Trap-Bar Deadlift",
+      "path": "assets/exercises/trap_bar_deadlift.jpg",
+      "quality": "approved extracted standalone"
+    },
+    {
+      "id": "seated_calf_raise",
+      "name": "Seated Calf Raise",
+      "path": "assets/exercises/seated_calf_raise.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "chinup",
+      "name": "Chin-Up",
+      "path": "assets/exercises/chinup.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "close_grip_bench",
+      "name": "Close-Grip Bench Press",
+      "path": "assets/exercises/close_grip_bench.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "hammer_curl",
+      "name": "Hammer Curl",
+      "path": "assets/exercises/hammer_curl.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "preacher_curl",
+      "name": "Preacher Curl",
+      "path": "assets/exercises/preacher_curl.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "ez_bar_curl",
+      "name": "EZ-Bar Curl",
+      "path": "assets/exercises/ez_bar_curl.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "skull_crusher",
+      "name": "Skull Crusher",
+      "path": "assets/exercises/skull_crusher.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "smith_squat",
+      "name": "Smith Machine Squat",
+      "path": "assets/exercises/smith_squat.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "walking_lunge",
+      "name": "Walking Lunge",
+      "path": "assets/exercises/walking_lunge.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "hip_abduction",
+      "name": "Hip Abduction Machine",
+      "path": "assets/exercises/hip_abduction.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "hip_adduction",
+      "name": "Hip Adduction Machine",
+      "path": "assets/exercises/hip_adduction.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "barbell_ohp",
+      "name": "Barbell Overhead Press",
+      "path": "assets/exercises/barbell_ohp.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "reverse_pec_deck",
+      "name": "Reverse Pec Deck",
+      "path": "assets/exercises/reverse_pec_deck.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "pendulum_squat",
+      "name": "Pendulum Squat",
+      "path": "assets/exercises/pendulum_squat.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "sumo_deadlift",
+      "name": "Sumo Deadlift",
+      "path": "assets/exercises/sumo_deadlift.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "good_morning",
+      "name": "Good Morning",
+      "path": "assets/exercises/good_morning.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "back_extension",
+      "name": "Back Extension",
+      "path": "assets/exercises/back_extension.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "nordic_curl",
+      "name": "Nordic Hamstring Curl",
+      "path": "assets/exercises/nordic_curl.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "cable_glute_kickback",
+      "name": "Cable Glute Kickback",
+      "path": "assets/exercises/cable_glute_kickback.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "hanging_leg_raise",
+      "name": "Hanging Leg Raise",
+      "path": "assets/exercises/hanging_leg_raise.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "ab_wheel",
+      "name": "Ab Wheel Rollout",
+      "path": "assets/exercises/ab_wheel.jpg",
+      "quality": "uniform approved standalone"
+    },
+    {
+      "id": "landmine_press",
+      "name": "Landmine Press",
+      "path": "assets/exercises/landmine_press.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "single_arm_cable_row",
+      "name": "Single-Arm Cable Row",
+      "path": "assets/exercises/single_arm_cable_row.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "chest_supported_tbar",
+      "name": "Chest-Supported T-Bar Row",
+      "path": "assets/exercises/chest_supported_tbar.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "assisted_dip_machine",
+      "name": "Assisted Dip Machine",
+      "path": "assets/exercises/assisted_dip_machine.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "belt_squat",
+      "name": "Belt Squat",
+      "path": "assets/exercises/belt_squat.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "reverse_hyper",
+      "name": "Reverse Hyperextension",
+      "path": "assets/exercises/reverse_hyper.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "cable_pull_through",
+      "name": "Cable Pull-Through",
+      "path": "assets/exercises/cable_pull_through.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "rope_hammer_curl",
+      "name": "Rope Hammer Curl",
+      "path": "assets/exercises/rope_hammer_curl.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "pallof_press",
+      "name": "Pallof Press",
+      "path": "assets/exercises/pallof_press.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "side_plank",
+      "name": "Side Plank",
+      "path": "assets/exercises/side_plank.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "machine_lat_pullover",
+      "name": "Machine Lat Pullover",
+      "path": "assets/exercises/machine_lat_pullover.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "cable_woodchop",
+      "name": "Cable Woodchop",
+      "path": "assets/exercises/cable_woodchop.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "farmer_carry",
+      "name": "Farmer's Carry",
+      "path": "assets/exercises/farmer_carry.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "smith_bench",
+      "name": "Smith Machine Bench Press",
+      "path": "assets/exercises/smith_bench.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "db_pullover",
+      "name": "Dumbbell Pullover",
+      "path": "assets/exercises/db_pullover.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "machine_lat_raise",
+      "name": "Machine Lateral Raise",
+      "path": "assets/exercises/machine_lat_raise.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "single_leg_press",
+      "name": "Single-Leg Leg Press",
+      "path": "assets/exercises/single_leg_press.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "standing_leg_curl",
+      "name": "Standing Leg Curl",
+      "path": "assets/exercises/standing_leg_curl.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "concentration_curl",
+      "name": "Concentration Curl",
+      "path": "assets/exercises/concentration_curl.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "incline_bb_bench",
+      "name": "Incline Barbell Bench Press",
+      "path": "assets/exercises/incline_bb_bench.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "decline_bench",
+      "name": "Decline Bench Press",
+      "path": "assets/exercises/decline_bench.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "db_fly",
+      "name": "Dumbbell Fly",
+      "path": "assets/exercises/db_fly.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "single_arm_lat_pd",
+      "name": "Single-Arm Lat Pulldown",
+      "path": "assets/exercises/single_arm_lat_pd.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "meadows_row",
+      "name": "Meadows Row",
+      "path": "assets/exercises/meadows_row.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "seal_row",
+      "name": "Seal Row",
+      "path": "assets/exercises/seal_row.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "arnold_press",
+      "name": "Arnold Press",
+      "path": "assets/exercises/arnold_press.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "cable_y_raise",
+      "name": "Cable Y-Raise",
+      "path": "assets/exercises/cable_y_raise.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "spider_curl",
+      "name": "Spider Curl",
+      "path": "assets/exercises/spider_curl.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "cross_body_hammer",
+      "name": "Cross-Body Hammer Curl",
+      "path": "assets/exercises/cross_body_hammer.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "cable_tri_kickback",
+      "name": "Cable Triceps Kickback",
+      "path": "assets/exercises/cable_tri_kickback.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "smith_rdl",
+      "name": "Smith Romanian Deadlift",
+      "path": "assets/exercises/smith_rdl.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "leg_press_calf",
+      "name": "Leg-Press Calf Raise",
+      "path": "assets/exercises/leg_press_calf.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "donkey_calf",
+      "name": "Donkey Calf Raise",
+      "path": "assets/exercises/donkey_calf.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "reverse_crunch",
+      "name": "Reverse Crunch",
+      "path": "assets/exercises/reverse_crunch.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "weighted_decline_situp",
+      "name": "Weighted Decline Sit-Up",
+      "path": "assets/exercises/weighted_decline_situp.jpg",
+      "quality": "approved batch crop"
+    },
+    {
+      "id": "suitcase_carry",
+      "name": "Suitcase Carry",
+      "path": "assets/exercises/suitcase_carry.jpg",
+      "quality": "approved batch crop"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+Adaptive Workout Coach v7.0.1 — build validation
+
+Static validation completed:
+- JavaScript syntax: PASS
+- Service worker syntax: PASS
+- Duplicate HTML IDs: 0
+- Exercise database: 120 entries
+- Exact visual mappings: 120
+- Broken mapped visual paths: 0
+- Pending exact visuals: 0
+- Exact visual coverage: 120/120
+
+Important:
+A full browser smoke test was not run in this environment.
+The build preserves the existing localStorage key so prior v6/v7 local user data can continue to load.
