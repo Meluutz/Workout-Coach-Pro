@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.3.6
+# Adaptive Workout Coach — v7.3.7
 
 GitHub-ready PWA build.
 
@@ -267,3 +267,15 @@ The internal programming/cycle engine, 156-exercise database, bodyweight hard co
 - Browsers with a profile but a missing/malformed plan attempt to repair/regenerate the plan automatically.
 - If no plan exists in a browser, Train/Program show explicit Build a plan / Import backup actions.
 - Phone and desktop data remain local-first; they do not automatically sync.
+
+
+## v7.3.7 — Compact Coach & Coach Logic Mobile Fix
+
+- Coach recommendation is now a minimal inline row.
+- The Logic action is a compact info icon rather than a large button.
+- Coach Logic opens as a full-height independently scrollable mobile panel.
+- Removed low-value filler/disclaimer text from Coach Logic.
+- Coach Logic shows only the recommendation and its actual reasons.
+- Mobile safe-area spacing and sticky close/header controls are retained.
+- Desktop Coach Logic remains a centered modal.
+- Visible version text is synchronized to v7.3.7.

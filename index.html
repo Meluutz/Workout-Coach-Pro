@@ -466,11 +466,79 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  .coach-why{grid-column:2;justify-self:start}
 }
 
+
+/* v7.3.7 — ultra-compact Coach + full-height Coach Logic */
+.coach-strip{display:none!important}
+.coach-line{
+ margin:0 10px 8px;padding:7px 9px;
+ display:grid;grid-template-columns:8px minmax(0,1fr) auto;gap:7px;align-items:center;
+ border:1px solid var(--line);border-radius:10px;background:var(--surface-2)
+}
+.coach-dot{width:7px;height:7px;border-radius:50%;background:var(--blue)}
+.coach-line.good .coach-dot{background:var(--good)}
+.coach-line.caution .coach-dot{background:var(--warn)}
+.coach-line.bad .coach-dot{background:var(--danger)}
+.coach-line .coach-text{font-size:11px;line-height:1.3;color:var(--text)}
+.coach-info{
+ width:30px!important;height:30px!important;min-height:30px!important;
+ padding:0!important;border-radius:999px!important;
+ font-size:15px!important;line-height:1!important;
+ display:grid;place-items:center;background:transparent
+}
+
+.sheet.logic-sheet{
+ z-index:340!important;align-items:stretch!important;padding:0!important;background:var(--bg)!important;
+ top:var(--app-vvtop)!important;bottom:auto!important;height:var(--app-vvh)!important;max-height:var(--app-vvh)!important
+}
+.sheet.logic-sheet .sheetcard{
+ width:100%!important;max-width:none!important;height:var(--app-vvh)!important;max-height:var(--app-vvh)!important;
+ border-radius:0!important;border:0!important;box-shadow:none!important;
+ overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch;
+ padding:calc(14px + env(safe-area-inset-top)) 14px calc(46px + env(safe-area-inset-bottom))!important
+}
+.sheet.logic-sheet .sheetcard>.row:first-child{
+ position:sticky;z-index:20;
+ top:calc(-14px - env(safe-area-inset-top))!important;
+ margin:calc(-14px - env(safe-area-inset-top)) 0 10px!important;
+ padding:calc(14px + env(safe-area-inset-top)) 0 11px!important;
+ background:color-mix(in srgb,var(--surface) 98%,transparent);
+ backdrop-filter:blur(14px)
+}
+.coach-logic-panel{padding:0 0 56px}
+.coach-logic-recommendation{
+ font-size:17px;font-weight:850;line-height:1.35;letter-spacing:-.02em;
+ padding:12px 0 14px;border-bottom:1px solid var(--line)
+}
+.coach-logic-reasons{display:grid;gap:8px;margin-top:12px}
+.coach-reason{
+ display:grid;grid-template-columns:24px 1fr;gap:9px;align-items:start;
+ padding:10px 11px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2)
+}
+.coach-reason>span{
+ width:24px;height:24px;border-radius:50%;display:grid;place-items:center;
+ background:var(--soft);color:var(--blue);font-size:12px;font-weight:900
+}
+.coach-reason p{margin:1px 0 0;font-size:13px;line-height:1.45;color:var(--text)}
+
+@media(min-width:761px){
+ .sheet.logic-sheet{
+   align-items:center!important;padding:24px!important;background:rgba(15,23,42,.52)!important
+ }
+ .sheet.logic-sheet .sheetcard{
+   width:min(620px,92vw)!important;height:auto!important;max-height:82vh!important;
+   border-radius:20px!important;border:1px solid var(--line)!important;
+   box-shadow:var(--shadow-md)!important;padding:16px!important
+ }
+ .sheet.logic-sheet .sheetcard>.row:first-child{
+   top:-16px!important;margin:-16px 0 10px!important;padding:16px 0 10px!important
+ }
+}
+
 </style>
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><div class="app-mark" aria-hidden="true">AW</div><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 156-exercise expanded library</div><div class="build">v7.3.6 · 156 exercises</div></div></div>
+ <div class="brand-lockup"><div class="app-mark" aria-hidden="true">AW</div><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 156-exercise expanded library</div><div class="build">v7.3.7 · 156 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -591,7 +659,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.3.5</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.3.7</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -863,8 +931,8 @@ function exerciseStyleMatch(e,style){
 function previousPlanExerciseIds(){return new Set((plan()||[]).flatMap(d=>(d.items||[]).map(it=>it.id)))}
 function coachingRecommendationHtml(item,slot,rec){
  const mode=personalizationSettings().coachingDetail;
- if(mode==="concise")return `<div class="coach-strip ${rec.cls}"><span class="coach-label">Coach</span><span class="coach-text">${esc(rec.text)}</span></div>`;
- return `<div class="coach-strip ${rec.cls}"><span class="coach-label">Coach</span><span class="coach-text">${esc(rec.text)}</span><button class="whyBtn coach-why" data-slot="${slot}">${mode==="detailed"?"Logic":"Why?"}</button></div>`;
+ if(mode==="concise")return `<div class="coach-line ${rec.cls}"><span class="coach-dot" aria-hidden="true"></span><span class="coach-text">${esc(rec.text)}</span></div>`;
+ return `<div class="coach-line ${rec.cls}"><span class="coach-dot" aria-hidden="true"></span><span class="coach-text">${esc(rec.text)}</span><button class="whyBtn coach-info" data-slot="${slot}" aria-label="Coach logic">ⓘ</button></div>`;
 }
 function renderAvatarPackStatus(){
  const box=$("#avatarPackStatus");if(!box)return;
@@ -1474,8 +1542,8 @@ function startRestFor(slot,seconds,label,auto=true){stopTimer();timer.slot=slot;
 function openRestSheet(){$("#timerTitle").textContent=timer.label||"Rest timer";renderTimerUI();$("#timerSheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#timerSheet .sheetcard").scrollTop=0})}
 function cancelRest(){stopTimer();timer.remaining=timer.base;timer.label="";timer.slot=null;renderRestMini()}
 
-function openSheet(label,title,html){$("#sheet").classList.remove("warmup-sheet");$("#sheetLabel").textContent=label;$("#sheetTitle").textContent=title;$("#sheetContent").innerHTML=html;$("#sheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#sheet .sheetcard").scrollTop=0})}
-function closeSheet(){$("#sheet").classList.add("hidden");$("#sheet").classList.remove("warmup-sheet")}
+function openSheet(label,title,html){$("#sheet").classList.remove("warmup-sheet","logic-sheet");$("#sheetLabel").textContent=label;$("#sheetTitle").textContent=title;$("#sheetContent").innerHTML=html;$("#sheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#sheet .sheetcard").scrollTop=0})}
+function closeSheet(){$("#sheet").classList.add("hidden");$("#sheet").classList.remove("warmup-sheet","logic-sheet")}
 function editTarget(slot){
  const item=plan()[currentDay].items[slot],t=effectiveTarget(item),ex=EXMAP[item.id];
  openSheet("MANUAL TARGET",ex.name,`<p class="tiny">Original program target: <strong>${item.baseSets} sets · ${esc(item.baseReps)} reps · RPE ${esc(item.baseRpe)}</strong></p><div class="grid2"><label>Sets<input id="targetSets" class="field" type="number" min="1" max="10" value="${t.sets}"></label><label>Rep range<input id="targetReps" class="field" value="${esc(t.reps)}" placeholder="8–10"></label><label>RPE target<input id="targetRpe" class="field" value="${esc(t.rpe)}" placeholder="7–8"></label><label>Target load (${unit()})<input id="targetLoad" class="field" type="number" step="0.5" value="${item.userLoad??""}" placeholder="Optional"></label></div><button id="saveTarget" class="primary" style="margin-top:12px">Save adjusted target</button>`);
@@ -1673,7 +1741,7 @@ function saveOnboarding(){
  state.cycle={number:1,week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[]};generatePlan(true);save();switchView("today");$("#onboarding").classList.add("hidden");renderAll();toast("Personalized plan created");
 }
 function exportData(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-3-6-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-3-7-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 
 
@@ -1731,7 +1799,16 @@ document.addEventListener("click",e=>{
  const sm=e.target.closest(".setMinus");if(sm){pushUndo("Reduced working set");const it=plan()[currentDay].items[Number(sm.dataset.slot)],t=effectiveTarget(it);if(t.sets>1)it.userSetDelta=(it.userSetDelta||0)-1;save();renderToday();return}
  const ed=e.target.closest(".editTarget");if(ed)return editTarget(Number(ed.dataset.slot));
  const rt=e.target.closest(".resetTarget");if(rt){pushUndo("Reset exercise target");const it=plan()[currentDay].items[Number(rt.dataset.slot)];it.userSetDelta=0;it.userRepDelta=0;it.userRpe=null;it.userLoad=null;save();renderToday();toast("Original target restored");return}
- const wh=e.target.closest(".whyBtn");if(wh){const it=plan()[currentDay].items[Number(wh.dataset.slot)],s=suggestion(it);openSheet("COACH LOGIC",EXMAP[it.id].name,`<p><strong>${esc(s.text)}</strong></p><ul>${s.why.map(x=>`<li>${esc(x)}</li>`).join("")}</ul><p class="tiny">Recommendations are training guidance, not medical advice.</p>`);return}
+ const wh=e.target.closest(".whyBtn");if(wh){
+  const it=plan()[currentDay].items[Number(wh.dataset.slot)],s=suggestion(it);
+  openSheet("COACH LOGIC",EXMAP[it.id].name,
+    `<div class="coach-logic-panel">
+      <div class="coach-logic-recommendation">${esc(s.text)}</div>
+      <div class="coach-logic-reasons">${(s.why||[]).map(x=>`<div class="coach-reason"><span>✓</span><p>${esc(x)}</p></div>`).join("")}</div>
+    </div>`);
+  $("#sheet").classList.add("logic-sheet");
+  return
+}
  const vb=e.target.closest(".visualBtn");if(vb){const slot=Number(vb.dataset.slot),it=plan()[currentDay].items[slot],ex=EXMAP[it.id];openSheet("EXERCISE VISUAL",ex.name,visualHtml(it.id)+`<p class="tiny">${esc(ex.muscles)}${visualFor(it.id)?` · ${esc(visualStyleName(it.id))}`:""}</p><p class="tiny">Difficulty: ${esc(ex.difficulty||"Intermediate")} · Fatigue cost: ${esc(ex.fatigue||"moderate")} · Substitution group: ${esc(ex.substitutionGroup||ex.pattern)}</p>`);return}
  const sw=e.target.closest(".swapBtn");if(sw)return openSwap(Number(sw.dataset.slot));
  const choose=e.target.closest(".chooseSwap");if(choose){const slot=Number(choose.dataset.slot),oldItem=plan()[currentDay].items[slot],oldTarget=effectiveTarget(oldItem),oldLog=exLog(currentDay,slot,oldTarget.sets),hasEntries=(oldLog.sets||[]).some(s=>s.done||s.weight||s.reps||s.rpe)||(oldLog.warmups||[]).some(s=>s.done||s.weight||s.reps);if(hasEntries&&!confirm("This exercise already has logged entries today. Swapping it will clear those entries. Continue?"))return;pushUndo("Swapped exercise");oldItem.id=choose.dataset.id;dayLog(currentDay)[slot]={sets:[],warmups:[],note:""};save();closeSheet();renderToday();toast("Exercise swapped");return}
