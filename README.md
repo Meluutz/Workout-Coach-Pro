@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.3
+# Adaptive Workout Coach — v7.3.1
 
 GitHub-ready PWA build.
 
@@ -114,3 +114,43 @@ Variety preference affects coach-generated and Muscle Priority regeneration. Bui
 
 ### Additional safeguard
 Prefill Last now asks for confirmation before overwriting any working-set data already entered today. Warm-up sets and notes remain untouched.
+
+
+## v7.3.1 — Equipment & Bodyweight Expansion
+
+This release fixes the equipment-model weakness discovered during v7.3 testing.
+
+### Equipment is now a hard constraint
+The onboarding equipment choices are now:
+- Full gym
+- Dumbbells + bench
+- Minimal equipment
+- Bodyweight only
+
+Capability logic:
+- **Bodyweight only** receives only exercises explicitly tagged as requiring no dedicated training implement.
+- **Minimal equipment** can use bodyweight movements plus minimal-tool exercises.
+- **Dumbbells + bench** can use dumbbell and bodyweight movements.
+- **Full gym** can use the complete exercise database.
+
+### Bodyweight expansion
+The database expands from **120 to 150 exercises**, including **30 new bodyweight-focused movements** across pressing, shoulders, back/scapular work, hinge, unilateral legs, quads, hamstrings, glutes, rear delts, arms, calves and core.
+
+Bodyweight-only programming uses its own workout templates. It does not attempt to prescribe cable/machine exercises or bar-dependent pull-ups/rows.
+
+A transparent limitation remains: with truly no equipment or anchor point, high-quality loaded pulling is difficult. The app therefore labels floor-based back/scapular movements accurately instead of pretending they are mechanically equivalent to loaded rows or pulldowns.
+
+### Bodyweight progression
+When no external load is recorded, the coach now prioritizes:
+- harder exercise variations
+- added reps within the target
+- slower eccentrics / pauses
+- larger range of motion
+
+It no longer makes a kg/lb increase the default progression recommendation for unloaded bodyweight work.
+
+### Visuals
+The original **120 exact exercise visuals remain untouched**. The 30 newly added exercises are explicitly marked **Exact visual pending**. The app does not substitute a different exercise image.
+
+### v7.3 preservation
+Personalization, avatar architecture and the Prefill Last overwrite safeguard remain intact.

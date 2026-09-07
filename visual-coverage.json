@@ -1,9 +1,160 @@
 {
-  "version": "7.3",
-  "exercise_count": 120,
+  "version": "7.3.1",
+  "exercise_count": 150,
   "exact_visual_count": 120,
-  "pending_visual_count": 0,
-  "pending": [],
+  "pending_visual_count": 30,
+  "pending": [
+    {
+      "id": "wall_pushup",
+      "name": "Wall Push-Up",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "incline_pushup",
+      "name": "Incline Push-Up",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "wide_pushup",
+      "name": "Wide-Grip Push-Up",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "archer_pushup",
+      "name": "Archer Push-Up",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "tempo_pushup",
+      "name": "Tempo Push-Up",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "elevated_pike_pushup",
+      "name": "Feet-Elevated Pike Push-Up",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "wall_handstand_pushup",
+      "name": "Wall Handstand Push-Up",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "prone_lat_sweep",
+      "name": "Prone Lat Sweep",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "reverse_snow_angel",
+      "name": "Reverse Snow Angel",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "prone_w_raise",
+      "name": "Prone W Raise",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "superman_pulldown",
+      "name": "Superman Pull-Down",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "bodyweight_good_morning",
+      "name": "Bodyweight Good Morning",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "split_squat",
+      "name": "Bodyweight Split Squat",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "lateral_lunge",
+      "name": "Lateral Lunge",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "cossack_squat",
+      "name": "Cossack Squat",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "reverse_nordic",
+      "name": "Reverse Nordic Curl",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "wall_sit",
+      "name": "Wall Sit",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "hamstring_walkout",
+      "name": "Hamstring Walkout",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "single_leg_glute_bridge",
+      "name": "Single-Leg Glute Bridge",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "frog_pump",
+      "name": "Frog Pump",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "prone_y_raise",
+      "name": "Prone Y Raise",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "prone_t_raise",
+      "name": "Prone T Raise",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "self_resisted_curl",
+      "name": "Self-Resisted Biceps Curl",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "wall_triceps_extension",
+      "name": "Wall Triceps Extension",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "single_leg_calf_raise",
+      "name": "Single-Leg Calf Raise",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "bent_knee_calf_raise",
+      "name": "Bent-Knee Calf Raise",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "hollow_body_hold",
+      "name": "Hollow Body Hold",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "bird_dog",
+      "name": "Bird Dog",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "mountain_climber",
+      "name": "Mountain Climber",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "bear_plank",
+      "name": "Bear Plank",
+      "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    }
+  ],
   "visuals": [
     {
       "id": "bb_bench",
@@ -729,7 +880,7 @@
   "avatar_packs": {
     "male": {
       "exact_visuals": 120,
-      "status": "complete"
+      "status": "120/150 \u2014 30 new expansion visuals pending"
     },
     "female": {
       "exact_visuals": 0,

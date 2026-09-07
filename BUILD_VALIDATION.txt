@@ -1,22 +1,23 @@
-Adaptive Workout Coach v7.3 — build validation
+Adaptive Workout Coach v7.3.1 — build validation
 
 - JavaScript syntax: PASS
 - Service worker syntax: PASS
-- Exercise database: 120
-- Base exact visual mappings: 120/120
+- Exercise database: 150
+- Original exact visual mappings retained: 120/120 original exercises
+- New bodyweight exercise visuals pending: 30
 - Broken mapped visual paths: 0
 - Duplicate HTML IDs: 0
-- v7.1 Advanced Plan Builder retained: PASS
+- Bodyweight-only compatible exercises: 46
+- Minimal-equipment compatible exercises: 54
+- Dumbbells + bench compatible exercises: 71
+- Full-gym compatible exercises: 150
+- Bodyweight hard-constraint logic: PASS
+- Bodyweight-specific templates: PASS
+- Bodyweight progression guidance: PASS
+- Equipment coverage feedback: PASS
+- No wrong-image fallback for new exercises: PASS
+- v7.1 Plan Builder retained: PASS
 - v7.2 Workout Execution retained: PASS
-- Personalization state compatibility: PASS
-- Avatar selector Auto/Male/Female/Neutral: PASS
-- Transparent avatar fallback control: PASS
-- Exercise-selection preference scoring: PASS
-- Plan-variety preference scoring: PASS
-- Personalized swap ordering: PASS
-- Coaching detail modes: PASS
-- Prefill Last overwrite safeguard: PASS
-- Existing localStorage key preserved: PASS
+- v7.3 Personalization retained: PASS
 
-Asset availability note: the existing male visual pack is 120/120. Female and neutral visual packs are not yet generated.
 A full browser smoke test was not run in this environment.
