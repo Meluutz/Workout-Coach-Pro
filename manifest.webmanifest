@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
-  "description": "Local-first adaptive workout coach with a 120-exercise core library, exact-match visual assets, training blocks, recovery, progression guidance, and undo/redo.",
+  "description": "Local-first adaptive workout coach with a 167-exercise library, exact-match visuals, experience-aware exercise selection, training blocks, recovery, progression guidance, and undo/redo.",
   "icons": [
     {
       "src": "./icon-192.png",

@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.4.1
+# Adaptive Workout Coach — v7.4.2
 
 GitHub-ready PWA build.
 
@@ -351,3 +351,48 @@ All coaching data remains inside the existing local app state and is included in
 - Saved theme is applied in the document head before the main interface renders to reduce light/dark flashing during startup.
 - The browser theme-color metadata and native control color scheme update with the selected theme.
 - Theme remains a device/browser-local UI preference, consistent with the app's local-first architecture.
+
+
+## v7.4.2 — Experience Progressions + Bodyweight Visual Completion
+
+Library: **167 exercises**.
+
+New unique exercises:
+- Scapular Push-Up — Beginner
+- Sphinx Push-Up / Bodyweight Triceps Extension — Intermediate
+- Assisted Pistol Squat — Intermediate
+- Pistol Squat — Advanced
+- Shrimp Squat — Advanced
+- Glute Bridge March — Intermediate
+- Side Plank Hip Abduction — Advanced
+- Reverse Plank — Intermediate
+- Plank-to-Push-Up — Intermediate
+- Burpee — Intermediate / Conditioning
+- Bear Walk — Intermediate / Conditioning
+
+Cross-reference corrections:
+- Diamond Push-Up was already present under Close-Grip Push-Up; the existing entry is now named **Diamond / Close-Grip Push-Up**.
+- Dead Bug and Side Plank were already present.
+- Decline pressing is already represented by Feet-Elevated Push-Up.
+- Sliding hamstring work is already represented by Slider Hamstring Curl.
+
+Experience-level automatic programming:
+- Beginner: no Advanced movements; scalable Intermediate bridge movements are allowed, except high-fatigue Intermediate movements.
+- Intermediate: Beginner + Intermediate movements only.
+- Advanced: full exercise library available.
+- Exercise Swap uses the same guardrails.
+- Build Your Own remains user-controlled and labels above-level choices.
+
+Difficulty audit:
+- Self-Resisted Biceps Curl → Beginner.
+- Bodyweight Standing Calf Raise → Beginner.
+- Bodyweight Single-Leg Romanian Deadlift → Intermediate, moderate fatigue.
+- Bodyweight Squat fatigue → moderate.
+
+Equipment audit:
+- Minimal Equipment no longer requests a lateral-raise slot when no lateral-raise resistance is available. That slot becomes another vertical-press/shoulder pattern.
+
+Visual coverage:
+- All 36 previously missing bodyweight visuals are now wired into the app.
+- Bear Walk has an exact visual.
+- The ten newly added progression exercises show **Exact Visual Pending** until their dedicated images are created.
