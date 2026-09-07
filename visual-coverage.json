@@ -1,5 +1,5 @@
 {
-  "version": "7.0.1",
+  "version": "7.0.2",
   "exercise_count": 120,
   "exact_visual_count": 120,
   "pending_visual_count": 0,
@@ -159,7 +159,7 @@
       "id": "single_rdl",
       "name": "Single-Leg Romanian Deadlift",
       "path": "assets/exercises/single_rdl.jpg",
-      "quality": "approved master-library thumbnail"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "leg_press",
@@ -177,7 +177,7 @@
       "id": "stepup",
       "name": "Step-Up",
       "path": "assets/exercises/stepup.jpg",
-      "quality": "approved master-library thumbnail"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "lying_curl",
@@ -189,7 +189,7 @@
       "id": "seated_curl",
       "name": "Seated Leg Curl",
       "path": "assets/exercises/seated_curl.jpg",
-      "quality": "approved master-library thumbnail"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "slider_curl",
@@ -267,7 +267,7 @@
       "id": "db_curl",
       "name": "Dumbbell Curl",
       "path": "assets/exercises/db_curl.jpg",
-      "quality": "approved master-library thumbnail"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "incline_curl",
@@ -297,7 +297,7 @@
       "id": "db_oh_tri",
       "name": "Dumbbell Overhead Triceps Extension",
       "path": "assets/exercises/db_oh_tri.jpg",
-      "quality": "approved master-library thumbnail"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "diamond_pushup",
@@ -513,61 +513,61 @@
       "id": "landmine_press",
       "name": "Landmine Press",
       "path": "assets/exercises/landmine_press.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "single_arm_cable_row",
       "name": "Single-Arm Cable Row",
       "path": "assets/exercises/single_arm_cable_row.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "chest_supported_tbar",
       "name": "Chest-Supported T-Bar Row",
       "path": "assets/exercises/chest_supported_tbar.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "assisted_dip_machine",
       "name": "Assisted Dip Machine",
       "path": "assets/exercises/assisted_dip_machine.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "belt_squat",
       "name": "Belt Squat",
       "path": "assets/exercises/belt_squat.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "reverse_hyper",
       "name": "Reverse Hyperextension",
       "path": "assets/exercises/reverse_hyper.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "cable_pull_through",
       "name": "Cable Pull-Through",
       "path": "assets/exercises/cable_pull_through.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "rope_hammer_curl",
       "name": "Rope Hammer Curl",
       "path": "assets/exercises/rope_hammer_curl.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "pallof_press",
       "name": "Pallof Press",
       "path": "assets/exercises/pallof_press.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "side_plank",
       "name": "Side Plank",
       "path": "assets/exercises/side_plank.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "machine_lat_pullover",
@@ -591,31 +591,31 @@
       "id": "smith_bench",
       "name": "Smith Machine Bench Press",
       "path": "assets/exercises/smith_bench.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "db_pullover",
       "name": "Dumbbell Pullover",
       "path": "assets/exercises/db_pullover.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "machine_lat_raise",
       "name": "Machine Lateral Raise",
       "path": "assets/exercises/machine_lat_raise.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "single_leg_press",
       "name": "Single-Leg Leg Press",
       "path": "assets/exercises/single_leg_press.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "standing_leg_curl",
       "name": "Standing Leg Curl",
       "path": "assets/exercises/standing_leg_curl.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "concentration_curl",
@@ -687,31 +687,31 @@
       "id": "cable_tri_kickback",
       "name": "Cable Triceps Kickback",
       "path": "assets/exercises/cable_tri_kickback.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "smith_rdl",
       "name": "Smith Romanian Deadlift",
       "path": "assets/exercises/smith_rdl.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "leg_press_calf",
       "name": "Leg-Press Calf Raise",
       "path": "assets/exercises/leg_press_calf.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "donkey_calf",
       "name": "Donkey Calf Raise",
       "path": "assets/exercises/donkey_calf.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "reverse_crunch",
       "name": "Reverse Crunch",
       "path": "assets/exercises/reverse_crunch.jpg",
-      "quality": "approved batch crop"
+      "quality": "v7.0.2 approved visual-quality repair"
     },
     {
       "id": "weighted_decline_situp",

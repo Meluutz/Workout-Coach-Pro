@@ -1,4 +1,4 @@
-const CACHE='adaptive-workout-coach-v7-0-1-120-complete';
+const CACHE='adaptive-workout-coach-v7-0-2-visual-quality';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>{
   self.skipWaiting();

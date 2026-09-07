@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.0.1
+# Adaptive Workout Coach — v7.0.2
 
 GitHub-ready PWA build.
 
@@ -33,3 +33,10 @@ If an older version still appears after deployment, open the site once in a priv
 
 ## Privacy
 Workout, recovery, profile, and body data remain stored locally in the browser using localStorage. This build adds no account system, analytics, or cloud sync.
+
+
+## v7.0.2 visual quality patch
+- Replaced 25 user-reviewed problem visuals.
+- Other 95 exercise visuals unchanged.
+- 120/120 exact visual mappings retained.
+- Image rendering explicitly prevents cropping with object-fit: contain.

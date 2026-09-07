@@ -55,11 +55,11 @@ select option{background:#ffffff;color:#0f172a}
 .weekday-pill input:checked+span{background:var(--blue);color:#fff;border-color:var(--blue)}
 .inline-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .exvisualwrap{padding:0 16px 12px}
-.exvisual{width:100%;max-height:360px;object-fit:contain;border-radius:16px;border:1px solid var(--line);background:#fff;display:block}
+.exvisual{width:100%;height:auto;max-height:420px;object-fit:contain;object-position:center;border-radius:16px;border:1px solid var(--line);background:#fff;display:block}
 .visual-missing{border:1px dashed var(--line);border-radius:16px;padding:16px;background:var(--soft)}
 .visual-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 .visual-card{border:1px solid var(--line);border-radius:16px;padding:10px}
-.visual-card img{width:100%;border-radius:12px;background:#fff;display:block}
+.visual-card img{width:100%;height:auto;object-fit:contain;object-position:center;border-radius:12px;background:#fff;display:block}
 .profile-kv{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}
 .profile-kv>div{border:1px solid var(--line);border-radius:12px;padding:10px}
 @media(max-width:760px){.weekday-picker{grid-template-columns:repeat(4,1fr)}.inline-fields,.visual-grid,.profile-kv{grid-template-columns:1fr}}
@@ -67,7 +67,7 @@ select option{background:#ffffff;color:#0f172a}
 </style>
 </head>
 <body>
-<header><div class="toprow"><div><div class="eyebrow">TRAINING BLOCK · PROGRESSION · LOCAL-FIRST</div><h1>Adaptive Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 120-exercise core library</div><div class="build">120-Exercise Library v7.0.1</div></div><div class="chips"><button id="undoTopBtn" title="Undo last plan change">↶ Undo</button><button id="themeBtn">Dark</button></div></div></header>
+<header><div class="toprow"><div><div class="eyebrow">TRAINING BLOCK · PROGRESSION · LOCAL-FIRST</div><h1>Adaptive Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 120-exercise core library</div><div class="build">120-Exercise Library v7.0.2.2</div></div><div class="chips"><button id="undoTopBtn" title="Undo last plan change">↶ Undo</button><button id="themeBtn">Dark</button></div></div></header>
 
 <main>
 <nav class="nav">
@@ -143,7 +143,7 @@ select option{background:#ffffff;color:#0f172a}
  <button id="browseVisualsBtn">Browse available visuals</button>
 </section>
 <section class="card"><h2 style="margin-top:0">Privacy</h2><p>No login, analytics, trackers, or cloud database. Profile, training logs, recovery scores, measurements, and workout history remain in browser storage unless exported.</p></section>
-<section class="card"><h2 style="margin-top:0">Version</h2><strong>Adaptive Workout Coach — v7.0.1</strong></section>
+<section class="card"><h2 style="margin-top:0">Version</h2><strong>Adaptive Workout Coach — v7.0.2.2</strong></section>
 <section class="card"><button id="resetAllBtn" style="color:var(--danger)">Delete all local app data</button></section>
 </section>
 </main>
