@@ -1,4 +1,4 @@
-Adaptive Workout Coach v7.3.3 — build validation
+Adaptive Workout Coach v7.3.4 — build validation
 
 - JavaScript syntax: PASS
 - Service worker syntax: PASS
@@ -6,11 +6,13 @@ Adaptive Workout Coach v7.3.3 — build validation
 - Existing exact visual mappings: 120
 - Broken mapped visual paths: 0
 - Duplicate HTML IDs: 0
-- Onboarding wording change: PASS
-- Build-my-plan -> Train navigation: PASS
-- Mobile bottom navigation CSS: PASS
-- Mobile bottom-sheet CSS: PASS
-- Mobile touch-target/layout pass: PASS
+- switchView(today) function exists: PASS
+- Build-my-plan uses switchView(today): PASS
+- No setView() call remains in onboarding completion: PASS
+- Train switches before onboarding overlay closes: PASS
+- Professional mobile header/navigation markup: PASS
+- Mobile onboarding progress/actions: PASS
+- Mobile Train/set-entry CSS: PASS
 - v7.3.2 variant separation retained: PASS
 
-A full browser/device smoke test was not run in this environment.
+A full physical-device browser smoke test was not available in this environment.

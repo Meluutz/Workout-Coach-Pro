@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.3.3
+# Adaptive Workout Coach — v7.3.4
 
 GitHub-ready PWA build.
 
@@ -201,3 +201,28 @@ The 30 exercises introduced in v7.3.1 remain pending visually, and these 6 newly
   - improved session/rest controls
 
 A broader full mobile UI review remains pinned before the interface is considered finished.
+
+
+## v7.3.4 — Mobile UI Polish & Navigation Fix
+
+### Critical onboarding navigation fix
+The previous v7.3.3 patch called `setView("today")`, but the application navigation function is `switchView("today")`. This caused a JavaScript error after onboarding closed and left the previously active Settings view visible. v7.3.4 calls the correct navigation function before removing the onboarding overlay.
+
+### Mobile UI redesign
+- compact professional app header
+- icon + label bottom navigation
+- user-facing **Program** wording in navigation instead of Cycle
+- stronger Train-page visual hierarchy
+- cleaner program/day/session cards
+- compact horizontally scrollable target controls
+- larger, better-spaced working-set inputs
+- cleaner exercise action grid
+- improved warm-up controls
+- bottom-sheet dialogs tuned for phones
+- onboarding progress bar with named steps
+- fixed mobile onboarding action bar
+- improved equipment/radio card layout
+- improved small-screen safe-area behavior
+- dark-mode-compatible surfaces and hierarchy
+
+The internal programming/cycle engine, 156-exercise database, bodyweight hard constraints, variant separation and existing visual mappings remain unchanged.

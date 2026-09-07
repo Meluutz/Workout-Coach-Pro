@@ -1,0 +1,18 @@
+Adaptive Workout Coach v7.3.4 — Mobile UI Polish & Navigation Fix
+
+Critical fix:
+- Build my plan uses switchView("today") — the actual app navigation function.
+- The Train view is selected before onboarding closes.
+
+Mobile redesign:
+- Compact app header
+- Icon bottom navigation
+- Program label replaces Cycle in primary navigation
+- Cleaner Train hierarchy and exercise cards
+- Compact target/action controls
+- Responsive set entry without forced horizontal table width
+- Improved bottom sheets
+- Onboarding progress bar + fixed action footer
+- Phone safe-area spacing and dark-mode surfaces
+
+Programming logic and exercise/visual data are unchanged from v7.3.3.
