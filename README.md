@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.1
+# Adaptive Workout Coach — v7.2
 
 GitHub-ready PWA build.
 
@@ -63,3 +63,18 @@ Additional v7.1 behavior:
 - Regenerate Plan uses the currently selected builder mode.
 - Existing v6/v7 localStorage key is preserved for backward compatibility.
 - Existing 120/120 exact visual library is preserved unchanged.
+
+
+## v7.2 — Workout Execution & Usability
+This release keeps the v7.1 Advanced Plan Builder and 120/120 exact visual library intact while improving the live training workflow.
+
+- Persistent session timer with manual start/pause/resume/reset and optional auto-start on the first completed set.
+- Automatic programmed rest timer after completed working sets, plus configurable warm-up rest and an always-visible compact rest status.
+- Exercise-specific warm-up sets that are stored separately and excluded from working volume, completion, progression and PR calculations.
+- Previous-performance reference beside each exercise, with one-tap prefill from the last completed session.
+- Rich Exercise Details view: exact visual, muscles, movement family, equipment, difficulty, fatigue, protected-area considerations, last performance and same-family alternatives.
+- Searchable/filterable 120-exercise library by body part, equipment and difficulty.
+- Session-finish review screen before saving, duplicate-session protection, incomplete-set warning, session duration, volume load, warm-up count and PR summary.
+- Safer exercise swaps when current-day entries already exist.
+- Larger mobile touch targets and improved small-screen set-entry layout.
+- Existing localStorage key remains unchanged for v6/v7 compatibility.

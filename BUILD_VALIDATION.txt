@@ -1,4 +1,4 @@
-Adaptive Workout Coach v7.1 — build validation
+Adaptive Workout Coach v7.2 — build validation
 
 - JavaScript syntax: PASS
 - Service worker syntax: PASS
@@ -6,16 +6,15 @@ Adaptive Workout Coach v7.1 — build validation
 - Exact visual mappings: 120/120
 - Broken mapped visual paths: 0
 - Duplicate HTML IDs: 0
-- Onboarding: 6 steps
-- Coach Suggested builder: PASS
-- Muscle Priority builder: PASS
-- Auto-rebalanced percentage sliders: PASS
-- Live approximate muscle-volume preview: PASS
-- High-specialization guardrail: PASS
-- Build Your Own categorized exercise picker: PASS
-- Coach-programmed custom selections: PASS
-- Fully manual day/sets/reps/RPE assignment: PASS
-- Settings Plan Builder control: PASS
+- v7.1 Advanced Plan Builder retained: PASS
+- Persistent session timer: PASS
+- Automatic rest timer workflow: PASS
+- Warm-up sets stored separately: PASS
+- Previous-performance prefill: PASS
+- Exercise details panel: PASS
+- Search/filter exercise library: PASS
+- Session finish review + duplicate protection: PASS
+- Mobile execution CSS: PASS
 - Existing localStorage key preserved: PASS
 
 A full browser smoke test was not run in this environment.

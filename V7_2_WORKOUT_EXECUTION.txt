@@ -1,0 +1,16 @@
+Adaptive Workout Coach v7.2 — Workout Execution & Usability
+
+Implemented:
+- Persistent session clock
+- Automatic rest timer on working-set completion
+- Configurable warm-up rest
+- Warm-up set logging excluded from progression/volume/PR calculations
+- Previous-performance reference + prefill
+- Rich exercise details
+- Search/filter exercise library
+- Session review and completion summary
+- Duplicate-session protection
+- Safer swaps with logged-data warning
+- Mobile training-mode improvements
+
+v7.1 plan builder and 120/120 visual mappings are retained.
