@@ -1,0 +1,14 @@
+Adaptive Workout Coach v7.3.3 — Onboarding & Mobile Usability Patch
+
+Changes:
+- Training block length -> Program length (weeks)
+- Build my plan now lands on Train
+- Mobile bottom navigation
+- Larger touch targets
+- Compact mobile cards/actions
+- Better set-entry overflow handling
+- Mobile bottom-sheet dialogs
+- Safer phone bottom spacing / safe areas
+- v7.3.2 variant/visual consistency retained
+
+Pinned follow-up: complete mobile UI cleanup/polish before final UI sign-off.

@@ -135,10 +135,81 @@ select option{background:#ffffff;color:#0f172a}
 
 .bodyweight-limitation{margin:10px 0;padding:10px 12px;border:1px solid var(--line);border-radius:13px;background:var(--soft);font-size:12px;line-height:1.5}
 
+
+/* v7.3.3 mobile-first usability polish */
+:root{--mobile-nav-h:72px}
+body{overscroll-behavior-y:none}
+button,.field,.search,textarea,select,input{touch-action:manipulation}
+.nav{position:sticky;top:0;z-index:25;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(10px)}
+@media(max-width:760px){
+ body{padding-bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom))}
+ .app{padding-left:10px;padding-right:10px}
+ .topbar{gap:8px;padding:9px 2px 8px}
+ .brand h1{font-size:16px;line-height:1.15}
+ .brand .tiny{font-size:10px}
+ .nav{
+   position:fixed;left:0;right:0;bottom:0;top:auto;
+   height:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom));
+   padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+   background:color-mix(in srgb,var(--card) 96%,transparent);
+   border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.08);
+   display:grid;grid-template-columns:repeat(5,1fr);gap:4px;z-index:100
+ }
+ .nav button{min-width:0;min-height:50px;padding:6px 4px;border-radius:12px;font-size:11px;line-height:1.15}
+ .nav button.active{font-weight:900}
+ main{padding-bottom:8px}
+ .card{border-radius:16px;padding:12px;margin-bottom:10px}
+ .card h2{font-size:18px}.exercise h3{font-size:16px}
+ .chips{display:flex;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}.chip{flex:0 0 auto}
+ .daytabs{display:flex;overflow-x:auto;flex-wrap:nowrap;scroll-snap-type:x proximity;padding-bottom:4px;scrollbar-width:none}.daytabs::-webkit-scrollbar{display:none}.daytabs button{flex:0 0 auto;scroll-snap-align:start}
+ .builder-options{gap:8px}.builder-card{padding:12px}
+ .priority-row{grid-template-columns:76px minmax(0,1fr) 44px;gap:7px}
+ .exhead{padding-bottom:5px}
+ .targetrow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:8px 10px}
+ .targetrow button{width:100%}
+ .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:0 10px 10px}
+ .actions button{width:100%}
+ .fast-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:0 10px 10px}
+ .warmup-head{align-items:flex-start}.warmup-head button{flex:0 0 auto}
+ .sets{overflow-x:auto}
+ .setrow{min-width:360px}
+ .note{padding:0 10px 10px}.note textarea{min-height:64px}
+ .prevperf{margin-left:10px;margin-right:10px}
+ .recommend{margin-left:10px;margin-right:10px}
+ .session-strip{margin-top:10px;padding:10px}
+ .session-controls{display:grid;grid-template-columns:1fr 1fr;width:100%}.session-controls button{width:100%}
+ .rest-mini{align-items:flex-start;flex-direction:column}.rest-mini-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}.rest-mini-actions button{width:100%}
+ .sheet{align-items:flex-end}
+ .sheetbox{width:100%;max-width:none;max-height:88vh;border-radius:20px 20px 0 0;padding:14px 12px calc(14px + env(safe-area-inset-bottom))}
+ .sheethead{position:sticky;top:0;background:var(--card);z-index:2;padding-bottom:8px}
+ .visual-grid{grid-template-columns:1fr}
+ .visual-card{padding:10px}
+ .exvisual{width:100%;height:auto;max-height:none}
+ .library-item{padding:10px}
+ .historyitem{padding:10px}
+ .grid2,.grid3{grid-template-columns:1fr}
+ .option-grid{grid-template-columns:1fr}
+ .profile-grid{grid-template-columns:1fr 1fr}
+ .manual-controls{grid-template-columns:1fr 1fr}
+ .personal-actions{display:grid;grid-template-columns:1fr}.personal-actions button{width:100%}
+}
+@media(max-width:430px){
+ .app{padding-left:7px;padding-right:7px}
+ .card{padding:10px}
+ .profile-grid{grid-template-columns:1fr}
+ .setrow{min-width:330px}
+ .setrow.head{font-size:10px}
+ .targetrow,.actions,.fast-actions{grid-template-columns:1fr 1fr}
+ .session-controls{grid-template-columns:1fr}
+ .library-controls{grid-template-columns:1fr}
+ .library-controls .search{grid-column:auto}
+ .priority-row{grid-template-columns:68px minmax(0,1fr) 42px}
+}
+
 </style>
 </head>
 <body>
-<header><div class="toprow"><div><div class="eyebrow">TRAINING BLOCK · PROGRESSION · LOCAL-FIRST</div><h1>Adaptive Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 156-exercise expanded library</div><div class="build">156-Exercise Library v7.3.2</div></div><div class="chips"><button id="undoTopBtn" title="Undo last plan change">↶ Undo</button><button id="themeBtn">Dark</button></div></div></header>
+<header><div class="toprow"><div><div class="eyebrow">TRAINING BLOCK · PROGRESSION · LOCAL-FIRST</div><h1>Adaptive Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 156-exercise expanded library</div><div class="build">156-Exercise Library v7.3.3</div></div><div class="chips"><button id="undoTopBtn" title="Undo last plan change">↶ Undo</button><button id="themeBtn">Dark</button></div></div></header>
 
 <main>
 <nav class="nav">
@@ -243,9 +314,10 @@ select option{background:#ffffff;color:#0f172a}
  <button id="browseVisualsBtn">Browse & filter exercise library</button>
 </section>
 <section class="card"><h2 style="margin-top:0">Privacy</h2><p>No login, analytics, trackers, or cloud database. Profile, training logs, recovery scores, measurements, and workout history remain in browser storage unless exported.</p></section>
-<section class="card"><h2 style="margin-top:0">Version</h2><strong>Adaptive Workout Coach — v7.3.2</strong></section>
+<section class="card"><h2 style="margin-top:0">Version</h2><strong>Adaptive Workout Coach — v7.3.3</strong></section>
 <section class="card"><button id="resetAllBtn" style="color:var(--danger)">Delete all local app data</button></section>
 </section>
+<p class="tiny" style="text-align:center">Adaptive Workout Coach v7.3.3 · Mobile-first training UI</p>
 </main>
 
 <div id="sheet" class="sheet hidden"><div class="sheetcard"><div class="row"><div><div id="sheetLabel" class="label">Details</div><h2 id="sheetTitle" style="margin:6px 0 0"></h2></div><button id="closeSheet">×</button></div><div id="sheetContent"></div></div></div>
@@ -275,7 +347,7 @@ select option{background:#ffffff;color:#0f172a}
   </div>
  </div><br>
  <label>Minutes/session<select id="obDuration" class="field"><option>45</option><option>60</option><option>75</option><option selected>90</option></select></label><br><br>
- <label>Training block length<select id="obCycle" class="field"><option>4</option><option selected>6</option><option>8</option></select></label>
+ <label>Program length (weeks)<select id="obCycle" class="field"><option>4</option><option selected>6</option><option>8</option></select></label>
 </div>
 
 <div class="step" data-step="3">
@@ -1232,7 +1304,7 @@ function renderSettings(){
   <div><div class="label">Training</div>${esc(p.level)} · ${esc(p.goal.replace("both","muscle + strength"))}</div>
   <div><div class="label">Schedule</div>${(p.weekdays||defaultWeekdays(p.days)).map(d=>d.slice(0,3)).join(" · ")}<br><span class="tiny">${p.duration} min/session</span></div>
   <div><div class="label">Profile</div>${p.age?`${p.age} years · `:""}${p.sex?esc(p.sex):"Sex optional"}${h?`<br>${esc(h)}`:""}${last?.weight?` · ${last.weight} ${unit()}`:""}</div>
-  <div><div class="label">Plan</div>${p.cycleLength||6}-week training block<br><span class="tiny">${esc(equipmentChoiceLabel(p.equipment))}</span></div>
+  <div><div class="label">Plan</div>${p.cycleLength||6}-week program<br><span class="tiny">${esc(equipmentChoiceLabel(p.equipment))}</span></div>
   <div><div class="label">Personalization</div>${(()=>{const ps=personalizationSettings();return `${avatarLabel(requestedVisualAvatar())} visual · ${ps.exerciseBias.replaceAll("_"," ")}<br><span class="tiny">${ps.variety} variety · ${ps.coachingDetail} coaching</span>`})()}</div>
   <div><div class="label">Builder</div>${(()=>{const b=p.planBuilder||{mode:"coach"};if(b.mode==="priority"){const top=Object.entries(b.priorities||{}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([m,v])=>`${m} ${v}%`).join(" · ");return `Muscle Priority<br><span class="tiny">${esc(top)}</span>`}if(b.mode==="custom")return `Build Your Own<br><span class="tiny">${b.customMode==="manual"?"Fully manual targets":"Coach-programmed selections"}</span>`;return "Coach Suggested"})()}</div>
  </div>
@@ -1285,10 +1357,10 @@ function saveOnboarding(){
    if(!last||Math.abs(Number(last.weight)-bw)>.001||waist!==last.waist||chest!==last.chest||arm!==last.arm||thigh!==last.thigh)
      state.body.push({date:new Date().toISOString(),weight:bw,waist,chest,arm,thigh,unit:state.profile.unit,measureUnit:measurementUnit,source:"profile"});
  }
- state.cycle={number:1,week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[]};generatePlan(true);save();$("#onboarding").classList.add("hidden");renderAll();toast("Personalized plan created");
+ state.cycle={number:1,week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[]};generatePlan(true);save();$("#onboarding").classList.add("hidden");setView("today");renderAll();toast("Personalized plan created");
 }
 function exportData(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-3-2-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-3-3-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 
 

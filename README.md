@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.3.2
+# Adaptive Workout Coach — v7.3.3
 
 GitHub-ready PWA build.
 
@@ -181,3 +181,23 @@ A bodyweight variant never inherits the exact visual from its loaded counterpart
 - Broken existing visual paths: **0**
 
 The 30 exercises introduced in v7.3.1 remain pending visually, and these 6 newly separated bodyweight variants are added to that pending queue.
+
+
+## v7.3.3 — Onboarding & Mobile Usability Patch
+
+- Renamed the onboarding label **Training block length** to **Program length (weeks)**.
+- The internal training-block/cycle logic is unchanged; only user-facing wording is simplified.
+- Finishing onboarding with **Build my plan** now returns the user directly to the **Train** screen rather than Settings.
+- Added a mobile-first cleanup pass:
+  - persistent bottom navigation on phones
+  - safer bottom spacing for phone home indicators
+  - larger touch targets
+  - simpler two-column action controls
+  - horizontally scrollable day tabs/chips where needed
+  - bottom-sheet behavior for dialogs
+  - single-column visual/library layouts
+  - tighter cards and typography for small screens
+  - improved set-entry overflow handling
+  - improved session/rest controls
+
+A broader full mobile UI review remains pinned before the interface is considered finished.
