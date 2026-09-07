@@ -42,6 +42,37 @@ main{max-width:1080px;margin:auto;padding:14px 14px calc(28px + env(safe-area-in
 .sheet{position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:50;display:flex;align-items:flex-end}.sheetcard{width:100%;max-width:1080px;max-height:92vh;overflow:auto;margin:auto auto 0;background:var(--card);border-radius:24px 24px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom))}
 .onboard{position:fixed;inset:0;background:var(--bg);z-index:100;overflow:auto;padding:calc(16px + env(safe-area-inset-top)) 14px calc(24px + env(safe-area-inset-bottom))}.onboard-inner{max-width:760px;margin:auto}.step{display:none}.step.active{display:block}.option-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.option{border:1px solid var(--line);border-radius:14px;padding:12px}.option input{margin-right:8px}
 .timer{font-size:62px;font-weight:900;text-align:center;padding:18px;font-variant-numeric:tabular-nums}.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:var(--bg);padding:10px 14px;border-radius:999px;font-weight:800;z-index:120;max-width:90%;text-align:center}
+
+.builder-options{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.builder-card{display:block;border:1px solid var(--line);border-radius:16px;padding:14px;cursor:pointer;background:var(--card)}
+.builder-card:has(input:checked){border-color:var(--blue);box-shadow:0 0 0 2px color-mix(in srgb,var(--blue) 22%,transparent);background:var(--soft)}
+.builder-card input{margin-right:7px}.builder-card strong{display:block;margin-bottom:5px}
+.builder-panel{border-top:1px solid var(--line);margin-top:14px;padding-top:14px}
+.priority-row{display:grid;grid-template-columns:100px minmax(0,1fr) 52px;gap:10px;align-items:center;margin:10px 0}
+.priority-row input[type=range]{width:100%;accent-color:var(--blue)}
+.priority-value{text-align:right;font-weight:900;font-variant-numeric:tabular-nums}
+.priority-preview{border:1px solid var(--line);border-radius:16px;padding:12px;margin-top:14px}
+.preview-row{display:grid;grid-template-columns:92px 1fr 54px;gap:8px;align-items:center;margin:7px 0}
+.preview-bar{height:9px;background:var(--line);border-radius:999px;overflow:hidden}.preview-bar>div{height:100%;background:var(--blue)}
+.builder-warning{border-left:4px solid var(--warn);background:var(--soft);padding:9px 11px;border-radius:10px;margin-top:10px;font-size:12px;line-height:1.45}
+.custom-toolbar{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin:12px 0}
+.exercise-category{border:1px solid var(--line);border-radius:14px;margin:8px 0;overflow:hidden}
+.exercise-category summary{padding:11px 12px;font-weight:850;cursor:pointer;background:var(--soft)}
+.exercise-category-body{padding:6px 10px}
+.exercise-choice{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start;padding:9px 3px;border-bottom:1px solid var(--line)}
+.exercise-choice:last-child{border-bottom:0}.exercise-choice input{margin-top:4px}.exercise-choice strong{display:block}
+.manual-list{margin-top:12px}.manual-row{border:1px solid var(--line);border-radius:14px;padding:10px;margin:9px 0}
+.manual-controls{display:grid;grid-template-columns:1.25fr 70px 1fr 92px;gap:8px;margin-top:8px}
+.manual-controls label{font-size:11px;color:var(--muted)}
+.manual-controls .field{margin-top:4px}
+.builder-chip{display:inline-block;background:var(--soft);border-radius:999px;padding:5px 8px;font-size:11px;font-weight:800;margin:3px 3px 0 0}
+@media(max-width:760px){
+ .builder-options{grid-template-columns:1fr}
+ .priority-row{grid-template-columns:82px minmax(0,1fr) 46px}
+ .custom-toolbar{grid-template-columns:1fr}
+ .manual-controls{grid-template-columns:1fr 1fr}
+}
+
 @media(max-width:760px){.nav{gap:5px}.nav button{padding:9px 4px;font-size:12px}.grid2,.grid3,.grid4,.option-grid{grid-template-columns:1fr}.setrow{grid-template-columns:32px 1fr 1fr 1fr 40px;padding-left:8px;padding-right:8px}.cyclebar{grid-template-columns:1fr}}
 
 select{color-scheme:light}
@@ -67,7 +98,7 @@ select option{background:#ffffff;color:#0f172a}
 </style>
 </head>
 <body>
-<header><div class="toprow"><div><div class="eyebrow">TRAINING BLOCK · PROGRESSION · LOCAL-FIRST</div><h1>Adaptive Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 120-exercise core library</div><div class="build">120-Exercise Library v7.0.3.2</div></div><div class="chips"><button id="undoTopBtn" title="Undo last plan change">↶ Undo</button><button id="themeBtn">Dark</button></div></div></header>
+<header><div class="toprow"><div><div class="eyebrow">TRAINING BLOCK · PROGRESSION · LOCAL-FIRST</div><h1>Adaptive Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 120-exercise core library</div><div class="build">120-Exercise Library v7.1</div></div><div class="chips"><button id="undoTopBtn" title="Undo last plan change">↶ Undo</button><button id="themeBtn">Dark</button></div></div></header>
 
 <main>
 <nav class="nav">
@@ -132,8 +163,13 @@ select option{background:#ffffff;color:#0f172a}
 <div class="grid2" style="margin-top:10px"><button id="settingsUndoBtn">↶ Undo</button><button id="settingsRedoBtn">↷ Redo</button></div>
 </section>
 <section class="card"><h2 style="margin-top:0">Plan controls</h2>
-<div class="grid2"><button id="changeDaysBtn">Change workout days</button><button id="regenBtn">Regenerate plan</button><button id="newCycleBtn">Start new training block</button></div>
-<p class="tiny">Changing workout days keeps the current exercises and training history. Regenerating the plan can change exercise selection.</p>
+<div class="grid2">
+<button id="changeDaysBtn">Change workout days</button>
+<button id="planBuilderBtn">Plan builder & priorities</button>
+<button id="regenBtn">Regenerate plan</button>
+<button id="newCycleBtn">Start new training block</button>
+</div>
+<p class="tiny">Changing workout days keeps the current exercises and training history. Plan Builder lets you change how the program is created. Regenerating uses your currently selected builder mode.</p>
 </section>
 <section class="card"><h2 style="margin-top:0">Backup</h2><div class="grid2"><button id="settingsExportBtn">Export backup</button><label>Import backup<input id="importInput" type="file" accept="application/json" style="display:block;width:100%;margin-top:6px"></label></div></section>
 <section class="card">
@@ -143,7 +179,7 @@ select option{background:#ffffff;color:#0f172a}
  <button id="browseVisualsBtn">Browse available visuals</button>
 </section>
 <section class="card"><h2 style="margin-top:0">Privacy</h2><p>No login, analytics, trackers, or cloud database. Profile, training logs, recovery scores, measurements, and workout history remain in browser storage unless exported.</p></section>
-<section class="card"><h2 style="margin-top:0">Version</h2><strong>Adaptive Workout Coach — v7.0.3.2</strong></section>
+<section class="card"><h2 style="margin-top:0">Version</h2><strong>Adaptive Workout Coach — v7.1</strong></section>
 <section class="card"><button id="resetAllBtn" style="color:var(--danger)">Delete all local app data</button></section>
 </section>
 </main>
@@ -224,7 +260,55 @@ select option{background:#ffffff;color:#0f172a}
  <label>Exercises to avoid<textarea id="obAvoid" class="field" rows="3" placeholder="Optional, comma-separated"></textarea></label>
 </div>
 
-<div class="row" style="margin-top:16px"><button id="obBack">Back</button><div><span id="obStepText" class="tiny">Step 1 of 5</span> <button id="obNext" class="primary">Next</button></div></div>
+<div class="step" data-step="6">
+ <h2>6. How would you like me to build your plan?</h2>
+ <p class="muted">Your first five answers remain the hard constraints. This choice determines how much control you want over exercise selection and weekly emphasis.</p>
+
+ <div class="builder-options">
+  <label class="builder-card">
+   <input type="radio" name="planBuilder" value="coach" checked>
+   <strong>Coach Suggested</strong>
+   <span class="tiny">Let the coach choose a balanced plan from your goal, experience, schedule, equipment and protected areas.</span>
+  </label>
+  <label class="builder-card">
+   <input type="radio" name="planBuilder" value="priority">
+   <strong>Muscle Priority</strong>
+   <span class="tiny">Set body-part percentages. The coach translates them into sensible weekly volume and exercise selection.</span>
+  </label>
+  <label class="builder-card">
+   <input type="radio" name="planBuilder" value="custom">
+   <strong>Build Your Own</strong>
+   <span class="tiny">Choose exercises from body-part categories, then let the coach program them or assign the details yourself.</span>
+  </label>
+ </div>
+
+ <div id="priorityBuilder" class="builder-panel hidden">
+  <div class="row">
+   <div><strong>Muscle priority percentages</strong><div class="tiny">Moving one slider automatically rebalances the others so the total stays at 100%.</div></div>
+   <strong id="priorityTotal">100%</strong>
+  </div>
+  <div id="prioritySliders"></div>
+  <div id="priorityWarning" class="builder-warning hidden"></div>
+  <div id="priorityPreview" class="priority-preview"></div>
+ </div>
+
+ <div id="customBuilder" class="builder-panel hidden">
+  <strong>How much programming help do you want?</strong>
+  <div class="option-grid" style="margin-top:8px">
+   <label class="option"><input type="radio" name="customProgramming" value="coach" checked>Coach programs my exercises</label>
+   <label class="option"><input type="radio" name="customProgramming" value="manual">Fully manual day + targets</label>
+  </div>
+  <p class="tiny">The exercise list is automatically filtered by your equipment, protected areas, and exercises-to-avoid answer.</p>
+  <div class="custom-toolbar">
+   <input id="customSearch" class="search" placeholder="Search exercises or muscles">
+   <strong id="customSelectedCount">0 selected</strong>
+  </div>
+  <div id="customExercisePicker"></div>
+  <div id="manualAssignments" class="manual-list hidden"></div>
+ </div>
+</div>
+
+<div class="row" style="margin-top:16px"><button id="obBack">Back</button><div><span id="obStepText" class="tiny">Step 1 of 6</span> <button id="obNext" class="primary">Next</button></div></div>
 </section></div></div>
 <div id="toast" class="toast hidden"></div>
 
@@ -235,7 +319,7 @@ const EX=DATA.EXERCISES, EXMAP=Object.fromEntries(EX.map(e=>[e.id,e]));
 const KEY="adaptiveWorkoutCoachV6", OLDKEY="adaptiveWorkoutCoachV5";
 const UNDO_KEY="adaptiveWorkoutCoachV6Undo", REDO_KEY="adaptiveWorkoutCoachV6Redo";
 let undoStack=[], redoStack=[];
-let state={}, currentDay=0, currentView="today", obStep=1, editingProfile=false, timer={base:180,remaining:180,running:false,id:null};
+let state={}, currentDay=0, currentView="today", obStep=1, editingProfile=false, builderDraft=null, timer={base:180,remaining:180,running:false,id:null};
 const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
 const eMap={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"};
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>eMap[m])}
@@ -321,6 +405,186 @@ function roundInc(x,inc){return Math.round(x/inc)*inc}
 function unit(){return profile()?.unit||"kg"}
 function measureUnit(){return profile()?.measureUnit||(unit()==="lb"?"in":"cm")}
 const ALL_DAYS=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+
+const PRIORITY_MUSCLES=["Chest","Back","Shoulders","Biceps","Triceps","Quads","Hamstrings","Glutes","Calves","Core"];
+const DEFAULT_PRIORITIES={Chest:14,Back:16,Shoulders:11,Biceps:8,Triceps:8,Quads:13,Hamstrings:10,Glutes:9,Calves:5,Core:6};
+const PRIMARY_CATEGORY={hpress:"Chest",incline:"Chest",vpress:"Shoulders",vpull:"Back",row:"Back",squat:"Quads",hinge:"Hamstrings",quad:"Quads",hamstring:"Hamstrings",unilateral:"Quads",hip:"Glutes",lateral:"Shoulders",rear:"Shoulders",biceps:"Biceps",triceps:"Triceps",calf:"Calves",core:"Core"};
+const COMPOUND_PATTERNS=new Set(["hpress","incline","vpress","vpull","row","squat","hinge","hip","unilateral"]);
+
+function normalizePriorities(src){
+ const vals={};let total=0;
+ PRIORITY_MUSCLES.forEach(m=>{vals[m]=Math.max(0,Math.round(Number(src?.[m]??DEFAULT_PRIORITIES[m])||0));total+=vals[m]});
+ if(total<=0)return {...DEFAULT_PRIORITIES};
+ const raw=PRIORITY_MUSCLES.map(m=>({m,v:vals[m]/total*100}));
+ const out={};let sum=0;
+ raw.forEach(x=>{out[x.m]=Math.floor(x.v);sum+=out[x.m]});
+ raw.sort((a,b)=>(b.v-Math.floor(b.v))-(a.v-Math.floor(a.v)));
+ for(let i=0;i<100-sum;i++)out[raw[i%raw.length].m]++;
+ return out;
+}
+function defaultBuilderDraft(p=null){
+ const b=p?.planBuilder||{};
+ return {
+  mode:["coach","priority","custom"].includes(b.mode)?b.mode:"coach",
+  priorities:normalizePriorities(b.priorities||DEFAULT_PRIORITIES),
+  customMode:["coach","manual"].includes(b.customMode)?b.customMode:"coach",
+  customExercises:Array.isArray(b.customExercises)?[...b.customExercises]:[],
+  manual:b.manual&&typeof b.manual==="object"?JSON.parse(JSON.stringify(b.manual)):{}
+ };
+}
+function exerciseCategory(e){return PRIMARY_CATEGORY[e.pattern]||"Other"}
+function formProfileDraft(){
+ const days=Number($("#obDays")?.value||3), weekdays=selectedOnboardingDays();
+ return {
+  level:$("#obLevel")?.value||"Intermediate",goal:$("#obGoal")?.value||"both",days,
+  duration:Number($("#obDuration")?.value||90),cycleLength:Number($("#obCycle")?.value||6),
+  weekdays:weekdays.length===days?weekdays:defaultWeekdays(days),
+  equipment:document.querySelector("input[name=equipment]:checked")?.value||"gym",
+  limitations:$$(".limit:checked").map(x=>x.value),avoid:$("#obAvoid")?.value||""
+ };
+}
+function planCapacity(p){const max=p.duration<=45?5:p.duration<=60?6:p.duration<=75?7:8;return p.level==="Beginner"?Math.min(max,6):max}
+function rebalancePriorities(changed,newValue){
+ const p=normalizePriorities(builderDraft.priorities), val=Math.max(0,Math.min(100,Math.round(Number(newValue)||0)));
+ const others=PRIORITY_MUSCLES.filter(m=>m!==changed), remaining=100-val, oldSum=others.reduce((s,m)=>s+p[m],0);
+ const next={[changed]:val};
+ if(oldSum<=0){
+  const base=Math.floor(remaining/others.length);let left=remaining-base*others.length;
+  others.forEach((m,i)=>next[m]=base+(i<left?1:0));
+ }else{
+  const exact=others.map(m=>({m,x:p[m]/oldSum*remaining}));
+  let used=0;exact.forEach(o=>{next[o.m]=Math.floor(o.x);used+=next[o.m]});
+  exact.sort((a,b)=>(b.x-Math.floor(b.x))-(a.x-Math.floor(a.x)));
+  for(let i=0;i<remaining-used;i++)next[exact[i%exact.length].m]++;
+ }
+ builderDraft.priorities=next;
+}
+function applyPriorityDom(){
+ PRIORITY_MUSCLES.forEach(m=>{
+  const s=document.querySelector(`.priority-slider[data-muscle="${m}"]`),v=document.querySelector(`.priority-value[data-muscle="${m}"]`);
+  if(s)s.value=builderDraft.priorities[m];
+  if(v)v.textContent=`${builderDraft.priorities[m]}%`;
+ });
+ const t=$("#priorityTotal");if(t)t.textContent=`${Object.values(builderDraft.priorities).reduce((a,b)=>a+b,0)}%`;
+}
+function renderPrioritySliders(){
+ const box=$("#prioritySliders");if(!box)return;
+ box.innerHTML=PRIORITY_MUSCLES.map(m=>`<div class="priority-row"><strong>${m}</strong><input class="priority-slider" data-muscle="${m}" type="range" min="0" max="100" step="1" value="${builderDraft.priorities[m]}"><span class="priority-value" data-muscle="${m}">${builderDraft.priorities[m]}%</span></div>`).join("");
+ applyPriorityDom();
+ renderPriorityPreview();
+}
+function effectivePriorityShares(raw){
+ const floored={};PRIORITY_MUSCLES.forEach(m=>floored[m]=Math.max(3,Number(raw?.[m]||0)));
+ return normalizePriorities(floored);
+}
+function planVolume(basePlan){
+ const vol={};PRIORITY_MUSCLES.forEach(m=>vol[m]=0);
+ (basePlan||[]).forEach(d=>(d.items||[]).forEach(it=>{
+  const ex=EXMAP[it.id],map=DATA.MUSCLE_MAP[ex?.pattern]||{};
+  Object.entries(map).forEach(([m,f])=>vol[m]=(vol[m]||0)+(Number(it.baseSets)||0)*f);
+ }));
+ return vol;
+}
+function renderPriorityPreview(){
+ const box=$("#priorityPreview");if(!box||!builderDraft)return;
+ const vals=builderDraft.priorities,max=Math.max(...Object.values(vals),1),highest=Math.max(...Object.values(vals));
+ const low=PRIORITY_MUSCLES.filter(m=>vals[m]<=2);
+ const warn=$("#priorityWarning");
+ if(warn){
+  const specialized=highest>=45||low.length>=4;
+  warn.classList.toggle("hidden",!specialized);
+  warn.textContent=specialized?"Very high specialization selected. The coach will still preserve a small maintenance dose for low-priority major muscle groups when the weekly split allows it.":"";
+ }
+ let previewPlan=[];
+ try{const p={...formProfileDraft(),planBuilder:{mode:"priority",priorities:{...vals}}};previewPlan=buildPriorityPlan(p)}catch{}
+ const vol=planVolume(previewPlan),vmax=Math.max(...Object.values(vol),1);
+ const sorted=[...PRIORITY_MUSCLES].sort((a,b)=>vals[b]-vals[a]);
+ box.innerHTML=`<div class="row"><div><strong>Estimated weekly emphasis</strong><div class="tiny">Approximate effective working sets after exercise overlap. Percentages guide priority rather than forcing literal set allocation.</div></div><span class="builder-chip">${formProfileDraft().duration} min target</span></div>
+ ${sorted.map(m=>`<div class="preview-row"><span>${m}</span><div class="preview-bar"><div style="width:${Math.round((vol[m]||0)/vmax*100)}%"></div></div><strong>${Math.round((vol[m]||0)*10)/10}</strong></div>`).join("")}`;
+}
+function allowedForCurrentForm(e){
+ const p=formProfileDraft(),avoid=(p.avoid||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean);
+ return allowed(e,p,avoid);
+}
+function ensureManualDefaults(id,index=0){
+ const ex=EXMAP[id],p=formProfileDraft(),cfg=goalConfig(p.goal,p.level),compound=COMPOUND_PATTERNS.has(ex?.pattern);
+ const days=p.weekdays?.length?p.weekdays:defaultWeekdays(p.days);
+ builderDraft.manual[id]??={weekday:days[index%days.length],sets:compound?cfg.mainSets:cfg.accSets,reps:`${(compound?cfg.main:cfg.acc)[0]}–${(compound?cfg.main:cfg.acc)[1]}`,rpe:cfg.rpe};
+ return builderDraft.manual[id];
+}
+function renderCustomCount(){
+ const p=formProfileDraft(),cap=planCapacity(p),count=builderDraft.customExercises.length,el=$("#customSelectedCount");
+ if(el)el.textContent=`${count} selected · max ${p.days*cap}`;
+}
+function renderCustomExercisePicker(){
+ const box=$("#customExercisePicker");if(!box||!builderDraft)return;
+ const q=($("#customSearch")?.value||"").trim().toLowerCase(),p=formProfileDraft();
+ const allowedExercises=EX.filter(allowedForCurrentForm).filter(e=>!q||`${e.name} ${e.muscles} ${exerciseCategory(e)}`.toLowerCase().includes(q));
+ const groups=Object.fromEntries(PRIORITY_MUSCLES.map(m=>[m,[]]));
+ allowedExercises.forEach(e=>(groups[exerciseCategory(e)]??=[]).push(e));
+ box.innerHTML=PRIORITY_MUSCLES.map((cat,idx)=>{
+  const items=(groups[cat]||[]).sort((a,b)=>a.name.localeCompare(b.name));if(!items.length)return"";
+  return `<details class="exercise-category" ${idx<2?"open":""}><summary>${cat} · ${items.length}</summary><div class="exercise-category-body">${items.map(e=>`<label class="exercise-choice"><input class="customExercise" type="checkbox" value="${e.id}" ${builderDraft.customExercises.includes(e.id)?"checked":""}><span><strong>${esc(e.name)}</strong><span class="tiny">${esc(e.muscles)} · ${esc(e.difficulty||"Intermediate")}</span></span></label>`).join("")}</div></details>`;
+ }).join("");
+ renderCustomCount();renderManualAssignments();
+}
+function renderManualAssignments(){
+ const box=$("#manualAssignments");if(!box||!builderDraft)return;
+ const manual=builderDraft.customMode==="manual";
+ box.classList.toggle("hidden",!manual);if(!manual)return;
+ const p=formProfileDraft(),days=p.weekdays?.length?p.weekdays:defaultWeekdays(p.days);
+ box.innerHTML=`<div class="row"><strong>Manual day + targets</strong><span class="tiny">Each selected exercise can be assigned to a workout day.</span></div>`+
+ builderDraft.customExercises.map((id,i)=>{
+  const ex=EXMAP[id],a=ensureManualDefaults(id,i);
+  return `<div class="manual-row"><strong>${esc(ex.name)}</strong><div class="tiny">${esc(ex.muscles)}</div><div class="manual-controls">
+   <label>Workout day<select class="field manualField" data-id="${id}" data-k="weekday">${days.map(d=>`<option ${a.weekday===d?"selected":""}>${d}</option>`).join("")}</select></label>
+   <label>Sets<input class="field manualField" data-id="${id}" data-k="sets" type="number" min="1" max="8" value="${Number(a.sets)||3}"></label>
+   <label>Rep target<input class="field manualField" data-id="${id}" data-k="reps" value="${esc(a.reps||"8–10")}"></label>
+   <label>RPE<select class="field manualField" data-id="${id}" data-k="rpe">${["6–7","7","7–8","8","8–9","9"].map(r=>`<option ${a.rpe===r?"selected":""}>${r}</option>`).join("")}</select></label>
+  </div></div>`;
+ }).join("");
+}
+function renderBuilderUI(){
+ if(!builderDraft)builderDraft=defaultBuilderDraft(profile());
+ $$('input[name="planBuilder"]').forEach(r=>r.checked=r.value===builderDraft.mode);
+ $$('input[name="customProgramming"]').forEach(r=>r.checked=r.value===builderDraft.customMode);
+ $("#priorityBuilder")?.classList.toggle("hidden",builderDraft.mode!=="priority");
+ $("#customBuilder")?.classList.toggle("hidden",builderDraft.mode!=="custom");
+ if(builderDraft.mode==="priority")renderPrioritySliders();
+ if(builderDraft.mode==="custom")renderCustomExercisePicker();
+}
+function builderProfileData(){
+ return {
+  mode:builderDraft?.mode||"coach",
+  priorities:normalizePriorities(builderDraft?.priorities||DEFAULT_PRIORITIES),
+  customMode:builderDraft?.customMode||"coach",
+  customExercises:[...(builderDraft?.customExercises||[])],
+  manual:JSON.parse(JSON.stringify(builderDraft?.manual||{}))
+ };
+}
+function validateBuilder(p,b){
+ if(b.mode!=="custom")return null;
+ const selected=b.customExercises.filter(id=>EXMAP[id]&&allowedForCurrentForm(EXMAP[id]));
+ const cap=planCapacity(p),max=p.days*cap;
+ if(selected.length<p.days)return `Choose at least ${p.days} exercises so every workout day can contain at least one exercise.`;
+ if(selected.length>max)return `You selected ${selected.length} exercises, but your ${p.duration}-minute schedule supports up to ${max}. Remove ${selected.length-max}.`;
+ if(b.customMode==="manual"){
+  const counts={};(p.weekdays||[]).forEach(d=>counts[d]=0);
+  for(const id of selected){
+   const a=b.manual[id]||{},day=a.weekday;
+   if(!counts.hasOwnProperty(day))return `Choose a valid workout day for ${EXMAP[id].name}.`;
+   counts[day]++;
+   if(!(Number(a.sets)>=1&&Number(a.sets)<=8))return `Sets for ${EXMAP[id].name} must be between 1 and 8.`;
+   if(!String(a.reps||"").trim())return `Enter a rep target for ${EXMAP[id].name}.`;
+  }
+  const over=Object.entries(counts).find(([,n])=>n>cap);
+  if(over)return `${over[0]} has ${over[1]} exercises, but the current session length supports about ${cap}. Reassign one or more exercises.`;
+  const empty=Object.entries(counts).find(([,n])=>n===0);
+  if(empty)return `Assign at least one exercise to ${empty[0]}.`;
+ }
+ return null;
+}
+
 function defaultWeekdays(n){return DATA.WEEKDAYS[n]||ALL_DAYS.slice(0,n)}
 function selectedOnboardingDays(){return $$(".obWeekday:checked").map(x=>x.value)}
 function setOnboardingDays(days){$$(".obWeekday").forEach(x=>x.checked=(days||[]).includes(x.value));updateDayPickHelp()}
@@ -368,21 +632,111 @@ function pick(pattern,p,used){
  const opts=EX.filter(e=>e.pattern===pattern&&allowed(e,p,avoid)&&!used.has(e.id));
  if(!opts.length)return null; const e=opts[0];used.add(e.id);return e;
 }
+function exerciseQualityScore(e,p,weeklyFreq={}){
+ const level=(p.level||"Intermediate").toLowerCase(),diff=(e.difficulty||"Intermediate").toLowerCase();
+ let s=0;
+ if(diff===level)s+=2;else if(level==="advanced"&&diff==="intermediate")s+=1.2;else if(level==="beginner"&&diff==="intermediate")s+=.3;
+ if(p.goal==="strength"&&/(barbell|deadlift|squat|bench press|pull-up|overhead press)/i.test(e.name))s+=1.4;
+ if(p.goal==="muscle"&&/(machine|cable|dumbbell|pec deck|curl|raise|extension)/i.test(e.name))s+=.8;
+ if(p.goal==="general"&&e.fatigue==="low")s+=.4;
+ if(e.fatigue==="high"&&level==="beginner")s-=1.2;
+ s-=(weeklyFreq[e.id]||0)*1.25;
+ return s;
+}
+function pickBest(pattern,p,used,weeklyFreq={}){
+ const avoid=(p.avoid||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean);
+ const opts=EX.filter(e=>e.pattern===pattern&&allowed(e,p,avoid)&&!used.has(e.id));
+ if(!opts.length)return null;
+ opts.sort((a,b)=>exerciseQualityScore(b,p,weeklyFreq)-exerciseQualityScore(a,p,weeklyFreq)||a.name.localeCompare(b.name));
+ const e=opts[0];used.add(e.id);weeklyFreq[e.id]=(weeklyFreq[e.id]||0)+1;return e;
+}
+function makePlanItem(e,p,cfg,primary=false,setBoost=0,manual=null){
+ if(manual){
+  const reps=String(manual.reps||"8–10").trim(),sets=Math.max(1,Math.min(8,Number(manual.sets)||3));
+  return{id:e.id,baseSets:sets,baseReps:reps,baseRpe:manual.rpe||cfg.rpe,rest:COMPOUND_PATTERNS.has(e.pattern)?180:90,userSetDelta:0,userRepDelta:0,userRpe:null,userLoad:null};
+ }
+ const range=primary?cfg.main:cfg.acc,base=primary?cfg.mainSets:cfg.accSets,sets=Math.max(1,Math.min(5,base+setBoost));
+ return{id:e.id,baseSets:sets,baseReps:`${range[0]}–${range[1]}`,baseRpe:cfg.rpe,rest:primary?180:(COMPOUND_PATTERNS.has(e.pattern)?120:75),userSetDelta:0,userRepDelta:0,userRpe:null,userLoad:null};
+}
+function buildCoachPlan(p){
+ const cfg=goalConfig(p.goal,p.level),types=DATA.SCHEDULE[p.days],days=(p.weekdays?.length===p.days?p.weekdays:defaultWeekdays(p.days)),cap=planCapacity(p),generated=[];
+ types.forEach((type,i)=>{
+  const used=new Set(),items=[];
+  DATA.TEMPLATES[type].slice(0,cap).forEach((pat,j)=>{
+   const e=pick(pat,p,used);if(!e)return;items.push(makePlanItem(e,p,cfg,j<2,0));
+  });
+  generated.push({weekday:days[i],type,title:`${days[i]} · ${type[0].toUpperCase()+type.slice(1)}`,items,notes:""});
+ });
+ return generated;
+}
+function buildPriorityPlan(p){
+ const cfg=goalConfig(p.goal,p.level),types=DATA.SCHEDULE[p.days],days=(p.weekdays?.length===p.days?p.weekdays:defaultWeekdays(p.days)),cap=planCapacity(p);
+ const raw=p.planBuilder?.priorities||builderDraft?.priorities||DEFAULT_PRIORITIES,prio=effectivePriorityShares(raw);
+ const loads={};PRIORITY_MUSCLES.forEach(m=>loads[m]=0);
+ const patFreq={},exFreq={},generated=[];
+ types.forEach((type,i)=>{
+  const usedPatterns=new Set(),usedExercises=new Set(),items=[],template=DATA.TEMPLATES[type];
+  for(let slot=0;slot<Math.min(cap,template.length);slot++){
+   let best=null,bestScore=-1e9;
+   template.forEach((pat,idx)=>{
+    if(usedPatterns.has(pat))return;
+    const map=DATA.MUSCLE_MAP[pat]||{};let score=0,coeffSum=0;
+    Object.entries(map).forEach(([m,f])=>{
+     const need=(prio[m]||3)/10/(1+(loads[m]||0)/3);
+     score+=f*need;coeffSum+=f;
+    });
+    score+=(1-idx/Math.max(1,template.length))*.45;
+    if(slot<2&&COMPOUND_PATTERNS.has(pat))score+=.85;
+    score-=(patFreq[pat]||0)*.18;
+    if(score>bestScore){bestScore=score;best=pat}
+   });
+   if(!best)break;
+   const e=pickBest(best,p,usedExercises,exFreq);usedPatterns.add(best);if(!e)continue;
+   const map=DATA.MUSCLE_MAP[best]||{},coeff=Object.values(map).reduce((a,b)=>a+b,0)||1;
+   const avg=Object.entries(map).reduce((s,[m,f])=>s+(raw[m]||0)*f,0)/coeff;
+   const setBoost=avg>=16?1:avg<=5?-1:0,primary=slot<2&&COMPOUND_PATTERNS.has(best);
+   const item=makePlanItem(e,p,cfg,primary,setBoost);items.push(item);patFreq[best]=(patFreq[best]||0)+1;
+   Object.entries(map).forEach(([m,f])=>loads[m]=(loads[m]||0)+item.baseSets*f);
+  }
+  generated.push({weekday:days[i],type,title:`${days[i]} · ${type[0].toUpperCase()+type.slice(1)} · Priority`,items,notes:""});
+ });
+ return generated;
+}
+function buildCustomCoachPlan(p){
+ const cfg=goalConfig(p.goal,p.level),types=DATA.SCHEDULE[p.days],days=(p.weekdays?.length===p.days?p.weekdays:defaultWeekdays(p.days)),cap=planCapacity(p);
+ const generated=days.map((day,i)=>({weekday:day,type:types[i],title:`${day} · Custom`,items:[],notes:""}));
+ const selected=(p.planBuilder?.customExercises||[]).map(id=>EXMAP[id]).filter(Boolean);
+ selected.sort((a,b)=>(COMPOUND_PATTERNS.has(b.pattern)?1:0)-(COMPOUND_PATTERNS.has(a.pattern)?1:0));
+ selected.forEach((e,order)=>{
+  let bestDay=0,bestScore=-1e9;
+  generated.forEach((d,i)=>{
+   if(d.items.length>=cap)return;
+   const template=DATA.TEMPLATES[d.type]||[],match=template.includes(e.pattern)?5:0;
+   const sameCat=d.items.filter(it=>exerciseCategory(EXMAP[it.id])===exerciseCategory(e)).length;
+   const score=match-d.items.length*1.1-sameCat*.5;
+   if(score>bestScore){bestScore=score;bestDay=i}
+  });
+  const d=generated[bestDay],primary=COMPOUND_PATTERNS.has(e.pattern)&&d.items.filter(it=>COMPOUND_PATTERNS.has(EXMAP[it.id].pattern)).length<2;
+  d.items.push(makePlanItem(e,p,cfg,primary,0));
+ });
+ return generated;
+}
+function buildCustomManualPlan(p){
+ const cfg=goalConfig(p.goal,p.level),types=DATA.SCHEDULE[p.days],days=(p.weekdays?.length===p.days?p.weekdays:defaultWeekdays(p.days));
+ const generated=days.map((day,i)=>({weekday:day,type:types[i],title:`${day} · Manual`,items:[],notes:""})),byDay=Object.fromEntries(days.map((d,i)=>[d,i]));
+ (p.planBuilder?.customExercises||[]).forEach((id,i)=>{
+  const e=EXMAP[id];if(!e)return;const a=p.planBuilder?.manual?.[id]||{},idx=byDay[a.weekday]??(i%days.length);
+  generated[idx].items.push(makePlanItem(e,p,cfg,COMPOUND_PATTERNS.has(e.pattern),0,a));
+ });
+ return generated;
+}
 function generatePlan(preserveHistory=true){
  const p=profile();if(!p)return;
- const cfg=goalConfig(p.goal,p.level), types=DATA.SCHEDULE[p.days], days=(p.weekdays?.length===p.days?p.weekdays:defaultWeekdays(p.days));
- const max=p.duration<=45?5:p.duration<=60?6:p.duration<=75?7:8, cap=p.level==="Beginner"?Math.min(max,6):max;
- const generated=[];
- types.forEach((type,i)=>{
-   const used=new Set(),items=[];
-   DATA.TEMPLATES[type].slice(0,cap).forEach((pat,j)=>{
-     const e=pick(pat,p,used);if(!e)return;
-     const primary=j<2, range=primary?cfg.main:cfg.acc;
-     items.push({id:e.id,baseSets:primary?cfg.mainSets:cfg.accSets,baseReps:`${range[0]}–${range[1]}`,baseRpe:cfg.rpe,rest:primary?180:(j<4?120:75),userSetDelta:0,userRepDelta:0,userRpe:null,userLoad:null});
-   });
-   generated.push({weekday:days[i],type,title:`${days[i]} · ${type[0].toUpperCase()+type.slice(1)}`,items,notes:""});
- });
- state.plan=generated; state.weekLogs={}; currentDay=0; if(!preserveHistory)state.history=[]; save();
+ const b=p.planBuilder||{mode:"coach"};let generated;
+ if(b.mode==="priority")generated=buildPriorityPlan(p);
+ else if(b.mode==="custom")generated=b.customMode==="manual"?buildCustomManualPlan(p):buildCustomCoachPlan(p);
+ else generated=buildCoachPlan(p);
+ state.plan=generated;state.weekLogs={};currentDay=0;if(!preserveHistory)state.history=[];save();
 }
 function startCycle(length=profile()?.cycleLength||6,keepExercises=true){
  const oldPlan=plan();
@@ -612,6 +966,7 @@ function renderSettings(){
   <div><div class="label">Schedule</div>${(p.weekdays||defaultWeekdays(p.days)).map(d=>d.slice(0,3)).join(" · ")}<br><span class="tiny">${p.duration} min/session</span></div>
   <div><div class="label">Profile</div>${p.age?`${p.age} years · `:""}${p.sex?esc(p.sex):"Sex optional"}${h?`<br>${esc(h)}`:""}${last?.weight?` · ${last.weight} ${unit()}`:""}</div>
   <div><div class="label">Plan</div>${p.cycleLength||6}-week training block<br><span class="tiny">${esc(p.equipment)}</span></div>
+  <div><div class="label">Builder</div>${(()=>{const b=p.planBuilder||{mode:"coach"};if(b.mode==="priority"){const top=Object.entries(b.priorities||{}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([m,v])=>`${m} ${v}%`).join(" · ");return `Muscle Priority<br><span class="tiny">${esc(top)}</span>`}if(b.mode==="custom")return `Build Your Own<br><span class="tiny">${b.customMode==="manual"?"Fully manual targets":"Coach-programmed selections"}</span>`;return "Coach Suggested"})()}</div>
  </div>
  <p class="tiny">${esc(scheduleNotice(p.weekdays||defaultWeekdays(p.days)))}</p>
  ${p.limitations?.length?`<p class="tiny">Protected areas: ${p.limitations.map(esc).join(", ")}</p>`:""}`;
@@ -621,28 +976,38 @@ function renderSettings(){
 function renderAll(){renderToday();renderProgress();renderCycle();renderRecovery();renderSettings();updateUndoUI();$("#headerSub").textContent=profile()?.name?`${profile().name}'s adaptive training cycle`:"Adaptive coaching · 120-exercise core library"}
 function switchView(v){currentView=v;$$(".vtab").forEach(b=>b.classList.toggle("active",b.dataset.view===v));$$(".view").forEach(x=>x.classList.remove("active"));$("#"+v).classList.add("active");if(v==="progress")renderProgress();if(v==="cycle")renderCycle();if(v==="recovery")renderRecovery();if(v==="settings")renderSettings()}
 
-function showOnboarding(edit=false){
- editingProfile=edit;$("#onboarding").classList.remove("hidden");obStep=1;renderOb();
- if(edit&&profile()){
-   const p=profile();$("#obLevel").value=p.level;$("#obGoal").value=p.goal;$("#obDays").value=p.days;$("#obDuration").value=p.duration;$("#obCycle").value=p.cycleLength||6;
+function showOnboarding(edit=false,startStep=1){
+ editingProfile=edit;$("#onboarding").classList.remove("hidden");
+ const p=profile();
+ if(edit&&p){
+   $("#obLevel").value=p.level;$("#obGoal").value=p.goal;$("#obDays").value=p.days;$("#obDuration").value=p.duration;$("#obCycle").value=p.cycleLength||6;
    $("#obUnit").value=p.unit||"kg";$("#obAge").value=p.age||"";$("#obSex").value=p.sex||"";$("#obBodyweight").value=bodyEntries().at(-1)?.weight||"";
    $("#obHeightUnit").value=p.heightUnit||((p.unit||"kg")==="lb"?"imperial":"metric");
    if(p.heightCm){$("#obHeightCm").value=Math.round(p.heightCm*10)/10;const total=p.heightCm/2.54,ft=Math.floor(total/12);$("#obHeightFt").value=ft;$("#obHeightIn").value=Math.round((total-ft*12)*10)/10}
    const last=bodyEntries().at(-1)||{};$("#obWaist").value=last.waist||"";$("#obChest").value=last.chest||"";$("#obArm").value=last.arm||"";$("#obThigh").value=last.thigh||"";
    document.querySelector(`input[name=equipment][value=${p.equipment}]`).checked=true;$$(".limit").forEach(x=>x.checked=(p.limitations||[]).includes(x.value));$("#obName").value=p.name||"";$("#obAvoid").value=p.avoid||"";
-   setOnboardingDays(p.weekdays?.length===p.days?p.weekdays:defaultWeekdays(p.days));updateHeightUI();
- }else{suggestOnboardingDays();updateHeightUI()}
+   setOnboardingDays(p.weekdays?.length===p.days?p.weekdays:defaultWeekdays(p.days));updateHeightUI();builderDraft=defaultBuilderDraft(p);
+ }else{suggestOnboardingDays();updateHeightUI();builderDraft=defaultBuilderDraft(null)}
+ obStep=Math.max(1,Math.min(6,Number(startStep)||1));renderOb();
 }
-function renderOb(){$$(".step").forEach(s=>s.classList.toggle("active",Number(s.dataset.step)===obStep));$("#obStepText").textContent=`Step ${obStep} of 5`;$("#obBack").style.visibility=obStep===1?"hidden":"visible";$("#obNext").textContent=obStep===5?"Build my plan":"Next";if(obStep===2)updateDayPickHelp();if(obStep===3)updateHeightUI()}
+function renderOb(){
+ $$(".step").forEach(s=>s.classList.toggle("active",Number(s.dataset.step)===obStep));
+ $("#obStepText").textContent=`Step ${obStep} of 6`;
+ $("#obBack").style.visibility=obStep===1?"hidden":"visible";
+ $("#obNext").textContent=obStep===6?"Build my plan":"Next";
+ if(obStep===2)updateDayPickHelp();if(obStep===3)updateHeightUI();if(obStep===6)renderBuilderUI();
+}
 function saveOnboarding(){
  const weekdays=selectedOnboardingDays(),days=Number($("#obDays").value);
  if(weekdays.length!==days){alert(`Choose exactly ${days} workout days.`);obStep=2;renderOb();return}
+ const planBuilder=builderProfileData(),draftP={...formProfileDraft(),weekdays};
+ const builderError=validateBuilder(draftP,planBuilder);if(builderError){alert(builderError);obStep=6;renderOb();return}
  if(editingProfile)pushUndo("Edited profile and regenerated plan");
  const heightUnit=$("#obHeightUnit").value,measurementUnit=heightUnit==="imperial"?"in":"cm";
  state.profile={level:$("#obLevel").value,goal:$("#obGoal").value,days,duration:Number($("#obDuration").value),cycleLength:Number($("#obCycle").value),weekdays,
    equipment:document.querySelector("input[name=equipment]:checked").value,unit:$("#obUnit").value,measureUnit:measurementUnit,
    age:Number($("#obAge").value)||null,sex:$("#obSex").value||null,heightCm:heightCmFromForm(),heightUnit,
-   limitations:$$(".limit:checked").map(x=>x.value),name:$("#obName").value.trim(),avoid:$("#obAvoid").value.trim()};
+   limitations:$$(".limit:checked").map(x=>x.value),name:$("#obName").value.trim(),avoid:$("#obAvoid").value.trim(),planBuilder};
  state.history??=[];state.recovery??=[];state.body??=[];
  const bw=Number($("#obBodyweight").value)||0;
  if(bw){
@@ -650,11 +1015,41 @@ function saveOnboarding(){
    if(!last||Math.abs(Number(last.weight)-bw)>.001||waist!==last.waist||chest!==last.chest||arm!==last.arm||thigh!==last.thigh)
      state.body.push({date:new Date().toISOString(),weight:bw,waist,chest,arm,thigh,unit:state.profile.unit,measureUnit:measurementUnit,source:"profile"});
  }
- state.cycle={number:1,week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[]};generatePlan(true);save();$("#onboarding").classList.add("hidden");renderAll();toast("Personalized training block created");
+ state.cycle={number:1,week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[]};generatePlan(true);save();$("#onboarding").classList.add("hidden");renderAll();toast("Personalized plan created");
 }
 function exportData(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v6-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
+
+
+document.addEventListener("change",e=>{
+ if(e.target.name==="planBuilder"){
+  builderDraft.mode=e.target.value;renderBuilderUI();return;
+ }
+ if(e.target.name==="customProgramming"){
+  builderDraft.customMode=e.target.value;renderManualAssignments();return;
+ }
+ if(e.target.classList.contains("customExercise")){
+  const id=e.target.value,p=formProfileDraft(),max=p.days*planCapacity(p);
+  if(e.target.checked){
+   if(builderDraft.customExercises.length>=max){e.target.checked=false;alert(`Your current schedule supports up to ${max} selected exercises.`);return}
+   if(!builderDraft.customExercises.includes(id))builderDraft.customExercises.push(id);
+  }else{
+   builderDraft.customExercises=builderDraft.customExercises.filter(x=>x!==id);delete builderDraft.manual[id];
+  }
+  renderCustomCount();renderManualAssignments();return;
+ }
+ if(e.target.classList.contains("manualField")){
+  const id=e.target.dataset.id,k=e.target.dataset.k,a=ensureManualDefaults(id);
+  a[k]=k==="sets"?Number(e.target.value):e.target.value;return;
+ }
+});
+document.addEventListener("input",e=>{
+ if(e.target.classList.contains("priority-slider")){
+  rebalancePriorities(e.target.dataset.muscle,e.target.value);applyPriorityDom();renderPriorityPreview();return;
+ }
+ if(e.target.id==="customSearch"){renderCustomExercisePicker();return}
+});
 
 document.addEventListener("click",e=>{
  const v=e.target.closest(".vtab");if(v)return switchView(v.dataset.view);
@@ -688,10 +1083,11 @@ $("#redoBtn").onclick=redoLast;
 $("#settingsUndoBtn").onclick=undoLast;
 $("#settingsRedoBtn").onclick=redoLast;
 $("#saveRecoveryBtn").onclick=()=>{const o={date:new Date().toISOString(),cycleNumber:cycle().number,week:cycle().week};$$(".recRange").forEach(x=>o[x.dataset.k]=Number(x.value));recoveryEntries().push(o);save();renderRecovery();renderToday();toast("Recovery check-in saved")};
-$("#editProfileBtn").onclick=()=>showOnboarding(true);
+$("#editProfileBtn").onclick=()=>showOnboarding(true,1);
+$("#planBuilderBtn").onclick=()=>showOnboarding(true,6);
 $("#changeDaysBtn").onclick=openDayEditor;
 $("#browseVisualsBtn").onclick=openVisualCatalog;
-$("#regenBtn").onclick=()=>{if(confirm("Regenerate the exercise plan? History and body data stay, but current week logs reset.\n\nYou can undo this afterward.")){pushUndo("Regenerated plan");generatePlan(true);renderAll();toast("Plan regenerated · Undo available")}};
+$("#regenBtn").onclick=()=>{if(confirm("Regenerate the exercise plan using your current Plan Builder mode? History and body data stay, but current week logs reset.\n\nYou can undo this afterward.")){pushUndo("Regenerated plan");generatePlan(true);renderAll();toast("Plan regenerated · Undo available")}};
 $("#newCycleBtn").onclick=()=>{if(confirm("Start a fresh training block now? Current plan exercises will be kept and manual target adjustments reset.\n\nYou can undo this afterward.")){pushUndo("Started a new training block");startCycle(profile().cycleLength||6,true);renderAll();toast("New training block started · Undo available")}};
 $("#exportBtn").onclick=exportData;$("#settingsExportBtn").onclick=exportData;
 $("#importInput").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!x.profile||!Array.isArray(x.plan)||!x.cycle)throw new Error();state=x;save();currentDay=0;renderAll();toast("Backup imported")}catch{alert("That file is not a valid v6 backup.")}};
@@ -706,7 +1102,7 @@ $("#obDays").onchange=()=>suggestOnboardingDays();
 $$(".obWeekday").forEach(x=>x.onchange=updateDayPickHelp);
 $("#obHeightUnit").onchange=updateHeightUI;
 $("#obUnit").onchange=()=>{if(!editingProfile&&!$("#obBodyweight").value){$("#obHeightUnit").value=$("#obUnit").value==="lb"?"imperial":"metric";updateHeightUI()}};
-$("#obNext").onclick=()=>{if(obStep===2&&selectedOnboardingDays().length!==Number($("#obDays").value))return alert(`Choose exactly ${$("#obDays").value} workout days before continuing.`);if(obStep<5){obStep++;renderOb()}else saveOnboarding()};
+$("#obNext").onclick=()=>{if(obStep===2&&selectedOnboardingDays().length!==Number($("#obDays").value))return alert(`Choose exactly ${$("#obDays").value} workout days before continuing.`);if(obStep<6){obStep++;renderOb()}else saveOnboarding()};
 
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
 loadState();loadUndoStacks();

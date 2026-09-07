@@ -1,0 +1,10 @@
+Adaptive Workout Coach v7.1 — Advanced Plan Builder
+
+Modes:
+1. Coach Suggested
+2. Muscle Priority (10 percentage sliders, auto-rebalanced to 100%)
+3. Build Your Own (coach-programmed selections or fully manual day/targets)
+
+Hard constraints retained: experience, goal, exact workout days, session duration, equipment, protected areas, and exercise avoidance.
+Muscle Priority uses relative emphasis rather than literal percentage-of-sets allocation because compound exercises train multiple muscle groups.
+120/120 exact exercise visual mappings remain intact.

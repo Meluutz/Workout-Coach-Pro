@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.0.3
+# Adaptive Workout Coach — v7.1
 
 GitHub-ready PWA build.
 
@@ -35,7 +35,7 @@ If an older version still appears after deployment, open the site once in a priv
 Workout, recovery, profile, and body data remain stored locally in the browser using localStorage. This build adds no account system, analytics, or cloud sync.
 
 
-## v7.0.3 visual quality patch
+## v7.0.2 visual quality patch
 - Replaced 25 user-reviewed problem visuals.
 - Other 95 exercise visuals unchanged.
 - 120/120 exact visual mappings retained.
@@ -48,3 +48,18 @@ Workout, recovery, profile, and body data remain stored locally in the browser u
 - Other 95 exercise visuals unchanged.
 - Retains 120/120 exact visual mappings.
 - Exercise images render with object-fit: contain and no max-height clamp.
+
+## v7.1 — Advanced Plan Builder
+After the original five setup steps, users now choose one of three plan-building modes:
+
+- **Coach Suggested** — the existing balanced automatic programming path.
+- **Muscle Priority** — ten body-part percentage sliders that always rebalance to 100%. Percentages guide relative emphasis; the engine still protects minimum balance, respects schedule/equipment/limitations, accounts for exercise overlap, and adjusts exercise selection and working-set allocation.
+- **Build Your Own** — exercise selection is grouped by body part and automatically filtered by equipment, protected areas, and avoided exercises. Users can either let the coach distribute/program their selections or assign each exercise to a workout day with manual sets, reps and RPE.
+
+Additional v7.1 behavior:
+- Live approximate weekly muscle-volume preview in Muscle Priority mode.
+- High-specialization warning and maintenance-volume guardrail.
+- Direct **Plan builder & priorities** control in Settings.
+- Regenerate Plan uses the currently selected builder mode.
+- Existing v6/v7 localStorage key is preserved for backward compatibility.
+- Existing 120/120 exact visual library is preserved unchanged.
