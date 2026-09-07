@@ -410,11 +410,67 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  .program-table-row{grid-template-columns:minmax(0,1fr) 42px 64px}
 }
 
+
+/* v7.3.6 — compact Coach + simplified warm-up */
+.coach-strip{
+ margin:0 10px 9px;padding:8px 9px;
+ border:1px solid var(--line);border-left:3px solid var(--blue);
+ border-radius:11px;background:var(--surface-2);
+ display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:7px;align-items:center
+}
+.coach-strip.good{border-left-color:var(--good)}
+.coach-strip.caution{border-left-color:var(--warn)}
+.coach-strip.bad{border-left-color:var(--danger)}
+.coach-label{font-size:9px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.coach-text{font-size:11.5px;line-height:1.35;min-width:0}
+.coach-why{min-height:31px!important;padding:5px 8px!important;font-size:10.5px!important;white-space:nowrap}
+.warmup-box,.warmup-head,.warmup-row{display:none!important}
+
+/* Warm-up Guide is a full-screen training reference on mobile. */
+.sheet.warmup-sheet{align-items:stretch!important;padding:0!important;background:var(--bg)!important}
+.sheet.warmup-sheet .sheetcard{
+ width:100%!important;max-width:none!important;height:var(--app-vvh)!important;max-height:var(--app-vvh)!important;
+ border-radius:0!important;border:0!important;box-shadow:none!important;
+ overflow-y:auto!important;-webkit-overflow-scrolling:touch;
+ padding:calc(14px + env(safe-area-inset-top)) 14px calc(38px + env(safe-area-inset-bottom))!important
+}
+.sheet.warmup-sheet .sheetcard>.row:first-child{
+ top:calc(-14px - env(safe-area-inset-top))!important;
+ margin:calc(-14px - env(safe-area-inset-top)) 0 10px!important;
+ padding:calc(14px + env(safe-area-inset-top)) 0 11px!important;
+ background:color-mix(in srgb,var(--surface) 98%,transparent)
+}
+.warmup-guide-list{margin:4px 0 0;padding:0 0 42px;list-style:none;counter-reset:warmupstep}
+.warmup-guide-list li{
+ counter-increment:warmupstep;position:relative;
+ margin:0 0 9px;padding:11px 12px 11px 46px;
+ border:1px solid var(--line);border-radius:13px;background:var(--surface-2);line-height:1.45
+}
+.warmup-guide-list li:before{
+ content:counter(warmupstep);position:absolute;left:11px;top:10px;
+ width:25px;height:25px;border-radius:50%;display:grid;place-items:center;
+ background:var(--blue);color:#fff;font-size:11px;font-weight:900
+}
+
+/* Desktop/local-browser empty plan state */
+.empty-plan{border:1px solid var(--line);border-radius:16px;padding:16px;background:var(--surface-2);line-height:1.5}
+.empty-plan>strong{font-size:17px}.empty-plan p{color:var(--muted);font-size:12px}
+.empty-plan-actions{display:flex;gap:8px;flex-wrap:wrap}.empty-plan-actions button{flex:1 1 150px}
+
+@media(max-width:760px){
+ .coach-strip{grid-template-columns:auto minmax(0,1fr) auto}
+ .sheet.warmup-sheet .sheetcard{padding-left:12px!important;padding-right:12px!important}
+}
+@media(max-width:390px){
+ .coach-strip{grid-template-columns:auto minmax(0,1fr)}
+ .coach-why{grid-column:2;justify-self:start}
+}
+
 </style>
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><div class="app-mark" aria-hidden="true">AW</div><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 156-exercise expanded library</div><div class="build">v7.3.5 · 156 exercises</div></div></div>
+ <div class="brand-lockup"><div class="app-mark" aria-hidden="true">AW</div><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 156-exercise expanded library</div><div class="build">v7.3.6 · 156 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -510,7 +566,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  <div class="label">Training preferences</div><h2>Workout experience</h2>
  <div class="settings-switch"><div><strong>Auto-start rest timer</strong><div class="tiny">Start the programmed rest period after a completed working set.</div></div><input id="autoRestSetting" type="checkbox"></div>
  <div class="settings-switch"><div><strong>Start session automatically</strong><div class="tiny">Start the session clock with the first completed set.</div></div><input id="autoSessionSetting" type="checkbox"></div>
- <div class="settings-switch"><div><strong>Warm-up rest</strong></div><select id="warmupRestSetting" class="field compact-select"><option value="45">0:45</option><option value="60">1:00</option><option value="90">1:30</option><option value="120">2:00</option></select></div>
+ 
 </section>
 
 <section class="card">
@@ -807,9 +863,8 @@ function exerciseStyleMatch(e,style){
 function previousPlanExerciseIds(){return new Set((plan()||[]).flatMap(d=>(d.items||[]).map(it=>it.id)))}
 function coachingRecommendationHtml(item,slot,rec){
  const mode=personalizationSettings().coachingDetail;
- if(mode==="concise")return `<div class="recommend ${rec.cls}"><strong>Coach:</strong> ${esc(rec.text)}</div>`;
- if(mode==="detailed")return `<div class="recommend ${rec.cls}"><strong>Coach:</strong> ${esc(rec.text)} <button class="whyBtn" data-slot="${slot}" style="padding:5px 8px;margin-left:5px">Full logic</button><div class="coach-detail-reasons">${(rec.why||[]).slice(0,2).map(x=>`• ${esc(x)}`).join("<br>")}</div></div>`;
- return `${coachingRecommendationHtml(item,slot,rec)}`;
+ if(mode==="concise")return `<div class="coach-strip ${rec.cls}"><span class="coach-label">Coach</span><span class="coach-text">${esc(rec.text)}</span></div>`;
+ return `<div class="coach-strip ${rec.cls}"><span class="coach-label">Coach</span><span class="coach-text">${esc(rec.text)}</span><button class="whyBtn coach-why" data-slot="${slot}">${mode==="detailed"?"Logic":"Why?"}</button></div>`;
 }
 function renderAvatarPackStatus(){
  const box=$("#avatarPackStatus");if(!box)return;
@@ -852,6 +907,16 @@ function executionSettings(){
  return state.executionSettings;
 }
 function sessionKey(dayIdx=currentDay){return `${cycle()?.number||1}:${cycle()?.week||1}:${dayIdx}`}
+
+function hasUsablePlan(){return Array.isArray(state.plan)&&state.plan.length>0&&state.plan.some(d=>Array.isArray(d.items)&&d.items.length>0)}
+function repairPlanIfNeeded(){
+ if(!profile()||hasUsablePlan())return false;
+ try{generatePlan(true);save();return hasUsablePlan()}catch(err){console.warn("Plan repair failed",err);return false}
+}
+function noPlanHtml(){
+ return `<div class="empty-plan"><strong>No workout plan is saved in this browser.</strong><p>Workout data is local to each browser. If your plan is on another device, export a backup there and import it here.</p><div class="empty-plan-actions"><button class="emptyBuildBtn primary">Build a plan</button><button class="emptyImportBtn">Import backup</button></div></div>`;
+}
+
 function sessionRuntime(dayIdx=currentDay){
  state.sessionRuntime??={};const k=sessionKey(dayIdx);
  state.sessionRuntime[k]??={running:false,elapsed:0,startedAt:null};return state.sessionRuntime[k];
@@ -1366,20 +1431,22 @@ function renderExerciseLibraryResults(){
  box.innerHTML=shown.map(e=>`<div class="library-item"><strong>${esc(e.name)}</strong><div class="tiny">${esc(exerciseCategory(e))} · ${esc(movementLabel(e.pattern))} · ${esc(equipmentLabel(e))}</div><div class="library-thumb">${visualHtml(e.id,true)}</div><button class="exerciseDetailBtn" data-exid="${e.id}">View full details</button></div>`).join("")||'<div class="historyitem">No exercises match those filters.</div>';
 }
 function renderToday(){
- if(!profile()||!plan().length)return;
+ if(!profile())return;
+ if(!hasUsablePlan()&&!repairPlanIfNeeded()){
+   renderCycleHeader();const box=$("#exerciseList");if(box)box.innerHTML=noPlanHtml();
+   $("#dayTitle").textContent="No plan on this browser";$("#dayFocus").textContent="Build or import a plan to begin.";return
+ }
  renderCycleHeader();renderDayTabs();
  const d=plan()[currentDay];$("#dayTitle").textContent=d.title;$("#dayFocus").textContent=`${profile().goal.replace("both","muscle + strength")} · ${profile().level} · ${profile().duration} min · ${equipmentChoiceLabel(profile().equipment)}`;
  const box=$("#exerciseList");box.innerHTML="";
  d.items.forEach((item,slot)=>{
    const ex=EXMAP[item.id],t=effectiveTarget(item),log=exLog(currentDay,slot,t.sets),rec=suggestion(item),prev=lastPerformanceSummary(item.id);
-   const warmRows=(log.warmups||[]).map((s,j)=>`<div class="warmup-row"><strong>W${j+1}</strong><input data-warm-slot="${slot}" data-warm-set="${j}" data-f="weight" value="${esc(s.weight)}" inputmode="decimal" placeholder="${unit()}"><input data-warm-slot="${slot}" data-warm-set="${j}" data-f="reps" value="${esc(s.reps)}" inputmode="numeric" placeholder="reps"><button class="check warmCheck ${s.done?"done":""}" data-warm-check="${slot}:${j}">${s.done?"✓":""}</button></div>`).join("");
    const c=document.createElement("section");c.className="card exercise";
    c.innerHTML=`<div class="exhead"><h3>${slot+1}. ${esc(ex.name)}</h3><div class="muted"><strong>${t.sets} sets · ${esc(t.reps)} reps · RPE ${esc(t.rpe)}${t.load?` · target ${t.load} ${unit()}`:""}</strong></div><span class="badge">${esc(ex.muscles)}</span><span class="badge">Rest ${fmt(item.rest)}</span>${isAdjusted(item)?'<span class="badge adjusted">User adjusted</span>':""}</div>
    <div class="targetrow"><button class="repMinus" data-slot="${slot}">−1 rep</button><button class="repPlus" data-slot="${slot}">+1 rep</button><button class="setMinus" data-slot="${slot}">− set</button><button class="setPlus" data-slot="${slot}">+ set</button><button class="editTarget" data-slot="${slot}">Edit target</button>${isAdjusted(item)?`<button class="resetTarget" data-slot="${slot}">Reset target</button>`:""}</div>
    ${prev?`<div class="prevperf"><div class="row"><div><strong>Last performance</strong><br>${esc(prev.text)}</div><button class="useLastBtn" data-slot="${slot}">Prefill last</button></div></div>`:`<div class="prevperf"><strong>Last performance:</strong> No completed history yet.</div>`}
    ${coachingRecommendationHtml(item,slot,rec)}
    <div class="actions"><button class="exerciseDetailBtn" data-exid="${item.id}">Exercise details</button><button class="visualBtn" data-slot="${slot}">Visual only</button><button class="swapBtn" data-slot="${slot}">Swap exercise</button><button class="timerBtn" data-slot="${slot}">⏱ Rest</button></div>
-   <div class="warmup-box"><div class="warmup-head"><div><strong>Warm-up sets</strong><div class="tiny">Optional · excluded from volume, progression and PR calculations</div></div><button class="addWarmupBtn" data-slot="${slot}">+ Warm-up set</button></div>${warmRows||'<div class="tiny" style="padding:0 10px 10px">Add only the ramp-up sets you actually perform.</div>'}</div>
    <div class="working-label">Working sets</div>
    <div class="sets"><div class="setrow head"><div>Set</div><div>Weight</div><div>Reps</div><div>RPE</div><div>Done</div></div>${log.sets.slice(0,t.sets).map((s,j)=>`<div class="setrow"><strong>${j+1}</strong><input data-slot="${slot}" data-set="${j}" data-f="weight" value="${esc(s.weight)}" inputmode="decimal" placeholder="${(ex.equipment||[]).includes("bodyweight")?"load "+unit():unit()}"><input data-slot="${slot}" data-set="${j}" data-f="reps" value="${esc(s.reps)}" inputmode="numeric" placeholder="reps"><input data-slot="${slot}" data-set="${j}" data-f="rpe" value="${esc(s.rpe)}" inputmode="decimal" placeholder="${esc(t.rpe)}"><button class="check ${s.done?"done":""}" data-check="${slot}:${j}">${s.done?"✓":""}</button></div>`).join("")}</div>
    <div class="note"><textarea data-note="${slot}" placeholder="Exercise notes...">${esc(log.note||"")}</textarea></div>`;
@@ -1407,8 +1474,8 @@ function startRestFor(slot,seconds,label,auto=true){stopTimer();timer.slot=slot;
 function openRestSheet(){$("#timerTitle").textContent=timer.label||"Rest timer";renderTimerUI();$("#timerSheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#timerSheet .sheetcard").scrollTop=0})}
 function cancelRest(){stopTimer();timer.remaining=timer.base;timer.label="";timer.slot=null;renderRestMini()}
 
-function openSheet(label,title,html){$("#sheetLabel").textContent=label;$("#sheetTitle").textContent=title;$("#sheetContent").innerHTML=html;$("#sheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#sheet .sheetcard").scrollTop=0})}
-function closeSheet(){$("#sheet").classList.add("hidden")}
+function openSheet(label,title,html){$("#sheet").classList.remove("warmup-sheet");$("#sheetLabel").textContent=label;$("#sheetTitle").textContent=title;$("#sheetContent").innerHTML=html;$("#sheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#sheet .sheetcard").scrollTop=0})}
+function closeSheet(){$("#sheet").classList.add("hidden");$("#sheet").classList.remove("warmup-sheet")}
 function editTarget(slot){
  const item=plan()[currentDay].items[slot],t=effectiveTarget(item),ex=EXMAP[item.id];
  openSheet("MANUAL TARGET",ex.name,`<p class="tiny">Original program target: <strong>${item.baseSets} sets · ${esc(item.baseReps)} reps · RPE ${esc(item.baseRpe)}</strong></p><div class="grid2"><label>Sets<input id="targetSets" class="field" type="number" min="1" max="10" value="${t.sets}"></label><label>Rep range<input id="targetReps" class="field" value="${esc(t.reps)}" placeholder="8–10"></label><label>RPE target<input id="targetRpe" class="field" value="${esc(t.rpe)}" placeholder="7–8"></label><label>Target load (${unit()})<input id="targetLoad" class="field" type="number" step="0.5" value="${item.userLoad??""}" placeholder="Optional"></label></div><button id="saveTarget" class="primary" style="margin-top:12px">Save adjusted target</button>`);
@@ -1452,7 +1519,7 @@ function muscleVolume(){
 function renderProgramPlanOverview(){
  const box=$("#programPlanOverview"),meta=$("#programPlanMeta");if(!box)return;
  const days=plan();if(meta)meta.textContent=`${days.length} training day${days.length===1?"":"s"} / week`;
- if(!days.length){box.innerHTML='<div class="historyitem">No workout plan is saved in this browser yet.</div>';return}
+ if(!days.length){box.innerHTML=noPlanHtml();return}
  box.innerHTML=days.map((d,dayIdx)=>`<div class="program-day">
   <div class="program-day-head"><div><strong>${esc(d.weekday||`Day ${dayIdx+1}`)}</strong><span>${esc((d.type||"Workout").replace(/^./,c=>c.toUpperCase()))}</span></div><button class="jumpToTrainBtn" data-day="${dayIdx}">Open in Train</button></div>
   <div class="program-table">
@@ -1553,7 +1620,7 @@ function renderSettings(){
  <p class="tiny">${esc(scheduleNotice(p.weekdays||defaultWeekdays(p.days)))}</p>
  ${p.limitations?.length?`<p class="tiny">Protected areas: ${p.limitations.map(esc).join(", ")}</p>`:""}`;
 
- const es=executionSettings();if($("#autoRestSetting"))$("#autoRestSetting").checked=!!es.autoRest;if($("#autoSessionSetting"))$("#autoSessionSetting").checked=!!es.autoSession;if($("#warmupRestSetting"))$("#warmupRestSetting").value=String(es.warmupRest);
+ const es=executionSettings();if($("#autoRestSetting"))$("#autoRestSetting").checked=!!es.autoRest;if($("#autoSessionSetting"))$("#autoSessionSetting").checked=!!es.autoSession;
  const ps=personalizationSettings();if($("#visualAvatarSetting"))$("#visualAvatarSetting").value=ps.visualAvatar;if($("#visualFallbackSetting"))$("#visualFallbackSetting").value=ps.visualFallback;if($("#exerciseBiasSetting"))$("#exerciseBiasSetting").value=ps.exerciseBias;if($("#varietySetting"))$("#varietySetting").value=ps.variety;if($("#coachingDetailSetting"))$("#coachingDetailSetting").value=ps.coachingDetail;
 }
 function renderAll(){renderToday();renderProgress();renderCycle();renderRecovery();renderSettings();updateUndoUI();$("#headerSub").textContent=profile()?.name?`${profile().name}'s adaptive training cycle`:"Adaptive coaching · 156-exercise expanded library"}
@@ -1606,7 +1673,7 @@ function saveOnboarding(){
  state.cycle={number:1,week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[]};generatePlan(true);save();switchView("today");$("#onboarding").classList.add("hidden");renderAll();toast("Personalized plan created");
 }
 function exportData(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-3-5-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-3-6-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 
 
@@ -1614,7 +1681,6 @@ document.addEventListener("change",e=>{
  if(["libraryMuscle","libraryEquipment","libraryDifficulty"].includes(e.target.id)){renderExerciseLibraryResults();return}
  if(e.target.id==="autoRestSetting"){executionSettings().autoRest=e.target.checked;save();return}
  if(e.target.id==="autoSessionSetting"){executionSettings().autoSession=e.target.checked;save();return}
- if(e.target.id==="warmupRestSetting"){executionSettings().warmupRest=Number(e.target.value)||60;save();return}
  if(["visualAvatarSetting","visualFallbackSetting"].includes(e.target.id)){
   const ps=personalizationSettings(),oldA=ps.visualAvatar,oldF=ps.visualFallback;
   ps.visualAvatar=$("#visualAvatarSetting").value;ps.visualFallback=$("#visualFallbackSetting").value;renderAvatarPackStatus();ps.visualAvatar=oldA;ps.visualFallback=oldF;return
@@ -1652,9 +1718,9 @@ document.addEventListener("click",e=>{
  const v=e.target.closest(".vtab");if(v)return switchView(v.dataset.view);
  const c=e.target.closest("[data-check]");if(c){const[s,j]=c.dataset.check.split(":").map(Number),it=plan()[currentDay].items[s],t=effectiveTarget(it),set=exLog(currentDay,s,t.sets).sets[j],was=set.done;set.done=!set.done;if(!was&&set.done){if(executionSettings().autoSession&&!sessionRuntime().running&&!sessionElapsed())startSession(true);if(executionSettings().autoRest)startRestFor(s,it.rest,`${EXMAP[it.id].name} · rest`,true)}save();renderToday();if(!was&&set.done&&j+1<t.sets)setTimeout(()=>document.querySelector(`input[data-slot="${s}"][data-set="${j+1}"][data-f="weight"]`)?.focus(),0);return}
 
+ const emptyBuild=e.target.closest(".emptyBuildBtn");if(emptyBuild){showOnboarding(!!profile(),1);return}
+ const emptyImport=e.target.closest(".emptyImportBtn");if(emptyImport){switchView("settings");renderSettings();setTimeout(()=>$("#importInput")?.click(),50);return}
  const jump=e.target.closest(".jumpToTrainBtn");if(jump){currentDay=Number(jump.dataset.day)||0;switchView("today");renderToday();window.scrollTo({top:0,behavior:"auto"});return}
- const wc=e.target.closest("[data-warm-check]");if(wc){const[s,j]=wc.dataset.warmCheck.split(":").map(Number),it=plan()[currentDay].items[s],t=effectiveTarget(it),w=exLog(currentDay,s,t.sets).warmups[j];w.done=!w.done;if(w.done){if(executionSettings().autoSession&&!sessionRuntime().running&&!sessionElapsed())startSession(true);if(executionSettings().autoRest)startRestFor(s,executionSettings().warmupRest,`${EXMAP[it.id].name} · warm-up rest`,true)}save();renderToday();return}
- const aw=e.target.closest(".addWarmupBtn");if(aw){const s=Number(aw.dataset.slot),it=plan()[currentDay].items[s],t=effectiveTarget(it),l=exLog(currentDay,s,t.sets);if(l.warmups.length>=6)return alert("Up to 6 warm-up sets can be logged per exercise.");l.warmups.push({weight:"",reps:"",done:false});save();renderToday();setTimeout(()=>document.querySelector(`input[data-warm-slot="${s}"][data-warm-set="${l.warmups.length-1}"][data-f="weight"]`)?.focus(),0);return}
  const ul=e.target.closest(".useLastBtn");if(ul){const s=Number(ul.dataset.slot),it=plan()[currentDay].items[s],t=effectiveTarget(it),last=lastRecord(it.id);if(!last)return;const l=exLog(currentDay,s,t.sets),src=(last.sets||[]).filter(x=>x.done!==false),hasToday=l.sets.slice(0,t.sets).some(x=>x.done||String(x.weight||"").trim()||String(x.reps||"").trim()||String(x.rpe||"").trim());if(hasToday&&!confirm("Today already has working-set entries for this exercise. Replace those entries with the last completed performance? Warm-up sets and notes will not be changed."))return;for(let j=0;j<Math.min(t.sets,src.length);j++){l.sets[j].weight=src[j].weight;l.sets[j].reps=src[j].reps;l.sets[j].rpe=src[j].rpe;l.sets[j].done=false}save();renderToday();toast("Last performance prefilled");return}
  const detailBtn=e.target.closest(".exerciseDetailBtn");if(detailBtn){openExerciseDetails(detailBtn.dataset.exid);return}
  const cf=e.target.closest("#confirmFinishBtn");if(cf){finalizeSession();return}
@@ -1672,7 +1738,6 @@ document.addEventListener("click",e=>{
  const tb=e.target.closest(".timerBtn");if(tb){const slot=Number(tb.dataset.slot),it=plan()[currentDay].items[slot];stopTimer();timer.slot=slot;timer.base=timer.remaining=it.rest;timer.label=`${EXMAP[it.id].name} · rest`;timer.auto=false;openRestSheet();return}
 });
 document.addEventListener("input",e=>{
- if(e.target.matches("input[data-warm-slot]")){const s=Number(e.target.dataset.warmSlot),j=Number(e.target.dataset.warmSet),f=e.target.dataset.f,it=plan()[currentDay].items[s],t=effectiveTarget(it);exLog(currentDay,s,t.sets).warmups[j][f]=e.target.value;save()}
  if(e.target.id==="librarySearch")renderExerciseLibraryResults();
  if(e.target.matches("input[data-slot]")){const s=Number(e.target.dataset.slot),j=Number(e.target.dataset.set),f=e.target.dataset.f,it=plan()[currentDay].items[s],t=effectiveTarget(it);exLog(currentDay,s,t.sets).sets[j][f]=e.target.value;save()}
  if(e.target.matches("textarea[data-note]")){const s=Number(e.target.dataset.note),it=plan()[currentDay].items[s],t=effectiveTarget(it);exLog(currentDay,s,t.sets).note=e.target.value;save()}
@@ -1680,7 +1745,7 @@ document.addEventListener("input",e=>{
 });
 
 $("#finishBtn").onclick=finishSession;
-$("#warmBtn").onclick=()=>openSheet("WARM-UP",plan()[currentDay].title,"<ul>"+warmup(plan()[currentDay].type).map(x=>`<li>${esc(x)}</li>`).join("")+"</ul>");
+$("#warmBtn").onclick=()=>{openSheet("WARM-UP",plan()[currentDay].title,"<ul class=\"warmup-guide-list\">"+warmup(plan()[currentDay].type).map(x=>`<li>${esc(x)}</li>`).join("")+"</ul>");$("#sheet").classList.add("warmup-sheet")};
 $("#guideBtn").onclick=()=>openSheet("WORKOUT VISUALS",plan()[currentDay].title,workoutVisualGrid()+`<p class="tiny">These visuals are tied to the exact exercise currently in your plan. If an exact visual is unavailable, the app says so instead of showing a different movement.</p>`);
 $("#notesBtn").onclick=()=>{const d=plan()[currentDay];openSheet("SESSION NOTES",d.title,`<textarea id="dayNotes" class="field" rows="6">${esc(d.notes||"")}</textarea><button id="saveDayNotes" class="primary" style="margin-top:10px">Save notes</button>`);setTimeout(()=>$("#saveDayNotes").onclick=()=>{d.notes=$("#dayNotes").value;save();closeSheet();toast("Notes saved")},0)};
 $("#advanceWeekBtn").onclick=advanceWeek;$("#logBodyBtn").onclick=logBody;
@@ -1720,7 +1785,7 @@ window.visualViewport?.addEventListener("scroll",syncVisualViewport,{passive:tru
 sessionTicker=setInterval(()=>{if(profile())renderSessionClock()},1000);
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
 loadState();loadUndoStacks();
-if(!profile()){showOnboarding(false)}else{if(!cycle())state.cycle={number:1,week:1,length:profile().cycleLength||6,start:new Date().toISOString(),weekSummaries:[]};if(!plan().length)generatePlan(true);renderAll()}
+if(!profile()){showOnboarding(false)}else{if(!cycle())state.cycle={number:1,week:1,length:profile().cycleLength||6,start:new Date().toISOString(),weekSummaries:[]};repairPlanIfNeeded();renderAll()}
 </script>
 </body>
 </html>

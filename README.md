@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.3.5
+# Adaptive Workout Coach — v7.3.6
 
 GitHub-ready PWA build.
 
@@ -254,3 +254,16 @@ The internal programming/cycle engine, 156-exercise database, bodyweight hard co
 - Each day has an Open in Train shortcut.
 - Replaced the oversized Plan Safety block with a compact Recent Plan Change + Undo/Redo row.
 - User-facing Training Block language on the Program page is simplified to Program.
+
+
+## v7.3.6 — Compact Coach, Warm-up Simplification & Desktop Rendering Fix
+
+- Fixed a Standard coaching-detail recursion bug that could stop `renderAll()` and prevent the Program page from appearing on another browser/device.
+- Coach recommendations are now compact one-line strips with an optional Why?/Logic action.
+- Removed the large per-exercise Warm-up Sets section from workout cards.
+- Retained the workout-level Warm-up Guide as the single warm-up reference.
+- Warm-up Guide now opens as a full-height, independently scrollable mobile reference.
+- Removed the Warm-up Rest setting because per-exercise warm-up logging is no longer surfaced.
+- Browsers with a profile but a missing/malformed plan attempt to repair/regenerate the plan automatically.
+- If no plan exists in a browser, Train/Program show explicit Build a plan / Import backup actions.
+- Phone and desktop data remain local-first; they do not automatically sync.
