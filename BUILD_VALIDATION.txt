@@ -1,4 +1,4 @@
-Adaptive Workout Coach v7.0.2 — build validation
+Adaptive Workout Coach v7.0.3 — build validation
 
 - JavaScript syntax: PASS
 - Service worker syntax: PASS
@@ -6,7 +6,8 @@ Adaptive Workout Coach v7.0.2 — build validation
 - Exact visual mappings: 120
 - Broken mapped visual paths: 0
 - Duplicate HTML IDs: 0
-- v7.0.2 repaired visuals: 25
-- Unchanged visual assets: 95
+- Standalone repaired visuals: 25
+- Unchanged visuals: 95
+- Exact visual coverage: 120/120
 
 A full browser smoke test was not run in this environment.
