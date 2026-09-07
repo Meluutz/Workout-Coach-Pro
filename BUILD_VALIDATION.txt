@@ -1,23 +1,27 @@
-Adaptive Workout Coach v7.3.1 — build validation
+Adaptive Workout Coach v7.3.2 — build validation
 
 - JavaScript syntax: PASS
 - Service worker syntax: PASS
-- Exercise database: 150
-- Original exact visual mappings retained: 120/120 original exercises
-- New bodyweight exercise visuals pending: 30
+- Exercise database: 156
+- Existing exact visual mappings retained: 120
+- New/pending exact visuals: 36
 - Broken mapped visual paths: 0
 - Duplicate HTML IDs: 0
+- Single-Leg RDL loaded/bodyweight separation: PASS
+- Step-Up loaded/bodyweight separation: PASS
+- Bulgarian Split Squat loaded/bodyweight separation: PASS
+- Reverse Lunge loaded/bodyweight separation: PASS
+- Walking Lunge loaded/bodyweight separation: PASS
+- Standing Calf Raise loaded/bodyweight separation: PASS
+- No bodyweight variant inherits loaded visual mapping: PASS
+- Bodyweight template candidate coverage: PASS
 - Bodyweight-only compatible exercises: 46
 - Minimal-equipment compatible exercises: 54
-- Dumbbells + bench compatible exercises: 71
-- Full-gym compatible exercises: 150
-- Bodyweight hard-constraint logic: PASS
-- Bodyweight-specific templates: PASS
-- Bodyweight progression guidance: PASS
-- Equipment coverage feedback: PASS
-- No wrong-image fallback for new exercises: PASS
+- Dumbbells + bench compatible exercises: 77
+- Full-gym compatible exercises: 156
 - v7.1 Plan Builder retained: PASS
 - v7.2 Workout Execution retained: PASS
 - v7.3 Personalization retained: PASS
+- v7.3.1 equipment hard constraints retained: PASS
 
 A full browser smoke test was not run in this environment.

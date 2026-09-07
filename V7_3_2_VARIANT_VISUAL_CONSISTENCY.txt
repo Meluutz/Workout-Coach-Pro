@@ -1,0 +1,23 @@
+Adaptive Workout Coach v7.3.2 — Variant Separation & Visual Consistency
+
+Problem fixed:
+A Bodyweight Only plan could select Single-Leg Romanian Deadlift while the mapped visual showed the dumbbell-loaded variant.
+
+Architecture change:
+- Loaded and bodyweight variants now use distinct exercise IDs.
+- Exact visual mappings are never shared across resistance variants.
+- Missing variant-specific artwork is shown as Exact visual pending.
+
+Variant families separated:
+- single_rdl -> bw_single_rdl
+- stepup -> bw_stepup
+- bss -> bw_bss
+- reverse_lunge -> bw_reverse_lunge
+- walking_lunge -> bw_walking_lunge
+- calf_raise -> bw_calf_raise
+
+Exercise database: 156
+Existing exact visuals retained: 120
+Pending exact visuals: 36
+
+v7.1 Plan Builder, v7.2 execution, v7.3 personalization, and v7.3.1 equipment/bodyweight hard constraints are retained.

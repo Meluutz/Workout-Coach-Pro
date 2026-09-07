@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.3.1
+# Adaptive Workout Coach — v7.3.2
 
 GitHub-ready PWA build.
 
@@ -154,3 +154,30 @@ The original **120 exact exercise visuals remain untouched**. The 30 newly added
 
 ### v7.3 preservation
 Personalization, avatar architecture and the Prefill Last overwrite safeguard remain intact.
+
+
+## v7.3.2 — Variant Separation & Visual Consistency
+
+This release fixes the case where **Single-Leg Romanian Deadlift** could appear in a Bodyweight Only plan while displaying the existing dumbbell visual.
+
+### Resistance variants are now separate exercise records
+The following movement families now have distinct bodyweight records:
+- Bodyweight Single-Leg Romanian Deadlift
+- Bodyweight Step-Up
+- Bodyweight Bulgarian Split Squat
+- Bodyweight Reverse Lunge
+- Bodyweight Walking Lunge
+- Bodyweight Standing Calf Raise
+
+The existing legacy records retain their existing visual mappings and are treated as externally loaded / gym-compatible variants. The existing Single-Leg RDL record is now explicitly named **Dumbbell Single-Leg Romanian Deadlift**.
+
+### Strict visual rule
+A bodyweight variant never inherits the exact visual from its loaded counterpart. If its own exact visual has not been created, it displays **Exact visual pending** instead.
+
+### Database / visual status
+- Exercise records: **156**
+- Existing exact visual mappings retained: **120**
+- Exact visuals pending: **36**
+- Broken existing visual paths: **0**
+
+The 30 exercises introduced in v7.3.1 remain pending visually, and these 6 newly separated bodyweight variants are added to that pending queue.

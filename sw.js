@@ -1,4 +1,4 @@
-const CACHE='adaptive-workout-coach-v7-3-1-equipment-bodyweight';
+const CACHE='adaptive-workout-coach-v7-3-2-variant-visual-consistency';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>{
   self.skipWaiting();

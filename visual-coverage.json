@@ -1,8 +1,8 @@
 {
-  "version": "7.3.1",
-  "exercise_count": 150,
+  "version": "7.3.2",
+  "exercise_count": 156,
   "exact_visual_count": 120,
-  "pending_visual_count": 30,
+  "pending_visual_count": 36,
   "pending": [
     {
       "id": "wall_pushup",
@@ -153,6 +153,36 @@
       "id": "bear_plank",
       "name": "Bear Plank",
       "reason": "v7.3.1 bodyweight expansion \u2014 exact visual pending"
+    },
+    {
+      "id": "bw_single_rdl",
+      "name": "Bodyweight Single-Leg Romanian Deadlift",
+      "reason": "v7.3.2 resistance-variant separation \u2014 exact bodyweight visual pending"
+    },
+    {
+      "id": "bw_stepup",
+      "name": "Bodyweight Step-Up",
+      "reason": "v7.3.2 resistance-variant separation \u2014 exact bodyweight visual pending"
+    },
+    {
+      "id": "bw_bss",
+      "name": "Bodyweight Bulgarian Split Squat",
+      "reason": "v7.3.2 resistance-variant separation \u2014 exact bodyweight visual pending"
+    },
+    {
+      "id": "bw_reverse_lunge",
+      "name": "Bodyweight Reverse Lunge",
+      "reason": "v7.3.2 resistance-variant separation \u2014 exact bodyweight visual pending"
+    },
+    {
+      "id": "bw_walking_lunge",
+      "name": "Bodyweight Walking Lunge",
+      "reason": "v7.3.2 resistance-variant separation \u2014 exact bodyweight visual pending"
+    },
+    {
+      "id": "bw_calf_raise",
+      "name": "Bodyweight Standing Calf Raise",
+      "reason": "v7.3.2 resistance-variant separation \u2014 exact bodyweight visual pending"
     }
   ],
   "visuals": [
@@ -880,7 +910,7 @@
   "avatar_packs": {
     "male": {
       "exact_visuals": 120,
-      "status": "120/150 \u2014 30 new expansion visuals pending"
+      "status": "120/156 exact visuals; all new resistance variants remain pending until a matching asset is created"
     },
     "female": {
       "exact_visuals": 0,
@@ -889,6 +919,38 @@
     "neutral": {
       "exact_visuals": 0,
       "status": "not yet created"
+    }
+  },
+  "variant_families": {
+    "single_rdl": {
+      "loaded": "single_rdl",
+      "bodyweight": "bw_single_rdl",
+      "rule": "Do not share exact-exercise visual mappings across resistance variants."
+    },
+    "stepup": {
+      "loaded": "stepup",
+      "bodyweight": "bw_stepup",
+      "rule": "Do not share exact-exercise visual mappings across resistance variants."
+    },
+    "bss": {
+      "loaded": "bss",
+      "bodyweight": "bw_bss",
+      "rule": "Do not share exact-exercise visual mappings across resistance variants."
+    },
+    "reverse_lunge": {
+      "loaded": "reverse_lunge",
+      "bodyweight": "bw_reverse_lunge",
+      "rule": "Do not share exact-exercise visual mappings across resistance variants."
+    },
+    "walking_lunge": {
+      "loaded": "walking_lunge",
+      "bodyweight": "bw_walking_lunge",
+      "rule": "Do not share exact-exercise visual mappings across resistance variants."
+    },
+    "calf_raise": {
+      "loaded": "calf_raise",
+      "bodyweight": "bw_calf_raise",
+      "rule": "Do not share exact-exercise visual mappings across resistance variants."
     }
   }
 }
