@@ -1,4 +1,4 @@
-const CACHE='adaptive-workout-coach-v7-3-5-mobile-interaction-polish';
+const CACHE='adaptive-workout-coach-v7-3-6-compact-coach-warmup';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>{
   self.skipWaiting();
