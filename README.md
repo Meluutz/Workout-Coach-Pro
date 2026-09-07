@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.3.7
+# Adaptive Workout Coach — v7.3.9
 
 GitHub-ready PWA build.
 
@@ -279,3 +279,31 @@ The internal programming/cycle engine, 156-exercise database, bodyweight hard co
 - Mobile safe-area spacing and sticky close/header controls are retained.
 - Desktop Coach Logic remains a centered modal.
 - Visible version text is synchronized to v7.3.7.
+
+
+## v7.3.8 — Plan Builder Mobile Auto-Scroll
+
+- Choosing **Muscle Priority** in onboarding now automatically scrolls to the muscle-priority controls that were just revealed.
+- Choosing **Build Your Own** automatically scrolls to the exercise-selection area.
+- Choosing **Fully manual** inside Build Your Own scrolls to the manual day/sets/reps/RPE controls.
+- Coach Suggested does not force a scroll.
+- The scroll targets the onboarding container itself for better iOS Safari reliability.
+
+
+## v7.3.9 — Percentage-First Muscle Priority
+
+Muscle Priority was rebuilt so the user's percentages are the primary programming signal.
+
+- Removed the old hidden 3%-per-muscle floor.
+- Direct weekly set allocation follows the requested percentages first.
+- Exercise selection is drawn from the requested muscle categories rather than being dominated by generic Upper/Lower/Full templates.
+- High and extreme specialization requests are visibly labeled.
+- Completely unselected major movement areas receive only a small maintenance dose:
+  - upper push if entirely absent
+  - back if absent
+  - quad/glute movement if absent
+  - hamstring/glute movement if absent
+- Direct weekly volume is capped by experience level. When a user's percentage would exceed that cap, the app shortens the program rather than filling the remaining time with unrelated exercises.
+- Preview now shows **Requested %**, **Programmed % of direct sets**, and direct working sets.
+- Generated priority workouts display the top requested focus in the workout title/context.
+- Equipment, protected areas, schedule, exercise avoidance and the user's original onboarding answers remain hard constraints.

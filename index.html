@@ -534,11 +534,37 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  }
 }
 
+
+/* v7.3.8 — onboarding builder auto-scroll */
+.builder-panel{scroll-margin-top:84px}
+@media(max-width:760px){
+ .builder-panel{scroll-margin-top:76px}
+}
+
+
+/* v7.3.9 — percentage-first Muscle Priority */
+.priority-summary-line{
+ display:flex;align-items:center;justify-content:space-between;gap:10px;
+ margin:11px 0 5px;padding:9px 10px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2);
+ font-size:12px
+}
+.priority-summary-line span{font-size:11px;color:var(--muted);text-align:right}
+.priority-preview-row>span{line-height:1.15}
+.priority-preview-row>span strong{display:block}
+.priority-preview-row>span small{display:block;margin-top:3px;font-size:9px;color:var(--muted);white-space:nowrap}
+@media(max-width:760px){
+ .priority-preview{padding:10px}
+ .preview-row.priority-preview-row{grid-template-columns:126px minmax(70px,1fr) 48px;gap:6px}
+ .priority-preview-row>span small{white-space:normal;line-height:1.25}
+ .priority-summary-line{align-items:flex-start;flex-direction:column;gap:3px}
+ .priority-summary-line span{text-align:left}
+}
+
 </style>
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><div class="app-mark" aria-hidden="true">AW</div><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 156-exercise expanded library</div><div class="build">v7.3.7 · 156 exercises</div></div></div>
+ <div class="brand-lockup"><div class="app-mark" aria-hidden="true">AW</div><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 156-exercise expanded library</div><div class="build">v7.3.9 · 156 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -659,7 +685,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.3.7</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.3.9</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -1086,8 +1112,7 @@ function renderPrioritySliders(){
  renderPriorityPreview();
 }
 function effectivePriorityShares(raw){
- const floored={};PRIORITY_MUSCLES.forEach(m=>floored[m]=Math.max(3,Number(raw?.[m]||0)));
- return normalizePriorities(floored);
+ return normalizePriorities(raw||DEFAULT_PRIORITIES);
 }
 function planVolume(basePlan){
  const vol={};PRIORITY_MUSCLES.forEach(m=>vol[m]=0);
@@ -1097,22 +1122,122 @@ function planVolume(basePlan){
  }));
  return vol;
 }
+
+function priorityWeeklySetBudget(p){
+ let per=p.duration<=45?12:p.duration<=60?15:p.duration<=75?17:20;
+ if(p.level==="Beginner")per=Math.max(10,per-2);
+ if(p.level==="Advanced")per+=1;
+ return per*Math.max(2,Number(p.days)||3);
+}
+function prioritySetCap(m,p){
+ const small=["Biceps","Triceps","Calves","Core"].includes(m);
+ if(p.level==="Beginner")return small?12:18;
+ if(p.level==="Advanced")return small?18:28;
+ return small?16:24;
+}
+function priorityMaintenanceTargets(requested){
+ const m={};PRIORITY_MUSCLES.forEach(x=>m[x]=0);
+ // Only preserve major movement coverage that is completely absent.
+ // Direct arm/calf/core maintenance is not forced because compounds already overlap.
+ if((requested.Chest||0)+(requested.Shoulders||0)+(requested.Triceps||0)===0)m.Chest=2;
+ if((requested.Back||0)===0)m.Back=2;
+ if((requested.Quads||0)+(requested.Glutes||0)===0)m.Quads=2;
+ if((requested.Hamstrings||0)+(requested.Glutes||0)===0)m.Hamstrings=2;
+ return m;
+}
+function prioritySetTargets(raw,p){
+ const requested=effectivePriorityShares(raw),weeklyBudget=priorityWeeklySetBudget(p);
+ const maintenance=priorityMaintenanceTargets(requested);
+ const maintenanceTotal=Object.values(maintenance).reduce((a,b)=>a+b,0);
+ const available=Math.max(8,weeklyBudget-maintenanceTotal);
+ let focusBudget=available,topMuscle=PRIORITY_MUSCLES[0],topPct=-1,limited=false;
+ PRIORITY_MUSCLES.forEach(m=>{
+   const pct=Number(requested[m]||0);if(pct>topPct){topPct=pct;topMuscle=m}
+   if(pct>0){
+     const ratio=pct/100,capBudget=prioritySetCap(m,p)/ratio;
+     if(capBudget<focusBudget){focusBudget=capBudget;limited=true}
+   }
+ });
+ focusBudget=Math.max(2,Math.floor(focusBudget));
+ const selected={};PRIORITY_MUSCLES.forEach(m=>selected[m]=0);
+ const positive=PRIORITY_MUSCLES.filter(m=>requested[m]>0);
+ positive.forEach(m=>selected[m]=Math.max(2,Math.round(focusBudget*(requested[m]/100))));
+ // Keep rounding close to the focus budget without breaking a 2-set minimum.
+ let selectedTotal=Object.values(selected).reduce((a,b)=>a+b,0);
+ while(selectedTotal>focusBudget){
+   const candidates=positive.filter(m=>selected[m]>2).sort((a,b)=>selected[b]-selected[a]);
+   if(!candidates.length)break;selected[candidates[0]]--;selectedTotal--;
+ }
+ while(selectedTotal<focusBudget&&positive.length){
+   const candidates=[...positive].sort((a,b)=>(requested[b]/Math.max(1,selected[b]))-(requested[a]/Math.max(1,selected[a])));
+   selected[candidates[0]]++;selectedTotal++;
+ }
+ const direct={};PRIORITY_MUSCLES.forEach(m=>direct[m]=(selected[m]||0)+(maintenance[m]||0));
+ const totalDirect=Object.values(direct).reduce((a,b)=>a+b,0)||1;
+ const programmed={};PRIORITY_MUSCLES.forEach(m=>programmed[m]=direct[m]/totalDirect*100);
+ return{requested,selected,maintenance,direct,programmed,weeklyBudget,focusBudget,maintenanceTotal,topMuscle,topPct,limited,totalDirect};
+}
+function priorityMusclePatterns(m,p){
+ const avoid=(p.avoid||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean);
+ return Object.entries(PRIMARY_CATEGORY)
+  .filter(([,cat])=>cat===m)
+  .map(([pat])=>pat)
+  .filter(pat=>EX.some(e=>e.pattern===pat&&allowed(e,p,avoid)));
+}
+function splitPrioritySets(total){
+ total=Math.max(0,Math.round(Number(total)||0));if(!total)return[];
+ const pieces=Math.max(1,Math.ceil(total/4)),base=Math.floor(total/pieces),extra=total-base*pieces,out=[];
+ for(let i=0;i<pieces;i++)out.push(base+(i<extra?1:0));
+ return out.filter(x=>x>0);
+}
+function priorityFrequency(sets,p){
+ if(sets>=12)return Math.min(Number(p.days)||3,3);
+ if(sets>=6)return Math.min(Number(p.days)||3,2);
+ return 1;
+}
+function splitAcrossFrequency(total,freq){
+ const base=Math.floor(total/freq),extra=total-base*freq;
+ return Array.from({length:freq},(_,i)=>base+(i<extra?1:0)).filter(Boolean);
+}
+function priorityDayType(items){
+ let upper=0,lower=0;
+ items.forEach(it=>{
+   const m=it.priorityMuscle||exerciseCategory(EXMAP[it.id]);
+   if(["Chest","Back","Shoulders","Biceps","Triceps"].includes(m))upper+=Number(it.baseSets)||0;
+   if(["Quads","Hamstrings","Glutes","Calves"].includes(m))lower+=Number(it.baseSets)||0;
+ });
+ if(upper>lower*1.5)return"upper";
+ if(lower>upper*1.5)return"lower";
+ return"full";
+}
+function priorityDirectPlanSets(basePlan){
+ const out={};PRIORITY_MUSCLES.forEach(m=>out[m]=0);
+ (basePlan||[]).forEach(d=>(d.items||[]).forEach(it=>{
+   const m=it.priorityMuscle||exerciseCategory(EXMAP[it.id]);
+   if(out[m]!==undefined)out[m]+=Number(it.baseSets)||0;
+ }));
+ return out;
+}
+
 function renderPriorityPreview(){
  const box=$("#priorityPreview");if(!box||!builderDraft)return;
- const vals=builderDraft.priorities,max=Math.max(...Object.values(vals),1),highest=Math.max(...Object.values(vals));
- const low=PRIORITY_MUSCLES.filter(m=>vals[m]<=2);
- const warn=$("#priorityWarning");
+ const vals=effectivePriorityShares(builderDraft.priorities),highest=Math.max(...Object.values(vals)),top=PRIORITY_MUSCLES.sort((a,b)=>vals[b]-vals[a])[0];
+ const draft=formProfileDraft(),target=prioritySetTargets(vals,draft),warn=$("#priorityWarning");
  if(warn){
-  const specialized=highest>=45||low.length>=4;
-  warn.classList.toggle("hidden",!specialized);
-  warn.textContent=specialized?"Very high specialization selected. The coach will still preserve a small maintenance dose for low-priority major muscle groups when the weekly split allows it.":"";
+   const extreme=highest>=80,specialized=highest>=50;
+   warn.classList.toggle("hidden",!specialized);
+   if(extreme)warn.textContent=`Extreme specialization: ${top} ${highest}% requested. The plan will make ${top} the dominant focus, preserve only a small maintenance dose for completely unselected major movement areas, and cap direct weekly volume rather than filling extra time with unrelated exercises.`;
+   else if(specialized)warn.textContent=`Specialization mode: ${top} is the dominant focus. Exercise and direct-set allocation follows your percentages; zero-priority major movement areas receive only a small maintenance dose when needed.`;
  }
  let previewPlan=[];
- try{const p={...formProfileDraft(),planBuilder:{mode:"priority",priorities:{...vals}}};previewPlan=buildPriorityPlan(p)}catch{}
- const vol=planVolume(previewPlan),vmax=Math.max(...Object.values(vol),1);
+ try{const p={...draft,planBuilder:{mode:"priority",priorities:{...vals}}};previewPlan=buildPriorityPlan(p)}catch{}
+ const direct=priorityDirectPlanSets(previewPlan),directTotal=Object.values(direct).reduce((a,b)=>a+b,0)||1;
+ const programmed={};PRIORITY_MUSCLES.forEach(m=>programmed[m]=direct[m]/directTotal*100);
  const sorted=[...PRIORITY_MUSCLES].sort((a,b)=>vals[b]-vals[a]);
- box.innerHTML=`<div class="row"><div><strong>Estimated weekly emphasis</strong><div class="tiny">Approximate effective working sets after exercise overlap. Percentages guide priority rather than forcing literal set allocation.</div></div><span class="builder-chip">${formProfileDraft().duration} min target</span></div>
- ${sorted.map(m=>`<div class="preview-row"><span>${m}</span><div class="preview-bar"><div style="width:${Math.round((vol[m]||0)/vmax*100)}%"></div></div><strong>${Math.round((vol[m]||0)*10)/10}</strong></div>`).join("")}`;
+ const capNote=target.limited?` Direct weekly volume is capped rather than replacing unused capacity with unrelated exercises.`:"";
+ box.innerHTML=`<div class="row"><div><strong>Requested vs programmed emphasis</strong><div class="tiny">Your percentages drive direct exercise/set allocation. Compound overlap adds secondary stimulus.${capNote}</div></div><span class="builder-chip">${draft.duration} min available</span></div>
+ <div class="priority-summary-line"><strong>${esc(target.topMuscle)} ${target.topPct}% requested</strong><span>${Math.round(programmed[target.topMuscle]||0)}% of programmed direct sets</span></div>
+ ${sorted.map(m=>`<div class="preview-row priority-preview-row"><span><strong>${m}</strong><small>${vals[m]}% requested · ${Math.round(programmed[m]||0)}% programmed</small></span><div class="preview-bar"><div style="width:${Math.round(programmed[m]||0)}%"></div></div><strong>${direct[m]||0} sets</strong></div>`).join("")}`;
 }
 function allowedForCurrentForm(e){
  const p=formProfileDraft(),avoid=(p.avoid||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean);
@@ -1314,35 +1439,52 @@ function buildCoachPlan(p){
  return generated;
 }
 function buildPriorityPlan(p){
- const cfg=goalConfig(p.goal,p.level),types=DATA.SCHEDULE[p.days],days=(p.weekdays?.length===p.days?p.weekdays:defaultWeekdays(p.days)),cap=planCapacity(p);
- const raw=p.planBuilder?.priorities||builderDraft?.priorities||DEFAULT_PRIORITIES,prio=effectivePriorityShares(raw);
- const loads={};PRIORITY_MUSCLES.forEach(m=>loads[m]=0);
- const patFreq={},exFreq={},generated=[];
- types.forEach((type,i)=>{
-  const usedPatterns=new Set(),usedExercises=new Set(),items=[],template=templateFor(type,p);
-  for(let slot=0;slot<Math.min(cap,template.length);slot++){
-   let best=null,bestScore=-1e9;
-   template.forEach((pat,idx)=>{
-    if(usedPatterns.has(pat))return;
-    const map=DATA.MUSCLE_MAP[pat]||{};let score=0,coeffSum=0;
-    Object.entries(map).forEach(([m,f])=>{
-     const need=(prio[m]||3)/10/(1+(loads[m]||0)/3);
-     score+=f*need;coeffSum+=f;
-    });
-    score+=(1-idx/Math.max(1,template.length))*.45;
-    if(slot<2&&COMPOUND_PATTERNS.has(pat))score+=.85;
-    score-=(patFreq[pat]||0)*.18;
-    if(score>bestScore){bestScore=score;best=pat}
+ const cfg=goalConfig(p.goal,p.level),days=(p.weekdays?.length===p.days?p.weekdays:defaultWeekdays(p.days));
+ const raw=p.planBuilder?.priorities||builderDraft?.priorities||DEFAULT_PRIORITIES,targets=prioritySetTargets(raw,p);
+ const generated=days.map(day=>({weekday:day,type:"full",title:`${day} · Priority`,items:[],notes:""}));
+ const daySets=days.map(()=>0),usedByDay=days.map(()=>new Set()),exFreq={},patternCursor={};
+ const tasks=PRIORITY_MUSCLES
+   .filter(m=>targets.direct[m]>0)
+   .map(m=>({m,sets:targets.direct[m],maintenance:(targets.maintenance[m]||0)>0&&targets.selected[m]===0,pct:targets.requested[m]||0}))
+   .sort((a,b)=>(b.maintenance?0:1)-(a.maintenance?0:1)||b.pct-a.pct||b.sets-a.sets);
+
+ tasks.forEach(task=>{
+   const patterns=priorityMusclePatterns(task.m,p);if(!patterns.length)return;
+   const freq=priorityFrequency(task.sets,p),chunks=splitAcrossFrequency(task.sets,freq),muscleDays=new Set();
+   chunks.forEach(chunk=>{
+     const candidates=days.map((_,i)=>i).filter(i=>!muscleDays.has(i));
+     const dayIdx=(candidates.length?candidates:days.map((_,i)=>i)).sort((a,b)=>daySets[a]-daySets[b])[0];
+     muscleDays.add(dayIdx);
+     splitPrioritySets(chunk).forEach(piece=>{
+       let ex=null,pat=null;
+       for(let tries=0;tries<patterns.length;tries++){
+         const idx=((patternCursor[task.m]||0)+tries)%patterns.length,candidatePat=patterns[idx];
+         const candidate=pickBest(candidatePat,p,usedByDay[dayIdx],exFreq);
+         if(candidate){ex=candidate;pat=candidatePat;patternCursor[task.m]=(idx+1)%patterns.length;break}
+       }
+       if(!ex)return;
+       const primary=COMPOUND_PATTERNS.has(pat)&&generated[dayIdx].items.length<2;
+       const item=makePlanItem(ex,p,cfg,primary,0);
+       item.baseSets=Math.max(1,Math.min(4,piece));
+       item.priorityMuscle=task.m;
+       item.priorityMaintenance=!!task.maintenance;
+       item.requestedPriority=task.pct;
+       generated[dayIdx].items.push(item);
+       daySets[dayIdx]+=item.baseSets;
+     });
    });
-   if(!best)break;
-   const e=pickBest(best,p,usedExercises,exFreq);usedPatterns.add(best);if(!e)continue;
-   const map=DATA.MUSCLE_MAP[best]||{},coeff=Object.values(map).reduce((a,b)=>a+b,0)||1;
-   const avg=Object.entries(map).reduce((s,[m,f])=>s+(raw[m]||0)*f,0)/coeff;
-   const setBoost=avg>=16?1:avg<=5?-1:0,primary=slot<2&&COMPOUND_PATTERNS.has(best);
-   const item=makePlanItem(e,p,cfg,primary,setBoost);items.push(item);patFreq[best]=(patFreq[best]||0)+1;
-   Object.entries(map).forEach(([m,f])=>loads[m]=(loads[m]||0)+item.baseSets*f);
-  }
-  generated.push({weekday:days[i],type,title:`${days[i]} · ${type[0].toUpperCase()+type.slice(1)} · Priority`,items,notes:""});
+ });
+
+ generated.forEach((d,i)=>{
+   d.items.sort((a,b)=>{
+     const am=a.priorityMaintenance?1:0,bm=b.priorityMaintenance?1:0;if(am!==bm)return am-bm;
+     const ap=Number(a.requestedPriority||0),bp=Number(b.requestedPriority||0);if(ap!==bp)return bp-ap;
+     return (COMPOUND_PATTERNS.has(EXMAP[b.id]?.pattern)?1:0)-(COMPOUND_PATTERNS.has(EXMAP[a.id]?.pattern)?1:0);
+   });
+   d.type=priorityDayType(d.items);
+   const focus=targets.topPct>=40?`${targets.topMuscle} Priority`:"Muscle Priority";
+   d.title=`${days[i]} · ${focus}`;
+   d.prioritySummary={requested:targets.requested,programmed:targets.programmed,topMuscle:targets.topMuscle,topPct:targets.topPct};
  });
  return generated;
 }
@@ -1505,7 +1647,9 @@ function renderToday(){
    $("#dayTitle").textContent="No plan on this browser";$("#dayFocus").textContent="Build or import a plan to begin.";return
  }
  renderCycleHeader();renderDayTabs();
- const d=plan()[currentDay];$("#dayTitle").textContent=d.title;$("#dayFocus").textContent=`${profile().goal.replace("both","muscle + strength")} · ${profile().level} · ${profile().duration} min · ${equipmentChoiceLabel(profile().equipment)}`;
+ const d=plan()[currentDay];$("#dayTitle").textContent=d.title;
+ const pb=profile().planBuilder||{},priorityText=pb.mode==="priority"&&d.prioritySummary?` · ${d.prioritySummary.topMuscle} ${d.prioritySummary.topPct}% requested`:"";
+ $("#dayFocus").textContent=`${profile().goal.replace("both","muscle + strength")} · ${profile().level} · ${profile().duration} min · ${equipmentChoiceLabel(profile().equipment)}${priorityText}`;
  const box=$("#exerciseList");box.innerHTML="";
  d.items.forEach((item,slot)=>{
    const ex=EXMAP[item.id],t=effectiveTarget(item),log=exLog(currentDay,slot,t.sets),rec=suggestion(item),prev=lastPerformanceSummary(item.id);
@@ -1711,6 +1855,17 @@ function showOnboarding(edit=false,startStep=1){
 function scrollOnboardingTop(){
  requestAnimationFrame(()=>{const scroller=$(".onboard-inner");if(scroller)scroller.scrollTo({top:0,left:0,behavior:"auto"})});
 }
+
+function scrollOnboardingToPanel(selector){
+ requestAnimationFrame(()=>{
+  const scroller=$(".onboard-inner"),panel=$(selector);if(!scroller||!panel)return;
+  const scrollerRect=scroller.getBoundingClientRect(),panelRect=panel.getBoundingClientRect();
+  const sticky=$("#obProgressTitle")?.closest(".onboard-progress"),stickyH=sticky?.getBoundingClientRect().height||0;
+  const target=scroller.scrollTop+(panelRect.top-scrollerRect.top)-stickyH-10;
+  scroller.scrollTo({top:Math.max(0,target),left:0,behavior:"smooth"});
+ });
+}
+
 function renderOb(){
  $$(".step").forEach(s=>s.classList.toggle("active",Number(s.dataset.step)===obStep));
  const stepNames=["Goal & experience","Schedule","Body profile","Equipment","Preferences","Plan builder"];
@@ -1741,7 +1896,7 @@ function saveOnboarding(){
  state.cycle={number:1,week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[]};generatePlan(true);save();switchView("today");$("#onboarding").classList.add("hidden");renderAll();toast("Personalized plan created");
 }
 function exportData(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-3-7-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-3-9-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 
 
@@ -1755,10 +1910,15 @@ document.addEventListener("change",e=>{
  }
  if(e.target.name==="equipment"){renderEquipmentCoverageHint();if(obStep===6)renderBuilderUI();return}
  if(e.target.name==="planBuilder"){
-  builderDraft.mode=e.target.value;renderBuilderUI();return;
+  builderDraft.mode=e.target.value;renderBuilderUI();
+  if(builderDraft.mode==="priority")scrollOnboardingToPanel("#priorityBuilder");
+  if(builderDraft.mode==="custom")scrollOnboardingToPanel("#customBuilder");
+  return;
  }
  if(e.target.name==="customProgramming"){
-  builderDraft.customMode=e.target.value;renderManualAssignments();return;
+  builderDraft.customMode=e.target.value;renderManualAssignments();
+  if(builderDraft.customMode==="manual")scrollOnboardingToPanel("#manualAssignments");
+  return;
  }
  if(e.target.classList.contains("customExercise")){
   const id=e.target.value,p=formProfileDraft(),max=p.days*planCapacity(p);
