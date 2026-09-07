@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.3.9
+# Adaptive Workout Coach — v7.4.0
 
 GitHub-ready PWA build.
 
@@ -307,3 +307,38 @@ Muscle Priority was rebuilt so the user's percentages are the primary programmin
 - Preview now shows **Requested %**, **Programmed % of direct sets**, and direct working sets.
 - Generated priority workouts display the top requested focus in the workout title/context.
 - Equipment, protected areas, schedule, exercise avoidance and the user's original onboarding answers remain hard constraints.
+
+
+## v7.4.0 — Long-Term Coaching Intelligence
+
+The coach now evaluates multiple sessions rather than treating each workout as an isolated event.
+
+### Exercise progression
+- Uses completed working sets, reps, load and RPE.
+- Detects progressing, stable, plateau-watch and regression trends over comparable recent exposures.
+- Recommends load increases only when the top of the rep range is completed within the target effort.
+- Keeps load and builds reps when appropriate.
+- Bodyweight exercises prioritize harder variations, tempo/pauses and ROM when no external load is being used.
+- Repeated performance decline plus high effort can produce a temporary one-set reduction recommendation.
+
+### User-controlled plan changes
+- Recommendations are shown before changing the program.
+- The user can apply one recommendation or apply all actionable changes.
+- Applied changes use the existing Undo system.
+- Recommendations that only require execution intent (hold load, add reps, progress bodyweight variation) do not silently modify targets.
+
+### Fatigue and deload intelligence
+- Final program week is no longer an automatic deload.
+- The coach looks for accumulated evidence from recent readiness, completion, high-RPE exposure, joint/tendon discomfort and multi-exercise regression.
+- A deload is suggested only after enough accumulated data support it.
+- A user-applied deload reduces effective working sets to about 60% and target effort to RPE 6–7 for that week.
+- The deload ends automatically when the week advances.
+
+### Weekly Coach Review
+- Program page includes a compact Long-Term Coach card.
+- Review panel shows progression, plateau and fatigue signals.
+- Weekly summaries retain coach status and trend counts.
+- Muscle Priority allocations remain locked to the user's requested percentages; coaching does not rebalance the plan back toward a generic template.
+
+### Local-first
+All coaching data remains inside the existing local app state and is included in Export/Import backups.

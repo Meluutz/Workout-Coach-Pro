@@ -560,11 +560,106 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  .priority-summary-line span{text-align:left}
 }
 
+
+/* v7.4.0 — Long-Term Coaching Intelligence */
+.coach-intelligence-card{padding:14px 14px 13px}
+.coach-intel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.coach-status-badge{
+ display:inline-flex;align-items:center;min-height:26px;padding:4px 8px;border-radius:999px;
+ border:1px solid var(--line);background:var(--surface-2);font-size:10px;font-weight:850;white-space:nowrap
+}
+.coach-status-badge.good{color:var(--good)}
+.coach-status-badge.caution{color:var(--warn)}
+.coach-status-badge.watch{color:var(--warn)}
+.coach-status-badge.stable{color:var(--blue)}
+.coach-status-badge.learning{color:var(--muted)}
+.coach-intel-grid{
+ display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:12px 0 9px
+}
+.coach-intel-grid>div{padding:8px 6px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);text-align:center}
+.coach-intel-grid strong{display:block;font-size:17px;line-height:1}
+.coach-intel-grid span{display:block;margin-top:5px;font-size:9px;color:var(--muted);line-height:1.15}
+.coach-intel-priority{
+ display:flex;justify-content:space-between;gap:8px;padding:7px 9px;border-radius:9px;
+ background:var(--soft);font-size:10px
+}
+.coach-intel-priority span{color:var(--muted)}
+.coach-intel-note{margin:9px 0}
+.coach-review-open{width:100%;min-height:40px!important}
+
+.sheet.coach-review-sheet{
+ z-index:350!important;align-items:stretch!important;padding:0!important;background:var(--bg)!important;
+ top:var(--app-vvtop)!important;bottom:auto!important;height:var(--app-vvh)!important;max-height:var(--app-vvh)!important
+}
+.sheet.coach-review-sheet .sheetcard{
+ width:100%!important;max-width:none!important;height:var(--app-vvh)!important;max-height:var(--app-vvh)!important;
+ border-radius:0!important;border:0!important;box-shadow:none!important;overflow-y:auto!important;overflow-x:hidden!important;
+ -webkit-overflow-scrolling:touch;padding:calc(14px + env(safe-area-inset-top)) 12px calc(44px + env(safe-area-inset-bottom))!important
+}
+.sheet.coach-review-sheet .sheetcard>.row:first-child{
+ position:sticky;z-index:20;top:calc(-14px - env(safe-area-inset-top))!important;
+ margin:calc(-14px - env(safe-area-inset-top)) 0 10px!important;
+ padding:calc(14px + env(safe-area-inset-top)) 0 11px!important;
+ background:color-mix(in srgb,var(--surface) 98%,transparent);backdrop-filter:blur(14px)
+}
+.coach-review-shell{padding-bottom:54px}
+.coach-review-hero{padding:4px 0 13px;border-bottom:1px solid var(--line)}
+.coach-review-hero h3{font-size:17px;line-height:1.35;margin:9px 0}
+.coach-review-stats{display:flex;gap:7px;flex-wrap:wrap}
+.coach-review-stats span{font-size:10px;padding:5px 7px;border:1px solid var(--line);border-radius:999px;background:var(--surface-2)}
+.coach-review-priority,.coach-review-explain{
+ margin-top:10px;padding:9px 10px;border-radius:11px;font-size:11px;line-height:1.4
+}
+.coach-review-priority{background:var(--soft);border:1px solid var(--line)}
+.coach-review-explain{color:var(--muted);border:1px dashed var(--line)}
+.coach-review-list{display:grid;gap:9px;margin-top:12px}
+.coach-review-item{padding:11px;border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:13px;background:var(--surface-2)}
+.coach-review-item.good{border-left-color:var(--good)}
+.coach-review-item.caution{border-left-color:var(--warn)}
+.coach-review-item.watch{border-left-color:var(--warn)}
+.coach-review-item.learning{border-left-color:var(--muted)}
+.coach-review-item-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.coach-review-item-head>div{display:flex;align-items:center;gap:7px;min-width:0}
+.coach-review-item-head strong{font-size:13px}
+.coach-rec-tag{
+ display:inline-flex;padding:3px 6px;border-radius:999px;background:var(--soft);
+ color:var(--muted);font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.04em
+}
+.coach-review-item p{font-size:12px;line-height:1.42;margin:8px 0}
+.coach-review-item details{font-size:11px;color:var(--muted);margin-top:7px}
+.coach-review-item summary{cursor:pointer;font-weight:750;color:var(--text)}
+.coach-review-item details ul{padding-left:18px;margin:7px 0 2px}
+.coach-review-item details li{margin:4px 0}
+.applyCoachRec{width:100%;margin-top:9px;min-height:36px!important}
+.coach-applied{margin-top:8px;padding:7px;text-align:center;border-radius:9px;background:var(--soft);font-size:10px;font-weight:800;color:var(--good)}
+.coach-review-actions{
+ position:sticky;bottom:calc(-44px - env(safe-area-inset-bottom));z-index:18;
+ display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;
+ padding:10px 0 calc(12px + env(safe-area-inset-bottom));
+ background:color-mix(in srgb,var(--surface) 97%,transparent);backdrop-filter:blur(14px)
+}
+.coach-review-actions button{min-height:42px!important}
+.weekly-coach-history .row{align-items:center}
+.coach-mini-status{font-size:9px;padding:3px 6px;border-radius:999px;background:var(--soft);color:var(--muted)}
+.weekly-coach-note{margin-top:6px;font-size:11px;line-height:1.4}
+
+@media(max-width:390px){
+ .coach-intel-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(min-width:761px){
+ .sheet.coach-review-sheet{align-items:center!important;padding:24px!important;background:rgba(15,23,42,.52)!important}
+ .sheet.coach-review-sheet .sheetcard{
+  width:min(720px,92vw)!important;height:auto!important;max-height:86vh!important;border-radius:20px!important;
+  border:1px solid var(--line)!important;box-shadow:var(--shadow-md)!important;padding:16px!important
+ }
+ .sheet.coach-review-sheet .sheetcard>.row:first-child{top:-16px!important;margin:-16px 0 10px!important;padding:16px 0 10px!important}
+}
+
 </style>
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><div class="app-mark" aria-hidden="true">AW</div><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 156-exercise expanded library</div><div class="build">v7.3.9 · 156 exercises</div></div></div>
+ <div class="brand-lockup"><div class="app-mark" aria-hidden="true">AW</div><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 156-exercise expanded library</div><div class="build">v7.4.0 · 156 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -615,6 +710,15 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  <div class="row program-summary-row"><div><div class="label">Program</div><h2 style="margin:6px 0" id="cycleHeading"></h2></div><button id="advanceWeekBtn" class="primary">Advance week</button></div>
  <p id="cycleAdvice" class="muted"></p>
  <div class="progress"><div id="cycleProgress"></div></div>
+</section>
+
+<section class="card coach-intelligence-card">
+ <div class="coach-intel-head">
+  <div><div class="label">Long-Term Coach</div><h3 style="margin:5px 0 0">Training intelligence</h3></div>
+  <span id="coachIntelStatus" class="coach-status-badge">Learning</span>
+ </div>
+ <div id="coachIntelSummary" class="coach-intel-summary"></div>
+ <button id="openCoachReviewBtn" class="primary coach-review-open">Review recommendations</button>
 </section>
 
 <section class="card plan-overview-card">
@@ -685,7 +789,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.3.9</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.4.0</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -865,7 +969,8 @@ function structuralSnapshot(label){
       profile:state.profile||null,
       plan:state.plan||[],
       cycle:state.cycle||null,
-      weekLogs:state.weekLogs||{}
+      weekLogs:state.weekLogs||{},
+      coaching:state.coaching||{}
     }))
   };
 }
@@ -882,6 +987,7 @@ function applySnapshot(snap){
   state.plan=snap.data.plan;
   state.cycle=snap.data.cycle;
   state.weekLogs=snap.data.weekLogs;
+  state.coaching=snap.data.coaching||{};
   currentDay=Math.min(Number(snap.currentDay)||0,Math.max(0,(state.plan?.length||1)-1));
   save();
 }
@@ -1522,7 +1628,10 @@ function generatePlan(preserveHistory=true){
  if(b.mode==="priority")generated=buildPriorityPlan(p);
  else if(b.mode==="custom")generated=b.customMode==="manual"?buildCustomManualPlan(p):buildCustomCoachPlan(p);
  else generated=buildCoachPlan(p);
- state.plan=generated;state.weekLogs={};currentDay=0;if(!preserveHistory)state.history=[];save();
+ state.plan=generated;state.weekLogs={};currentDay=0;if(!preserveHistory)state.history=[];
+ state.coaching??={};state.coaching.planRevision=(Number(state.coaching.planRevision)||0)+1;
+ state.coaching.applied={};state.coaching.deloadActive=false;state.coaching.deloadCycle=null;state.coaching.deloadWeek=null;
+ save();
 }
 function startCycle(length=profile()?.cycleLength||6,keepExercises=true){
  const oldPlan=plan();
@@ -1531,9 +1640,11 @@ function startCycle(length=profile()?.cycleLength||6,keepExercises=true){
  if(keepExercises&&oldPlan.length){
    oldPlan.forEach(d=>d.items.forEach(it=>{it.userSetDelta=0;it.userRepDelta=0;it.userRpe=null;it.userLoad=null}));
  }else generatePlan(true);
+ state.coaching??={};state.coaching.deloadActive=false;state.coaching.deloadCycle=null;state.coaching.deloadWeek=null;state.coaching.applied={};
  save();
 }
-function isDeload(){return cycle()&&cycle().week===cycle().length}
+function coachingState(){state.coaching??={};state.coaching.applied??={};state.coaching.planRevision=Number(state.coaching.planRevision)||0;return state.coaching}
+function isDeload(){const cs=coachingState(),c=cycle();return !!(cs.deloadActive&&c&&cs.deloadCycle===c.number&&cs.deloadWeek===c.week)}
 function phaseName(){if(isDeload())return"Deload";const w=cycle()?.week||1,l=cycle()?.length||6;if(w===1)return"Base";if(w>=l-1)return"Peak build";return"Build"}
 
 function shiftedRange(repString,delta){
@@ -1575,10 +1686,195 @@ function highRpe(s){const n=String(s).match(/\d+(?:\.\d+)?/g)?.map(Number)||[8];
 function e1rm(w,r){w=Number(w);r=Number(r);return w>0&&r>0?w*(1+r/30):0}
 function previousRecords(exId){return history().flatMap(s=>(s.exercises||[]).filter(x=>x.id===exId))}
 function lastRecord(exId){const a=previousRecords(exId);return a.at(-1)||null}
+
+function exerciseHistoryRows(exId){
+ return history().flatMap(session=>{
+   const rec=(session.exercises||[]).find(x=>x.id===exId);return rec?[{session,record:rec}]:[];
+ }).sort((a,b)=>new Date(a.session.date||0)-new Date(b.session.date||0));
+}
+function recordPerformanceMetric(row){
+ const rec=row?.record||{},valid=(rec.sets||[]).filter(s=>s.done!==false&&Number(s.reps)>0);
+ if(!valid.length)return null;
+ const loaded=valid.some(s=>Number(s.weight)>0);
+ const metric=loaded?Math.max(...valid.map(s=>e1rm(s.weight,s.reps))):valid.reduce((a,s)=>a+Number(s.reps||0),0)/valid.length;
+ const rpes=valid.map(s=>Number(s.rpe)).filter(x=>x>0);
+ const targetSets=Math.max(1,Number(rec.target?.sets)||valid.length);
+ return{
+   metric,kind:loaded?"e1rm":"avgReps",avgRpe:rpes.length?rpes.reduce((a,b)=>a+b,0)/rpes.length:0,
+   completion:Math.min(1,valid.length/targetSets),validSets:valid.length,
+   avgReps:valid.reduce((a,s)=>a+Number(s.reps||0),0)/valid.length,
+   maxWeight:Math.max(...valid.map(s=>Number(s.weight)||0)),
+   date:row.session.date,week:row.session.week,cycleNumber:row.session.cycleNumber
+ };
+}
+function exerciseTrend(exId){
+ const metrics=exerciseHistoryRows(exId).map(recordPerformanceMetric).filter(Boolean).slice(-4);
+ if(metrics.length<2)return{status:"learning",label:"Learning",samples:metrics.length,changePct:null,rpeChange:null,metrics};
+ const comparable=metrics.filter(x=>x.kind===metrics.at(-1).kind),first=comparable[0],last=comparable.at(-1);
+ if(comparable.length<2||!first?.metric)return{status:"learning",label:"Learning",samples:metrics.length,changePct:null,rpeChange:null,metrics};
+ const changePct=(last.metric-first.metric)/Math.max(.001,Math.abs(first.metric))*100;
+ const rpeChange=(last.avgRpe&&first.avgRpe)?last.avgRpe-first.avgRpe:0;
+ const avgCompletion=comparable.reduce((a,b)=>a+b.completion,0)/comparable.length;
+ let status="stable",label="Stable";
+ if(changePct>=2&&rpeChange<=1){status="progressing";label="Progressing"}
+ else if(comparable.length>=3&&((changePct<=-3&&rpeChange>=.4)||changePct<=-5)){status="regressing";label="Regression"}
+ else if(comparable.length>=3&&Math.abs(changePct)<1.5&&avgCompletion>=.8){status="stalled";label="Plateau watch"}
+ return{status,label,samples:comparable.length,changePct,rpeChange,avgCompletion,metrics:comparable};
+}
+function recoveryEntryScore(r){
+ if(!r)return null;
+ return Math.round(((Number(r.recovery||0)+Number(r.sleep||0)+Number(r.energy||0)+(11-Number(r.stress||0))+(11-Number(r.joint||0)))/5)*10)/10;
+}
+function trainingFatigueProfile(){
+ const c=cycle(),cycleSessions=history().filter(s=>s.cycleNumber===c?.number).sort((a,b)=>new Date(a.date||0)-new Date(b.date||0)),recent=cycleSessions.slice(-4);
+ const recents=recoveryEntries().slice(-4),readinesses=recents.map(recoveryEntryScore).filter(x=>x!==null);
+ const lowReadiness=readinesses.slice(-3).filter(x=>x<5.5).length;
+ const latestRec=recents.at(-1)||null;
+ const uniqueIds=[...new Set(plan().flatMap(d=>(d.items||[]).map(it=>it.id)))];
+ const trends=uniqueIds.map(id=>exerciseTrend(id)),regressing=trends.filter(t=>t.status==="regressing").length,stalled=trends.filter(t=>t.status==="stalled").length;
+ const avgCompletion=recent.length?recent.reduce((a,s)=>a+Number(s.completion||0),0)/recent.length:100;
+ const rpeSets=recent.flatMap(s=>(s.exercises||[]).flatMap(x=>(x.sets||[]).filter(z=>z.done!==false&&Number(z.rpe)>0)));
+ const highRpeRate=rpeSets.length?rpeSets.filter(s=>Number(s.rpe)>=9.5).length/rpeSets.length:0;
+ const signals=[];
+ if(lowReadiness>=2)signals.push(`${lowReadiness} recent low-readiness check-ins`);
+ if(regressing>=2)signals.push(`${regressing} exercises trending down`);
+ if(recent.length>=3&&avgCompletion<75)signals.push(`recent completion averaging ${Math.round(avgCompletion)}%`);
+ if(rpeSets.length>=8&&highRpeRate>=.45)signals.push(`${Math.round(highRpeRate*100)}% of recent logged sets at RPE 9.5+`);
+ if(Number(latestRec?.joint||0)>=7)signals.push(`joint/tendon discomfort ${latestRec.joint}/10`);
+ let score=0;
+ if(lowReadiness>=2)score+=2;if(regressing>=2)score+=2;if(recent.length>=3&&avgCompletion<75)score+=1;
+ if(rpeSets.length>=8&&highRpeRate>=.45)score+=1;if(Number(latestRec?.joint||0)>=7)score+=2;
+ const deloadRecommended=cycleSessions.length>=4&&score>=3&&(lowReadiness>=2||regressing>=2||(recent.length>=3&&avgCompletion<75));
+ return{score,signals,signalCount:signals.length,deloadRecommended,cycleSessions:cycleSessions.length,recentSessions:recent.length,avgCompletion,highRpeRate,lowReadiness,regressing,stalled};
+}
+function recommendationId(dayIdx,slot,kind,value=""){
+ const c=cycle(),cs=coachingState();return `${c?.number||0}:${c?.week||0}:${cs.planRevision||0}:${dayIdx}:${slot}:${kind}:${value}`;
+}
+function longTermExerciseRecommendation(item,dayIdx,slot,fatigue){
+ const ex=EXMAP[item.id],target=effectiveTarget(item),trend=exerciseTrend(item.id),last=lastRecord(item.id);
+ const base={dayIdx,slot,exId:item.id,name:ex?.name||item.id,trend,priorityMuscle:item.priorityMuscle||exerciseCategory(ex),action:null,reasons:[]};
+ if(!last)return{...base,id:recommendationId(dayIdx,slot,"baseline"),kind:"baseline",tone:"learning",title:"Establish baseline",text:`${ex.name}: complete a clean baseline inside ${target.reps} reps at RPE ${target.rpe}.`,reasons:["No completed performance history exists for this exercise yet."]};
+ const valid=(last.sets||[]).filter(s=>s.done!==false&&Number(s.reps)>0);
+ if(!valid.length)return{...base,id:recommendationId(dayIdx,slot,"baseline2"),kind:"baseline",tone:"learning",title:"Re-establish baseline",text:`${ex.name}: prior data are incomplete; hold the programmed target and log the working sets.`,reasons:["The most recent saved exposure has no usable completed sets."]};
+ const [lo,hi]=parseRange(target.reps),maxR=highRpe(target.rpe),rpes=valid.map(s=>Number(s.rpe)).filter(x=>x>0);
+ const avgRpe=rpes.length?rpes.reduce((a,b)=>a+b,0)/rpes.length:0,maxW=Math.max(...valid.map(s=>Number(s.weight)||0));
+ const allTop=valid.length>=Math.min(target.sets,2)&&valid.every(s=>Number(s.reps)>=hi),missed=valid.some(s=>Number(s.reps)<lo);
+ const bodyweightNoLoad=(ex.equipment||[]).includes("bodyweight")&&maxW<=0;
+ if(fatigue?.deloadRecommended)return{...base,id:recommendationId(dayIdx,slot,"hold-fatigue"),kind:"hold",tone:"caution",title:"Hold progression",text:`${ex.name}: keep the current target while the global fatigue recommendation is reviewed.`,reasons:["Several accumulated fatigue signals are active, so load progression is temporarily deprioritized."]};
+ if(trend.status==="regressing"&&(missed||(avgRpe&&avgRpe>maxR+.5))){
+   const canReduce=target.sets>2;
+   return{...base,id:recommendationId(dayIdx,slot,canReduce?"set-reduce":"hold",canReduce?-1:""),kind:canReduce?"set":"hold",tone:"caution",title:"Fatigue adjustment",
+     text:canReduce?`${ex.name}: reduce ${target.sets} → ${target.sets-1} working sets next exposure and hold load.`:`${ex.name}: hold the current target until performance stabilizes.`,
+     action:canReduce?{kind:"set",delta:-1}:null,
+     reasons:[`Multi-session performance trend is ${trend.changePct?.toFixed(1)}%.`,avgRpe?`Latest average RPE is ${avgRpe.toFixed(1)}.`:"Latest effort data are limited.","The recommendation reduces fatigue before considering another load increase."]};
+ }
+ if(allTop&&(!avgRpe||avgRpe<=maxR)){
+   if(bodyweightNoLoad)return{...base,id:recommendationId(dayIdx,slot,"variation"),kind:"variation",tone:"good",title:"Progress variation",text:`${ex.name}: progress difficulty with a harder variation, tempo/pauses, or range of motion.`,reasons:[`All usable sets reached the top of ${target.reps}.`,"No external load is being used, so bodyweight progression is preferred."]};
+   const inc=unit()==="lb"?5:2.5,suggested=roundInc(maxW*1.025,unit()==="lb"?1:.5)||maxW+inc;
+   return{...base,id:recommendationId(dayIdx,slot,"load",suggested),kind:"load",tone:"good",title:"Increase load",text:`${ex.name}: ${maxW} → ${suggested} ${unit()} next exposure, or use the smallest practical increase.`,action:{kind:"load",value:suggested},
+     reasons:[`All usable sets reached the top of ${target.reps}.`,avgRpe?`Average RPE was ${avgRpe.toFixed(1)}, within the target ceiling.`:"No excessive effort was logged.",trend.status==="progressing"?"The multi-session trend is also progressing.":"The latest performance supports progression."]};
+ }
+ if(missed||(avgRpe&&avgRpe>maxR+.5))return{...base,id:recommendationId(dayIdx,slot,"hold"),kind:"hold",tone:"caution",title:"Hold target",text:`${ex.name}: keep or slightly reduce load; first regain at least ${lo} reps inside the target RPE.`,reasons:[missed?`At least one set fell below ${lo} reps.`:"Rep minimum was met.",avgRpe?`Average RPE was ${avgRpe.toFixed(1)} versus a target ceiling near ${maxR}.`:""].filter(Boolean)};
+ if(trend.status==="stalled")return{...base,id:recommendationId(dayIdx,slot,"plateau"),kind:"plateau",tone:"watch",title:"Plateau watch",text:`${ex.name}: keep the load and target +1 total rep across the working sets before changing the exercise.`,reasons:[`${trend.samples} comparable exposures show little performance change.`,"The coach waits for another quality progression attempt before recommending a variation change."]};
+ if(trend.status==="progressing")return{...base,id:recommendationId(dayIdx,slot,"reps-progress"),kind:"reps",tone:"good",title:"Continue rep progression",text:`${ex.name}: keep the load and add reps inside ${target.reps} until all sets reach the top of the range.`,reasons:[`Performance is up ${trend.changePct?.toFixed(1)}% across comparable recent exposures.`,"The top of the programmed rep range has not been completed across all usable sets yet."]};
+ return{...base,id:recommendationId(dayIdx,slot,"reps"),kind:"reps",tone:"stable",title:"Build reps",text:`${ex.name}: keep the load and try to add a rep before increasing weight.`,reasons:[`The current target is ${target.reps} at RPE ${target.rpe}.`,"No stronger multi-session signal currently overrides normal double progression."]};
+}
+function buildCoachIntelligence(){
+ const c=cycle(),fatigue=trainingFatigueProfile(),seen=new Set(),recs=[];
+ plan().forEach((d,dayIdx)=>(d.items||[]).forEach((item,slot)=>{
+   const key=`${dayIdx}:${slot}`;if(seen.has(key))return;seen.add(key);
+   recs.push(longTermExerciseRecommendation(item,dayIdx,slot,fatigue));
+ }));
+ const trends=[...new Set(plan().flatMap(d=>(d.items||[]).map(i=>i.id)))].map(id=>exerciseTrend(id));
+ const progressing=trends.filter(t=>t.status==="progressing").length,stalled=trends.filter(t=>t.status==="stalled").length,regressing=trends.filter(t=>t.status==="regressing").length;
+ const cs=coachingState(),activeDeload=isDeload();
+ let status="Learning",tone="learning";
+ if(activeDeload){status="Deload active";tone="caution"}
+ else if(fatigue.deloadRecommended){status="Deload suggested";tone="caution"}
+ else if(fatigue.signalCount>=2){status="Fatigue watch";tone="watch"}
+ else if(progressing>=2&&regressing===0){status="Progressing";tone="good"}
+ else if(stalled>=2){status="Plateau watch";tone="watch"}
+ else if(fatigue.cycleSessions>=2){status="Stable";tone="stable"}
+ const global=[];
+ if(fatigue.deloadRecommended&&!activeDeload){
+   const id=recommendationId(-1,-1,"deload","active");
+   global.push({id,kind:"deload",tone:"caution",title:"Consider a deload week",text:"Accumulated performance/recovery signals support a temporary reduction in working sets and effort.",action:{kind:"deload"},
+     reasons:fatigue.signals.length?fatigue.signals:["Several fatigue indicators have accumulated across recent training."]});
+ }
+ if(activeDeload)global.push({id:recommendationId(-1,-1,"deload-active"),kind:"deload-active",tone:"caution",title:"Deload is active",text:"Working sets are reduced to about 60% and target effort is RPE 6–7 for this week.",action:null,reasons:["This was applied by the user from Coach Review.","It will end automatically when the week advances."]});
+ const priorities=profile()?.planBuilder?.mode==="priority"?effectivePriorityShares(profile().planBuilder.priorities||DEFAULT_PRIORITIES):null;
+ const topPriority=priorities?[...PRIORITY_MUSCLES].sort((a,b)=>priorities[b]-priorities[a])[0]:null;
+ const all=[...global,...recs].sort((a,b)=>{
+   const rank={deload:0,set:1,hold:2,load:3,variation:4,plateau:5,reps:6,baseline:7,"deload-active":8};
+   return (rank[a.kind]??9)-(rank[b.kind]??9);
+ });
+ const applied=cs.applied||{},actionable=all.filter(r=>r.action&&!applied[r.id]);
+ const note=activeDeload?"Deload is active for the current week."
+   :fatigue.deloadRecommended?"Accumulated fatigue signals support reviewing a deload before further progression."
+   :progressing?`${progressing} exercise${progressing===1?" is":"s are"} trending upward; keep progressing only where reps and RPE support it.`
+   :fatigue.cycleSessions<2?"The coach is collecting baseline data.":"Maintain the current plan while the coach watches multi-session trends.";
+ return{status,tone,fatigue,progressing,stalled,regressing,recommendations:all,actionable,priorities,topPriority,note,sessions:fatigue.cycleSessions};
+}
+function applyCoachAction(rec){
+ const cs=coachingState();if(!rec?.action||cs.applied?.[rec.id])return false;
+ if(rec.action.kind==="deload"){
+   cs.deloadActive=true;cs.deloadCycle=cycle().number;cs.deloadWeek=cycle().week;
+ }else{
+   const item=plan()?.[rec.dayIdx]?.items?.[rec.slot];if(!item)return false;
+   if(rec.action.kind==="load")item.userLoad=Number(rec.action.value);
+   if(rec.action.kind==="set")item.userSetDelta=(Number(item.userSetDelta)||0)+Number(rec.action.delta||0);
+ }
+ cs.applied[rec.id]={date:new Date().toISOString(),cycleNumber:cycle()?.number,week:cycle()?.week,kind:rec.kind};
+ return true;
+}
+function renderCoachIntelligence(){
+ const badge=$("#coachIntelStatus"),box=$("#coachIntelSummary"),btn=$("#openCoachReviewBtn");if(!badge||!box||!profile())return;
+ const x=buildCoachIntelligence();badge.textContent=x.status;badge.className=`coach-status-badge ${x.tone}`;
+ const priority=x.priorities&&x.topPriority?`<div class="coach-intel-priority"><strong>Priority lock</strong><span>${esc(x.topPriority)} ${Math.round(x.priorities[x.topPriority]||0)}% requested</span></div>`:"";
+ box.innerHTML=`<div class="coach-intel-grid">
+   <div><strong>${x.sessions}</strong><span>sessions learned</span></div>
+   <div><strong>${x.progressing}</strong><span>progressing</span></div>
+   <div><strong>${x.stalled}</strong><span>plateau watch</span></div>
+   <div><strong>${x.fatigue.signalCount}</strong><span>fatigue signals</span></div>
+  </div>${priority}<p class="tiny coach-intel-note">${esc(x.note)}</p>`;
+ if(btn){btn.textContent=x.actionable.length?`Review ${x.actionable.length} plan change${x.actionable.length===1?"":"s"}`:"Review recommendations"}
+}
+function coachToneLabel(rec){
+ if(rec.tone==="good")return"Progress";
+ if(rec.tone==="caution")return"Recovery";
+ if(rec.tone==="watch")return"Watch";
+ if(rec.tone==="learning")return"Learning";
+ return"Maintain";
+}
+function openCoachReview(){
+ const x=buildCoachIntelligence(),cs=coachingState(),priority=x.priorities&&x.topPriority?`<div class="coach-review-priority">Priority mode remains locked to your requested allocation; coaching changes do not rebalance it toward a generic program.</div>`:"";
+ const items=x.recommendations.slice(0,12).map(rec=>{
+   const applied=!!cs.applied?.[rec.id],action=rec.action&&!applied;
+   return `<div class="coach-review-item ${rec.tone}">
+    <div class="coach-review-item-head"><div><span class="coach-rec-tag">${coachToneLabel(rec)}</span><strong>${esc(rec.title)}</strong></div>${rec.trend?.samples?`<span class="tiny">${rec.trend.samples} exposures</span>`:""}</div>
+    <p>${esc(rec.text)}</p>
+    <details><summary>Why this recommendation?</summary><ul>${(rec.reasons||[]).map(r=>`<li>${esc(r)}</li>`).join("")}</ul></details>
+    ${action?`<button class="applyCoachRec primary" data-recid="${esc(rec.id)}">Apply this change</button>`:applied?`<div class="coach-applied">✓ Applied</div>`:""}
+   </div>`;
+ }).join("");
+ const allBtn=x.actionable.length?`<button id="applyAllCoachRec" class="primary">Apply all ${x.actionable.length} plan change${x.actionable.length===1?"":"s"}</button>`:"";
+ openSheet("LONG-TERM COACH",`Week ${cycle().week} review`,
+  `<div class="coach-review-shell">
+    <div class="coach-review-hero"><span class="coach-status-badge ${x.tone}">${esc(x.status)}</span><h3>${esc(x.note)}</h3>
+      <div class="coach-review-stats"><span>${x.progressing} progressing</span><span>${x.stalled} plateau watch</span><span>${x.fatigue.signalCount} fatigue signals</span></div>
+    </div>
+    ${priority}
+    <div class="coach-review-explain">Recommendations are based on completed working sets, reps, load, logged RPE, completion, and recovery check-ins. Nothing changes automatically.</div>
+    <div class="coach-review-list">${items||'<div class="historyitem">Complete more sessions to build coaching recommendations.</div>'}</div>
+    <div class="coach-review-actions">${allBtn}<button id="keepCoachPlan">Keep current plan</button></div>
+   </div>`);
+ $("#sheet").classList.add("coach-review-sheet");
+}
+
 function previousBestE1RM(exId){let best=0;previousRecords(exId).forEach(r=>(r.sets||[]).forEach(s=>{if(s.done!==false)best=Math.max(best,e1rm(s.weight,s.reps))}));return best}
 function suggestion(item){
  const target=effectiveTarget(item),ex=EXMAP[item.id],last=lastRecord(item.id),ready=readinessScore(),rec=latestRecovery();
- if(isDeload())return{cls:"deload",type:"deload",text:"Deload week: reduce working sets and keep effort around RPE 6–7. Avoid chasing PRs.",why:["This is the final week of the current training block.","The app automatically reduces set count for deload week.","Lower fatigue should help prepare for the next block."]};
+ if(isDeload())return{cls:"deload",type:"deload",text:"Deload week: reduce working sets and keep effort around RPE 6–7. Avoid chasing PRs.",why:["You applied a coach-recommended deload for the current week.","The app reduces effective set count and target effort temporarily.","The deload ends automatically when the week advances."]};
  if(rec&&rec.joint>=7)return{cls:"low",type:"hold",text:"High joint/tendon discomfort reported. Hold progression and consider swapping the exercise if it irritates the affected area.",why:["Latest joint/tendon discomfort is 7/10 or higher.","Progression is deprioritized when discomfort is high."]};
  if(ready!==null&&ready<5)return{cls:"low",type:"hold",text:"Recovery is low. Hold load today and consider one fewer set if performance drops.",why:[`Readiness is ${ready}/10.`,"Low readiness increases the chance that extra load or volume is poorly tolerated."]};
  if(!last)return{cls:"warn",type:"baseline",text:"Establish a clean baseline. Stay inside the rep range and target RPE.",why:["No completed previous session for this exercise is available."]};
@@ -1594,6 +1890,10 @@ function suggestion(item){
    return{cls:"good",type:"load",text:`Progression signal: consider ${suggested||maxW+inc} ${unit()} next time, or the smallest practical increase.`,why:[`All usable sets reached the top of ${target.reps}.`,avgRpe?`Average logged RPE was ${avgRpe.toFixed(1)}, within the target ceiling.`:"Logged RPE did not show excessive effort.",ready!==null?`Readiness is ${ready}/10.`:"No recovery penalty is active."]};
  }
  if(missed||(avgRpe&&avgRpe>maxR+0.5))return{cls:"low",type:"hold",text:"Hold or slightly reduce load. First regain the minimum reps inside the target RPE.",why:[missed?`At least one set fell below ${lo} reps.`:"Rep minimum was met.",avgRpe?`Average RPE was ${avgRpe.toFixed(1)} versus a target ceiling near ${maxR}.`:""] .filter(Boolean)};
+ const trend=exerciseTrend(item.id);
+ if(trend.status==="regressing")return{cls:"low",type:"hold",text:"Multi-session trend is down. Hold progression today and review fatigue before adding load.",why:[`Comparable recent performance changed ${trend.changePct?.toFixed(1)}%.`,"Long-term trend evidence overrides a single-session urge to progress."]};
+ if(trend.status==="stalled")return{cls:"warn",type:"reps",text:"Plateau watch: keep the load and aim for +1 total rep before changing the exercise.",why:[`${trend.samples} comparable exposures show little change.`,"The coach waits for another quality progression attempt before changing the movement."]};
+ if(trend.status==="progressing")return{cls:"good",type:"reps",text:"Progressing trend: keep the load and continue adding reps inside the programmed range.",why:[`Comparable recent performance is up ${trend.changePct?.toFixed(1)}%.`,"Load does not need to increase until the top of the rep range is completed cleanly."]};
  return{cls:"warn",type:"reps",text:"Keep the load and try to add a rep before increasing weight.",why:[`You have not yet completed every set at the top of ${target.reps}.`,"Rep progression is the lower-risk next step before another load increase."]};
 }
 
@@ -1686,8 +1986,8 @@ function startRestFor(slot,seconds,label,auto=true){stopTimer();timer.slot=slot;
 function openRestSheet(){$("#timerTitle").textContent=timer.label||"Rest timer";renderTimerUI();$("#timerSheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#timerSheet .sheetcard").scrollTop=0})}
 function cancelRest(){stopTimer();timer.remaining=timer.base;timer.label="";timer.slot=null;renderRestMini()}
 
-function openSheet(label,title,html){$("#sheet").classList.remove("warmup-sheet","logic-sheet");$("#sheetLabel").textContent=label;$("#sheetTitle").textContent=title;$("#sheetContent").innerHTML=html;$("#sheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#sheet .sheetcard").scrollTop=0})}
-function closeSheet(){$("#sheet").classList.add("hidden");$("#sheet").classList.remove("warmup-sheet","logic-sheet")}
+function openSheet(label,title,html){$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet");$("#sheetLabel").textContent=label;$("#sheetTitle").textContent=title;$("#sheetContent").innerHTML=html;$("#sheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#sheet .sheetcard").scrollTop=0})}
+function closeSheet(){$("#sheet").classList.add("hidden");$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet")}
 function editTarget(slot){
  const item=plan()[currentDay].items[slot],t=effectiveTarget(item),ex=EXMAP[item.id];
  openSheet("MANUAL TARGET",ex.name,`<p class="tiny">Original program target: <strong>${item.baseSets} sets · ${esc(item.baseReps)} reps · RPE ${esc(item.baseRpe)}</strong></p><div class="grid2"><label>Sets<input id="targetSets" class="field" type="number" min="1" max="10" value="${t.sets}"></label><label>Rep range<input id="targetReps" class="field" value="${esc(t.reps)}" placeholder="8–10"></label><label>RPE target<input id="targetRpe" class="field" value="${esc(t.rpe)}" placeholder="7–8"></label><label>Target load (${unit()})<input id="targetLoad" class="field" type="number" step="0.5" value="${item.userLoad??""}" placeholder="Optional"></label></div><button id="saveTarget" class="primary" style="margin-top:12px">Save adjusted target</button>`);
@@ -1742,19 +2042,22 @@ function renderProgramPlanOverview(){
 }
 function renderCycle(){
  const c=cycle();$("#cycleHeading").textContent=`Program ${c.number} · Week ${c.week} of ${c.length}`;$("#cycleProgress").style.width=`${Math.round(c.week/c.length*100)}%`;
- $("#advanceWeekBtn").textContent=isDeload()?"Finish program":"Advance week";
- $("#cycleAdvice").textContent=isDeload()?"This is the deload week. The app reduces effective set count and RPE targets. Finish the program when complete.":`Current phase: ${phaseName()}. Progress load or reps only when performance and recovery support it.`;
- renderProgramPlanOverview();
+ $("#advanceWeekBtn").textContent=c.week>=c.length?"Finish program":"Advance week";
+ const intel=buildCoachIntelligence();
+ if(isDeload())$("#cycleAdvice").textContent="Coach-recommended deload is active: effective working sets are reduced and target effort is RPE 6–7 for this week.";
+ else if(c.week>=c.length)$("#cycleAdvice").textContent="Final scheduled week. Deloading is no longer automatic; Coach Review uses accumulated performance and recovery data to recommend it only when supported.";
+ else $("#cycleAdvice").textContent=`Current phase: ${phaseName()}. Progress load or reps only when performance and recovery support it.`;
+ renderCoachIntelligence();renderProgramPlanOverview();
  const v=muscleVolume(),max=Math.max(1,...Object.values(v));$("#volumeBox").innerHTML=Object.entries(v).sort((a,b)=>b[1]-a[1]).map(([m,n])=>`<div class="volumeRow"><strong>${esc(m)}</strong><div class="volbar"><div style="width:${Math.min(100,n/max*100)}%"></div></div><span>${n.toFixed(1)}</span></div>`).join("");
- const ws=(c.weekSummaries||[]);$("#weeklyReview").innerHTML=ws.length?ws.slice().reverse().map(w=>`<div class="historyitem"><strong>Week ${w.week}</strong> · ${w.sessions} sessions · avg completion ${w.avgCompletion}% · readiness ${w.readiness??"—"}<br><span class="tiny">${esc(w.note)}</span></div>`).join(""):'<div class="historyitem">No completed week summaries yet.</div>';
+ const ws=(c.weekSummaries||[]);$("#weeklyReview").innerHTML=ws.length?ws.slice().reverse().map(w=>`<div class="historyitem weekly-coach-history"><div class="row"><strong>Week ${w.week}</strong><span class="coach-mini-status">${esc(w.coachStatus||"Review")}</span></div><div class="tiny">${w.sessions} sessions · avg completion ${w.avgCompletion}% · readiness ${w.readiness??"—"}${w.progressing!==undefined?` · ${w.progressing} progressing · ${w.fatigueSignals||0} fatigue signals`:""}</div><div class="weekly-coach-note">${esc(w.note)}</div></div>`).join(""):'<div class="historyitem">No completed week summaries yet.</div>';
 }
 function weekSummary(){
- const c=cycle(),ses=history().filter(s=>s.cycleNumber===c.number&&s.week===c.week),avg=ses.length?Math.round(ses.reduce((a,b)=>a+b.completion,0)/ses.length):0,read=readinessScore();
- let note="Maintain course.";
- if(read!==null&&read<5)note="Recovery was low; consider a conservative start to the next week.";
- else if(avg>=90&&read!==null&&read>=7)note="High completion and good recovery support continued progression.";
- else if(avg<70)note="Low completion suggests holding volume rather than adding more work.";
- return{week:c.week,sessions:ses.length,avgCompletion:avg,readiness:read,note};
+ const c=cycle(),ses=history().filter(s=>s.cycleNumber===c.number&&s.week===c.week),avg=ses.length?Math.round(ses.reduce((a,b)=>a+b.completion,0)/ses.length):0,read=readinessScore(),coach=buildCoachIntelligence();
+ let note=coach.note;
+ if(!ses.length)note="No completed sessions were saved this week.";
+ return{week:c.week,sessions:ses.length,avgCompletion:avg,readiness:read,note,
+  coachStatus:coach.status,progressing:coach.progressing,stalled:coach.stalled,regressing:coach.regressing,
+  fatigueSignals:coach.fatigue.signalCount,deloadRecommended:coach.fatigue.deloadRecommended};
 }
 function advanceWeek(){
  const c=cycle();
@@ -1762,7 +2065,7 @@ function advanceWeek(){
    if(!confirm(`Advance from Week ${c.week} to Week ${c.week+1}?\n\nYou can undo this afterward.`))return;
    pushUndo(`Advanced from Week ${c.week}`);
    c.weekSummaries??=[];c.weekSummaries.push(weekSummary());
-   c.week++;currentDay=0;save();renderAll();toast(`Week ${c.week} started · Undo available`);
+   c.week++;currentDay=0;const cs=coachingState();cs.deloadActive=false;cs.deloadCycle=null;cs.deloadWeek=null;save();renderAll();toast(`Week ${c.week} started · Coach updated · Undo available`);
  }else{
    if(confirm("Finish this training block and start the next block? Exercise choices will be kept, while manual target adjustments reset.\n\nYou can undo this afterward.")){
      pushUndo("Started a new training block");
@@ -1896,7 +2199,7 @@ function saveOnboarding(){
  state.cycle={number:1,week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[]};generatePlan(true);save();switchView("today");$("#onboarding").classList.add("hidden");renderAll();toast("Personalized plan created");
 }
 function exportData(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-3-9-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-4-0-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 
 
@@ -1946,6 +2249,23 @@ document.addEventListener("click",e=>{
  const v=e.target.closest(".vtab");if(v)return switchView(v.dataset.view);
  const c=e.target.closest("[data-check]");if(c){const[s,j]=c.dataset.check.split(":").map(Number),it=plan()[currentDay].items[s],t=effectiveTarget(it),set=exLog(currentDay,s,t.sets).sets[j],was=set.done;set.done=!set.done;if(!was&&set.done){if(executionSettings().autoSession&&!sessionRuntime().running&&!sessionElapsed())startSession(true);if(executionSettings().autoRest)startRestFor(s,it.rest,`${EXMAP[it.id].name} · rest`,true)}save();renderToday();if(!was&&set.done&&j+1<t.sets)setTimeout(()=>document.querySelector(`input[data-slot="${s}"][data-set="${j+1}"][data-f="weight"]`)?.focus(),0);return}
 
+ const applyCoach=e.target.closest(".applyCoachRec");if(applyCoach){
+   const intel=buildCoachIntelligence(),rec=intel.recommendations.find(r=>r.id===applyCoach.dataset.recid);
+   if(!rec?.action)return;
+   pushUndo(`Applied coach recommendation: ${rec.title}`);
+   if(applyCoachAction(rec)){save();renderAll();openCoachReview();toast("Coach recommendation applied · Undo available")}
+   return
+ }
+ const applyAllCoach=e.target.closest("#applyAllCoachRec");if(applyAllCoach){
+   const intel=buildCoachIntelligence(),changes=intel.actionable;
+   if(!changes.length)return;
+   if(!confirm(`Apply ${changes.length} coach-recommended plan change${changes.length===1?"":"s"}?\n\nNothing is changed automatically, and you can undo this afterward.`))return;
+   pushUndo(`Applied ${changes.length} coach recommendations`);
+   let n=0;changes.forEach(rec=>{if(applyCoachAction(rec))n++});
+   save();renderAll();openCoachReview();toast(`${n} coach change${n===1?"":"s"} applied · Undo available`);return
+ }
+ const keepCoach=e.target.closest("#keepCoachPlan");if(keepCoach){closeSheet();toast("Current plan kept");return}
+
  const emptyBuild=e.target.closest(".emptyBuildBtn");if(emptyBuild){showOnboarding(!!profile(),1);return}
  const emptyImport=e.target.closest(".emptyImportBtn");if(emptyImport){switchView("settings");renderSettings();setTimeout(()=>$("#importInput")?.click(),50);return}
  const jump=e.target.closest(".jumpToTrainBtn");if(jump){currentDay=Number(jump.dataset.day)||0;switchView("today");renderToday();window.scrollTo({top:0,behavior:"auto"});return}
@@ -1985,7 +2305,7 @@ $("#finishBtn").onclick=finishSession;
 $("#warmBtn").onclick=()=>{openSheet("WARM-UP",plan()[currentDay].title,"<ul class=\"warmup-guide-list\">"+warmup(plan()[currentDay].type).map(x=>`<li>${esc(x)}</li>`).join("")+"</ul>");$("#sheet").classList.add("warmup-sheet")};
 $("#guideBtn").onclick=()=>openSheet("WORKOUT VISUALS",plan()[currentDay].title,workoutVisualGrid()+`<p class="tiny">These visuals are tied to the exact exercise currently in your plan. If an exact visual is unavailable, the app says so instead of showing a different movement.</p>`);
 $("#notesBtn").onclick=()=>{const d=plan()[currentDay];openSheet("SESSION NOTES",d.title,`<textarea id="dayNotes" class="field" rows="6">${esc(d.notes||"")}</textarea><button id="saveDayNotes" class="primary" style="margin-top:10px">Save notes</button>`);setTimeout(()=>$("#saveDayNotes").onclick=()=>{d.notes=$("#dayNotes").value;save();closeSheet();toast("Notes saved")},0)};
-$("#advanceWeekBtn").onclick=advanceWeek;$("#logBodyBtn").onclick=logBody;
+$("#advanceWeekBtn").onclick=advanceWeek;$("#openCoachReviewBtn").onclick=openCoachReview;$("#logBodyBtn").onclick=logBody;
 $("#undoBtn").onclick=undoLast;
 $("#redoBtn").onclick=redoLast;
 $("#saveRecoveryBtn").onclick=()=>{const o={date:new Date().toISOString(),cycleNumber:cycle().number,week:cycle().week};$$(".recRange").forEach(x=>o[x.dataset.k]=Number(x.value));recoveryEntries().push(o);save();renderRecovery();renderToday();toast("Recovery check-in saved")};
