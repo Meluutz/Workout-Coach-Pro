@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.4.0
+# Adaptive Workout Coach — v7.4.1
 
 GitHub-ready PWA build.
 
@@ -342,3 +342,12 @@ The coach now evaluates multiple sessions rather than treating each workout as a
 
 ### Local-first
 All coaching data remains inside the existing local app state and is included in Export/Import backups.
+
+
+## v7.4.1 — Theme Persistence
+
+- Dark/light theme choice is now saved locally in the browser.
+- Refreshing or reopening the app keeps the selected theme.
+- Saved theme is applied in the document head before the main interface renders to reduce light/dark flashing during startup.
+- The browser theme-color metadata and native control color scheme update with the selected theme.
+- Theme remains a device/browser-local UI preference, consistent with the app's local-first architecture.

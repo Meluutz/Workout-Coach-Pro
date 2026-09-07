@@ -5,13 +5,21 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script>
+(()=>{try{
+ const t=localStorage.getItem("awc-theme");
+ if(t==="dark")document.documentElement.classList.add("dark");
+ if(t==="light")document.documentElement.classList.remove("dark");
+ document.documentElement.style.colorScheme=t==="dark"?"dark":"light";
+}catch{}})();
+</script>
 <title>Adaptive Workout Coach</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <style>
 *{box-sizing:border-box}
 :root{--bg:#f3f4f6;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--navy:#0f172a;--blue:#2563eb;--soft:#eff6ff;--good:#16a34a;--warn:#d97706;--danger:#dc2626;--purple:#7c3aed}
-:root.dark{--bg:#07111f;--card:#111827;--text:#f8fafc;--muted:#94a3b8;--line:#243244;--navy:#f8fafc;--blue:#60a5fa;--soft:#172554;--good:#22c55e;--warn:#f59e0b;--danger:#f87171;--purple:#a78bfa}
+:root.dark{color-scheme:dark;--bg:#07111f;--card:#111827;--text:#f8fafc;--muted:#94a3b8;--line:#243244;--navy:#f8fafc;--blue:#60a5fa;--soft:#172554;--good:#22c55e;--warn:#f59e0b;--danger:#f87171;--purple:#a78bfa}
 html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:14px;padding:11px 14px;font-weight:750}
@@ -659,7 +667,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><div class="app-mark" aria-hidden="true">AW</div><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 156-exercise expanded library</div><div class="build">v7.4.0 · 156 exercises</div></div></div>
+ <div class="brand-lockup"><div class="app-mark" aria-hidden="true">AW</div><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 156-exercise expanded library</div><div class="build">v7.4.1 · 156 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -789,7 +797,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.4.0</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.4.1</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -2199,7 +2207,7 @@ function saveOnboarding(){
  state.cycle={number:1,week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[]};generatePlan(true);save();switchView("today");$("#onboarding").classList.add("hidden");renderAll();toast("Personalized plan created");
 }
 function exportData(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-4-0-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-4-1-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 
 
@@ -2327,7 +2335,19 @@ $("#timerReset").onclick=()=>{stopTimer();timer.remaining=timer.base;renderTimer
 $$('.preset').forEach(b=>b.onclick=()=>{stopTimer();timer.base=timer.remaining=Number(b.dataset.sec);renderTimerUI()});
 $("#restOpenBtn").onclick=openRestSheet;$("#restSkipBtn").onclick=()=>{cancelRest();toast("Rest skipped")};
 $("#sessionToggle").onclick=()=>sessionRuntime().running?pauseSession():startSession(false);$("#sessionReset").onclick=resetSessionTimer;
-$("#themeBtn").onclick=()=>{document.documentElement.classList.toggle("dark");$("#themeBtn").textContent=document.documentElement.classList.contains("dark")?"Light":"Dark"};
+function syncThemeUI(){
+ const dark=document.documentElement.classList.contains("dark");
+ const btn=$("#themeBtn");if(btn){btn.textContent=dark?"Light":"Dark";btn.setAttribute("aria-label",dark?"Switch to light mode":"Switch to dark mode")}
+ document.documentElement.style.colorScheme=dark?"dark":"light";
+ const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute("content",dark?"#07111f":"#0f172a");
+}
+$("#themeBtn").onclick=()=>{
+ const dark=!document.documentElement.classList.contains("dark");
+ document.documentElement.classList.toggle("dark",dark);
+ try{localStorage.setItem("awc-theme",dark?"dark":"light")}catch{}
+ syncThemeUI();
+};
+syncThemeUI();
 $("#obBack").onclick=()=>{if(obStep>1){obStep--;renderOb()}};
 $("#obDays").onchange=()=>suggestOnboardingDays();
 $$(".obWeekday").forEach(x=>x.onchange=updateDayPickHelp);
