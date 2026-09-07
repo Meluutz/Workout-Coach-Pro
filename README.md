@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.2
+# Adaptive Workout Coach — v7.3
 
 GitHub-ready PWA build.
 
@@ -78,3 +78,39 @@ This release keeps the v7.1 Advanced Plan Builder and 120/120 exact visual libra
 - Safer exercise swaps when current-day entries already exist.
 - Larger mobile touch targets and improved small-screen set-entry layout.
 - Existing localStorage key remains unchanged for v6/v7 compatibility.
+
+
+## v7.3 — Personalization
+v7.3 adds a persistent personalization layer without weakening the existing safety/equipment/schedule constraints.
+
+### Visual avatar architecture
+- Auto / Male / Female / Neutral preference.
+- Auto uses the optional profile sex field only to select an illustration avatar.
+- Sex/avatar selection does **not** alter training prescription.
+- Current asset availability is shown transparently: Male 120/120, Female 0/120, Neutral 0/120.
+- Users can either allow the current exact-exercise male pack as a temporary avatar fallback or hide visuals until their preferred pack exists.
+- The app still never substitutes a different exercise image.
+
+### Exercise personalization
+- Balanced
+- Prefer free weights
+- Prefer machines & cables
+- Prefer dumbbells
+- Prefer bodyweight/minimal
+
+These are soft ranking preferences. Equipment availability, protected areas, exercise avoidance, Plan Builder mode, schedule and goals remain higher-priority constraints.
+
+### Plan variety
+- Keep familiar exercises when sensible
+- Balanced
+- Favor different exercises when sensible
+
+Variety preference affects coach-generated and Muscle Priority regeneration. Build Your Own remains user-directed.
+
+### Coaching detail
+- Concise
+- Standard
+- Detailed
+
+### Additional safeguard
+Prefill Last now asks for confirmation before overwriting any working-set data already entered today. Warm-up sets and notes remain untouched.

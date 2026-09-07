@@ -1,20 +1,22 @@
-Adaptive Workout Coach v7.2 — build validation
+Adaptive Workout Coach v7.3 — build validation
 
 - JavaScript syntax: PASS
 - Service worker syntax: PASS
 - Exercise database: 120
-- Exact visual mappings: 120/120
+- Base exact visual mappings: 120/120
 - Broken mapped visual paths: 0
 - Duplicate HTML IDs: 0
 - v7.1 Advanced Plan Builder retained: PASS
-- Persistent session timer: PASS
-- Automatic rest timer workflow: PASS
-- Warm-up sets stored separately: PASS
-- Previous-performance prefill: PASS
-- Exercise details panel: PASS
-- Search/filter exercise library: PASS
-- Session finish review + duplicate protection: PASS
-- Mobile execution CSS: PASS
+- v7.2 Workout Execution retained: PASS
+- Personalization state compatibility: PASS
+- Avatar selector Auto/Male/Female/Neutral: PASS
+- Transparent avatar fallback control: PASS
+- Exercise-selection preference scoring: PASS
+- Plan-variety preference scoring: PASS
+- Personalized swap ordering: PASS
+- Coaching detail modes: PASS
+- Prefill Last overwrite safeguard: PASS
 - Existing localStorage key preserved: PASS
 
+Asset availability note: the existing male visual pack is 120/120. Female and neutral visual packs are not yet generated.
 A full browser smoke test was not run in this environment.
