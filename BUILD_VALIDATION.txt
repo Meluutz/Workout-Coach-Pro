@@ -1,4 +1,4 @@
-Adaptive Workout Coach v7.3.4 — build validation
+Adaptive Workout Coach v7.3.5 — build validation
 
 - JavaScript syntax: PASS
 - Service worker syntax: PASS
@@ -6,13 +6,16 @@ Adaptive Workout Coach v7.3.4 — build validation
 - Existing exact visual mappings: 120
 - Broken mapped visual paths: 0
 - Duplicate HTML IDs: 0
-- switchView(today) function exists: PASS
-- Build-my-plan uses switchView(today): PASS
-- No setView() call remains in onboarding completion: PASS
-- Train switches before onboarding overlay closes: PASS
-- Professional mobile header/navigation markup: PASS
-- Mobile onboarding progress/actions: PASS
-- Mobile Train/set-entry CSS: PASS
-- v7.3.2 variant separation retained: PASS
+- Onboarding step scroll-to-top: PASS
+- Fixed onboarding action dock outside scroll body: PASS
+- VisualViewport mobile sizing: PASS
+- Sheet/dialog z-index above bottom navigation: PASS
+- Independent sheet scrolling: PASS
+- Program weekly workout overview: PASS
+- Program -> Train shortcut: PASS
+- Duplicate Settings undo/history removed: PASS
+- Visual coverage/status UI removed from Settings: PASS
+- Removed-button direct JS handlers cleaned: PASS
+- Per-device backup/transfer explanation: PASS
 
 A full physical-device browser smoke test was not available in this environment.

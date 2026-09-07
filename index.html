@@ -289,12 +289,133 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  main{padding-left:7px;padding-right:7px}.app-header .sub{max-width:155px}.profile-grid{grid-template-columns:1fr}.setrow{grid-template-columns:25px minmax(0,1.2fr) minmax(0,.78fr) minmax(0,.78fr) 40px;gap:4px;padding-left:5px;padding-right:5px}.check{width:40px;height:40px}.option-grid{grid-template-columns:1fr!important}.weekday-picker{grid-template-columns:repeat(4,1fr)}
 }
 
+
+/* v7.3.5 interaction + settings polish */
+:root{--app-vvh:100dvh;--app-vvtop:0px}
+
+/* Mobile dialogs must sit above bottom navigation and own their scrolling. */
+.sheet{
+ z-index:320!important;
+ top:var(--app-vvtop)!important;
+ bottom:auto!important;
+ left:0;right:0;
+ height:var(--app-vvh)!important;
+ max-height:var(--app-vvh)!important;
+ overflow:hidden!important;
+ align-items:flex-end!important;
+}
+.sheetcard{
+ max-height:calc(var(--app-vvh) - 10px)!important;
+ overflow-y:auto!important;
+ overflow-x:hidden!important;
+ overscroll-behavior:contain;
+ -webkit-overflow-scrolling:touch;
+ scroll-padding-bottom:32px;
+}
+.sheetcard>.row:first-child{
+ position:sticky;top:-14px;z-index:12;
+ margin:-14px -2px 8px;
+ padding:14px 2px 10px;
+ background:color-mix(in srgb,var(--surface) 96%,transparent);
+ backdrop-filter:blur(14px);
+ border-bottom:1px solid var(--line);
+}
+.sheetcard #closeSheet,.sheetcard #closeTimer{flex:0 0 auto}
+
+/* Onboarding uses a dedicated scrolling body + a non-scrolling action dock. */
+.onboard{
+ top:var(--app-vvtop)!important;
+ bottom:auto!important;
+ height:var(--app-vvh)!important;
+ max-height:var(--app-vvh)!important;
+ overflow:hidden!important;
+ padding:0!important;
+}
+.onboard-inner{
+ width:100%;
+ max-width:760px;
+ height:100%;
+ overflow-y:auto;
+ overscroll-behavior:contain;
+ -webkit-overflow-scrolling:touch;
+ margin:0 auto;
+ padding:calc(14px + env(safe-area-inset-top)) 14px calc(112px + env(safe-area-inset-bottom));
+}
+.onboard-actions{
+ position:absolute!important;
+ left:50%!important;right:auto!important;
+ transform:translateX(-50%);
+ bottom:calc(10px + env(safe-area-inset-bottom))!important;
+ width:min(calc(100% - 20px),720px);
+ margin:0!important;
+ padding:9px 10px!important;
+ display:flex;gap:9px;
+ background:color-mix(in srgb,var(--surface) 97%,transparent);
+ backdrop-filter:blur(18px);
+ border:1px solid var(--line);
+ border-radius:17px;
+ box-shadow:0 10px 35px rgba(15,23,42,.16);
+ z-index:360!important;
+}
+.onboard-actions #obNext{margin-left:auto;min-width:150px}
+.onboard-actions button{min-height:48px}
+.onboard-progress{position:sticky;top:0;z-index:8;background:color-mix(in srgb,var(--bg) 97%,transparent);backdrop-filter:blur(14px);padding:8px 0 10px}
+
+/* Program overview */
+.program-summary-row{align-items:flex-start}
+.program-plan-overview{display:grid;gap:12px;margin-top:13px}
+.program-day{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
+.program-day-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;background:var(--surface-2)}
+.program-day-head strong{display:block;font-size:15px}.program-day-head span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.program-day-head button{padding:7px 9px;font-size:11px;white-space:nowrap}
+.program-table{width:100%}
+.program-table-row{display:grid;grid-template-columns:minmax(0,1fr) 62px 82px;gap:8px;align-items:center;padding:10px 12px;border-top:1px solid var(--line)}
+.program-table-row span:nth-child(2),.program-table-row span:nth-child(3){text-align:center}
+.program-table-head{font-size:10px;text-transform:uppercase;letter-spacing:.055em;color:var(--muted);font-weight:850;background:var(--surface-2)}
+.program-table-row strong{font-size:13px}
+.plan-history-card{padding:12px 14px}
+.plan-history-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.plan-history-actions{display:flex;gap:7px;flex:0 0 auto}.plan-history-actions button{padding:8px 11px}
+
+/* Settings */
+.settings-card-head,.settings-about-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.settings-card-head h2,.settings-about-card h2,#settings h2{margin:5px 0 10px;letter-spacing:-.02em}
+.settings-action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.settings-action-grid button{min-height:44px;text-align:left;padding:10px 11px}
+.settings-personal-grid .personal-field{padding:10px}
+.settings-note{margin-top:10px}
+.compact-select{width:auto!important;min-width:90px}
+.import-label{display:flex;min-height:44px;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:12px;padding:9px 11px;font-weight:800;cursor:pointer}
+.import-label input{display:none}
+.danger-button{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 30%,var(--line))}
+#settings .card{margin-bottom:10px}
+
+@media(max-width:760px){
+ .sheetcard{border-radius:22px 22px 0 0!important;padding-bottom:calc(28px + env(safe-area-inset-bottom))!important}
+ .sheetcard>.row:first-child{top:-14px}
+ .onboard-inner{padding-left:10px;padding-right:10px}
+ .onboard-actions{width:calc(100% - 16px);bottom:calc(8px + env(safe-area-inset-bottom))!important}
+ .onboard-actions #obNext{min-width:145px}
+ .program-table-row{grid-template-columns:minmax(0,1fr) 48px 70px;padding:9px 10px;gap:5px}
+ .program-day-head{padding:10px}
+ .plan-history-row{align-items:flex-start;flex-direction:column}
+ .plan-history-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}.plan-history-actions button{width:100%}
+ .settings-card-head{align-items:center}.settings-card-head button{flex:0 0 auto}
+ .settings-action-grid{grid-template-columns:1fr 1fr}
+ .settings-personal-grid{grid-template-columns:1fr!important}
+ .settings-about-row{flex-direction:column}.settings-about-row button{width:100%}
+}
+@media(max-width:390px){
+ .settings-action-grid{grid-template-columns:1fr}
+ .program-table-row{grid-template-columns:minmax(0,1fr) 42px 64px}
+}
+
 </style>
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><div class="app-mark" aria-hidden="true">AW</div><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 156-exercise expanded library</div><div class="build">v7.3.4 · 156 exercises</div></div></div>
- <div class="header-actions"><button id="undoTopBtn" class="icon-action" title="Undo last plan change" aria-label="Undo last plan change">↶ <span>Undo</span></button><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
+ <div class="brand-lockup"><div class="app-mark" aria-hidden="true">AW</div><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 156-exercise expanded library</div><div class="build">v7.3.5 · 156 exercises</div></div></div>
+ <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
 <main>
@@ -340,16 +461,24 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </section>
 
 <section id="cycle" class="view">
-<section class="card">
- <div class="row"><div><div class="label">Plan safety</div><h3 style="margin:6px 0 0">Undo accidental changes</h3></div><span id="lastChangeText" class="tiny">No changes to undo</span></div>
- <div class="grid2" style="margin-top:12px"><button id="undoBtn">↶ Undo last change</button><button id="redoBtn">↷ Redo</button></div>
- <p class="tiny" style="margin-bottom:0">The app keeps a short local history of plan-changing actions such as advancing a week, regenerating a plan, changing targets, or swapping exercises.</p>
-</section>
-<section class="card">
- <div class="row"><div><div class="label">Program</div><h2 style="margin:6px 0" id="cycleHeading"></h2></div><button id="advanceWeekBtn" class="primary">Advance week</button></div>
+<section class="card program-summary-card">
+ <div class="row program-summary-row"><div><div class="label">Program</div><h2 style="margin:6px 0" id="cycleHeading"></h2></div><button id="advanceWeekBtn" class="primary">Advance week</button></div>
  <p id="cycleAdvice" class="muted"></p>
  <div class="progress"><div id="cycleProgress"></div></div>
 </section>
+
+<section class="card plan-overview-card">
+ <div class="row"><div><div class="label">Workout plan</div><h3 style="margin:5px 0 0">Your weekly schedule</h3></div><span id="programPlanMeta" class="tiny"></span></div>
+ <div id="programPlanOverview" class="program-plan-overview"></div>
+</section>
+
+<section class="card plan-history-card">
+ <div class="plan-history-row">
+  <div><div class="label">Recent plan change</div><div id="lastChangeText" class="muted">No changes to undo</div></div>
+  <div class="plan-history-actions"><button id="undoBtn">Undo</button><button id="redoBtn">Redo</button></div>
+ </div>
+</section>
+
 <section class="card"><h3 style="margin-top:0">Approximate weekly muscle volume</h3><p class="tiny">Primary sets count as 1.0 and secondary involvement as 0.5–0.75. This is a planning estimate, not a direct measure of stimulus.</p><div id="volumeBox"></div></section>
 <section class="card"><h3 style="margin-top:0">Weekly review</h3><div id="weeklyReview"></div></section>
 </section>
@@ -360,48 +489,54 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </section>
 
 <section id="settings" class="view">
-<section class="card"><h2 style="margin-top:0">Profile</h2><div id="profileSummary"></div><button id="editProfileBtn">Edit profile & regenerate plan</button></section>
-<section class="card"><h2 style="margin-top:0">Undo & change history</h2>
-<div id="undoStatusSettings" class="tiny">No changes to undo.</div>
-<div class="grid2" style="margin-top:10px"><button id="settingsUndoBtn">↶ Undo</button><button id="settingsRedoBtn">↷ Redo</button></div>
+<section class="card settings-profile-card">
+ <div class="settings-card-head"><div><div class="label">Profile</div><h2>Your training setup</h2></div><button id="editProfileBtn">Edit profile</button></div>
+ <div id="profileSummary"></div>
 </section>
-<section class="card"><h2 style="margin-top:0">Plan controls</h2>
-<div class="grid2">
-<button id="changeDaysBtn">Change workout days</button>
-<button id="planBuilderBtn">Plan builder & priorities</button>
-<button id="regenBtn">Regenerate plan</button>
-<button id="newCycleBtn">Start new program</button>
-</div>
-<p class="tiny">Changing workout days keeps the current exercises and training history. Plan Builder lets you change how the program is created. Regenerating uses your currently selected builder mode.</p>
-</section>
-<section class="card"><h2 style="margin-top:0">Workout execution</h2>
-<div class="settings-switch"><div><strong>Auto-start rest timer</strong><div class="tiny">Starts the programmed rest period when a working set is marked done.</div></div><input id="autoRestSetting" type="checkbox"></div>
-<div class="settings-switch"><div><strong>Start session on first completed set</strong><div class="tiny">The session clock begins automatically if you have not started it manually.</div></div><input id="autoSessionSetting" type="checkbox"></div>
-<div class="settings-switch"><div><strong>Warm-up rest</strong><div class="tiny">Default rest after a completed warm-up set.</div></div><select id="warmupRestSetting" class="field" style="width:auto"><option value="45">0:45</option><option value="60">1:00</option><option value="90">1:30</option><option value="120">2:00</option></select></div>
-</section>
-<section class="card"><h2 style="margin-top:0">Personalization</h2>
-<p class="muted">These preferences personalize presentation and coach-built exercise selection without overriding your equipment, protected areas, schedule, goal or Plan Builder choices.</p>
-<div class="personal-grid">
- <label class="personal-field"><strong>Visual avatar</strong><div class="tiny">Auto follows the optional sex field only for illustration choice.</div><select id="visualAvatarSetting" class="field"><option value="auto">Auto</option><option value="male">Male</option><option value="female">Female</option><option value="neutral">Neutral</option></select></label>
- <label class="personal-field"><strong>When preferred avatar is unavailable</strong><div class="tiny">The exercise itself must still match exactly.</div><select id="visualFallbackSetting" class="field"><option value="available">Show available exact-exercise visual</option><option value="hide">Hide the visual until preferred pack exists</option></select></label>
- <label class="personal-field"><strong>Exercise-selection style</strong><div class="tiny">A preference, not a hard rule.</div><select id="exerciseBiasSetting" class="field"><option value="balanced">Balanced</option><option value="free_weights">Prefer free weights</option><option value="machines_cables">Prefer machines & cables</option><option value="dumbbells">Prefer dumbbells</option><option value="bodyweight">Prefer bodyweight movements</option></select></label>
- <label class="personal-field"><strong>Plan variety</strong><div class="tiny">Used when regenerating Coach Suggested or Muscle Priority plans.</div><select id="varietySetting" class="field"><option value="stable">Keep familiar exercises when sensible</option><option value="balanced">Balanced</option><option value="variety">Favor different exercises when sensible</option></select></label>
- <label class="personal-field"><strong>Coaching detail</strong><div class="tiny">Changes how much coaching logic appears directly on workout cards.</div><select id="coachingDetailSetting" class="field"><option value="concise">Concise</option><option value="standard">Standard</option><option value="detailed">Detailed</option></select></label>
-</div>
-<div id="avatarPackStatus" class="avatar-status"></div>
-<div class="preference-note"><strong>Programming note:</strong> Sex and avatar selection do not change sets, reps, exercise difficulty, or muscle priorities. Training decisions remain based on your stated goals, experience, equipment, schedule, protected areas, recovery and explicit plan preferences.</div>
-<div class="personal-actions"><button id="saveDisplayPreferencesBtn">Save display preferences</button><button id="applyPlanPreferencesBtn" class="primary">Apply exercise preferences & regenerate</button></div>
-</section>
-<section class="card"><h2 style="margin-top:0">Backup</h2><div class="grid2"><button id="settingsExportBtn">Export backup</button><label>Import backup<input id="importInput" type="file" accept="application/json" style="display:block;width:100%;margin-top:6px"></label></div></section>
+
 <section class="card">
- <div class="row"><div><div class="label">Exercise visuals</div><h2 style="margin:6px 0 0">Exact-match visual library</h2></div><strong id="visualCoverageCount"></strong></div>
- <div class="progress" style="margin-top:12px"><div id="visualCoverageBar"></div></div>
- <p class="tiny" id="visualCoverageText"></p>
- <button id="browseVisualsBtn">Browse & filter exercise library</button>
+ <div class="label">Plan & schedule</div><h2>Program controls</h2>
+ <div class="settings-action-grid">
+  <button id="planBuilderBtn">Plan builder & priorities</button>
+  <button id="changeDaysBtn">Change workout days</button>
+  <button id="regenBtn">Regenerate plan</button>
+  <button id="browseVisualsBtn">Exercise library</button>
+  <button id="newCycleBtn">Start new program</button>
+ </div>
+ <p class="tiny">Changing workout days keeps your current exercises and history. Regenerating uses your current Plan Builder and personalization preferences.</p>
 </section>
-<section class="card"><h2 style="margin-top:0">Privacy</h2><p>No login, analytics, trackers, or cloud database. Profile, training logs, recovery scores, measurements, and workout history remain in browser storage unless exported.</p></section>
-<section class="card"><h2 style="margin-top:0">Version</h2><strong>Adaptive Workout Coach — v7.3.4</strong></section>
-<section class="card"><button id="resetAllBtn" style="color:var(--danger)">Delete all local app data</button></section>
+
+<section class="card">
+ <div class="label">Training preferences</div><h2>Workout experience</h2>
+ <div class="settings-switch"><div><strong>Auto-start rest timer</strong><div class="tiny">Start the programmed rest period after a completed working set.</div></div><input id="autoRestSetting" type="checkbox"></div>
+ <div class="settings-switch"><div><strong>Start session automatically</strong><div class="tiny">Start the session clock with the first completed set.</div></div><input id="autoSessionSetting" type="checkbox"></div>
+ <div class="settings-switch"><div><strong>Warm-up rest</strong></div><select id="warmupRestSetting" class="field compact-select"><option value="45">0:45</option><option value="60">1:00</option><option value="90">1:30</option><option value="120">2:00</option></select></div>
+</section>
+
+<section class="card">
+ <div class="label">Personalization</div><h2>Coach preferences</h2>
+ <div class="personal-grid settings-personal-grid">
+  <label class="personal-field"><strong>Visual avatar</strong><select id="visualAvatarSetting" class="field"><option value="auto">Auto</option><option value="male">Male</option><option value="female">Female</option><option value="neutral">Neutral</option></select></label>
+  <label class="personal-field"><strong>Visual fallback</strong><select id="visualFallbackSetting" class="field"><option value="available">Show available exact visual</option><option value="hide">Hide unavailable avatar visual</option></select></label>
+  <label class="personal-field"><strong>Exercise style</strong><select id="exerciseBiasSetting" class="field"><option value="balanced">Balanced</option><option value="free_weights">Prefer free weights</option><option value="machines_cables">Prefer machines & cables</option><option value="dumbbells">Prefer dumbbells</option><option value="bodyweight">Prefer bodyweight movements</option></select></label>
+  <label class="personal-field"><strong>Plan variety</strong><select id="varietySetting" class="field"><option value="stable">Keep familiar exercises</option><option value="balanced">Balanced</option><option value="variety">Favor variety</option></select></label>
+  <label class="personal-field"><strong>Coaching detail</strong><select id="coachingDetailSetting" class="field"><option value="concise">Concise</option><option value="standard">Standard</option><option value="detailed">Detailed</option></select></label>
+ </div>
+ <p class="tiny settings-note">Avatar choice changes illustrations only; it does not change training prescription.</p>
+ <div class="personal-actions"><button id="saveDisplayPreferencesBtn">Save display preferences</button><button id="applyPlanPreferencesBtn" class="primary">Apply & regenerate plan</button></div>
+</section>
+
+<section class="card">
+ <div class="label">Backup & transfer</div><h2>Move data between devices</h2>
+ <p class="muted">Workout data is stored separately in each browser. Your phone and desktop do not automatically sync.</p>
+ <div class="grid2"><button id="settingsExportBtn">Export backup</button><label class="import-label">Import backup<input id="importInput" type="file" accept="application/json"></label></div>
+ <p class="tiny">To copy your current plan and history to another device, export on this device and import the file on the other one.</p>
+</section>
+
+<section class="card settings-about-card">
+ <div class="label">App & privacy</div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.3.5</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+</section>
 </section>
 </main>
 
@@ -532,8 +667,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  </div>
 </div>
 
+</section></div>
 <div class="onboard-actions"><button id="obBack">Back</button><button id="obNext" class="primary">Next</button></div>
-</section></div></div>
+</div>
 <div id="toast" class="toast hidden"></div>
 
 <script>
@@ -545,6 +681,13 @@ const KEY="adaptiveWorkoutCoachV6", OLDKEY="adaptiveWorkoutCoachV5";
 const UNDO_KEY="adaptiveWorkoutCoachV6Undo", REDO_KEY="adaptiveWorkoutCoachV6Redo";
 let undoStack=[], redoStack=[];
 let state={}, currentDay=0, currentView="today", obStep=1, editingProfile=false, builderDraft=null, pendingFinish=null, sessionTicker=null, timer={base:180,remaining:180,running:false,id:null,slot:null,label:"",auto:false};
+
+function syncVisualViewport(){
+ const vv=window.visualViewport;
+ const h=vv?vv.height:window.innerHeight,top=vv?vv.offsetTop:0;
+ document.documentElement.style.setProperty("--app-vvh",`${Math.round(h)}px`);
+ document.documentElement.style.setProperty("--app-vvtop",`${Math.round(top)}px`);
+}
 const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
 const eMap={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"};
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>eMap[m])}
@@ -1261,10 +1404,10 @@ function startTimer(){
  if(timer.running)return;if(timer.remaining<=0)timer.remaining=timer.base;timer.running=true;renderTimerUI();timer.id=setInterval(()=>{timer.remaining=Math.max(0,timer.remaining-1);renderTimerUI();if(timer.remaining<=0){stopTimer();navigator.vibrate?.([200,100,200]);toast("Rest complete")}},1000)
 }
 function startRestFor(slot,seconds,label,auto=true){stopTimer();timer.slot=slot;timer.base=timer.remaining=Math.max(15,Number(seconds)||60);timer.label=label||"Rest";timer.auto=auto;renderTimerUI();startTimer()}
-function openRestSheet(){$("#timerTitle").textContent=timer.label||"Rest timer";renderTimerUI();$("#timerSheet").classList.remove("hidden")}
+function openRestSheet(){$("#timerTitle").textContent=timer.label||"Rest timer";renderTimerUI();$("#timerSheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#timerSheet .sheetcard").scrollTop=0})}
 function cancelRest(){stopTimer();timer.remaining=timer.base;timer.label="";timer.slot=null;renderRestMini()}
 
-function openSheet(label,title,html){$("#sheetLabel").textContent=label;$("#sheetTitle").textContent=title;$("#sheetContent").innerHTML=html;$("#sheet").classList.remove("hidden")}
+function openSheet(label,title,html){$("#sheetLabel").textContent=label;$("#sheetTitle").textContent=title;$("#sheetContent").innerHTML=html;$("#sheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#sheet .sheetcard").scrollTop=0})}
 function closeSheet(){$("#sheet").classList.add("hidden")}
 function editTarget(slot){
  const item=plan()[currentDay].items[slot],t=effectiveTarget(item),ex=EXMAP[item.id];
@@ -1306,10 +1449,23 @@ function finalizeSession(){
 function muscleVolume(){
  const vol={};plan().forEach(d=>d.items.forEach(it=>{const t=effectiveTarget(it),m=DATA.MUSCLE_MAP[EXMAP[it.id].pattern]||{};Object.entries(m).forEach(([mus,f])=>vol[mus]=(vol[mus]||0)+t.sets*f)}));return vol;
 }
+function renderProgramPlanOverview(){
+ const box=$("#programPlanOverview"),meta=$("#programPlanMeta");if(!box)return;
+ const days=plan();if(meta)meta.textContent=`${days.length} training day${days.length===1?"":"s"} / week`;
+ if(!days.length){box.innerHTML='<div class="historyitem">No workout plan is saved in this browser yet.</div>';return}
+ box.innerHTML=days.map((d,dayIdx)=>`<div class="program-day">
+  <div class="program-day-head"><div><strong>${esc(d.weekday||`Day ${dayIdx+1}`)}</strong><span>${esc((d.type||"Workout").replace(/^./,c=>c.toUpperCase()))}</span></div><button class="jumpToTrainBtn" data-day="${dayIdx}">Open in Train</button></div>
+  <div class="program-table">
+   <div class="program-table-row program-table-head"><span>Exercise</span><span>Sets</span><span>Reps</span></div>
+   ${(d.items||[]).map(it=>{const ex=EXMAP[it.id],t=effectiveTarget(it);return `<div class="program-table-row"><span><strong>${esc(ex?.name||it.id)}</strong></span><span>${t.sets}</span><span>${esc(t.reps)}</span></div>`}).join("")}
+  </div>
+ </div>`).join("");
+}
 function renderCycle(){
- const c=cycle();$("#cycleHeading").textContent=`Training Block ${c.number} · Week ${c.week} of ${c.length}`;$("#cycleProgress").style.width=`${Math.round(c.week/c.length*100)}%`;
- $("#advanceWeekBtn").textContent=isDeload()?"Finish cycle":"Advance week";
- $("#cycleAdvice").textContent=isDeload()?"This is the deload week. The app reduces effective set count and RPE targets. Finish the cycle when complete.":`Current phase: ${phaseName()}. Progress load or reps only when performance and recovery support it.`;
+ const c=cycle();$("#cycleHeading").textContent=`Program ${c.number} · Week ${c.week} of ${c.length}`;$("#cycleProgress").style.width=`${Math.round(c.week/c.length*100)}%`;
+ $("#advanceWeekBtn").textContent=isDeload()?"Finish program":"Advance week";
+ $("#cycleAdvice").textContent=isDeload()?"This is the deload week. The app reduces effective set count and RPE targets. Finish the program when complete.":`Current phase: ${phaseName()}. Progress load or reps only when performance and recovery support it.`;
+ renderProgramPlanOverview();
  const v=muscleVolume(),max=Math.max(1,...Object.values(v));$("#volumeBox").innerHTML=Object.entries(v).sort((a,b)=>b[1]-a[1]).map(([m,n])=>`<div class="volumeRow"><strong>${esc(m)}</strong><div class="volbar"><div style="width:${Math.min(100,n/max*100)}%"></div></div><span>${n.toFixed(1)}</span></div>`).join("");
  const ws=(c.weekSummaries||[]);$("#weeklyReview").innerHTML=ws.length?ws.slice().reverse().map(w=>`<div class="historyitem"><strong>Week ${w.week}</strong> · ${w.sessions} sessions · avg completion ${w.avgCompletion}% · readiness ${w.readiness??"—"}<br><span class="tiny">${esc(w.note)}</span></div>`).join(""):'<div class="historyitem">No completed week summaries yet.</div>';
 }
@@ -1397,9 +1553,8 @@ function renderSettings(){
  <p class="tiny">${esc(scheduleNotice(p.weekdays||defaultWeekdays(p.days)))}</p>
  ${p.limitations?.length?`<p class="tiny">Protected areas: ${p.limitations.map(esc).join(", ")}</p>`:""}`;
 
- renderVisualCoverage();
  const es=executionSettings();if($("#autoRestSetting"))$("#autoRestSetting").checked=!!es.autoRest;if($("#autoSessionSetting"))$("#autoSessionSetting").checked=!!es.autoSession;if($("#warmupRestSetting"))$("#warmupRestSetting").value=String(es.warmupRest);
- const ps=personalizationSettings();if($("#visualAvatarSetting"))$("#visualAvatarSetting").value=ps.visualAvatar;if($("#visualFallbackSetting"))$("#visualFallbackSetting").value=ps.visualFallback;if($("#exerciseBiasSetting"))$("#exerciseBiasSetting").value=ps.exerciseBias;if($("#varietySetting"))$("#varietySetting").value=ps.variety;if($("#coachingDetailSetting"))$("#coachingDetailSetting").value=ps.coachingDetail;renderAvatarPackStatus();
+ const ps=personalizationSettings();if($("#visualAvatarSetting"))$("#visualAvatarSetting").value=ps.visualAvatar;if($("#visualFallbackSetting"))$("#visualFallbackSetting").value=ps.visualFallback;if($("#exerciseBiasSetting"))$("#exerciseBiasSetting").value=ps.exerciseBias;if($("#varietySetting"))$("#varietySetting").value=ps.variety;if($("#coachingDetailSetting"))$("#coachingDetailSetting").value=ps.coachingDetail;
 }
 function renderAll(){renderToday();renderProgress();renderCycle();renderRecovery();renderSettings();updateUndoUI();$("#headerSub").textContent=profile()?.name?`${profile().name}'s adaptive training cycle`:"Adaptive coaching · 156-exercise expanded library"}
 function switchView(v){currentView=v;$$(".vtab").forEach(b=>b.classList.toggle("active",b.dataset.view===v));$$(".view").forEach(x=>x.classList.remove("active"));$("#"+v).classList.add("active");if(v==="progress")renderProgress();if(v==="cycle")renderCycle();if(v==="recovery")renderRecovery();if(v==="settings")renderSettings()}
@@ -1418,6 +1573,9 @@ function showOnboarding(edit=false,startStep=1){
  }else{suggestOnboardingDays();updateHeightUI();builderDraft=defaultBuilderDraft(null)}
  obStep=Math.max(1,Math.min(6,Number(startStep)||1));renderOb();
 }
+function scrollOnboardingTop(){
+ requestAnimationFrame(()=>{const scroller=$(".onboard-inner");if(scroller)scroller.scrollTo({top:0,left:0,behavior:"auto"})});
+}
 function renderOb(){
  $$(".step").forEach(s=>s.classList.toggle("active",Number(s.dataset.step)===obStep));
  const stepNames=["Goal & experience","Schedule","Body profile","Equipment","Preferences","Plan builder"];
@@ -1425,6 +1583,7 @@ function renderOb(){
  $("#obBack").style.visibility=obStep===1?"hidden":"visible";
  $("#obNext").textContent=obStep===6?"Build my plan":"Continue";
  if(obStep===2)updateDayPickHelp();if(obStep===3)updateHeightUI();if(obStep===4)renderEquipmentCoverageHint();if(obStep===6)renderBuilderUI();
+ scrollOnboardingTop();
 }
 function saveOnboarding(){
  const weekdays=selectedOnboardingDays(),days=Number($("#obDays").value);
@@ -1447,7 +1606,7 @@ function saveOnboarding(){
  state.cycle={number:1,week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[]};generatePlan(true);save();switchView("today");$("#onboarding").classList.add("hidden");renderAll();toast("Personalized plan created");
 }
 function exportData(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-3-4-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-3-5-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 
 
@@ -1493,6 +1652,7 @@ document.addEventListener("click",e=>{
  const v=e.target.closest(".vtab");if(v)return switchView(v.dataset.view);
  const c=e.target.closest("[data-check]");if(c){const[s,j]=c.dataset.check.split(":").map(Number),it=plan()[currentDay].items[s],t=effectiveTarget(it),set=exLog(currentDay,s,t.sets).sets[j],was=set.done;set.done=!set.done;if(!was&&set.done){if(executionSettings().autoSession&&!sessionRuntime().running&&!sessionElapsed())startSession(true);if(executionSettings().autoRest)startRestFor(s,it.rest,`${EXMAP[it.id].name} · rest`,true)}save();renderToday();if(!was&&set.done&&j+1<t.sets)setTimeout(()=>document.querySelector(`input[data-slot="${s}"][data-set="${j+1}"][data-f="weight"]`)?.focus(),0);return}
 
+ const jump=e.target.closest(".jumpToTrainBtn");if(jump){currentDay=Number(jump.dataset.day)||0;switchView("today");renderToday();window.scrollTo({top:0,behavior:"auto"});return}
  const wc=e.target.closest("[data-warm-check]");if(wc){const[s,j]=wc.dataset.warmCheck.split(":").map(Number),it=plan()[currentDay].items[s],t=effectiveTarget(it),w=exLog(currentDay,s,t.sets).warmups[j];w.done=!w.done;if(w.done){if(executionSettings().autoSession&&!sessionRuntime().running&&!sessionElapsed())startSession(true);if(executionSettings().autoRest)startRestFor(s,executionSettings().warmupRest,`${EXMAP[it.id].name} · warm-up rest`,true)}save();renderToday();return}
  const aw=e.target.closest(".addWarmupBtn");if(aw){const s=Number(aw.dataset.slot),it=plan()[currentDay].items[s],t=effectiveTarget(it),l=exLog(currentDay,s,t.sets);if(l.warmups.length>=6)return alert("Up to 6 warm-up sets can be logged per exercise.");l.warmups.push({weight:"",reps:"",done:false});save();renderToday();setTimeout(()=>document.querySelector(`input[data-warm-slot="${s}"][data-warm-set="${l.warmups.length-1}"][data-f="weight"]`)?.focus(),0);return}
  const ul=e.target.closest(".useLastBtn");if(ul){const s=Number(ul.dataset.slot),it=plan()[currentDay].items[s],t=effectiveTarget(it),last=lastRecord(it.id);if(!last)return;const l=exLog(currentDay,s,t.sets),src=(last.sets||[]).filter(x=>x.done!==false),hasToday=l.sets.slice(0,t.sets).some(x=>x.done||String(x.weight||"").trim()||String(x.reps||"").trim()||String(x.rpe||"").trim());if(hasToday&&!confirm("Today already has working-set entries for this exercise. Replace those entries with the last completed performance? Warm-up sets and notes will not be changed."))return;for(let j=0;j<Math.min(t.sets,src.length);j++){l.sets[j].weight=src[j].weight;l.sets[j].reps=src[j].reps;l.sets[j].rpe=src[j].rpe;l.sets[j].done=false}save();renderToday();toast("Last performance prefilled");return}
@@ -1524,11 +1684,8 @@ $("#warmBtn").onclick=()=>openSheet("WARM-UP",plan()[currentDay].title,"<ul>"+wa
 $("#guideBtn").onclick=()=>openSheet("WORKOUT VISUALS",plan()[currentDay].title,workoutVisualGrid()+`<p class="tiny">These visuals are tied to the exact exercise currently in your plan. If an exact visual is unavailable, the app says so instead of showing a different movement.</p>`);
 $("#notesBtn").onclick=()=>{const d=plan()[currentDay];openSheet("SESSION NOTES",d.title,`<textarea id="dayNotes" class="field" rows="6">${esc(d.notes||"")}</textarea><button id="saveDayNotes" class="primary" style="margin-top:10px">Save notes</button>`);setTimeout(()=>$("#saveDayNotes").onclick=()=>{d.notes=$("#dayNotes").value;save();closeSheet();toast("Notes saved")},0)};
 $("#advanceWeekBtn").onclick=advanceWeek;$("#logBodyBtn").onclick=logBody;
-$("#undoTopBtn").onclick=undoLast;
 $("#undoBtn").onclick=undoLast;
 $("#redoBtn").onclick=redoLast;
-$("#settingsUndoBtn").onclick=undoLast;
-$("#settingsRedoBtn").onclick=redoLast;
 $("#saveRecoveryBtn").onclick=()=>{const o={date:new Date().toISOString(),cycleNumber:cycle().number,week:cycle().week};$$(".recRange").forEach(x=>o[x.dataset.k]=Number(x.value));recoveryEntries().push(o);save();renderRecovery();renderToday();toast("Recovery check-in saved")};
 $("#editProfileBtn").onclick=()=>showOnboarding(true,1);
 $("#planBuilderBtn").onclick=()=>showOnboarding(true,6);
@@ -1556,6 +1713,10 @@ $("#obHeightUnit").onchange=updateHeightUI;
 $("#obUnit").onchange=()=>{if(!editingProfile&&!$("#obBodyweight").value){$("#obHeightUnit").value=$("#obUnit").value==="lb"?"imperial":"metric";updateHeightUI()}};
 $("#obNext").onclick=()=>{if(obStep===2&&selectedOnboardingDays().length!==Number($("#obDays").value))return alert(`Choose exactly ${$("#obDays").value} workout days before continuing.`);if(obStep<6){obStep++;renderOb()}else saveOnboarding()};
 
+syncVisualViewport();
+window.addEventListener("resize",syncVisualViewport,{passive:true});
+window.visualViewport?.addEventListener("resize",syncVisualViewport,{passive:true});
+window.visualViewport?.addEventListener("scroll",syncVisualViewport,{passive:true});
 sessionTicker=setInterval(()=>{if(profile())renderSessionClock()},1000);
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
 loadState();loadUndoStacks();

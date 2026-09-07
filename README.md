@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.3.4
+# Adaptive Workout Coach — v7.3.5
 
 GitHub-ready PWA build.
 
@@ -226,3 +226,31 @@ The previous v7.3.3 patch called `setView("today")`, but the application navigat
 - dark-mode-compatible surfaces and hierarchy
 
 The internal programming/cycle engine, 156-exercise database, bodyweight hard constraints, variant separation and existing visual mappings remain unchanged.
+
+
+## v7.3.5 — Mobile Interaction, Settings & Program Overview
+
+### Onboarding
+- Every step transition automatically scrolls the onboarding content to the top.
+- The Continue / Build my plan action dock is moved outside the onboarding scroll container so it stays visible.
+- Visual Viewport measurements are used to keep the action dock inside the visible iOS Safari viewport.
+
+### Dialogs / sheets
+- Exercise Details, Exercise Swap, Session Notes and other sheets now sit above the app bottom navigation.
+- Each sheet owns its scrolling and uses the visible browser viewport height.
+- Sheet header/close controls remain sticky while scrolling.
+- Sheets always open scrolled to the top.
+
+### Settings cleanup
+- Removed duplicate Undo & Change History from Settings.
+- Removed visual coverage / available-image status cards.
+- Removed avatar pack coverage status.
+- Exercise Library remains available as a simple Plan & Schedule action.
+- Consolidated Profile, Program controls, Workout preferences, Personalization, Backup & Transfer, and App & Privacy.
+- Backup & Transfer now clearly explains that browser/device data is local and does not automatically sync.
+
+### Program page
+- Added a full weekly workout-plan overview with Exercise / Sets / Reps.
+- Each day has an Open in Train shortcut.
+- Replaced the oversized Plan Safety block with a compact Recent Plan Change + Undo/Redo row.
+- User-facing Training Block language on the Program page is simplified to Program.
