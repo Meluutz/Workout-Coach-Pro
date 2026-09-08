@@ -1,4 +1,4 @@
-const CACHE='adaptive-workout-coach-v7-4-4-experience-tier-audit';
+const CACHE='adaptive-workout-coach-v7-4-5-equipment-personalization-fix';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>{
   self.skipWaiting();

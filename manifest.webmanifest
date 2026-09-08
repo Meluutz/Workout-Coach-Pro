@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
-  "description": "Local-first adaptive workout coach with 167 exercises and 167 exact visuals, fully audited Beginner/Intermediate/Advanced movement tiers, experience-aware exercise selection, training blocks, recovery, and progression guidance.",
+  "description": "Local-first adaptive workout coach with 167 exercises and exact visuals, experience-aware programming, corrected equipment/personalization behavior, training blocks, recovery, and progression guidance.",
   "icons": [
     {
       "src": "./icon-192.png",

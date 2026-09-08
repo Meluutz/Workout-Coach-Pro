@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.4.4
+# Adaptive Workout Coach — v7.4.5
 
 GitHub-ready PWA build.
 
@@ -479,3 +479,17 @@ Example corrected upward:
 - Chest Dip → Advanced
 
 All **167 / 167 exercise visuals** remain mapped.
+
+
+## v7.4.5 — Equipment / Personalization Fix
+
+Fixed a profile-editing issue where an old **Prefer bodyweight movements** Exercise Style preference could remain active after the user changed the training environment to **Full gym** or **Dumbbells + bench**.
+
+Changes:
+- Changing equipment through Edit Profile resets Exercise Style to **Balanced** before regenerating the plan.
+- Existing v7.4.x saved profiles with the known unmarked Full Gym/Dumbbells + Bodyweight-bias combination are repaired automatically once.
+- Exercise Style now records whether the user explicitly applied it.
+- Settings now labels **Visual** and **Exercise style** separately.
+- The Settings explanation now clarifies that visual avatar does not affect exercise selection.
+- Exercise Style remains a user-selectable preference, but only after an explicit **Apply & regenerate plan** action.
+- Full visual coverage remains **167 / 167**.
