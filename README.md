@@ -796,3 +796,23 @@ The reliability suite now checks up/down reordering, drag-style reorder logic, m
 
 Library: **169 exercises**.  
 Exact visual coverage: **169 / 169**.
+
+
+## v7.6.5 — Mobile Build Your Own Reorder Cleanup
+
+Based on real iPhone use, the Build Your Own ordering layout was tightened for narrow screens.
+
+### Mobile
+- The large drag handle is hidden on screens up to 760px wide.
+- Reordering uses the existing **↑ / ↓** buttons.
+- Exercise names receive substantially more horizontal space.
+- Exercise names may use up to two lines.
+- Position numbers are narrower.
+- Arrow buttons are slightly more compact.
+- The secondary day/category line remains compact.
+
+### Larger screens
+- The drag handle remains available.
+- ↑ / ↓ controls remain available as a fallback.
+
+No ordering logic, workout programming, exercise data, analytics, or saved-data behavior changed.

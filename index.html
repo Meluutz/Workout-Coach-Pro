@@ -96,13 +96,32 @@ main{max-width:1080px;margin:auto;padding:14px 14px calc(28px + env(safe-area-in
 .custom-order-actions button:disabled{opacity:.3}
 .custom-order-help{margin:9px 2px 0}
 body.custom-reordering{user-select:none;-webkit-user-select:none;overflow:hidden}
-@media(max-width:420px){
+
+/* Mobile-first cleanup: hide drag handle and prioritize exercise names */
+@media(max-width:760px){
  .custom-order-panel{padding:9px}
- .custom-order-row{grid-template-columns:40px 28px minmax(0,1fr) auto;gap:6px;padding:7px}
- .custom-order-handle{width:40px;height:40px}
- .custom-order-pos{width:28px}
+ .custom-order-head>span{display:none}
+ .custom-order-row{grid-template-columns:30px minmax(0,1fr) auto;gap:7px;padding:8px}
+ .custom-order-handle{display:none}
+ .custom-order-pos{width:30px;font-size:13px;text-align:left}
+ .custom-order-name strong{
+  white-space:normal;
+  overflow:hidden;
+  text-overflow:clip;
+  line-height:1.15;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+ }
+ .custom-order-name .tiny{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
  .custom-order-actions{grid-template-columns:36px 36px;gap:4px}
- .custom-order-actions button{width:36px;height:36px;min-height:36px}
+ .custom-order-actions button{width:36px;height:36px;min-height:36px;font-size:18px}
+}
+@media(max-width:390px){
+ .custom-order-row{grid-template-columns:28px minmax(0,1fr) auto;gap:6px}
+ .custom-order-pos{width:28px}
+ .custom-order-actions{grid-template-columns:34px 34px}
+ .custom-order-actions button{width:34px;height:34px;min-height:34px}
 }
 @media(max-width:760px){
  .builder-options{grid-template-columns:1fr}
@@ -762,7 +781,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.6.4 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.6.5 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -933,7 +952,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.6.4</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.6.5</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -1063,7 +1082,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   <div id="customExercisePicker"></div>
   <div id="customOrderPanel" class="custom-order-panel hidden">
    <div class="row custom-order-head">
-    <div><strong>Selected exercise order</strong><div class="tiny">Drag the ≡ handle or use ↑ / ↓. Order is saved with your custom plan.</div></div>
+    <div><strong>Selected exercise order</strong><div class="tiny">Use ↑ / ↓ to reorder on mobile. Drag is also available on larger screens. Order is saved with your custom plan.</div></div>
     <span class="tiny">Position</span>
    </div>
    <div id="customOrderList" class="custom-order-list"></div>
@@ -2010,7 +2029,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.6.4 — Reliability Report",
+  "Adaptive Workout Coach v7.6.5 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -3020,7 +3039,7 @@ function saveOnboarding(){
  state.cycle={number:1,week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[]};generatePlan(true);save();switchView("today");$("#onboarding").classList.add("hidden");renderAll();toast("Personalized plan created");
 }
 function exportData(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-6-4-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-6-5-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 
 
