@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.4.6
+# Adaptive Workout Coach — v7.4.7
 
 GitHub-ready PWA build.
 
@@ -517,3 +517,58 @@ The database has no true dumbbell knee-flexion hamstring-curl movement. Rather t
 Minimal Equipment and Bodyweight Only behavior is unchanged.
 
 Visual coverage remains **167 / 167**.
+
+
+## v7.4.7 — Full Resistance / Equipment Classification Audit
+
+All **167 exercises** were reviewed and assigned a dedicated `resistanceClass`.
+
+- External load: **99**
+- Bodyweight resistance: **64**
+- Minimal-tool resistance: **4**
+
+The existing `equipment` field remains a compatibility list for Exercise Swap and Build Your Own.
+Automatic programming now uses the separate `resistanceClass`, eliminating ambiguity.
+
+### Full Gym automatic plans
+Only `External load` exercises are eligible.
+
+This excludes bodyweight/calisthenic gym movements such as:
+- Pull-Up / Assisted Pull-Up
+- Chin-Up
+- Chest Dip
+- Inverted Row
+- Nordic Hamstring Curl
+- Hanging Leg Raise
+- Back Extension
+- Push-Up / Plank families
+
+It also excludes minimal-tool movements such as:
+- Slider Hamstring Curl
+- Band Pull-Apart
+- Band Curl
+- Ab Wheel Rollout
+
+### Dumbbells + Bench automatic plans
+Exercises must:
+1. Be classified `External load`, and
+2. Be genuinely dumbbell-compatible.
+
+### Ambiguous duplicate-family names corrected
+The loaded variants are now explicitly named:
+- Dumbbell Step-Up
+- Dumbbell Bulgarian Split Squat
+- Dumbbell Reverse Lunge
+- Dumbbell Walking Lunge
+- Dumbbell Standing Calf Raise
+
+Their separate bodyweight records remain unchanged.
+
+### Important clarification
+`Step-Up` and `Bulgarian Split Squat` were not the bodyweight records in v7.4.6.
+They were the loaded dumbbell variants, but their generic names made that unclear.
+The actual classification bug in the reported examples was `Slider Hamstring Curl`, which was Minimal Equipment and could leak into Full Gym because compatibility and resistance type had previously been conflated.
+
+Bodyweight and minimal-tool exercises remain available through Exercise Swap and Build Your Own.
+
+Visual mappings remain **167 / 167**.
