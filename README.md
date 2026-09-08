@@ -747,3 +747,32 @@ Visual coverage remains **167 / 167**.
 
 ### Existing iPhone shortcut
 iOS normally keeps the icon captured when the shortcut was originally added. After deploying this version, remove the old Workout Coach home-screen shortcut and add the site to the home screen again from Safari to display the new icon.
+
+
+## v7.6.2 — Upper-Trap Shrug Exercises
+
+Added two requested loaded upper-trap accessories:
+
+- **Dumbbell Shrug** — Beginner · Dumbbells / Full Gym
+- **Machine / Cable Shrug** — Beginner · Full Gym
+
+Both target the upper trapezius with levator scapulae involvement and use normal reps → load progression.
+
+### Programming behavior
+
+These are intentionally optional accessories:
+- Available in the exercise library and **Build Your Own**.
+- A manually programmed shrug can be swapped to the other compatible shrug variation.
+- Existing Coach Suggested templates are unchanged, so shrugs do not unexpectedly displace rows, presses, lateral raises, or direct arm work.
+- Existing Muscle Priority percentage logic is unchanged.
+- Completed shrug sets contribute to Progress analytics as upper-back work with a smaller shoulder exposure contribution.
+
+Library: **169 exercises**.  
+Exact visual coverage: **169 / 169**.
+
+
+## v7.6.3 — Approved Shrug Visuals
+- Replaced the temporary Dumbbell Shrug visual with the approved standalone poster.
+- Replaced the temporary Machine / Cable Shrug visual with the approved standalone poster.
+- No programming, analytics, progression, or saved-data logic changed.
+- Library remains 169 exercises with 169 / 169 mapped visuals.

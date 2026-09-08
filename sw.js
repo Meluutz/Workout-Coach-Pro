@@ -1,4 +1,4 @@
-const CACHE='adaptive-workout-coach-v7-6-1-branding';
+const CACHE='adaptive-workout-coach-v7-6-3-approved-shrugs';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png','./assets/branding/workout-coach-app-icon.png'];
 self.addEventListener('install',e=>{
   self.skipWaiting();
