@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.4.5
+# Adaptive Workout Coach — v7.4.6
 
 GitHub-ready PWA build.
 
@@ -493,3 +493,27 @@ Changes:
 - The Settings explanation now clarifies that visual avatar does not affect exercise selection.
 - Exercise Style remains a user-selectable preference, but only after an explicit **Apply & regenerate plan** action.
 - Full visual coverage remains **167 / 167**.
+
+
+## v7.4.6 — Loaded-Only Automatic Plans
+
+### Full Gym
+Automatic Coach Suggested and Muscle Priority plans exclude all exercises tagged as bodyweight.
+
+### Dumbbells + Bench
+Automatic Coach Suggested and Muscle Priority plans also exclude all exercises tagged as bodyweight.
+
+Bodyweight exercises are still available through:
+- Exercise Swap
+- Build Your Own
+
+### Dumbbell template correction
+The database has no true dumbbell knee-flexion hamstring-curl movement. Rather than reintroducing bodyweight work:
+- Dumbbell Romanian Deadlift is treated as a scalable Beginner loaded hinge.
+- Dumbbells + Bench templates replace unavailable `hamstring` slots with a loaded `hip` slot.
+
+### Personalization
+`Prefer bodyweight movements` is disabled for Full Gym and Dumbbells + Bench profiles.
+Minimal Equipment and Bodyweight Only behavior is unchanged.
+
+Visual coverage remains **167 / 167**.
