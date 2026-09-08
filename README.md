@@ -776,3 +776,23 @@ Exact visual coverage: **169 / 169**.
 - Replaced the temporary Machine / Cable Shrug visual with the approved standalone poster.
 - No programming, analytics, progression, or saved-data logic changed.
 - Library remains 169 exercises with 169 / 169 mapped visuals.
+
+
+## v7.6.4 — Build Your Own Exercise Reordering
+
+Build Your Own now includes a dedicated **Selected exercise order** panel.
+
+- Drag the dedicated `≡` handle to reposition an exercise.
+- Use **↑ / ↓** as a dependable mobile fallback.
+- Keyboard Arrow Up / Arrow Down works while the drag handle is focused.
+- The whole exercise row is not draggable, reducing accidental moves while scrolling.
+- The order is saved in the existing `customExercises` sequence.
+- Fully manual plans use the chosen relative order directly within each assigned workout day.
+- Coach-programmed Build Your Own still chooses the best day for each movement, then preserves the user's preferred order among exercises assigned to that day.
+- Sets, reps, RPE and day assignments stay attached to the exercise while it moves.
+- Existing Edit Profile Undo behavior remains unchanged.
+
+The reliability suite now checks up/down reordering, drag-style reorder logic, manual-plan order preservation, and coach-programmed within-day order preservation.
+
+Library: **169 exercises**.  
+Exact visual coverage: **169 / 169**.

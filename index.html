@@ -77,6 +77,33 @@ main{max-width:1080px;margin:auto;padding:14px 14px calc(28px + env(safe-area-in
 .manual-controls label{font-size:11px;color:var(--muted)}
 .manual-controls .field{margin-top:4px}
 .builder-chip{display:inline-block;background:var(--soft);border-radius:999px;padding:5px 8px;font-size:11px;font-weight:800;margin:3px 3px 0 0}
+
+/* v7.6.4 Build Your Own ordering */
+.custom-order-panel{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--surface-2)}
+.custom-order-head{align-items:flex-start;margin-bottom:8px}
+.custom-order-list{display:grid;gap:7px}
+.custom-order-row{display:grid;grid-template-columns:42px 34px minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:13px;background:var(--surface);transition:border-color .12s,box-shadow .12s,transform .12s}
+.custom-order-row.dragging{opacity:.72;border-color:var(--blue);box-shadow:0 0 0 2px color-mix(in srgb,var(--blue) 18%,transparent)}
+.custom-order-row.drag-target{border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}
+.custom-order-handle{width:42px;height:42px;padding:0;display:grid;place-items:center;touch-action:none;cursor:grab;font-size:24px;line-height:1;font-weight:900;user-select:none;-webkit-user-select:none}
+.custom-order-handle:active{cursor:grabbing}
+.custom-order-pos{width:34px;text-align:center;font-size:12px;font-weight:900;color:var(--muted);font-variant-numeric:tabular-nums}
+.custom-order-name{min-width:0}
+.custom-order-name strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.custom-order-name .tiny{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.custom-order-actions{display:grid;grid-template-columns:38px 38px;gap:5px}
+.custom-order-actions button{width:38px;height:38px;min-height:38px;padding:0;font-size:17px;font-weight:900}
+.custom-order-actions button:disabled{opacity:.3}
+.custom-order-help{margin:9px 2px 0}
+body.custom-reordering{user-select:none;-webkit-user-select:none;overflow:hidden}
+@media(max-width:420px){
+ .custom-order-panel{padding:9px}
+ .custom-order-row{grid-template-columns:40px 28px minmax(0,1fr) auto;gap:6px;padding:7px}
+ .custom-order-handle{width:40px;height:40px}
+ .custom-order-pos{width:28px}
+ .custom-order-actions{grid-template-columns:36px 36px;gap:4px}
+ .custom-order-actions button{width:36px;height:36px;min-height:36px}
+}
 @media(max-width:760px){
  .builder-options{grid-template-columns:1fr}
  .priority-row{grid-template-columns:82px minmax(0,1fr) 46px}
@@ -735,7 +762,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.6.3 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.6.4 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -906,7 +933,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.6.3</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.6.4</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -1034,6 +1061,14 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
    <strong id="customSelectedCount">0 selected</strong>
   </div>
   <div id="customExercisePicker"></div>
+  <div id="customOrderPanel" class="custom-order-panel hidden">
+   <div class="row custom-order-head">
+    <div><strong>Selected exercise order</strong><div class="tiny">Drag the ≡ handle or use ↑ / ↓. Order is saved with your custom plan.</div></div>
+    <span class="tiny">Position</span>
+   </div>
+   <div id="customOrderList" class="custom-order-list"></div>
+   <p id="customOrderHelp" class="tiny custom-order-help"></p>
+  </div>
   <div id="manualAssignments" class="manual-list hidden"></div>
  </div>
 </div>
@@ -1054,6 +1089,7 @@ let undoStack=[], redoStack=[];
 let state={}, currentDay=0, currentView="today", obStep=1, editingProfile=false, builderDraft=null, pendingFinish=null, sessionTicker=null, timer={base:180,remaining:180,running:false,id:null,slot:null,label:"",auto:false};
 let reliabilityRunning=false,lastReliabilityResult=null;
 let analyticsRange="8w",analyticsExerciseId=null;
+let customOrderDrag={active:false,id:null,targetId:null,pointerId:null,after:false};
 
 function syncVisualViewport(){
  const vv=window.visualViewport;
@@ -1479,6 +1515,55 @@ function renderCustomCount(){
  const p=formProfileDraft(),cap=planCapacity(p),count=builderDraft.customExercises.length,el=$("#customSelectedCount");
  if(el)el.textContent=`${count} selected · max ${p.days*cap}`;
 }
+function moveCustomExercise(id,delta,render=true){
+ if(!builderDraft||!Array.isArray(builderDraft.customExercises))return false;
+ const list=builderDraft.customExercises,i=list.indexOf(id),j=i+Number(delta||0);
+ if(i<0||j<0||j>=list.length||i===j)return false;
+ [list[i],list[j]]=[list[j],list[i]];
+ if(render){renderCustomOrderList();renderManualAssignments()}
+ return true;
+}
+function reorderCustomExercise(sourceId,targetId,after=false,render=true){
+ if(!builderDraft||!Array.isArray(builderDraft.customExercises)||sourceId===targetId)return false;
+ const list=builderDraft.customExercises,from=list.indexOf(sourceId);
+ if(from<0||!list.includes(targetId))return false;
+ list.splice(from,1);
+ let to=list.indexOf(targetId);
+ if(to<0){list.splice(from,0,sourceId);return false}
+ if(after)to++;
+ list.splice(to,0,sourceId);
+ if(render){renderCustomOrderList();renderManualAssignments()}
+ return true;
+}
+function renderCustomOrderList(){
+ const panel=$("#customOrderPanel"),box=$("#customOrderList"),help=$("#customOrderHelp");
+ if(!panel||!box||!builderDraft)return;
+ const ids=(builderDraft.customExercises||[]).filter(id=>EXMAP[id]);
+ panel.classList.toggle("hidden",ids.length===0);
+ if(!ids.length){box.innerHTML="";if(help)help.textContent="";return}
+ const manual=builderDraft.customMode==="manual";
+ box.innerHTML=ids.map((id,i)=>{
+  const ex=EXMAP[id],a=manual?ensureManualDefaults(id,i):null;
+  const detail=manual&&a?.weekday?`${a.weekday} · ${exerciseCategory(ex)}`:`${exerciseCategory(ex)} · ${ex.muscles}`;
+  return `<div class="custom-order-row" data-order-id="${id}">
+   <button type="button" class="custom-order-handle" draggable="true" data-order-id="${id}" aria-label="Drag ${esc(ex.name)} to reorder" title="Drag to reorder">≡</button>
+   <span class="custom-order-pos">#${i+1}</span>
+   <div class="custom-order-name"><strong>${esc(ex.name)}</strong><span class="tiny">${esc(detail)}</span></div>
+   <div class="custom-order-actions">
+    <button type="button" class="custom-order-move" data-order-id="${id}" data-dir="-1" aria-label="Move ${esc(ex.name)} up" ${i===0?"disabled":""}>↑</button>
+    <button type="button" class="custom-order-move" data-order-id="${id}" data-dir="1" aria-label="Move ${esc(ex.name)} down" ${i===ids.length-1?"disabled":""}>↓</button>
+   </div>
+  </div>`;
+ }).join("");
+ if(help)help.textContent=manual
+  ?"Fully manual: this order is used inside each workout day. Exercises assigned to other days do not affect that day's sequence."
+  :"Coach-programmed selections: the coach chooses the workout day, then preserves this preferred order among exercises placed on the same day.";
+}
+function clearCustomOrderDrag(){
+ $$(".custom-order-row").forEach(r=>r.classList.remove("dragging","drag-target"));
+ document.body.classList.remove("custom-reordering");
+ customOrderDrag={active:false,id:null,targetId:null,pointerId:null,after:false};
+}
 function renderCustomExercisePicker(){
  const box=$("#customExercisePicker");if(!box||!builderDraft)return;
  const q=($("#customSearch")?.value||"").trim().toLowerCase(),p=formProfileDraft();
@@ -1489,14 +1574,14 @@ function renderCustomExercisePicker(){
   const items=(groups[cat]||[]).sort((a,b)=>a.name.localeCompare(b.name));if(!items.length)return"";
   return `<details class="exercise-category" ${idx<2?"open":""}><summary>${cat} · ${items.length}</summary><div class="exercise-category-body">${items.map(e=>`<label class="exercise-choice"><input class="customExercise" type="checkbox" value="${e.id}" ${builderDraft.customExercises.includes(e.id)?"checked":""}><span><strong>${esc(e.name)}</strong><span class="tiny">${esc(e.muscles)} · ${esc(e.difficulty||"Intermediate")}${manualExperienceNote(e,p)}${e.resistanceType?` · ${esc(e.resistanceType)}`:""}</span></span></label>`).join("")}</div></details>`;
  }).join("");
- renderCustomCount();renderManualAssignments();
+ renderCustomCount();renderCustomOrderList();renderManualAssignments();
 }
 function renderManualAssignments(){
  const box=$("#manualAssignments");if(!box||!builderDraft)return;
  const manual=builderDraft.customMode==="manual";
  box.classList.toggle("hidden",!manual);if(!manual)return;
  const p=formProfileDraft(),days=p.weekdays?.length?p.weekdays:defaultWeekdays(p.days);
- box.innerHTML=`<div class="row"><strong>Manual day + targets</strong><span class="tiny">Each selected exercise can be assigned to a workout day.</span></div>`+
+ box.innerHTML=`<div class="row"><strong>Manual day + targets</strong><span class="tiny">Assign days and targets here; change exercise sequence in Selected exercise order above.</span></div>`+
  builderDraft.customExercises.map((id,i)=>{
   const ex=EXMAP[id],a=ensureManualDefaults(id,i);
   return `<div class="manual-row"><strong>${esc(ex.name)}</strong><div class="tiny">${esc(ex.muscles)}</div><div class="manual-controls">
@@ -1771,8 +1856,12 @@ function buildPriorityPlan(p){
 function buildCustomCoachPlan(p){
  const cfg=goalConfig(p.goal,p.level),types=DATA.SCHEDULE[p.days],days=(p.weekdays?.length===p.days?p.weekdays:defaultWeekdays(p.days)),cap=planCapacity(p);
  const generated=days.map((day,i)=>({weekday:day,type:types[i],title:`${day} · Custom`,items:[],notes:""}));
- const selected=(p.planBuilder?.customExercises||[]).map(id=>EXMAP[id]).filter(Boolean);
- selected.sort((a,b)=>(COMPOUND_PATTERNS.has(b.pattern)?1:0)-(COMPOUND_PATTERNS.has(a.pattern)?1:0));
+ const preferred=[...(p.planBuilder?.customExercises||[])],orderMap=new Map(preferred.map((id,i)=>[id,i]));
+ const selected=preferred.map(id=>EXMAP[id]).filter(Boolean);
+ selected.sort((a,b)=>{
+  const compound=(COMPOUND_PATTERNS.has(b.pattern)?1:0)-(COMPOUND_PATTERNS.has(a.pattern)?1:0);
+  return compound||((orderMap.get(a.id)??9999)-(orderMap.get(b.id)??9999));
+ });
  selected.forEach((e,order)=>{
   let bestDay=0,bestScore=-1e9;
   generated.forEach((d,i)=>{
@@ -1785,6 +1874,7 @@ function buildCustomCoachPlan(p){
   const d=generated[bestDay],primary=COMPOUND_PATTERNS.has(e.pattern)&&d.items.filter(it=>COMPOUND_PATTERNS.has(EXMAP[it.id].pattern)).length<2;
   d.items.push(makePlanItem(e,p,cfg,primary,0));
  });
+ generated.forEach(d=>d.items.sort((a,b)=>(orderMap.get(a.id)??9999)-(orderMap.get(b.id)??9999)));
  return generated;
 }
 function buildCustomManualPlan(p){
@@ -1920,7 +2010,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.6.3 — Reliability Report",
+  "Adaptive Workout Coach v7.6.4 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -2003,6 +2093,32 @@ async function runReliabilitySuite(){
   check(analyticsWeeks.reduce((a,w)=>a+w.sets,0)===4,"Analytics: completed-set aggregation is incorrect");
   const analyticsMuscles=analyticsMuscleWorkload(analyticsSynthetic);
   check(Number(analyticsMuscles.Chest)>0&&Number(analyticsMuscles.Triceps)>0,"Analytics: muscle workload mapping failed");
+
+  // Build Your Own ordering regression checks.
+  builderDraft={mode:"custom",customMode:"manual",customExercises:["db_bench","cable_row","db_lat_raise"],manual:{}};
+  check(moveCustomExercise("db_bench",1,false)===true,"Build Your Own order: move-down action failed");
+  check(builderDraft.customExercises.join(",")==="cable_row,db_bench,db_lat_raise","Build Your Own order: move-down sequence is incorrect");
+  check(reorderCustomExercise("db_lat_raise","cable_row",false,false)===true,"Build Your Own order: drag-style reorder failed");
+  check(builderDraft.customExercises.join(",")==="db_lat_raise,cable_row,db_bench","Build Your Own order: drag-style sequence is incorrect");
+
+  const reorderManualProfile=reliabilityProfile("Intermediate","gym","both",2,60,{
+   mode:"custom",customMode:"manual",
+   customExercises:["cable_row","db_bench","db_lat_raise"],
+   manual:{
+    cable_row:{weekday:defaultWeekdays(2)[0],sets:3,reps:"8–10",rpe:"7–8"},
+    db_bench:{weekday:defaultWeekdays(2)[0],sets:3,reps:"8–10",rpe:"7–8"},
+    db_lat_raise:{weekday:defaultWeekdays(2)[1],sets:3,reps:"10–12",rpe:"7–8"}
+   }
+  });
+  const reorderManualPlan=buildCustomManualPlan(reorderManualProfile);
+  check(reorderManualPlan[0].items.map(x=>x.id).join(",")==="cable_row,db_bench","Build Your Own order: manual workout did not preserve chosen order");
+
+  const reorderCoachProfile=reliabilityProfile("Intermediate","gym","both",3,60,{
+   mode:"custom",customMode:"coach",
+   customExercises:["db_lat_raise","cable_row","db_bench","lat_pd","leg_press","db_curl"]
+  });
+  const reorderCoachPlan=buildCustomCoachPlan(reorderCoachProfile),reorderMap=new Map(reorderCoachProfile.planBuilder.customExercises.map((id,i)=>[id,i]));
+  check(reorderCoachPlan.every(d=>d.items.every((it,i)=>i===0||(reorderMap.get(d.items[i-1].id)??9999)<=(reorderMap.get(it.id)??9999))),"Build Your Own order: coach-programmed workout did not preserve preferred within-day order");
 
 
   const levels=["Beginner","Intermediate","Advanced"];
@@ -2904,7 +3020,7 @@ function saveOnboarding(){
  state.cycle={number:1,week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[]};generatePlan(true);save();switchView("today");$("#onboarding").classList.add("hidden");renderAll();toast("Personalized plan created");
 }
 function exportData(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-6-3-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-6-4-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 
 
@@ -2925,8 +3041,8 @@ document.addEventListener("change",e=>{
   return;
  }
  if(e.target.name==="customProgramming"){
-  builderDraft.customMode=e.target.value;renderManualAssignments();
-  if(builderDraft.customMode==="manual")scrollOnboardingToPanel("#manualAssignments");
+  builderDraft.customMode=e.target.value;renderCustomOrderList();renderManualAssignments();
+  if(builderDraft.customMode==="manual")scrollOnboardingToPanel("#customOrderPanel");
   return;
  }
  if(e.target.classList.contains("customExercise")){
@@ -2937,11 +3053,13 @@ document.addEventListener("change",e=>{
   }else{
    builderDraft.customExercises=builderDraft.customExercises.filter(x=>x!==id);delete builderDraft.manual[id];
   }
-  renderCustomCount();renderManualAssignments();return;
+  renderCustomCount();renderCustomOrderList();renderManualAssignments();return;
  }
  if(e.target.classList.contains("manualField")){
   const id=e.target.dataset.id,k=e.target.dataset.k,a=ensureManualDefaults(id);
-  a[k]=k==="sets"?Number(e.target.value):e.target.value;return;
+  a[k]=k==="sets"?Number(e.target.value):e.target.value;
+  if(k==="weekday")renderCustomOrderList();
+  return;
  }
 });
 document.addEventListener("input",e=>{
@@ -2951,11 +3069,73 @@ document.addEventListener("input",e=>{
  if(e.target.id==="customSearch"){renderCustomExercisePicker();return}
 });
 
+document.addEventListener("pointerdown",e=>{
+ const handle=e.target.closest(".custom-order-handle");if(!handle||e.pointerType==="mouse")return;
+ e.preventDefault();
+ customOrderDrag={active:true,id:handle.dataset.orderId,targetId:handle.dataset.orderId,pointerId:e.pointerId,after:false};
+ try{handle.setPointerCapture(e.pointerId)}catch{}
+ handle.closest(".custom-order-row")?.classList.add("dragging");
+ document.body.classList.add("custom-reordering");
+});
+document.addEventListener("pointermove",e=>{
+ if(!customOrderDrag.active||customOrderDrag.pointerId!==e.pointerId)return;
+ e.preventDefault();
+ const row=document.elementFromPoint(e.clientX,e.clientY)?.closest(".custom-order-row");
+ $$(".custom-order-row").forEach(r=>r.classList.remove("drag-target"));
+ if(!row||row.dataset.orderId===customOrderDrag.id)return;
+ row.classList.add("drag-target");
+ customOrderDrag.targetId=row.dataset.orderId;
+ const rect=row.getBoundingClientRect();
+ customOrderDrag.after=e.clientY>rect.top+rect.height/2;
+},{passive:false});
+document.addEventListener("pointerup",e=>{
+ if(!customOrderDrag.active||customOrderDrag.pointerId!==e.pointerId)return;
+ const {id,targetId,after}=customOrderDrag;
+ clearCustomOrderDrag();
+ if(id&&targetId&&id!==targetId)reorderCustomExercise(id,targetId,after);
+});
+document.addEventListener("pointercancel",()=>{if(customOrderDrag.active)clearCustomOrderDrag()});
+
+document.addEventListener("dragstart",e=>{
+ const handle=e.target.closest(".custom-order-handle");if(!handle)return;
+ customOrderDrag={active:true,id:handle.dataset.orderId,targetId:handle.dataset.orderId,pointerId:null,after:false};
+ handle.closest(".custom-order-row")?.classList.add("dragging");
+ if(e.dataTransfer){e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",handle.dataset.orderId)}
+});
+document.addEventListener("dragover",e=>{
+ if(!customOrderDrag.active||customOrderDrag.pointerId!==null)return;
+ const row=e.target.closest(".custom-order-row");if(!row||row.dataset.orderId===customOrderDrag.id)return;
+ e.preventDefault();
+ $$(".custom-order-row").forEach(r=>r.classList.remove("drag-target"));
+ row.classList.add("drag-target");
+ customOrderDrag.targetId=row.dataset.orderId;
+ const rect=row.getBoundingClientRect();
+ customOrderDrag.after=e.clientY>rect.top+rect.height/2;
+});
+document.addEventListener("drop",e=>{
+ if(!customOrderDrag.active||customOrderDrag.pointerId!==null)return;
+ e.preventDefault();
+ const {id,targetId,after}=customOrderDrag;
+ clearCustomOrderDrag();
+ if(id&&targetId&&id!==targetId)reorderCustomExercise(id,targetId,after);
+});
+document.addEventListener("dragend",()=>{if(customOrderDrag.active&&customOrderDrag.pointerId===null)clearCustomOrderDrag()});
+
+document.addEventListener("keydown",e=>{
+ const handle=e.target.closest(".custom-order-handle");if(!handle)return;
+ if(e.key==="ArrowUp"||e.key==="ArrowDown"){
+  e.preventDefault();
+  moveCustomExercise(handle.dataset.orderId,e.key==="ArrowUp"?-1:1);
+  requestAnimationFrame(()=>document.querySelector(`.custom-order-handle[data-order-id="${handle.dataset.orderId}"]`)?.focus());
+ }
+});
+
 document.addEventListener("click",e=>{
  const runReliability=e.target.closest("#runReliabilityBtn");if(runReliability){runReliabilitySuite();return}
  const viewReliability=e.target.closest("#viewReliabilityBtn");if(viewReliability&&lastReliabilityResult){openSheet("RELIABILITY","Regression self-test",reliabilityResultHtml(lastReliabilityResult));return}
  const copyReliability=e.target.closest("#copyReliabilityBtn");if(copyReliability&&lastReliabilityResult){copyReliabilityReport();return}
  const rangeBtn=e.target.closest("#analyticsRangeControls button");if(rangeBtn){analyticsRange=rangeBtn.dataset.range||"8w";analyticsExerciseId=null;renderProgress();return}
+ const customMove=e.target.closest(".custom-order-move");if(customMove){moveCustomExercise(customMove.dataset.orderId,Number(customMove.dataset.dir));return}
  const v=e.target.closest(".vtab");if(v)return switchView(v.dataset.view);
  const c=e.target.closest("[data-check]");if(c){const[s,j]=c.dataset.check.split(":").map(Number),it=plan()[currentDay].items[s],t=effectiveTarget(it),set=exLog(currentDay,s,t.sets).sets[j],was=set.done;set.done=!set.done;if(!was&&set.done){if(executionSettings().autoSession&&!sessionRuntime().running&&!sessionElapsed())startSession(true);if(executionSettings().autoRest)startRestFor(s,it.rest,`${EXMAP[it.id].name} · rest`,true)}save();renderToday();if(!was&&set.done&&j+1<t.sets)setTimeout(()=>document.querySelector(`input[data-slot="${s}"][data-set="${j+1}"][data-f="weight"]`)?.focus(),0);return}
 
