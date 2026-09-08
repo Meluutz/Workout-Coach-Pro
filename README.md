@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.5.1
+# Adaptive Workout Coach — v7.6.0
 
 GitHub-ready PWA build.
 
@@ -663,3 +663,72 @@ A new **Copy diagnostics** button produces a compact text report containing:
 This removes the need to send large screenshot batches if a future regression is detected.
 
 No exercise-programming rules, equipment classifications, exercise levels, progression ladders, or visual mappings were changed in this patch.
+
+
+## v7.6.0 — Mobile Progress Analytics
+
+The Progress tab is rebuilt around mobile-first training analytics.
+
+### Time ranges
+
+Choose:
+- 4 weeks
+- 8 weeks
+- 12 weeks
+- All time
+
+The selected range updates session metrics, exercise performance, weekly workload, PRs and recent-session history.
+
+### Exercise performance
+
+A mobile exercise selector automatically prioritizes exercises with the most usable logged exposures.
+
+For externally loaded exercises:
+- Displays estimated 1RM trend
+- Shows range change percentage
+- Best estimated 1RM
+- Latest best set
+- Exposure count
+- The audited progression strategy
+
+For non-loaded exercises:
+- Uses best-set reps rather than inventing a fake weight-based strength score.
+
+### Weekly workload
+
+Tracks:
+- Completed working sets
+- Loaded volume (`weight × reps`)
+- Training time
+- Sessions/week versus the current weekly target
+- Recent week-by-week set counts
+
+Working sets are the primary trend so Bodyweight and Minimal Equipment users still receive useful analytics when loaded volume is zero.
+
+### Muscle workload
+
+Completed working sets are mapped to muscle groups using the same primary/secondary weighting used by the Program volume estimate.
+
+This is clearly described as an exposure estimate rather than a direct measure of hypertrophic stimulus.
+
+### Mobile UX
+
+- 2×2 key-metric layout on phone
+- Compact 4W / 8W / 12W / All control
+- Responsive exercise selector
+- Native SVG trend charts with no external chart library
+- Horizontal-scroll weekly chips
+- Muscle workload bars optimized for narrow screens
+- Existing body measurements, PRs and recent sessions remain available
+
+### Reliability
+
+The v7.5 regression suite now also verifies:
+- Exercise analytics aggregation
+- Increasing loaded-performance trend detection
+- Weekly set aggregation
+- Muscle workload mapping
+
+All analytics are calculated locally from saved workout history. No account or cloud service is required.
+
+Visual coverage remains **167 / 167**.

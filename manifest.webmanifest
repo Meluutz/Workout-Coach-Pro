@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
-  "description": "Local-first adaptive workout coach with 167 exercises, exact visuals, audited progression logic, and a corrected 1,819-scenario in-app regression suite with compact diagnostics reporting.",
+  "description": "Local-first adaptive workout coach with 167 exercises, exact visuals, audited progression logic, mobile training analytics, and an in-app regression suite.",
   "icons": [
     {
       "src": "./icon-192.png",
