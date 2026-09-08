@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.6.0
+# Adaptive Workout Coach — v7.6.1
 
 GitHub-ready PWA build.
 
@@ -732,3 +732,18 @@ The v7.5 regression suite now also verifies:
 All analytics are calculated locally from saved workout history. No account or cloud service is required.
 
 Visual coverage remains **167 / 167**.
+
+
+## v7.6.1 — Workout Coach Branding & iPhone Home Screen
+
+- Replaced both old `AW` marks with the approved glossy blue fitness-growth icon.
+- Replaced the PWA 192×192 and 512×512 icons.
+- Added a dedicated 180×180 Apple touch icon for iPhone/iPad home-screen shortcuts.
+- Added the iOS home-screen title `Workout Coach`.
+- Updated PWA manifest icon masking metadata.
+- Cached the branding icon for offline use.
+- Included the approved Workout Coach wordmark in `assets/branding/`.
+- No workout programming, analytics, progression, exercise-classification, or saved-data logic changed.
+
+### Existing iPhone shortcut
+iOS normally keeps the icon captured when the shortcut was originally added. After deploying this version, remove the old Workout Coach home-screen shortcut and add the site to the home screen again from Safari to display the new icon.

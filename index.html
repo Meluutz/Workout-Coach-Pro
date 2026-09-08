@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Workout Coach">
 <script>
 (()=>{try{
  const t=localStorage.getItem("awc-theme");
@@ -13,9 +15,10 @@
  document.documentElement.style.colorScheme=t==="dark"?"dark":"light";
 }catch{}})();
 </script>
-<title>Adaptive Workout Coach</title>
+<title>Workout Coach</title>
 <link rel="manifest" href="./manifest.webmanifest">
-<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 <style>
 *{box-sizing:border-box}
 :root{--bg:#f3f4f6;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--navy:#0f172a;--blue:#2563eb;--soft:#eff6ff;--good:#16a34a;--warn:#d97706;--danger:#dc2626;--purple:#7c3aed}
@@ -237,7 +240,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .app-header{padding:calc(14px + env(safe-area-inset-top)) 16px 14px;background:#111827;color:#fff}
 .header-inner{max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .brand-lockup{display:flex;align-items:center;gap:12px;min-width:0}.brand-copy{min-width:0}
-.app-mark{width:42px;height:42px;display:grid;place-items:center;flex:0 0 auto;border-radius:13px;background:#2563eb;color:#fff;font-weight:950;font-size:13px;letter-spacing:-.02em;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.app-mark{width:42px;height:42px;display:block;flex:0 0 auto;border-radius:12px;object-fit:cover;box-shadow:0 2px 9px rgba(0,0,0,.24),inset 0 0 0 1px rgba(255,255,255,.14)}
 .app-header h1{font-size:20px;line-height:1.1;margin:2px 0 3px;letter-spacing:-.025em}.app-header .eyebrow{font-size:9px}.app-header .sub{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.app-header .build{font-size:10px}
 .header-actions{display:flex;gap:7px;align-items:center}.icon-action{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#fff;padding:9px 11px}.icon-action:hover{background:rgba(255,255,255,.13)}
 
@@ -732,7 +735,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><div class="app-mark" aria-hidden="true">AW</div><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 167-exercise expanded library</div><div class="build">v7.6.0 · 167 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 167-exercise expanded library</div><div class="build">v7.6.1 · 167 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -903,7 +906,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.6.0</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.6.1</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -912,7 +915,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 <div id="timerSheet" class="sheet hidden"><div class="sheetcard"><div class="row"><div><div class="label">Rest timer</div><h2 id="timerTitle" style="margin:6px 0 0"></h2></div><button id="closeTimer">×</button></div><div id="timerDisplay" class="timer">03:00</div><div class="chips"><button class="preset" data-sec="60">1:00</button><button class="preset" data-sec="90">1:30</button><button class="preset" data-sec="120">2:00</button><button class="preset" data-sec="180">3:00</button><button class="preset" data-sec="240">4:00</button></div><div class="grid2" style="margin-top:12px"><button id="timerToggle" class="primary">Start</button><button id="timerReset">Reset</button></div></div></div>
 
 <div id="onboarding" class="onboard hidden"><div class="onboard-inner">
-<div class="onboard-brand"><div class="app-mark" aria-hidden="true">AW</div><div><div class="eyebrow">SETUP</div><h1>Build your training plan</h1><p class="muted">Six quick steps. Your answers stay on this device.</p></div></div>
+<div class="onboard-brand"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div><div class="eyebrow">SETUP</div><h1>Build your training plan</h1><p class="muted">Six quick steps. Your answers stay on this device.</p></div></div>
 <div class="onboard-progress"><div class="row"><strong id="obProgressTitle">Goal & experience</strong><span id="obStepText" class="tiny">Step 1 of 6</span></div><div class="ob-progress-track"><div id="obProgressFill"></div></div></div>
 <section class="card onboard-card">
 <div class="step active" data-step="1">
@@ -1917,7 +1920,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.6.0 — Reliability Report",
+  "Adaptive Workout Coach v7.6.1 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -2901,7 +2904,7 @@ function saveOnboarding(){
  state.cycle={number:1,week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[]};generatePlan(true);save();switchView("today");$("#onboarding").classList.add("hidden");renderAll();toast("Personalized plan created");
 }
 function exportData(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-6-0-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-6-1-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 
 
