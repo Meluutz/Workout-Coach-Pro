@@ -1,4 +1,4 @@
-const CACHE='adaptive-workout-coach-v7-5-0-regression-suite';
+const CACHE='adaptive-workout-coach-v7-5-1-regression-correction';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>{
   self.skipWaiting();

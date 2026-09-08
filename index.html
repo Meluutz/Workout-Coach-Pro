@@ -678,7 +678,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><div class="app-mark" aria-hidden="true">AW</div><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 167-exercise expanded library</div><div class="build">v7.5.0 · 167 exercises</div></div></div>
+ <div class="brand-lockup"><div class="app-mark" aria-hidden="true">AW</div><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 167-exercise expanded library</div><div class="build">v7.5.1 · 167 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -811,15 +811,18 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   <div><div class="label">Reliability & diagnostics</div><h2>Regression self-test</h2></div>
   <span id="reliabilityStatus" class="coach-status-badge">Not run</span>
  </div>
- <p class="muted">Runs the real programming rules through 1,500+ synthetic profiles and safety checks. Your current plan, history and settings are restored afterward.</p>
+ <p class="muted">Runs the real programming rules through 1,819 synthetic profiles and safety checks. Your current plan, history and settings are restored afterward.</p>
  <button id="runReliabilityBtn" class="primary">Run reliability test</button>
  <div id="reliabilitySummary" class="reliability-summary tiny">Recommended after installing an app update or changing programming logic.</div>
- <button id="viewReliabilityBtn" class="hidden" style="margin-top:8px">View test details</button>
+ <div class="row" style="margin-top:8px;gap:8px">
+  <button id="viewReliabilityBtn" class="hidden">View test details</button>
+  <button id="copyReliabilityBtn" class="hidden">Copy diagnostics</button>
+ </div>
 </section>
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.5.0</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.5.1</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -1721,6 +1724,20 @@ function reliabilityStatusUI(label,summary,kind=""){
  if(badge){badge.textContent=label;badge.classList.toggle("good",kind==="good");badge.classList.toggle("low",kind==="bad");badge.classList.toggle("warn",kind==="warn")}
  if(box&&summary!==undefined)box.innerHTML=summary;
 }
+function reliabilityAchievableCoachCount(day,p){
+ const patterns=templateFor(day.type,p).slice(0,planCapacity(p)),counts={};
+ patterns.forEach(pat=>counts[pat]=(counts[pat]||0)+1);
+ const avoid=(p.avoid||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean);
+ return Object.entries(counts).reduce((total,[pat,slots])=>{
+  const eligible=EX.filter(e=>
+   e.pattern===pat&&
+   allowed(e,p,avoid)&&
+   autoEquipmentEligible(e,p)&&
+   autoExperienceEligible(e,p)
+  ).length;
+  return total+Math.min(slots,eligible);
+ },0);
+}
 function reliabilityValidatePlan(basePlan,p,mode,check,ctx=""){
  check(Array.isArray(basePlan),`${ctx}: plan is not an array`);
  if(!Array.isArray(basePlan))return;
@@ -1732,8 +1749,8 @@ function reliabilityValidatePlan(basePlan,p,mode,check,ctx=""){
   if(!Array.isArray(day.items))return;
   check(day.items.length>0,`${ctx}: day ${dayIdx+1} is empty`);
   if(mode==="coach"){
-   const expected=templateFor(day.type,p).slice(0,planCapacity(p)).length;
-   check(day.items.length===expected,`${ctx}: ${day.type} expected ${expected} exercises, got ${day.items.length}`);
+   const expected=reliabilityAchievableCoachCount(day,p);
+   check(day.items.length===expected,`${ctx}: ${day.type} expected ${expected} achievable exercises, got ${day.items.length}`);
   }
   const ids=day.items.map(it=>it.id);
   check(new Set(ids).size===ids.length,`${ctx}: duplicate exercise inside ${day.weekday}`);
@@ -1774,7 +1791,7 @@ function reliabilityDatabaseChecks(check){
   check(!!DATA.MUSCLE_MAP[e.pattern],`Database: ${e.name} has no muscle map for ${e.pattern}`);
   check(!!VISUALS[e.id],`Visuals: ${e.name} has no exact visual mapping`);
   check((e.equipment||[]).every(x=>["gym","dumbbells","minimal","bodyweight"].includes(x)),`Database: ${e.name} has invalid equipment tag`);
-  check((e.caution||[]).every(x=>["shoulder","knee","lowerback","wrist"].includes(x)),`Database: ${e.name} has invalid caution tag`);
+  check((e.caution||[]).every(x=>["shoulder","knee","lowerback","wrist","elbow","hip","ankle"].includes(x)),`Database: ${e.name} has invalid caution tag`);
   if(e.resistanceClass==="loaded")check(e.progressionMode==="load",`Progression: loaded exercise ${e.name} should use reps/load`);
   ["progressionPrev","progressionNext"].forEach(key=>{
    if(!e[key])return;
@@ -1797,6 +1814,59 @@ function reliabilityDatabaseChecks(check){
  const domIds=[...document.querySelectorAll("[id]")].map(el=>el.id);
  check(new Set(domIds).size===domIds.length,"DOM: duplicate HTML element IDs");
 }
+function reliabilityFailureCategory(message){
+ if(message.startsWith("Database:"))return"Database integrity";
+ if(message.startsWith("Visuals:"))return"Visual mappings";
+ if(message.startsWith("Progression:"))return"Progression ladders";
+ if(message.startsWith("DOM:"))return"Interface IDs";
+ if(message.includes("equipment")||message.includes("Full Gym")||message.includes("Dumbbells"))return"Equipment rules";
+ if(message.includes("experience ceiling"))return"Experience rules";
+ if(message.includes("limitation"))return"Limitation filters";
+ if(message.includes("Avoid filter"))return"Avoid filters";
+ if(message.includes("expected")&&message.includes("exercises"))return"Plan capacity";
+ if(message.includes("set target")||message.includes("rep target")||message.includes("RPE")||message.includes("rest target"))return"Prescription targets";
+ if(message.includes("Priority"))return"Muscle Priority";
+ return"Other";
+}
+function reliabilityCompactReport(r){
+ const groups={};
+ (r.failures||[]).forEach(msg=>{
+  const cat=reliabilityFailureCategory(msg);
+  groups[cat]=(groups[cat]||0)+1;
+ });
+ const lines=[
+  "Adaptive Workout Coach v7.5.1 — Reliability Report",
+  `Result: ${r.passed?"PASS":"FAIL"}`,
+  `Synthetic profiles: ${r.scenarios}`,
+  `Assertions: ${r.assertions}`,
+  `Failures: ${r.failureCount}`,
+  `State isolation: ${r.storageUnchanged?"PASS":"FAIL"}`,
+  `Runtime: ${(r.ms/1000).toFixed(1)}s`,
+  `Timestamp: ${r.timestamp}`
+ ];
+ const grouped=Object.entries(groups).sort((a,b)=>b[1]-a[1]);
+ if(grouped.length){
+  lines.push("Failure groups:");
+  grouped.forEach(([name,count])=>lines.push(`- ${name}: ${count}`));
+  lines.push("First examples:");
+  (r.failures||[]).slice(0,8).forEach(msg=>lines.push(`- ${msg}`));
+ }
+ return lines.join("\n");
+}
+async function copyReliabilityReport(){
+ if(!lastReliabilityResult)return;
+ const text=reliabilityCompactReport(lastReliabilityResult),btn=$("#copyReliabilityBtn");
+ try{
+  await navigator.clipboard.writeText(text);
+  if(btn){const old=btn.textContent;btn.textContent="Copied";setTimeout(()=>btn.textContent=old,1400)}
+ }catch{
+  const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";
+  document.body.appendChild(ta);ta.focus();ta.select();
+  try{document.execCommand("copy")}catch{}
+  ta.remove();
+  if(btn){const old=btn.textContent;btn.textContent="Copied";setTimeout(()=>btn.textContent=old,1400)}
+ }
+}
 function reliabilityResultHtml(r){
  const outcome=r.passed?"All checks passed":"Failures detected";
  const failures=r.failures.length
@@ -1818,9 +1888,10 @@ function reliabilityResultHtml(r){
 async function runReliabilitySuite(){
  if(reliabilityRunning)return lastReliabilityResult;
  reliabilityRunning=true;
- const btn=$("#runReliabilityBtn"),view=$("#viewReliabilityBtn");
+ const btn=$("#runReliabilityBtn"),view=$("#viewReliabilityBtn"),copy=$("#copyReliabilityBtn");
  if(btn){btn.disabled=true;btn.textContent="Testing…"}
  if(view)view.classList.add("hidden");
+ if(copy)copy.classList.add("hidden");
  reliabilityStatusUI("Running","Starting regression matrix…","warn");
 
  const start=performance.now(),failures=[];let assertions=0,scenarios=0;
@@ -1907,10 +1978,11 @@ async function runReliabilitySuite(){
   state=originalState;builderDraft=originalBuilder;currentDay=originalDay;
  }
 
- const result={passed:failures.length===0,failures:failures.slice(0,50),failureCount:failures.length,assertions,scenarios,ms:performance.now()-start,storageUnchanged,timestamp:new Date().toISOString()};
+ const result={passed:failures.length===0,failures:[...failures],failureCount:failures.length,assertions,scenarios,ms:performance.now()-start,storageUnchanged,timestamp:new Date().toISOString()};
  lastReliabilityResult=result;reliabilityRunning=false;
  if(btn){btn.disabled=false;btn.textContent="Run reliability test"}
  if(view)view.classList.remove("hidden");
+ if(copy)copy.classList.remove("hidden");
  reliabilityStatusUI(
   result.passed?"Passed":"Check failed",
   result.passed?`<strong>${result.scenarios.toLocaleString()} profiles</strong> · ${result.assertions.toLocaleString()} assertions · 0 failures · ${(result.ms/1000).toFixed(1)}s`:`<strong>${result.failureCount} failure${result.failureCount===1?"":"s"}</strong> detected across ${result.scenarios.toLocaleString()} profiles. Open details before trusting a new build.`,
@@ -2566,7 +2638,7 @@ function saveOnboarding(){
  state.cycle={number:1,week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[]};generatePlan(true);save();switchView("today");$("#onboarding").classList.add("hidden");renderAll();toast("Personalized plan created");
 }
 function exportData(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-5-0-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-5-1-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 
 
@@ -2615,6 +2687,7 @@ document.addEventListener("input",e=>{
 document.addEventListener("click",e=>{
  const runReliability=e.target.closest("#runReliabilityBtn");if(runReliability){runReliabilitySuite();return}
  const viewReliability=e.target.closest("#viewReliabilityBtn");if(viewReliability&&lastReliabilityResult){openSheet("RELIABILITY","Regression self-test",reliabilityResultHtml(lastReliabilityResult));return}
+ const copyReliability=e.target.closest("#copyReliabilityBtn");if(copyReliability&&lastReliabilityResult){copyReliabilityReport();return}
  const v=e.target.closest(".vtab");if(v)return switchView(v.dataset.view);
  const c=e.target.closest("[data-check]");if(c){const[s,j]=c.dataset.check.split(":").map(Number),it=plan()[currentDay].items[s],t=effectiveTarget(it),set=exLog(currentDay,s,t.sets).sets[j],was=set.done;set.done=!set.done;if(!was&&set.done){if(executionSettings().autoSession&&!sessionRuntime().running&&!sessionElapsed())startSession(true);if(executionSettings().autoRest)startRestFor(s,it.rest,`${EXMAP[it.id].name} · rest`,true)}save();renderToday();if(!was&&set.done&&j+1<t.sets)setTimeout(()=>document.querySelector(`input[data-slot="${s}"][data-set="${j+1}"][data-f="weight"]`)?.focus(),0);return}
 

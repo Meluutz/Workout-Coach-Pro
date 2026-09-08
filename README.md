@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.5.0
+# Adaptive Workout Coach — v7.5.1
 
 GitHub-ready PWA build.
 
@@ -616,7 +616,7 @@ A new **Settings → Reliability & diagnostics → Run reliability test** tool e
 
 ### Automated coverage
 
-The browser-side suite runs **1,579 synthetic scenarios** plus database/DOM assertions covering:
+The browser-side suite runs **1,819 synthetic scenarios** plus database/DOM assertions covering:
 
 - Beginner / Intermediate / Advanced
 - Full Gym / Dumbbells + Bench / Minimal Equipment / Bodyweight Only
@@ -641,3 +641,25 @@ The browser-side suite runs **1,579 synthetic scenarios** plus database/DOM asse
 The self-test snapshots in-memory state and verifies the persisted workout-data record remains unchanged. If an unexpected write ever occurs, the previous local-storage value is restored.
 
 Visual coverage remains **167 / 167**.
+
+
+## v7.5.1 — Regression Test Correction
+
+v7.5.0 could report **258 failures** on a healthy build. The exact root causes were reproduced and corrected:
+
+- **244 false failures** came from assuming every nominal Coach Suggested template slot must always be filled. Minimal Equipment Beginner/Intermediate upper and push sessions can have one intentionally unavailable duplicate vertical-press slot after the lateral-raise fallback. v7.5.1 calculates the **maximum actually achievable unique exercise count** for each session and tests against that value.
+- **14 false failures** came from an incomplete caution-tag validator. The exercise database legitimately uses `elbow`, `hip`, and `ankle` in addition to the four user-selectable limitation filters.
+
+The corrected browser-side suite runs **1,819 synthetic scenarios**.
+
+A new **Copy diagnostics** button produces a compact text report containing:
+- PASS / FAIL
+- profile and assertion counts
+- failure count
+- state-isolation status
+- grouped failure categories
+- a small number of example failures
+
+This removes the need to send large screenshot batches if a future regression is detected.
+
+No exercise-programming rules, equipment classifications, exercise levels, progression ladders, or visual mappings were changed in this patch.
