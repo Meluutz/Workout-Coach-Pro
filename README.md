@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.4.8
+# Adaptive Workout Coach — v7.5.0
 
 GitHub-ready PWA build.
 
@@ -606,5 +606,38 @@ When a non-loaded exercise reaches the top of its rep target at an appropriate R
 - Minimal-tool exercises no longer receive arbitrary pound increases when no numerical load was logged.
 
 Exercise Details now show the progression strategy and audited easier/next rung when available.
+
+Visual coverage remains **167 / 167**.
+
+
+## v7.5.0 — Production Reliability & Regression Suite
+
+A new **Settings → Reliability & diagnostics → Run reliability test** tool exercises the app's real programming functions without replacing the user's current plan or workout history.
+
+### Automated coverage
+
+The browser-side suite runs **1,579 synthetic scenarios** plus database/DOM assertions covering:
+
+- Beginner / Intermediate / Advanced
+- Full Gym / Dumbbells + Bench / Minimal Equipment / Bodyweight Only
+- Muscle / Strength / Muscle + Strength / Endurance / General Fitness
+- 2–6 training days per week
+- 45 / 60 / 75 / 90 minute sessions
+- Coach Suggested plan generation
+- 100% Muscle Priority specialization for every priority muscle
+- Shoulder / knee / lower-back / wrist limitation filtering
+- User exercise-name avoidance filters
+- Profile/equipment changes with a previous plan still present
+- The previously observed stale Bodyweight-preference → Full Gym/Dumbbells leakage case
+- Exercise IDs, names, resistance classes and difficulty tiers
+- Progression ladder links, reciprocity and cycle detection
+- Muscle-map coverage
+- 167 / 167 visual mappings
+- Duplicate live DOM IDs
+- Sets, reps, RPE and rest-target sanity checks
+
+### State isolation
+
+The self-test snapshots in-memory state and verifies the persisted workout-data record remains unchanged. If an unexpected write ever occurs, the previous local-storage value is restored.
 
 Visual coverage remains **167 / 167**.
