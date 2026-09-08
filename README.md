@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.4.3
+# Adaptive Workout Coach — v7.4.4
 
 GitHub-ready PWA build.
 
@@ -417,3 +417,65 @@ Visual coverage:
   exercise swaps and the simpler picker path.
 
 Visual coverage: **167 / 167**.
+
+
+## v7.4.4 — Full Experience-Level Exercise Audit
+
+The complete 167-exercise library was reviewed using a consistent movement-complexity model:
+
+- **Beginner:** low skill/coordination barrier, stable setup, and easily scalable resistance.
+- **Intermediate:** greater stabilization, unilateral control, technique, or relative-strength demand.
+- **Advanced:** genuinely high relative-strength, mobility, coordination, or technical demand.
+
+Final library distribution:
+- Beginner: **84**
+- Intermediate: **72**
+- Advanced: **11**
+
+### Important programming change
+
+Difficulty is now treated primarily as an **eligibility / movement-complexity tier**, not as a rule that an Advanced user should receive only Advanced-labeled movements.
+
+For gym, dumbbell, and minimal-equipment plans:
+- Beginner users strongly favor Beginner movements and cannot receive Advanced movements automatically.
+- Intermediate users can receive Beginner or Intermediate movements and cannot receive Advanced movements automatically.
+- Advanced users can use the entire library, but simple machine/cable/dumbbell/barbell exercises remain highly competitive when they are the best stimulus-to-fatigue choice.
+
+For Bodyweight plans:
+- Difficulty matching receives a stronger selection bonus because harder exercise variations are often the practical way to create progressive overload.
+
+### Notable reclassifications
+
+Examples moved to Beginner because they are stable and readily scalable:
+- Goblet Squat
+- Leg Press
+- Hack Squat
+- Pendulum Squat
+- Belt Squat
+- Dumbbell Bench Press
+- Dumbbell Floor Press
+- Pec Deck
+- Lat Pulldown
+- Neutral-Grip Lat Pulldown
+- Seated Cable Row
+- Chest-Supported Row
+- Dumbbell Lateral Raise
+- Cable Lateral Raise
+- Face Pull
+- Dumbbell Curl
+- Hammer Curl
+- Pallof Press
+- Farmer's Carry
+- Hip Thrust
+- Back Extension
+
+Examples corrected downward from Advanced:
+- Dumbbell Single-Leg Romanian Deadlift → Intermediate
+- Meadows Row → Intermediate
+- Side Plank Hip Abduction → Intermediate
+- Pendulum Squat → Beginner
+
+Example corrected upward:
+- Chest Dip → Advanced
+
+All **167 / 167 exercise visuals** remain mapped.
