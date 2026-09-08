@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.4.2
+# Adaptive Workout Coach — v7.4.3
 
 GitHub-ready PWA build.
 
@@ -396,3 +396,24 @@ Visual coverage:
 - All 36 previously missing bodyweight visuals are now wired into the app.
 - Bear Walk has an exact visual.
 - The ten newly added progression exercises show **Exact Visual Pending** until their dedicated images are created.
+
+
+## v7.4.3 — Complete Visual Library
+
+- All 167 exercise entries now have mapped exact exercise visuals.
+- Added the final 10 progression visuals:
+  - Scapular Push-Up
+  - Sphinx Push-Up / Bodyweight Triceps Extension
+  - Assisted Pistol Squat
+  - Pistol Squat
+  - Shrimp Squat
+  - Glute Bridge March
+  - Side Plank Hip Abduction
+  - Reverse Plank
+  - Plank-to-Push-Up
+  - Burpee
+- Corrected the automatic-plan experience guard so the primary `pickBest` path
+  now applies the same Beginner / Intermediate / Advanced eligibility rules as
+  exercise swaps and the simpler picker path.
+
+Visual coverage: **167 / 167**.
