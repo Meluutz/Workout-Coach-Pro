@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.4.7
+# Adaptive Workout Coach — v7.4.8
 
 GitHub-ready PWA build.
 
@@ -572,3 +572,39 @@ The actual classification bug in the reported examples was `Slider Hamstring Cur
 Bodyweight and minimal-tool exercises remain available through Exercise Swap and Build Your Own.
 
 Visual mappings remain **167 / 167**.
+
+
+## v7.4.8 — Audited Progression Ladders
+
+Every one of the **167 exercises** now has an explicit progression strategy.
+
+Only exercises with a defensible next/previous movement were placed into a linear ladder.
+**37 exercises** belong to **12 audited ladders**.
+
+Examples:
+- Wall Push-Up → Incline Push-Up → Push-Up → Tempo Push-Up → Archer Push-Up
+- Pike Push-Up → Feet-Elevated Pike Push-Up → Wall Handstand Push-Up
+- Wall Triceps Extension → Sphinx Push-Up → Diamond / Close-Grip Push-Up
+- Bodyweight Split Squat → Bodyweight Reverse Lunge → Bodyweight Bulgarian Split Squat → Assisted Pistol Squat → Pistol Squat
+- Lateral Lunge → Cossack Squat
+- Glute Bridge → Glute Bridge March → Single-Leg Glute Bridge
+- Bodyweight Good Morning → Bodyweight Single-Leg Romanian Deadlift
+- Hamstring Walkout → Slider Hamstring Curl → Nordic Hamstring Curl
+- Bird Dog → Dead Bug → Plank → Hollow Body Hold → Ab Wheel Rollout
+- Side Plank → Side Plank Hip Abduction
+- Reverse Crunch → Hanging Leg Raise
+- Bodyweight Standing Calf Raise → Single-Leg Calf Raise
+
+Loaded exercises are not forced through arbitrary exercise substitutions; their primary progression remains reps and load.
+
+### Long-Term Coach integration
+
+When a non-loaded exercise reaches the top of its rep target at an appropriate RPE:
+- The coach names the next audited exercise when one is appropriate for the profile.
+- The recommendation can be applied to the plan with Undo available.
+- Otherwise the coach uses tempo, range, reps, assistance reduction, or resistance/tension.
+- Minimal-tool exercises no longer receive arbitrary pound increases when no numerical load was logged.
+
+Exercise Details now show the progression strategy and audited easier/next rung when available.
+
+Visual coverage remains **167 / 167**.
