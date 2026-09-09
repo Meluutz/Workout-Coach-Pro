@@ -900,3 +900,16 @@ Create New Plan reuses the established Plan Builder as a temporary draft:
 - Start New Training Cycle = keep the current plan and restart it at Week 1.
 
 Saved plans remain part of the normal local JSON backup. Workout history and Progress analytics stay global across plans.
+
+
+## v7.8.1 — Mobile Onboarding Bottom Actions Fix
+
+Fixed the Create New Plan / onboarding bottom action bar on iPhone-sized screens.
+
+- Cancel / Back and Continue now remain fully inside the viewport.
+- The action bar uses a responsive two-column grid instead of allowing the Continue button to overflow.
+- Both buttons are allowed to shrink correctly with `min-width: 0`.
+- Horizontal overflow is clipped inside the action container.
+- iPhone left/right/bottom safe-area insets are respected.
+- Extra-tight handling is included for screens down to 360 CSS px.
+- No Plan Builder, Saved Plan, programming, analytics, or data behavior changed.
