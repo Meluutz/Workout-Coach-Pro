@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#071b3d",
   "theme_color": "#071b3d",
-  "description": "Local-first adaptive workout coach with 169 exercises, exact visuals, mobile analytics, audited progression logic, Build Your Own ordering, and a named Saved Plan Library.",
+  "description": "Local-first adaptive workout coach with 169 exercises, exact visuals, mobile analytics, a named Saved Plan Library, and isolated Create New Plan workflows.",
   "icons": [
     {
       "src": "./icon-192.png",

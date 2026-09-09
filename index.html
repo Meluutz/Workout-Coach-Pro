@@ -158,6 +158,21 @@ body.custom-reordering{user-select:none;-webkit-user-select:none;overflow:hidden
  .saved-plan-item-actions{grid-template-columns:1fr 1fr}
  .saved-plan-save-actions,.saved-plan-activate-actions{grid-template-columns:1fr}
 }
+.create-plan-source-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.create-plan-source{min-height:126px;padding:14px;text-align:left;border:1px solid var(--line);border-radius:15px;background:var(--surface-2)}
+.create-plan-source strong{display:block;font-size:15px;margin-bottom:6px}
+.create-plan-source .tiny{display:block;line-height:1.45}
+.create-plan-source.primary-choice{border-color:var(--blue);background:color-mix(in srgb,var(--blue) 8%,var(--surface))}
+.create-plan-review-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.create-plan-review-actions .creator-back{grid-column:1/-1}
+.creator-isolated-note{margin-top:10px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);font-size:12px;line-height:1.45}
+@media(max-width:560px){
+ .create-plan-source-grid{grid-template-columns:1fr}
+ .create-plan-review-actions{grid-template-columns:1fr}
+ .saved-plan-card-head{align-items:flex-start;flex-wrap:wrap}
+ .saved-plan-card-head .primary{width:100%}
+}
+
 
 @media(max-width:760px){
  .builder-options{grid-template-columns:1fr}
@@ -817,7 +832,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.7.0 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.8.0 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -900,10 +915,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 <section class="card saved-plan-library-card">
  <div class="saved-plan-card-head">
   <div><div class="label">Plan library</div><h3>Saved workout plans</h3></div>
-  <button id="saveCurrentPlanBtn" class="primary">Save current</button>
+  <button id="createNewPlanBtn" class="primary">Create new plan</button>
  </div>
  <div id="savedPlanSummary"></div>
- <button id="openPlanLibraryBtn" style="width:100%;margin-top:10px">Manage saved plans</button>
+ <div class="saved-plan-save-actions">
+  <button id="saveCurrentPlanBtn">Save current</button>
+  <button id="openPlanLibraryBtn">Manage saved plans</button>
+ </div>
 </section>
 
 <section class="card coach-intelligence-card">
@@ -949,7 +967,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   <button id="changeDaysBtn">Change workout days</button>
   <button id="regenBtn">Regenerate plan</button>
   <button id="browseVisualsBtn">Exercise library</button>
-  <button id="newCycleBtn">Start new program</button>
+  <button id="newCycleBtn">Start New Training Cycle</button>
  </div>
  <p class="tiny">Changing workout days keeps your current exercises and history. Regenerating uses your current Plan Builder and personalization preferences.</p>
 </section>
@@ -997,7 +1015,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.7.0</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.8.0</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -1006,7 +1024,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 <div id="timerSheet" class="sheet hidden"><div class="sheetcard"><div class="row"><div><div class="label">Rest timer</div><h2 id="timerTitle" style="margin:6px 0 0"></h2></div><button id="closeTimer">×</button></div><div id="timerDisplay" class="timer">03:00</div><div class="chips"><button class="preset" data-sec="60">1:00</button><button class="preset" data-sec="90">1:30</button><button class="preset" data-sec="120">2:00</button><button class="preset" data-sec="180">3:00</button><button class="preset" data-sec="240">4:00</button></div><div class="grid2" style="margin-top:12px"><button id="timerToggle" class="primary">Start</button><button id="timerReset">Reset</button></div></div></div>
 
 <div id="onboarding" class="onboard hidden"><div class="onboard-inner">
-<div class="onboard-brand"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div><div class="eyebrow">SETUP</div><h1>Build your training plan</h1><p class="muted">Six quick steps. Your answers stay on this device.</p></div></div>
+<div class="onboard-brand"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div><div id="obBrandEyebrow" class="eyebrow">SETUP</div><h1 id="obBrandTitle">Build your training plan</h1><p id="obBrandSub" class="muted">Six quick steps. Your answers stay on this device.</p></div></div>
 <div class="onboard-progress"><div class="row"><strong id="obProgressTitle">Goal & experience</strong><span id="obStepText" class="tiny">Step 1 of 6</span></div><div class="ob-progress-track"><div id="obProgressFill"></div></div></div>
 <section class="card onboard-card">
 <div class="step active" data-step="1">
@@ -1077,7 +1095,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <div class="step" data-step="5">
  <h2>5. Preferences</h2>
- <label>Nickname<input id="obName" class="field" placeholder="Optional"></label><br><br>
+ <label id="obNicknameField">Nickname<input id="obName" class="field" placeholder="Optional"></label><br><br>
  <label>Exercises to avoid<textarea id="obAvoid" class="field" rows="3" placeholder="Optional, comma-separated"></textarea></label>
 </div>
 
@@ -1138,7 +1156,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </div>
 
 </section></div>
-<div class="onboard-actions"><button id="obBack">Back</button><button id="obNext" class="primary">Next</button></div>
+<div class="onboard-actions"><button id="obCancel" class="hidden">Cancel</button><button id="obBack">Back</button><button id="obNext" class="primary">Next</button></div>
 </div>
 <div id="toast" class="toast hidden"></div>
 
@@ -1154,6 +1172,7 @@ let state={}, currentDay=0, currentView="today", obStep=1, editingProfile=false,
 let reliabilityRunning=false,lastReliabilityResult=null;
 let analyticsRange="8w",analyticsExerciseId=null;
 let customOrderDrag={active:false,id:null,targetId:null,pointerId:null,after:false};
+let planCreationMode=null;
 
 function syncVisualViewport(){
  const vv=window.visualViewport;
@@ -1437,7 +1456,10 @@ function openPlanLibrary(){
  });
  openSheet("PLAN LIBRARY","Saved workout plans",
   `<div class="saved-plan-sheet-note">Saved plans are stored on this device and included in normal app backups. Switching plans never deletes workout history, recovery logs, body measurements, or Progress analytics.</div>
-   <button id="sheetSaveCurrentPlanBtn" class="primary" style="width:100%;margin-top:10px">Save current plan</button>
+   <div class="saved-plan-save-actions">
+    <button id="sheetCreateNewPlanBtn" class="primary">Create New Plan</button>
+    <button id="sheetSaveCurrentPlanBtn">Save current plan</button>
+   </div>
    <div class="saved-plan-list">${plans.length?plans.map(savedPlanItemHtml).join(""):'<div class="saved-plan-empty">No saved plans yet.</div>'}</div>`);
 }
 function defaultSavedPlanName(){
@@ -1446,6 +1468,91 @@ function defaultSavedPlanName(){
  if(mode==="custom")return`My Custom Plan · ${p.days} Day`;
  return`${goalLabel(p?.goal)} · ${p?.days||""} Day`;
 }
+function createSavedPlanFromDraft(name,draftProfile,draftPlan){
+ const now=new Date().toISOString(),entry={
+  id:planLibraryId(),name:uniquePlanName(name),createdAt:now,updatedAt:now,lastUsedAt:null,
+  profile:deepCopy(planProfileSettings(draftProfile)),plan:deepCopy(draftPlan||[]),
+  cycle:null,weekLogs:{},coaching:{},continuable:false
+ };
+ savedPlans().push(entry);return entry;
+}
+function defaultDraftPlanName(p){
+ const b=p?.planBuilder||{};
+ if(b.mode==="priority")return`${goalLabel(p.goal)} Priority · ${p.days} Day`;
+ if(b.mode==="custom")return`My Custom Plan · ${p.days} Day`;
+ return`${goalLabel(p?.goal)} · ${p?.days||""} Day`;
+}
+function openCreatePlanSourceChooser(){
+ const canClone=!!(profile()&&hasUsablePlan());
+ openSheet("CREATE NEW PLAN","Choose a starting point",
+  `<div class="saved-plan-sheet-note"><strong>Your active workout will not change while you build.</strong><br>The new plan stays as an isolated draft until you choose Save Only or Save & Make Active.</div>
+   <div class="create-plan-source-grid">
+    <button class="create-plan-source primary-choice" data-create-source="scratch"><strong>Create from Scratch</strong><span class="tiny">Keep your current personal constraints as convenient defaults, but start with a fresh Coach Suggested Plan Builder instead of cloning your exercise plan.</span></button>
+    <button class="create-plan-source" data-create-source="active" ${canClone?"":"disabled"}><strong>Create from Active Plan</strong><span class="tiny">${canClone?"Use the active plan's settings and Plan Builder as the starting point. If you make no changes, the saved copy keeps the exact current exercise plan.":"Build an active workout first before cloning it."}</span></button>
+   </div>`);
+}
+function planCreatorSteps(){return planCreationMode?[1,2,4,5,6]:[1,2,3,4,5,6]}
+function planCreatorStepPosition(){const seq=planCreatorSteps(),idx=seq.indexOf(obStep);return idx>=0?idx:0}
+function planCreationProfileFromForm(){
+ const p=profile()||{},draft=formProfileDraft();
+ return {...deepCopy(p),...draft,weekdays:draft.weekdays,planBuilder:builderProfileData()};
+}
+function planCreationConfigFingerprint(){return JSON.stringify(planProfileSettings(planCreationProfileFromForm()))}
+function beginPlanCreation(source){
+ if(!["scratch","active"].includes(source))return;
+ if(source==="active"&&!hasUsablePlan())return alert("Build an active workout plan first.");
+ closeSheet();showOnboarding(true,1,source);
+}
+function cancelPlanCreation(){
+ planCreationMode=null;editingProfile=false;$("#onboarding").classList.add("hidden");renderAll();toast("New plan draft discarded");
+}
+function finishPlanCreationDraft(){
+ if(!planCreationMode)return;
+ const weekdays=selectedOnboardingDays(),days=Number($("#obDays").value);
+ if(weekdays.length!==days){alert(`Choose exactly ${days} workout days.`);obStep=2;renderOb();return}
+ const planBuilder=builderProfileData(),draftP={...planCreationProfileFromForm(),weekdays,planBuilder};
+ const builderError=validateBuilder(draftP,planBuilder);if(builderError){alert(builderError);obStep=6;renderOb();return}
+ const unchangedActive=planCreationMode.source==="active"&&planCreationMode.initialConfig===JSON.stringify(planProfileSettings(draftP));
+ const generated=unchangedActive&&hasUsablePlan()?deepCopy(plan()):buildPlanForProfile(draftP,{isolateFromCurrent:planCreationMode.source==="scratch"});
+ planCreationMode.draftProfile=deepCopy(draftP);planCreationMode.draftPlan=deepCopy(generated);planCreationMode.reviewing=true;
+ $("#onboarding").classList.add("hidden");openPlanCreationReview();
+}
+function planCreationTempEntry(){
+ if(!planCreationMode?.draftProfile)return null;
+ return{id:"draft",name:"Draft",profile:planProfileSettings(planCreationMode.draftProfile),plan:planCreationMode.draftPlan||[],cycle:null,continuable:false};
+}
+function openPlanCreationReview(){
+ const temp=planCreationTempEntry();if(!temp)return;
+ const suggested=defaultDraftPlanName(planCreationMode.draftProfile);
+ openSheet("NEW PLAN PREVIEW","Review and name your plan",
+  `<div class="creator-isolated-note"><strong>Active plan unchanged.</strong> This is still a draft. Save Only keeps your current workout active; Save & Make Active saves this plan and starts it at Week 1.</div>
+   <label style="display:block;margin-top:12px"><strong>Plan name</strong><input id="createdPlanNameInput" class="field saved-plan-input" maxlength="60" value="${esc(suggested)}" autocomplete="off"></label>
+   ${savedPlanPreviewHtml(temp)}
+   <div class="create-plan-review-actions">
+    <button id="backToPlanCreatorBtn" class="creator-back">Back to builder</button>
+    <button id="saveCreatedPlanOnlyBtn">Save Only</button>
+    <button id="saveAndActivateCreatedPlanBtn" class="primary">Save & Make Active</button>
+   </div>`);
+ requestAnimationFrame(()=>$("#createdPlanNameInput")?.focus());
+}
+function resumePlanCreation(){
+ if(!planCreationMode)return;
+ planCreationMode.reviewing=false;closeSheet();$("#onboarding").classList.remove("hidden");renderOb();
+}
+function commitCreatedPlan(makeActive=false){
+ if(!planCreationMode?.draftProfile||!Array.isArray(planCreationMode.draftPlan))return null;
+ const name=cleanPlanName($("#createdPlanNameInput")?.value||defaultDraftPlanName(planCreationMode.draftProfile));
+ const entry=createSavedPlanFromDraft(name,planCreationMode.draftProfile,planCreationMode.draftPlan);
+ if(makeActive){
+  pushUndo(`Activated newly created plan: ${entry.name}`);
+  preserveCurrentPlanBeforeSwitch();applySavedPlanEntry(entry.id,"new");
+ }
+ planCreationMode=null;editingProfile=false;save();closeSheet();renderAll();
+ if(makeActive){switchView("cycle");toast(`${entry.name} saved and activated · Week 1 · Undo available`)}
+ else toast(`${entry.name} saved · current plan unchanged`);
+ return entry;
+}
+
 function openSaveCurrentPlan(){
  const active=activeSavedPlan(),suggested=active?`${active.name} Copy`:defaultSavedPlanName();
  openSheet("SAVE PLAN","Name this workout plan",
@@ -2315,7 +2422,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.7.0 — Reliability Report",
+  "Adaptive Workout Coach v7.8.0 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -2376,7 +2483,7 @@ async function runReliabilitySuite(){
 
  const start=performance.now(),failures=[];let assertions=0,scenarios=0;
  const check=(condition,message)=>{assertions++;if(!condition)failures.push(message)};
- const originalState=reliabilityClone(state),originalBuilder=reliabilityClone(builderDraft),originalDay=currentDay;
+ const originalState=reliabilityClone(state),originalBuilder=reliabilityClone(builderDraft),originalCreation=reliabilityClone(planCreationMode),originalDay=currentDay;
  const storedBefore=localStorage.getItem(KEY);
  let storageUnchanged=true;
 
@@ -2452,6 +2559,20 @@ async function runReliabilitySuite(){
   }
 
 
+  // Create New Plan isolation regression checks.
+  const activePlanBeforeCreate=JSON.stringify(plan()),activeIdBeforeCreate=state.activeSavedPlanId,historyBeforeCreate=history().length,bodyBeforeCreate=bodyEntries().length;
+  const creatorProfile=reliabilityProfile("Advanced","dumbbells","muscle",4,75,{mode:"coach"});
+  const creatorPlan=buildPlanForProfile(creatorProfile,{isolateFromCurrent:true});
+  const createdOnly=createSavedPlanFromDraft("Future Hypertrophy",creatorProfile,creatorPlan);
+  check(!!createdOnly&&createdOnly.continuable===false&&createdOnly.cycle===null,"Create New Plan: saved draft incorrectly inherited cycle state");
+  check(JSON.stringify(plan())===activePlanBeforeCreate&&state.activeSavedPlanId===activeIdBeforeCreate,"Create New Plan: Save Only changed the active workout");
+  check(history().length===historyBeforeCreate&&bodyEntries().length===bodyBeforeCreate,"Create New Plan: Save Only altered history or body data");
+  check(createdOnly.plan.length===4&&createdOnly.profile.days===4,"Create New Plan: saved draft structure/profile mismatch");
+  const copyOfActive=createSavedPlanFromDraft("Active Clone",profile(),plan());
+  check(JSON.stringify(copyOfActive.plan)===JSON.stringify(plan()),"Create New Plan: active-plan clone did not preserve exact workout structure");
+  check(savedPlans().some(x=>x.id===createdOnly.id)&&savedPlans().some(x=>x.id===copyOfActive.id),"Create New Plan: created plans missing from library");
+
+
   const levels=["Beginner","Intermediate","Advanced"];
   const equipment=["gym","dumbbells","minimal","bodyweight"];
   const goals=["muscle","strength","both","endurance","general"];
@@ -2522,7 +2643,7 @@ async function runReliabilitySuite(){
    if(storedBefore===null)localStorage.removeItem(KEY);else localStorage.setItem(KEY,storedBefore);
    failures.push("Reliability suite modified persisted workout data; storage was restored.");
   }
-  state=originalState;builderDraft=originalBuilder;currentDay=originalDay;
+  state=originalState;builderDraft=originalBuilder;planCreationMode=originalCreation;currentDay=originalDay;
  }
 
  const result={passed:failures.length===0,failures:[...failures],failureCount:failures.length,assertions,scenarios,ms:performance.now()-start,storageUnchanged,timestamp:new Date().toISOString()};
@@ -2538,13 +2659,21 @@ async function runReliabilitySuite(){
  return result;
 }
 
+function buildPlanForProfile(p,{isolateFromCurrent=false}={}){
+ if(!p)return[];
+ const b=p.planBuilder||{mode:"coach"},oldPlan=state.plan;
+ try{
+  if(isolateFromCurrent)state.plan=[];
+  if(b.mode==="priority")return buildPriorityPlan(p);
+  if(b.mode==="custom")return b.customMode==="manual"?buildCustomManualPlan(p):buildCustomCoachPlan(p);
+  return buildCoachPlan(p);
+ }finally{
+  if(isolateFromCurrent)state.plan=oldPlan;
+ }
+}
 function generatePlan(preserveHistory=true){
  const p=profile();if(!p)return;
- const b=p.planBuilder||{mode:"coach"};let generated;
- if(b.mode==="priority")generated=buildPriorityPlan(p);
- else if(b.mode==="custom")generated=b.customMode==="manual"?buildCustomManualPlan(p):buildCustomCoachPlan(p);
- else generated=buildCoachPlan(p);
- state.plan=generated;state.weekLogs={};currentDay=0;if(!preserveHistory)state.history=[];
+ state.plan=buildPlanForProfile(p);state.weekLogs={};currentDay=0;if(!preserveHistory)state.history=[];
  state.coaching??={};state.coaching.planRevision=(Number(state.coaching.planRevision)||0)+1;
  state.coaching.applied={};state.coaching.deloadActive=false;state.coaching.deloadCycle=null;state.coaching.deloadWeek=null;
  save();
@@ -2955,7 +3084,10 @@ function openRestSheet(){$("#timerTitle").textContent=timer.label||"Rest timer";
 function cancelRest(){stopTimer();timer.remaining=timer.base;timer.label="";timer.slot=null;renderRestMini()}
 
 function openSheet(label,title,html){$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet");$("#sheetLabel").textContent=label;$("#sheetTitle").textContent=title;$("#sheetContent").innerHTML=html;$("#sheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#sheet .sheetcard").scrollTop=0})}
-function closeSheet(){$("#sheet").classList.add("hidden");$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet")}
+function closeSheet(){
+ $("#sheet").classList.add("hidden");$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet");
+ if(planCreationMode?.reviewing)planCreationMode=null;
+}
 function editTarget(slot){
  const item=plan()[currentDay].items[slot],t=effectiveTarget(item),ex=EXMAP[item.id];
  openSheet("MANUAL TARGET",ex.name,`<p class="tiny">Original program target: <strong>${item.baseSets} sets · ${esc(item.baseReps)} reps · RPE ${esc(item.baseRpe)}</strong></p><div class="grid2"><label>Sets<input id="targetSets" class="field" type="number" min="1" max="10" value="${t.sets}"></label><label>Rep range<input id="targetReps" class="field" value="${esc(t.reps)}" placeholder="8–10"></label><label>RPE target<input id="targetRpe" class="field" value="${esc(t.rpe)}" placeholder="7–8"></label><label>Target load (${unit()})<input id="targetLoad" class="field" type="number" step="0.5" value="${item.userLoad??""}" placeholder="Optional"></label></div><button id="saveTarget" class="primary" style="margin-top:12px">Save adjusted target</button>`);
@@ -3286,19 +3418,24 @@ function renderSettings(){
 function renderAll(){renderToday();renderProgress();renderCycle();renderRecovery();renderSettings();updateUndoUI();$("#headerSub").textContent=profile()?.name?`${profile().name}'s adaptive training cycle`:"Adaptive coaching · 169-exercise expanded library"}
 function switchView(v){currentView=v;$$(".vtab").forEach(b=>b.classList.toggle("active",b.dataset.view===v));$$(".view").forEach(x=>x.classList.remove("active"));$("#"+v).classList.add("active");if(v==="progress")renderProgress();if(v==="cycle")renderCycle();if(v==="recovery")renderRecovery();if(v==="settings")renderSettings()}
 
-function showOnboarding(edit=false,startStep=1){
- editingProfile=edit;$("#onboarding").classList.remove("hidden");
- const p=profile();
- if(edit&&p){
+function showOnboarding(edit=false,startStep=1,creationSource=null){
+ planCreationMode=creationSource?{source:creationSource,draftProfile:null,draftPlan:null,initialConfig:null,reviewing:false}:null;
+ editingProfile=!!edit&&!planCreationMode;$("#onboarding").classList.remove("hidden");
+ const p=profile(),prefill=!!((edit||planCreationMode)&&p);
+ if(prefill){
    $("#obLevel").value=p.level;$("#obGoal").value=p.goal;$("#obDays").value=p.days;$("#obDuration").value=p.duration;$("#obCycle").value=p.cycleLength||6;
    $("#obUnit").value=p.unit||"kg";$("#obAge").value=p.age||"";$("#obSex").value=p.sex||"";$("#obBodyweight").value=bodyEntries().at(-1)?.weight||"";
    $("#obHeightUnit").value=p.heightUnit||((p.unit||"kg")==="lb"?"imperial":"metric");
    if(p.heightCm){$("#obHeightCm").value=Math.round(p.heightCm*10)/10;const total=p.heightCm/2.54,ft=Math.floor(total/12);$("#obHeightFt").value=ft;$("#obHeightIn").value=Math.round((total-ft*12)*10)/10}
    const last=bodyEntries().at(-1)||{};$("#obWaist").value=last.waist||"";$("#obChest").value=last.chest||"";$("#obArm").value=last.arm||"";$("#obThigh").value=last.thigh||"";
-   document.querySelector(`input[name=equipment][value=${p.equipment}]`).checked=true;$$(".limit").forEach(x=>x.checked=(p.limitations||[]).includes(x.value));$("#obName").value=p.name||"";$("#obAvoid").value=p.avoid||"";
-   setOnboardingDays(p.weekdays?.length===p.days?p.weekdays:defaultWeekdays(p.days));updateHeightUI();builderDraft=defaultBuilderDraft(p);
+   const eq=document.querySelector(`input[name=equipment][value=${p.equipment}]`);if(eq)eq.checked=true;
+   $$(".limit").forEach(x=>x.checked=(p.limitations||[]).includes(x.value));$("#obName").value=p.name||"";$("#obAvoid").value=p.avoid||"";
+   setOnboardingDays(p.weekdays?.length===p.days?p.weekdays:defaultWeekdays(p.days));updateHeightUI();
+   builderDraft=planCreationMode?.source==="scratch"?defaultBuilderDraft(null):defaultBuilderDraft(p);
  }else{suggestOnboardingDays();updateHeightUI();builderDraft=defaultBuilderDraft(null)}
- obStep=Math.max(1,Math.min(6,Number(startStep)||1));renderOb();
+ obStep=Math.max(1,Math.min(6,Number(startStep)||1));
+ if(planCreationMode&&planCreationMode.source==="active")planCreationMode.initialConfig=planCreationConfigFingerprint();
+ renderOb();
 }
 function scrollOnboardingTop(){
  requestAnimationFrame(()=>{const scroller=$(".onboard-inner");if(scroller)scroller.scrollTo({top:0,left:0,behavior:"auto"})});
@@ -3316,14 +3453,23 @@ function scrollOnboardingToPanel(selector){
 
 function renderOb(){
  $$(".step").forEach(s=>s.classList.toggle("active",Number(s.dataset.step)===obStep));
- const stepNames=["Goal & experience","Schedule","Body profile","Equipment","Preferences","Plan builder"];
- $("#obStepText").textContent=`Step ${obStep} of 6`;if($("#obProgressTitle"))$("#obProgressTitle").textContent=stepNames[obStep-1]||"Setup";if($("#obProgressFill"))$("#obProgressFill").style.width=`${Math.round(obStep/6*100)}%`;
- $("#obBack").style.visibility=obStep===1?"hidden":"visible";
- $("#obNext").textContent=obStep===6?"Build my plan":"Continue";
+ const names={1:"Goal & experience",2:"Schedule",3:"Body profile",4:"Equipment",5:planCreationMode?"Exercise preferences":"Preferences",6:"Plan builder"};
+ const seq=planCreatorSteps(),pos=planCreatorStepPosition();
+ $("#obStepText").textContent=`Step ${pos+1} of ${seq.length}`;
+ if($("#obProgressTitle"))$("#obProgressTitle").textContent=names[obStep]||"Setup";
+ if($("#obProgressFill"))$("#obProgressFill").style.width=`${Math.round((pos+1)/seq.length*100)}%`;
+ $("#obBack").style.visibility=pos===0?"hidden":"visible";
+ $("#obCancel").classList.toggle("hidden",!planCreationMode);
+ $("#obNicknameField")?.classList.toggle("hidden",!!planCreationMode);
+ if($("#obBrandEyebrow"))$("#obBrandEyebrow").textContent=planCreationMode?"NEW PLAN":"SETUP";
+ if($("#obBrandTitle"))$("#obBrandTitle").textContent=planCreationMode?(planCreationMode.source==="active"?"Create from Active Plan":"Create New Plan"):"Build your training plan";
+ if($("#obBrandSub"))$("#obBrandSub").textContent=planCreationMode?"This draft is isolated. Your active plan will not change until you explicitly activate the new one.":"Six quick steps. Your answers stay on this device.";
+ $("#obNext").textContent=obStep===6?(planCreationMode?"Review & save":"Build my plan"):"Continue";
  if(obStep===2)updateDayPickHelp();if(obStep===3)updateHeightUI();if(obStep===4)renderEquipmentCoverageHint();if(obStep===6)renderBuilderUI();
  scrollOnboardingTop();
 }
 function saveOnboarding(){
+ if(planCreationMode){finishPlanCreationDraft();return}
  const weekdays=selectedOnboardingDays(),days=Number($("#obDays").value);
  if(weekdays.length!==days){alert(`Choose exactly ${days} workout days.`);obStep=2;renderOb();return}
  const planBuilder=builderProfileData(),draftP={...formProfileDraft(),weekdays};
@@ -3351,7 +3497,7 @@ function saveOnboarding(){
  state.activeSavedPlanId=null;state.cycle={number:nextGlobalCycleNumber(),week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[],planId:null};generatePlan(true);save();switchView("today");$("#onboarding").classList.add("hidden");renderAll();toast("Personalized plan created");
 }
 function exportData(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-7-0-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-8-0-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 
 
@@ -3462,6 +3608,11 @@ document.addEventListener("keydown",e=>{
 });
 
 document.addEventListener("click",e=>{
+ const sourceChoice=e.target.closest(".create-plan-source");if(sourceChoice&&!sourceChoice.disabled){beginPlanCreation(sourceChoice.dataset.createSource);return}
+ const sheetCreate=e.target.closest("#sheetCreateNewPlanBtn");if(sheetCreate){openCreatePlanSourceChooser();return}
+ const backCreator=e.target.closest("#backToPlanCreatorBtn");if(backCreator){resumePlanCreation();return}
+ const saveCreatedOnly=e.target.closest("#saveCreatedPlanOnlyBtn");if(saveCreatedOnly){commitCreatedPlan(false);return}
+ const saveCreatedActive=e.target.closest("#saveAndActivateCreatedPlanBtn");if(saveCreatedActive){commitCreatedPlan(true);return}
  const sheetSavePlan=e.target.closest("#sheetSaveCurrentPlanBtn");if(sheetSavePlan){openSaveCurrentPlan();return}
  const previewBack=e.target.closest("#previewBackToLibrary");if(previewBack){openPlanLibrary();return}
  const previewPlan=e.target.closest(".savedPlanPreviewBtn");if(previewPlan){openSavedPlanPreview(previewPlan.dataset.planid);return}
@@ -3562,6 +3713,7 @@ $("#warmBtn").onclick=()=>{openSheet("WARM-UP",plan()[currentDay].title,"<ul cla
 $("#guideBtn").onclick=()=>openSheet("WORKOUT VISUALS",plan()[currentDay].title,workoutVisualGrid()+`<p class="tiny">These visuals are tied to the exact exercise currently in your plan. If an exact visual is unavailable, the app says so instead of showing a different movement.</p>`);
 $("#notesBtn").onclick=()=>{const d=plan()[currentDay];openSheet("SESSION NOTES",d.title,`<textarea id="dayNotes" class="field" rows="6">${esc(d.notes||"")}</textarea><button id="saveDayNotes" class="primary" style="margin-top:10px">Save notes</button>`);setTimeout(()=>$("#saveDayNotes").onclick=()=>{d.notes=$("#dayNotes").value;save();closeSheet();toast("Notes saved")},0)};
 $("#advanceWeekBtn").onclick=advanceWeek;$("#openCoachReviewBtn").onclick=openCoachReview;$("#logBodyBtn").onclick=logBody;
+$("#createNewPlanBtn").onclick=openCreatePlanSourceChooser;
 $("#saveCurrentPlanBtn").onclick=openSaveCurrentPlan;
 $("#openPlanLibraryBtn").onclick=openPlanLibrary;
 $("#undoBtn").onclick=undoLast;
@@ -3574,7 +3726,7 @@ $("#browseVisualsBtn").onclick=openExerciseLibrary;
 $("#saveDisplayPreferencesBtn").onclick=saveDisplayPersonalization;
 $("#applyPlanPreferencesBtn").onclick=applyPlanPersonalization;
 $("#regenBtn").onclick=()=>{if(confirm("Regenerate the exercise plan using your current Plan Builder mode? History and body data stay, but current week logs reset.\n\nYou can undo this afterward.")){pushUndo("Regenerated plan");generatePlan(true);renderAll();toast("Plan regenerated · Undo available")}};
-$("#newCycleBtn").onclick=()=>{if(confirm("Start a fresh training block now? Current plan exercises will be kept and manual target adjustments reset.\n\nYou can undo this afterward.")){pushUndo("Started a new training block");startCycle(profile().cycleLength||6,true);renderAll();toast("New training block started · Undo available")}};
+$("#newCycleBtn").onclick=()=>{if(confirm("Start a new training cycle at Week 1? Your current plan exercises will be kept and current-cycle manual target adjustments will reset. Workout history and analytics stay intact.\n\nYou can undo this afterward.")){pushUndo("Started a new training cycle");startCycle(profile().cycleLength||6,true);renderAll();toast("New training cycle started · Undo available")}};
 $("#exportBtn").onclick=exportData;$("#settingsExportBtn").onclick=exportData;
 $("#importInput").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!x.profile||!Array.isArray(x.plan)||!x.cycle)throw new Error();state=x;state.savedPlans=Array.isArray(state.savedPlans)?state.savedPlans:[];state.activeSavedPlanId=state.activeSavedPlanId||null;save();currentDay=0;renderAll();toast("Backup imported")}catch{alert("That file is not a valid Adaptive Workout Coach backup.")}};
 $("#resetAllBtn").onclick=()=>{if(confirm("Permanently delete ALL local profile data, plans, workout logs, history, recovery entries and measurements on this device? This cannot be undone from inside the app unless you have an exported backup.")){localStorage.removeItem(KEY);localStorage.removeItem(UNDO_KEY);localStorage.removeItem(REDO_KEY);undoStack=[];redoStack=[];state={};showOnboarding(false)}};
@@ -3598,12 +3750,20 @@ $("#themeBtn").onclick=()=>{
  syncThemeUI();
 };
 syncThemeUI();
-$("#obBack").onclick=()=>{if(obStep>1){obStep--;renderOb()}};
+$("#obCancel").onclick=cancelPlanCreation;
+$("#obBack").onclick=()=>{
+ const seq=planCreatorSteps(),pos=planCreatorStepPosition();
+ if(pos>0){obStep=seq[pos-1];renderOb()}
+};
 $("#obDays").onchange=()=>suggestOnboardingDays();
 $$(".obWeekday").forEach(x=>x.onchange=updateDayPickHelp);
 $("#obHeightUnit").onchange=updateHeightUI;
-$("#obUnit").onchange=()=>{if(!editingProfile&&!$("#obBodyweight").value){$("#obHeightUnit").value=$("#obUnit").value==="lb"?"imperial":"metric";updateHeightUI()}};
-$("#obNext").onclick=()=>{if(obStep===2&&selectedOnboardingDays().length!==Number($("#obDays").value))return alert(`Choose exactly ${$("#obDays").value} workout days before continuing.`);if(obStep<6){obStep++;renderOb()}else saveOnboarding()};
+$("#obUnit").onchange=()=>{if(!editingProfile&&!planCreationMode&&!$("#obBodyweight").value){$("#obHeightUnit").value=$("#obUnit").value==="lb"?"imperial":"metric";updateHeightUI()}};
+$("#obNext").onclick=()=>{
+ if(obStep===2&&selectedOnboardingDays().length!==Number($("#obDays").value))return alert(`Choose exactly ${$("#obDays").value} workout days before continuing.`);
+ const seq=planCreatorSteps(),pos=planCreatorStepPosition();
+ if(pos<seq.length-1){obStep=seq[pos+1];renderOb()}else saveOnboarding();
+};
 
 syncVisualViewport();
 window.addEventListener("resize",syncVisualViewport,{passive:true});

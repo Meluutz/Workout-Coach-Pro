@@ -872,3 +872,31 @@ Saved plans are part of the normal JSON backup because they live inside the app'
 
 Library: **169 exercises**.  
 Exact visual coverage: **169 / 169**.
+
+
+## v7.8.0 — Create New Plan
+
+The Saved Plan Library can now build a future workout program without modifying the active program.
+
+### Create New Plan
+- **Create from Scratch** keeps current constraints as convenient defaults, resets the Plan Builder to Coach Suggested, and generates without favoring the current exercise plan.
+- **Create from Active Plan** starts from the active settings and Plan Builder. If nothing is changed, the resulting saved copy preserves the exact active workout structure.
+
+### Isolated builder
+Create New Plan reuses the established Plan Builder as a temporary draft:
+- Body-profile entry is skipped because body/identity data is global.
+- Goal/experience, schedule, equipment/protected areas, exercise-avoid preferences and Plan Builder remain editable.
+- Build Your Own ordering remains available.
+- Cancel discards the draft.
+- Active plan, cycle, logs, workout history, recovery and body data remain untouched while building.
+
+### Final review
+- **Save Only** stores the named plan and leaves the current workout active.
+- **Save & Make Active** stores the plan, preserves the current plan, activates the new one, and begins at Week 1.
+
+### Clear terminology
+- Create New Plan = build another workout program.
+- Regenerate Plan = rebuild the current active plan.
+- Start New Training Cycle = keep the current plan and restart it at Week 1.
+
+Saved plans remain part of the normal local JSON backup. Workout history and Progress analytics stay global across plans.

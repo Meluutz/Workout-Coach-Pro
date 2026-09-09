@@ -1,4 +1,4 @@
-const CACHE='adaptive-workout-coach-v7-7-0-saved-plan-library';
+const CACHE='adaptive-workout-coach-v7-8-0-create-new-plan';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png','./assets/branding/workout-coach-app-icon.png'];
 self.addEventListener('install',e=>{
   self.skipWaiting();
