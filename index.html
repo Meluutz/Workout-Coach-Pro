@@ -829,58 +829,76 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 }
 
 
-/* v7.8.1 iPhone onboarding bottom-action fix */
-.onboard-actions{
- box-sizing:border-box;
- max-width:100%;
- overflow:hidden;
-}
+
+
+/* v7.8.2 definitive mobile onboarding footer */
 @media(max-width:760px){
  .onboard-actions{
-  left:0;
-  right:0;
-  width:auto;
-  max-width:none;
-  margin:0;
-  padding:
-   12px
-   max(12px,env(safe-area-inset-right))
-   max(12px,calc(env(safe-area-inset-bottom) + 10px))
-   max(12px,env(safe-area-inset-left));
-  display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);
-  gap:10px;
-  box-sizing:border-box;
+  position:absolute!important;
+  left:max(10px,env(safe-area-inset-left))!important;
+  right:max(10px,env(safe-area-inset-right))!important;
+  bottom:max(8px,calc(env(safe-area-inset-bottom) + 8px))!important;
+  width:auto!important;
+  max-width:none!important;
+  transform:none!important;
+  margin:0!important;
+  padding:9px!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:8px!important;
+  overflow:visible!important;
+  background:color-mix(in srgb,var(--surface) 97%,transparent)!important;
+  backdrop-filter:blur(18px);
+  border:1px solid var(--line);
+  border-radius:17px;
+  box-shadow:0 10px 35px rgba(15,23,42,.16);
+  z-index:360!important;
  }
  .onboard-actions button{
-  width:100%;
-  min-width:0;
-  max-width:100%;
-  box-sizing:border-box;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+  width:auto!important;
+  max-width:none!important;
+  min-width:0!important;
+  min-height:48px!important;
+  box-sizing:border-box!important;
+  padding:11px 12px!important;
+  font-size:14px!important;
+  line-height:1.1!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
  }
- .onboard-actions #obCancel.hidden{
-  display:none !important;
- }
- .onboard-actions #obCancel.hidden + #obBack{
-  grid-column:1;
+ .onboard-actions #obCancel,
+ .onboard-actions #obBack{
+  flex:0 1 105px!important;
  }
  .onboard-actions #obNext{
-  grid-column:2;
+  flex:1 1 150px!important;
+  margin-left:auto!important;
+ }
+ .onboard-actions .hidden{
+  display:none!important;
  }
 }
 @media(max-width:360px){
  .onboard-actions{
-  grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
-  gap:8px;
-  padding-left:max(8px,env(safe-area-inset-left));
-  padding-right:max(8px,env(safe-area-inset-right));
+  left:max(8px,env(safe-area-inset-left))!important;
+  right:max(8px,env(safe-area-inset-right))!important;
+  gap:6px!important;
+  padding:7px!important;
  }
  .onboard-actions button{
-  padding-left:10px;
-  padding-right:10px;
+  min-height:46px!important;
+  padding:10px 8px!important;
+  font-size:13px!important;
+ }
+ .onboard-actions #obCancel,
+ .onboard-actions #obBack{
+  flex-basis:82px!important;
+ }
+ .onboard-actions #obNext{
+  flex-basis:116px!important;
  }
 }
 
@@ -888,7 +906,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.8.1 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.8.2 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1071,7 +1089,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.8.1</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.8.2</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -2478,7 +2496,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.8.1 — Reliability Report",
+  "Adaptive Workout Coach v7.8.2 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -3514,7 +3532,8 @@ function renderOb(){
  $("#obStepText").textContent=`Step ${pos+1} of ${seq.length}`;
  if($("#obProgressTitle"))$("#obProgressTitle").textContent=names[obStep]||"Setup";
  if($("#obProgressFill"))$("#obProgressFill").style.width=`${Math.round((pos+1)/seq.length*100)}%`;
- $("#obBack").style.visibility=pos===0?"hidden":"visible";
+ $("#obBack").style.visibility="visible";
+ $("#obBack").classList.toggle("hidden",pos===0);
  $("#obCancel").classList.toggle("hidden",!planCreationMode);
  $("#obNicknameField")?.classList.toggle("hidden",!!planCreationMode);
  if($("#obBrandEyebrow"))$("#obBrandEyebrow").textContent=planCreationMode?"NEW PLAN":"SETUP";
@@ -3553,7 +3572,7 @@ function saveOnboarding(){
  state.activeSavedPlanId=null;state.cycle={number:nextGlobalCycleNumber(),week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[],planId:null};generatePlan(true);save();switchView("today");$("#onboarding").classList.add("hidden");renderAll();toast("Personalized plan created");
 }
 function exportData(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-8-1-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-8-2-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 
 

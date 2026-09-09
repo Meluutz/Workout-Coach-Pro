@@ -913,3 +913,22 @@ Fixed the Create New Plan / onboarding bottom action bar on iPhone-sized screens
 - iPhone left/right/bottom safe-area insets are respected.
 - Extra-tight handling is included for screens down to 360 CSS px.
 - No Plan Builder, Saved Plan, programming, analytics, or data behavior changed.
+
+
+## v7.8.2 — Mobile Onboarding Footer Rebuild
+
+The v7.8.1 footer issue was caused by an older `!important` centering rule that continued to force the action bar to `left: 50%` with a horizontal transform.
+
+v7.8.2 replaces that behavior with one definitive mobile rule:
+
+- The action bar is anchored directly to the full onboarding viewport.
+- Left and right edges are explicitly constrained inside the phone screen.
+- The old `left: 50%` / translate centering behavior is overridden.
+- Width is derived from the viewport edges rather than shrink-to-fit sizing.
+- iPhone safe-area insets are respected.
+- Cancel, Back and Continue use flexible widths with no text clipping.
+- On Step 1, the unavailable Back button is removed from layout rather than merely made invisible.
+- Later steps can show Cancel + Back + Continue without horizontal overflow.
+- The fix is tested down to 320 CSS px.
+
+No workout programming, Saved Plan, Create New Plan, exercise, analytics or stored-data behavior changed.

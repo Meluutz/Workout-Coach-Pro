@@ -1,4 +1,4 @@
-const CACHE='adaptive-workout-coach-v7-8-1-bottom-actions-fix';
+const CACHE='adaptive-workout-coach-v7-8-2-mobile-footer-rebuild';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png','./assets/branding/workout-coach-app-icon.png'];
 self.addEventListener('install',e=>{
   self.skipWaiting();
