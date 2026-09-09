@@ -816,3 +816,59 @@ Based on real iPhone use, the Build Your Own ordering layout was tightened for n
 - ↑ / ↓ controls remain available as a fallback.
 
 No ordering logic, workout programming, exercise data, analytics, or saved-data behavior changed.
+
+
+## v7.7.0 — Saved Plan Library
+
+Workout Coach now supports multiple named workout plans stored locally on the device.
+
+### Plan Library
+The Program page includes a new **Saved workout plans** card with:
+- Save current
+- Manage saved plans
+- Active-plan indicator
+- Unsaved-change indicator
+
+Each saved plan can be:
+- Previewed
+- Activated
+- Updated from the current plan
+- Duplicated
+- Renamed
+- Deleted
+
+### What a saved plan contains
+A plan snapshot preserves:
+- Training days and weekday schedule
+- Exercise selection and order
+- Sets, reps, RPE and rest targets
+- User target overrides stored in the plan
+- Goal and experience level
+- Equipment mode
+- Plan Builder mode
+- Muscle Priority percentages
+- Build Your Own selections, ordering and manual assignments
+- Limitation / avoid settings relevant to programming
+- Cycle length
+- Saved cycle/week state when the plan is saved as the active plan
+
+Identity and body-tracking information remain global rather than being duplicated into each plan.
+
+### Switching plans
+When another plan is activated:
+- The current active plan is snapshotted automatically before switching.
+- If the current plan has never been saved, an automatic `Previous Plan · <date>` entry is created first.
+- Workout history, recovery history, body measurements and Progress analytics are preserved.
+- **Start as new cycle** creates a new globally unique program-cycle number and begins at Week 1.
+- **Continue saved cycle** restores the saved week, week logs and coaching state when that saved plan has a continuable cycle.
+- Duplicated plans intentionally do not share a historical cycle; they activate as a new cycle.
+
+### History isolation
+New completed sessions and recovery check-ins store the active `planId`.
+Cycle-specific duplicate detection, weekly reviews, fatigue aggregation and same-week recovery lookup now respect the active saved-plan ID when present. All-time Progress analytics still span workout history across every plan.
+
+### Backup
+Saved plans are part of the normal JSON backup because they live inside the app's existing local state. No account or cloud sync is required.
+
+Library: **169 exercises**.  
+Exact visual coverage: **169 / 169**.

@@ -123,6 +123,42 @@ body.custom-reordering{user-select:none;-webkit-user-select:none;overflow:hidden
  .custom-order-actions{grid-template-columns:34px 34px}
  .custom-order-actions button{width:34px;height:34px;min-height:34px}
 }
+
+/* v7.7 Saved Plan Library */
+.saved-plan-library-card{overflow:hidden}
+.saved-plan-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.saved-plan-card-head h3{margin:4px 0 0}
+.saved-plan-active{margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:15px;background:var(--surface-2)}
+.saved-plan-active-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.saved-plan-name{font-size:17px;font-weight:900;line-height:1.2;overflow-wrap:anywhere}
+.saved-plan-meta{margin-top:5px;color:var(--muted);font-size:11px;line-height:1.45}
+.saved-plan-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.saved-plan-badge{display:inline-flex;align-items:center;min-height:24px;padding:3px 8px;border-radius:999px;background:var(--soft);font-size:10px;font-weight:850}
+.saved-plan-badge.active{background:color-mix(in srgb,var(--blue) 16%,var(--surface));color:var(--blue)}
+.saved-plan-badge.modified{background:color-mix(in srgb,#d97706 15%,var(--surface));color:#b45309}
+.saved-plan-empty{padding:12px;border:1px dashed var(--line);border-radius:14px;color:var(--muted);margin-top:10px}
+.saved-plan-list{display:grid;gap:9px;margin-top:12px}
+.saved-plan-item{border:1px solid var(--line);border-radius:15px;padding:12px;background:var(--surface-2)}
+.saved-plan-item.active-plan{border-color:var(--blue);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--blue) 35%,transparent)}
+.saved-plan-item-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.saved-plan-item-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
+.saved-plan-item-actions button{min-height:42px}
+.saved-plan-sheet-note{padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);font-size:12px;line-height:1.45}
+.saved-plan-preview-days{display:grid;gap:9px;margin-top:10px}
+.saved-plan-preview-day{border:1px solid var(--line);border-radius:13px;padding:10px;background:var(--surface-2)}
+.saved-plan-preview-day strong{display:block;margin-bottom:5px}
+.saved-plan-preview-exercises{display:grid;gap:4px}
+.saved-plan-preview-exercises span{font-size:12px;color:var(--muted);line-height:1.35}
+.saved-plan-save-actions,.saved-plan-activate-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.saved-plan-danger{color:var(--bad)}
+.saved-plan-input{font-size:16px}
+@media(max-width:430px){
+ .saved-plan-card-head{align-items:center}
+ .saved-plan-card-head .primary{flex:0 0 auto}
+ .saved-plan-item-actions{grid-template-columns:1fr 1fr}
+ .saved-plan-save-actions,.saved-plan-activate-actions{grid-template-columns:1fr}
+}
+
 @media(max-width:760px){
  .builder-options{grid-template-columns:1fr}
  .priority-row{grid-template-columns:82px minmax(0,1fr) 46px}
@@ -781,7 +817,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.6.5 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.7.0 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -859,6 +895,15 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  <div class="row program-summary-row"><div><div class="label">Program</div><h2 style="margin:6px 0" id="cycleHeading"></h2></div><button id="advanceWeekBtn" class="primary">Advance week</button></div>
  <p id="cycleAdvice" class="muted"></p>
  <div class="progress"><div id="cycleProgress"></div></div>
+</section>
+
+<section class="card saved-plan-library-card">
+ <div class="saved-plan-card-head">
+  <div><div class="label">Plan library</div><h3>Saved workout plans</h3></div>
+  <button id="saveCurrentPlanBtn" class="primary">Save current</button>
+ </div>
+ <div id="savedPlanSummary"></div>
+ <button id="openPlanLibraryBtn" style="width:100%;margin-top:10px">Manage saved plans</button>
 </section>
 
 <section class="card coach-intelligence-card">
@@ -952,7 +997,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.6.5</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.7.0</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -1144,7 +1189,9 @@ function structuralSnapshot(label){
       plan:state.plan||[],
       cycle:state.cycle||null,
       weekLogs:state.weekLogs||{},
-      coaching:state.coaching||{}
+      coaching:state.coaching||{},
+      savedPlans:state.savedPlans||[],
+      activeSavedPlanId:state.activeSavedPlanId||null
     }))
   };
 }
@@ -1162,6 +1209,8 @@ function applySnapshot(snap){
   state.cycle=snap.data.cycle;
   state.weekLogs=snap.data.weekLogs;
   state.coaching=snap.data.coaching||{};
+  if(Object.prototype.hasOwnProperty.call(snap.data,"savedPlans"))state.savedPlans=snap.data.savedPlans||[];
+  if(Object.prototype.hasOwnProperty.call(snap.data,"activeSavedPlanId"))state.activeSavedPlanId=snap.data.activeSavedPlanId||null;
   currentDay=Math.min(Number(snap.currentDay)||0,Math.max(0,(state.plan?.length||1)-1));
   save();
 }
@@ -1198,6 +1247,243 @@ function history(){state.history??=[];return state.history}
 function recoveryEntries(){state.recovery??=[];return state.recovery}
 function bodyEntries(){state.body??=[];return state.body}
 
+function deepCopy(x){return x===undefined?undefined:JSON.parse(JSON.stringify(x))}
+function savedPlans(){state.savedPlans??=[];return state.savedPlans}
+function activeSavedPlan(){return savedPlans().find(x=>x.id===state.activeSavedPlanId)||null}
+function planLibraryId(){return `plan_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,8)}`}
+function cleanPlanName(name){
+ const s=String(name||"").replace(/\s+/g," ").trim().slice(0,60);
+ return s||"Untitled Plan";
+}
+function uniquePlanName(base,excludeId=null){
+ const root=cleanPlanName(base),used=new Set(savedPlans().filter(x=>x.id!==excludeId).map(x=>x.name.toLowerCase()));
+ if(!used.has(root.toLowerCase()))return root;
+ let n=2;while(used.has(`${root} ${n}`.toLowerCase()))n++;
+ return `${root} ${n}`;
+}
+function planProfileSettings(p=profile()){
+ if(!p)return null;
+ const keys=["level","goal","days","duration","cycleLength","weekdays","equipment","unit","measureUnit","limitations","avoid","planBuilder"];
+ const out={};keys.forEach(k=>out[k]=deepCopy(p[k]));
+ return out;
+}
+function mergePlanProfileSettings(current,saved){
+ const out={...(current||{})};
+ if(!saved)return out;
+ Object.entries(saved).forEach(([k,v])=>out[k]=deepCopy(v));
+ return out;
+}
+function currentPlanFingerprint(){
+ return JSON.stringify({profile:planProfileSettings(),plan:plan()});
+}
+function savedPlanFingerprint(entry){
+ return JSON.stringify({profile:entry?.profile||null,plan:entry?.plan||[]});
+}
+function activePlanModified(){
+ const entry=activeSavedPlan();return !!(entry&&currentPlanFingerprint()!==savedPlanFingerprint(entry));
+}
+function attachCurrentCycleToPlanId(id){
+ const c=cycle();if(!c||!id)return;
+ c.planId=id;
+ history().forEach(s=>{
+  if(s.cycleNumber===c.number&&!s.planId)s.planId=id;
+ });
+ recoveryEntries().forEach(r=>{
+  if(r.cycleNumber===c.number&&!r.planId)r.planId=id;
+ });
+}
+function savedPlanSnapshot(name,id=null,continuable=true){
+ const now=new Date().toISOString(),existing=id?savedPlans().find(x=>x.id===id):null;
+ return {
+  id:id||planLibraryId(),
+  name:cleanPlanName(name),
+  createdAt:existing?.createdAt||now,
+  updatedAt:now,
+  lastUsedAt:existing?.lastUsedAt||null,
+  profile:deepCopy(planProfileSettings()),
+  plan:deepCopy(plan()),
+  cycle:continuable?deepCopy(cycle()):null,
+  weekLogs:continuable?deepCopy(state.weekLogs||{}):{},
+  coaching:continuable?deepCopy(state.coaching||{}):{},
+  continuable:!!continuable
+ };
+}
+function createSavedPlanFromCurrent(name,{activateIfUnsaved=true,continuable=true}={}){
+ const wasUnsaved=!activeSavedPlan();
+ const entry=savedPlanSnapshot(uniquePlanName(name),null,continuable);
+ if(wasUnsaved&&activateIfUnsaved){
+  state.activeSavedPlanId=entry.id;
+  attachCurrentCycleToPlanId(entry.id);
+  entry.cycle=deepCopy(cycle());
+  entry.weekLogs=deepCopy(state.weekLogs||{});
+  entry.coaching=deepCopy(state.coaching||{});
+  entry.lastUsedAt=new Date().toISOString();
+ }
+ savedPlans().push(entry);
+ return entry;
+}
+function updateSavedPlanFromCurrent(id=state.activeSavedPlanId){
+ const idx=savedPlans().findIndex(x=>x.id===id);if(idx<0)return null;
+ const old=savedPlans()[idx],fresh=savedPlanSnapshot(old.name,id,true);
+ fresh.createdAt=old.createdAt;fresh.lastUsedAt=old.lastUsedAt||new Date().toISOString();
+ savedPlans()[idx]=fresh;return fresh;
+}
+function preserveCurrentPlanBeforeSwitch(){
+ const active=activeSavedPlan();
+ if(active){updateSavedPlanFromCurrent(active.id);return active}
+ if(!profile()||!hasUsablePlan())return null;
+ const label=`Previous Plan · ${new Date().toLocaleDateString(undefined,{month:"short",day:"numeric"})}`;
+ return createSavedPlanFromCurrent(label,{activateIfUnsaved:true,continuable:true});
+}
+function duplicateSavedPlan(id){
+ const src=savedPlans().find(x=>x.id===id);if(!src)return null;
+ const now=new Date().toISOString(),copy=deepCopy(src);
+ copy.id=planLibraryId();copy.name=uniquePlanName(`${src.name} Copy`);copy.createdAt=copy.updatedAt=now;copy.lastUsedAt=null;
+ // A duplicate is a reusable template, not a second pointer to the same historical cycle.
+ copy.cycle=null;copy.weekLogs={};copy.coaching={};copy.continuable=false;
+ savedPlans().push(copy);return copy;
+}
+function renameSavedPlan(id,name){
+ const entry=savedPlans().find(x=>x.id===id);if(!entry)return null;
+ entry.name=uniquePlanName(cleanPlanName(name),id);entry.updatedAt=new Date().toISOString();return entry;
+}
+function deleteSavedPlan(id){
+ const idx=savedPlans().findIndex(x=>x.id===id);if(idx<0)return false;
+ savedPlans().splice(idx,1);
+ if(state.activeSavedPlanId===id)state.activeSavedPlanId=null;
+ return true;
+}
+function nextGlobalCycleNumber(){
+ const nums=[Number(cycle()?.number)||0];
+ history().forEach(s=>nums.push(Number(s.cycleNumber)||0));
+ savedPlans().forEach(p=>{if(p.cycle)nums.push(Number(p.cycle.number)||0)});
+ return Math.max(0,...nums)+1;
+}
+function applySavedPlanEntry(id,mode="new"){
+ const entry=savedPlans().find(x=>x.id===id);if(!entry)return false;
+ const currentIdentity=profile()||{};
+ state.profile=mergePlanProfileSettings(currentIdentity,entry.profile);
+ state.plan=deepCopy(entry.plan||[]);
+ state.activeSavedPlanId=id;
+ currentDay=0;
+ state.sessionRuntime={};
+ if(mode==="continue"&&entry.continuable&&entry.cycle){
+  state.cycle=deepCopy(entry.cycle);
+  state.cycle.planId=id;
+  state.weekLogs=deepCopy(entry.weekLogs||{});
+  state.coaching=deepCopy(entry.coaching||{});
+ }else{
+  state.cycle={number:nextGlobalCycleNumber(),week:1,length:Number(entry.profile?.cycleLength)||6,start:new Date().toISOString(),weekSummaries:[],planId:id};
+  state.weekLogs={};
+  state.coaching={planRevision:0,applied:{},deloadActive:false,deloadCycle:null,deloadWeek:null};
+ }
+ entry.lastUsedAt=new Date().toISOString();
+ return true;
+}
+function planModeLabel(entry){
+ const b=entry?.profile?.planBuilder||{};
+ if(b.mode==="priority")return"Muscle Priority";
+ if(b.mode==="custom")return b.customMode==="manual"?"Build Your Own · Manual":"Build Your Own · Coach";
+ return"Coach Suggested";
+}
+function equipmentLabel(v){return ({gym:"Full Gym",dumbbells:"Dumbbells + Bench",minimal:"Minimal Equipment",bodyweight:"Bodyweight Only"})[v]||v||"—"}
+function goalLabel(v){return ({muscle:"Muscle",strength:"Strength",both:"Muscle + Strength",endurance:"Endurance",general:"General Fitness"})[v]||v||"—"}
+function savedPlanMeta(entry){
+ const p=entry?.profile||{},days=Number(p.days)||entry?.plan?.length||0,ex=(entry?.plan||[]).reduce((n,d)=>n+(d.items||[]).length,0);
+ return `${days} day${days===1?"":"s"} · ${equipmentLabel(p.equipment)} · ${goalLabel(p.goal)} · ${ex} exercises`;
+}
+function savedPlanDate(value){
+ if(!value)return"Never";
+ const d=new Date(value);return Number.isFinite(d.getTime())?d.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}):"—";
+}
+function renderSavedPlanSummary(){
+ const box=$("#savedPlanSummary");if(!box)return;
+ const plans=savedPlans(),active=activeSavedPlan();
+ if(!plans.length){
+  box.innerHTML='<div class="saved-plan-empty"><strong>No saved plans yet.</strong><div class="tiny" style="margin-top:4px">Save the current program, give it a name, and you can switch back to it later without losing workout history.</div></div>';
+  return;
+ }
+ if(active){
+  const modified=activePlanModified();
+  box.innerHTML=`<div class="saved-plan-active">
+   <div class="saved-plan-active-head"><div><div class="saved-plan-name">${esc(active.name)}</div><div class="saved-plan-meta">${esc(savedPlanMeta(active))}</div></div><span class="saved-plan-badge active">ACTIVE</span></div>
+   <div class="saved-plan-badges">${modified?'<span class="saved-plan-badge modified">Unsaved changes</span>':`<span class="saved-plan-badge">Saved ${esc(savedPlanDate(active.updatedAt))}</span>`}</div>
+  </div>`;
+ }else{
+  box.innerHTML=`<div class="saved-plan-active"><div class="saved-plan-name">Current plan is not saved</div><div class="saved-plan-meta">${plans.length} saved plan${plans.length===1?"":"s"} available in your library.</div><div class="saved-plan-badges"><span class="saved-plan-badge modified">Not linked to a saved plan</span></div></div>`;
+ }
+}
+function savedPlanItemHtml(entry){
+ const active=entry.id===state.activeSavedPlanId,modified=active&&activePlanModified();
+ return `<div class="saved-plan-item ${active?"active-plan":""}">
+  <div class="saved-plan-item-head">
+   <div><div class="saved-plan-name">${esc(entry.name)}</div><div class="saved-plan-meta">${esc(savedPlanMeta(entry))}<br>${esc(planModeLabel(entry))} · Updated ${esc(savedPlanDate(entry.updatedAt))}</div></div>
+   ${active?'<span class="saved-plan-badge active">ACTIVE</span>':""}
+  </div>
+  <div class="saved-plan-badges">${modified?'<span class="saved-plan-badge modified">Unsaved changes</span>':""}${entry.lastUsedAt?`<span class="saved-plan-badge">Last used ${esc(savedPlanDate(entry.lastUsedAt))}</span>`:""}${entry.continuable&&entry.cycle?`<span class="saved-plan-badge">Week ${Number(entry.cycle.week)||1}</span>`:""}</div>
+  <div class="saved-plan-item-actions">
+   <button class="savedPlanPreviewBtn" data-planid="${entry.id}">Preview</button>
+   ${active?'<button class="savedPlanUpdateBtn" data-planid="'+entry.id+'">Update saved</button>':'<button class="savedPlanActivateBtn primary" data-planid="'+entry.id+'">Make active</button>'}
+   <button class="savedPlanDuplicateBtn" data-planid="${entry.id}">Duplicate</button>
+   <button class="savedPlanRenameBtn" data-planid="${entry.id}">Rename</button>
+   <button class="savedPlanDeleteBtn saved-plan-danger" data-planid="${entry.id}">Delete</button>
+  </div>
+ </div>`;
+}
+function openPlanLibrary(){
+ const plans=savedPlans().slice().sort((a,b)=>{
+  if(a.id===state.activeSavedPlanId)return-1;if(b.id===state.activeSavedPlanId)return 1;
+  return new Date(b.updatedAt||0)-new Date(a.updatedAt||0);
+ });
+ openSheet("PLAN LIBRARY","Saved workout plans",
+  `<div class="saved-plan-sheet-note">Saved plans are stored on this device and included in normal app backups. Switching plans never deletes workout history, recovery logs, body measurements, or Progress analytics.</div>
+   <button id="sheetSaveCurrentPlanBtn" class="primary" style="width:100%;margin-top:10px">Save current plan</button>
+   <div class="saved-plan-list">${plans.length?plans.map(savedPlanItemHtml).join(""):'<div class="saved-plan-empty">No saved plans yet.</div>'}</div>`);
+}
+function defaultSavedPlanName(){
+ const p=profile(),mode=p?.planBuilder?.mode;
+ if(mode==="priority")return`${goalLabel(p.goal)} Priority · ${p.days} Day`;
+ if(mode==="custom")return`My Custom Plan · ${p.days} Day`;
+ return`${goalLabel(p?.goal)} · ${p?.days||""} Day`;
+}
+function openSaveCurrentPlan(){
+ const active=activeSavedPlan(),suggested=active?`${active.name} Copy`:defaultSavedPlanName();
+ openSheet("SAVE PLAN","Name this workout plan",
+  `<label><strong>Plan name</strong><input id="savedPlanNameInput" class="field saved-plan-input" maxlength="60" value="${esc(suggested)}" autocomplete="off"></label>
+   <p class="tiny">The saved copy includes workout days, exercise order, sets/reps/RPE/rest targets, Plan Builder settings, priorities, equipment and experience constraints. Workout history remains separate.</p>
+   <div class="saved-plan-save-actions">
+    <button id="confirmSavePlanAsNew" class="primary">Save as new</button>
+    ${active?`<button id="confirmUpdateActivePlan">Update “${esc(active.name)}”</button>`:""}
+   </div>`);
+ requestAnimationFrame(()=>$("#savedPlanNameInput")?.focus());
+}
+function savedPlanPreviewHtml(entry){
+ const p=entry?.profile||{};
+ return `<div class="saved-plan-sheet-note"><strong>${esc(savedPlanMeta(entry))}</strong><br>${esc(planModeLabel(entry))} · ${esc(p.level||"—")} · ${Number(p.duration)||"—"} min/session</div>
+  <div class="saved-plan-preview-days">${(entry.plan||[]).map((d,i)=>`<div class="saved-plan-preview-day"><strong>${esc(d.weekday||`Day ${i+1}`)} · ${esc((d.type||"Workout").replace(/^./,c=>c.toUpperCase()))}</strong><div class="saved-plan-preview-exercises">${(d.items||[]).map((it,n)=>{const ex=EXMAP[it.id];return `<span>${n+1}. ${esc(ex?.name||it.id)} · ${Number(it.baseSets)||"—"} × ${esc(it.baseReps||"—")} · RPE ${esc(it.baseRpe||"—")}</span>`}).join("")}</div></div>`).join("")}</div>`;
+}
+function openSavedPlanPreview(id){
+ const entry=savedPlans().find(x=>x.id===id);if(!entry)return;
+ openSheet("PLAN PREVIEW",entry.name,`${savedPlanPreviewHtml(entry)}<div class="saved-plan-activate-actions"><button id="previewBackToLibrary">Back to library</button>${entry.id===state.activeSavedPlanId?"":`<button class="savedPlanActivateBtn primary" data-planid="${entry.id}">Make active</button>`}</div>`);
+}
+function openSavedPlanRename(id){
+ const entry=savedPlans().find(x=>x.id===id);if(!entry)return;
+ openSheet("RENAME PLAN",entry.name,
+  `<label><strong>New name</strong><input id="renameSavedPlanInput" class="field saved-plan-input" maxlength="60" value="${esc(entry.name)}" autocomplete="off"></label>
+   <button id="confirmRenameSavedPlan" class="primary" data-planid="${entry.id}" style="width:100%;margin-top:12px">Rename plan</button>`);
+ requestAnimationFrame(()=>$("#renameSavedPlanInput")?.focus());
+}
+function openSavedPlanActivation(id){
+ const entry=savedPlans().find(x=>x.id===id);if(!entry)return;
+ const canContinue=!!(entry.continuable&&entry.cycle);
+ openSheet("ACTIVATE PLAN",entry.name,
+  `<div class="saved-plan-sheet-note"><strong>Your current plan will be preserved automatically before switching.</strong><br>Workout history and Progress analytics are never deleted.</div>
+   ${savedPlanPreviewHtml(entry)}
+   <div class="saved-plan-activate-actions">
+    <button class="confirmActivateSavedPlan primary" data-planid="${entry.id}" data-mode="new">Start as new cycle</button>
+    <button class="confirmActivateSavedPlan" data-planid="${entry.id}" data-mode="continue" ${canContinue?"":"disabled"}>${canContinue?`Continue saved cycle · Week ${Number(entry.cycle.week)||1}`:"No saved cycle to continue"}</button>
+   </div>`);
+}
 
 function personalizationSettings(){
  state.personalization??={visualAvatar:"auto",visualFallback:"available",exerciseBias:"balanced",exerciseBiasExplicit:false,variety:"balanced",coachingDetail:"standard"};
@@ -2029,7 +2315,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.6.5 — Reliability Report",
+  "Adaptive Workout Coach v7.7.0 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -2140,6 +2426,32 @@ async function runReliabilitySuite(){
   check(reorderCoachPlan.every(d=>d.items.every((it,i)=>i===0||(reorderMap.get(d.items[i-1].id)??9999)<=(reorderMap.get(it.id)??9999))),"Build Your Own order: coach-programmed workout did not preserve preferred within-day order");
 
 
+  // Saved Plan Library regression checks — state-only, no localStorage writes.
+  state.profile=reliabilityProfile("Intermediate","gym","both",3,60,{mode:"coach"});
+  state.plan=buildCoachPlan(state.profile);state.history=[];state.recovery=[];state.body=[{date:new Date().toISOString(),weight:80,unit:"kg"}];
+  state.cycle={number:4,week:2,length:6,start:new Date().toISOString(),weekSummaries:[]};state.weekLogs={"2":{}};state.coaching={planRevision:3,applied:{}};
+  state.savedPlans=[];state.activeSavedPlanId=null;
+  const savedA=createSavedPlanFromCurrent("Three Day Strength",{activateIfUnsaved:true,continuable:true});
+  check(savedPlans().length===1&&state.activeSavedPlanId===savedA.id,"Saved Plans: first save did not become active");
+  check(cycle().planId===savedA.id,"Saved Plans: current cycle was not attached to first saved plan");
+  const savedB=createSavedPlanFromCurrent("Three Day Strength",{activateIfUnsaved:true,continuable:true});
+  check(savedPlans().length===2&&savedB.name!=="Three Day Strength","Saved Plans: duplicate names were not made unique");
+  check(state.activeSavedPlanId===savedA.id,"Saved Plans: Save as New incorrectly changed an existing active plan");
+  const dup=duplicateSavedPlan(savedA.id);
+  check(!!dup&&!dup.continuable&&dup.cycle===null,"Saved Plans: duplicate should start as a reusable template without shared cycle state");
+  const historyBefore=history().length,bodyBefore=bodyEntries().length;
+  check(applySavedPlanEntry(savedB.id,"new")===true,"Saved Plans: activation failed");
+  check(state.activeSavedPlanId===savedB.id&&cycle().week===1,"Saved Plans: new-cycle activation did not reset to week 1");
+  check(history().length===historyBefore&&bodyEntries().length===bodyBefore,"Saved Plans: activation altered history or body data");
+  check(plan().length===savedB.plan.length,"Saved Plans: activated plan structure mismatch");
+  check(renameSavedPlan(savedB.id,"Hypertrophy Block")?.name==="Hypertrophy Block","Saved Plans: rename failed");
+  const savedBCycle=deepCopy(savedB.cycle);
+  if(savedBCycle){
+   check(applySavedPlanEntry(savedB.id,"continue")===true,"Saved Plans: continue-cycle activation failed");
+   check(cycle().planId===savedB.id,"Saved Plans: continued cycle lost plan association");
+  }
+
+
   const levels=["Beginner","Intermediate","Advanced"];
   const equipment=["gym","dumbbells","minimal","bodyweight"];
   const goals=["muscle","strength","both","endurance","general"];
@@ -2239,7 +2551,7 @@ function generatePlan(preserveHistory=true){
 }
 function startCycle(length=profile()?.cycleLength||6,keepExercises=true){
  const oldPlan=plan();
- state.cycle={number:(cycle()?.number||0)+1,week:1,length:Number(length),start:new Date().toISOString(),weekSummaries:[]};
+ state.cycle={number:nextGlobalCycleNumber(),week:1,length:Number(length),start:new Date().toISOString(),weekSummaries:[],planId:state.activeSavedPlanId||null};
  state.weekLogs={};
  if(keepExercises&&oldPlan.length){
    oldPlan.forEach(d=>d.items.forEach(it=>{it.userSetDelta=0;it.userRepDelta=0;it.userRpe=null;it.userLoad=null}));
@@ -2271,8 +2583,8 @@ function exLog(dayIdx,slot,sets){
 }
 
 function latestRecovery(){
- const w=cycle()?.week;
- const same=recoveryEntries().filter(r=>r.cycleNumber===cycle()?.number&&r.week===w);
+ const c=cycle(),w=c?.week,pid=c?.planId||null;
+ const same=recoveryEntries().filter(r=>r.cycleNumber===c?.number&&r.week===w&&(!pid||r.planId===pid));
  return same.at(-1)||recoveryEntries().at(-1)||null;
 }
 function readinessScore(){
@@ -2330,7 +2642,7 @@ function recoveryEntryScore(r){
  return Math.round(((Number(r.recovery||0)+Number(r.sleep||0)+Number(r.energy||0)+(11-Number(r.stress||0))+(11-Number(r.joint||0)))/5)*10)/10;
 }
 function trainingFatigueProfile(){
- const c=cycle(),cycleSessions=history().filter(s=>s.cycleNumber===c?.number).sort((a,b)=>new Date(a.date||0)-new Date(b.date||0)),recent=cycleSessions.slice(-4);
+ const c=cycle(),pid=c?.planId||null,cycleSessions=history().filter(s=>s.cycleNumber===c?.number&&(!pid||s.planId===pid)).sort((a,b)=>new Date(a.date||0)-new Date(b.date||0)),recent=cycleSessions.slice(-4);
  const recents=recoveryEntries().slice(-4),readinesses=recents.map(recoveryEntryScore).filter(x=>x!==null);
  const lowReadiness=readinesses.slice(-3).filter(x=>x<5.5).length;
  const latestRec=recents.at(-1)||null;
@@ -2675,9 +2987,9 @@ function finishSession(){
  openSheet("REVIEW SESSION","Ready to save?",`<div class="finish-grid"><div class="finish-stat"><div class="label">Working sets</div><strong>${s.done}/${s.total}</strong></div><div class="finish-stat"><div class="label">Completion</div><strong>${s.completion}%</strong></div><div class="finish-stat"><div class="label">Session time</div><strong>${fmtLong(s.durationSec)}</strong></div><div class="finish-stat"><div class="label">Volume load</div><strong>${Math.round(s.volume).toLocaleString()}</strong><div class="tiny">${unit()}·reps</div></div></div>${incomplete?`<div class="builder-warning">${s.total-s.done} working set${s.total-s.done===1?" is":"s are"} still incomplete. You can save now, or close this review and continue training.</div>`:""}<p class="tiny">Warm-up sets completed: ${s.warmupDone}. Warm-ups are not included in progression, PR, completion, or volume calculations.</p><button id="confirmFinishBtn" class="primary" style="width:100%;margin-top:10px">Save this session</button>`);
 }
 function finalizeSession(){
- const s=computeFinishSummary(),existing=history().findIndex(x=>x.cycleNumber===cycle().number&&x.week===cycle().week&&(x.dayIndex===currentDay||(x.dayIndex===undefined&&x.title===s.d.title)));
+ const s=computeFinishSummary(),pid=cycle().planId||state.activeSavedPlanId||null,existing=history().findIndex(x=>x.cycleNumber===cycle().number&&x.week===cycle().week&&(!pid||x.planId===pid)&&(x.dayIndex===currentDay||(x.dayIndex===undefined&&x.title===s.d.title)));
  if(existing>=0&&!confirm("A saved session already exists for this training day and week. Replace that saved session instead of creating a duplicate?"))return;
- pauseSession();const record={date:new Date().toISOString(),cycleNumber:cycle().number,week:cycle().week,dayIndex:currentDay,title:s.d.title,completion:s.completion,durationSec:s.durationSec,volume:s.volume,warmupSets:s.warmupDone,prs:s.prs,exercises:s.records};
+ pauseSession();const record={date:new Date().toISOString(),planId:pid,cycleNumber:cycle().number,week:cycle().week,dayIndex:currentDay,title:s.d.title,completion:s.completion,durationSec:s.durationSec,volume:s.volume,warmupSets:s.warmupDone,prs:s.prs,exercises:s.records};
  if(existing>=0)history()[existing]=record;else history().push(record);clearSessionRuntime();save();renderProgress();closeSheet();
  openSheet("SESSION COMPLETE",s.d.title,`<div class="finish-grid"><div class="finish-stat"><div class="label">Completion</div><strong>${s.completion}%</strong></div><div class="finish-stat"><div class="label">Duration</div><strong>${fmtLong(s.durationSec)}</strong></div><div class="finish-stat"><div class="label">Working volume</div><strong>${Math.round(s.volume).toLocaleString()}</strong></div><div class="finish-stat"><div class="label">PRs</div><strong>${s.prs.length}</strong></div></div>${s.prs.length?s.prs.map(p=>`<div class="summary-pr"><strong>PR · ${esc(p.name)}</strong><br>${p.weight} ${p.unit} × ${p.reps} · estimated 1RM ${Math.round(p.e1rm*10)/10} ${p.unit}</div>`).join(""):'<p class="muted">No new estimated-1RM PRs this session. Consistent quality work still counts.</p>'}<p class="tiny">Warm-up work was recorded separately and excluded from working-volume and PR calculations.</p>`);renderToday();toast("Session saved")
 }
@@ -2703,12 +3015,12 @@ function renderCycle(){
  if(isDeload())$("#cycleAdvice").textContent="Coach-recommended deload is active: effective working sets are reduced and target effort is RPE 6–7 for this week.";
  else if(c.week>=c.length)$("#cycleAdvice").textContent="Final scheduled week. Deloading is no longer automatic; Coach Review uses accumulated performance and recovery data to recommend it only when supported.";
  else $("#cycleAdvice").textContent=`Current phase: ${phaseName()}. Progress load or reps only when performance and recovery support it.`;
- renderCoachIntelligence();renderProgramPlanOverview();
+ renderCoachIntelligence();renderProgramPlanOverview();renderSavedPlanSummary();
  const v=muscleVolume(),max=Math.max(1,...Object.values(v));$("#volumeBox").innerHTML=Object.entries(v).sort((a,b)=>b[1]-a[1]).map(([m,n])=>`<div class="volumeRow"><strong>${esc(m)}</strong><div class="volbar"><div style="width:${Math.min(100,n/max*100)}%"></div></div><span>${n.toFixed(1)}</span></div>`).join("");
  const ws=(c.weekSummaries||[]);$("#weeklyReview").innerHTML=ws.length?ws.slice().reverse().map(w=>`<div class="historyitem weekly-coach-history"><div class="row"><strong>Week ${w.week}</strong><span class="coach-mini-status">${esc(w.coachStatus||"Review")}</span></div><div class="tiny">${w.sessions} sessions · avg completion ${w.avgCompletion}% · readiness ${w.readiness??"—"}${w.progressing!==undefined?` · ${w.progressing} progressing · ${w.fatigueSignals||0} fatigue signals`:""}</div><div class="weekly-coach-note">${esc(w.note)}</div></div>`).join(""):'<div class="historyitem">No completed week summaries yet.</div>';
 }
 function weekSummary(){
- const c=cycle(),ses=history().filter(s=>s.cycleNumber===c.number&&s.week===c.week),avg=ses.length?Math.round(ses.reduce((a,b)=>a+b.completion,0)/ses.length):0,read=readinessScore(),coach=buildCoachIntelligence();
+ const c=cycle(),pid=c.planId||null,ses=history().filter(s=>s.cycleNumber===c.number&&s.week===c.week&&(!pid||s.planId===pid)),avg=ses.length?Math.round(ses.reduce((a,b)=>a+b.completion,0)/ses.length):0,read=readinessScore(),coach=buildCoachIntelligence();
  let note=coach.note;
  if(!ses.length)note="No completed sessions were saved this week.";
  return{week:c.week,sessions:ses.length,avgCompletion:avg,readiness:read,note,
@@ -3036,10 +3348,10 @@ function saveOnboarding(){
    if(!last||Math.abs(Number(last.weight)-bw)>.001||waist!==last.waist||chest!==last.chest||arm!==last.arm||thigh!==last.thigh)
      state.body.push({date:new Date().toISOString(),weight:bw,waist,chest,arm,thigh,unit:state.profile.unit,measureUnit:measurementUnit,source:"profile"});
  }
- state.cycle={number:1,week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[]};generatePlan(true);save();switchView("today");$("#onboarding").classList.add("hidden");renderAll();toast("Personalized plan created");
+ state.activeSavedPlanId=null;state.cycle={number:nextGlobalCycleNumber(),week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[],planId:null};generatePlan(true);save();switchView("today");$("#onboarding").classList.add("hidden");renderAll();toast("Personalized plan created");
 }
 function exportData(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-6-5-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-7-0-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 
 
@@ -3150,6 +3462,41 @@ document.addEventListener("keydown",e=>{
 });
 
 document.addEventListener("click",e=>{
+ const sheetSavePlan=e.target.closest("#sheetSaveCurrentPlanBtn");if(sheetSavePlan){openSaveCurrentPlan();return}
+ const previewBack=e.target.closest("#previewBackToLibrary");if(previewBack){openPlanLibrary();return}
+ const previewPlan=e.target.closest(".savedPlanPreviewBtn");if(previewPlan){openSavedPlanPreview(previewPlan.dataset.planid);return}
+ const activatePlan=e.target.closest(".savedPlanActivateBtn");if(activatePlan){openSavedPlanActivation(activatePlan.dataset.planid);return}
+ const duplicatePlan=e.target.closest(".savedPlanDuplicateBtn");if(duplicatePlan){
+  const copy=duplicateSavedPlan(duplicatePlan.dataset.planid);if(copy){save();openPlanLibrary();renderSavedPlanSummary();toast(`Duplicated as ${copy.name}`)}return
+ }
+ const renamePlan=e.target.closest(".savedPlanRenameBtn");if(renamePlan){openSavedPlanRename(renamePlan.dataset.planid);return}
+ const deletePlanBtn=e.target.closest(".savedPlanDeleteBtn");if(deletePlanBtn){
+  const entry=savedPlans().find(x=>x.id===deletePlanBtn.dataset.planid);if(!entry)return;
+  if(confirm(`Delete saved plan “${entry.name}”? Your current workout history will not be deleted.`)){deleteSavedPlan(entry.id);save();openPlanLibrary();renderSavedPlanSummary();toast("Saved plan deleted")}return
+ }
+ const updatePlanBtn=e.target.closest(".savedPlanUpdateBtn");if(updatePlanBtn){
+  const entry=savedPlans().find(x=>x.id===updatePlanBtn.dataset.planid);if(!entry)return;
+  if(confirm(`Update “${entry.name}” with the current workout plan and targets?`)){updateSavedPlanFromCurrent(entry.id);save();openPlanLibrary();renderSavedPlanSummary();toast("Saved plan updated")}return
+ }
+ const confirmSaveNew=e.target.closest("#confirmSavePlanAsNew");if(confirmSaveNew){
+  const name=cleanPlanName($("#savedPlanNameInput")?.value);
+  const entry=createSavedPlanFromCurrent(name,{activateIfUnsaved:true,continuable:true});save();closeSheet();renderSavedPlanSummary();toast(`Saved: ${entry.name}`);return
+ }
+ const confirmUpdateActive=e.target.closest("#confirmUpdateActivePlan");if(confirmUpdateActive){
+  const entry=activeSavedPlan();if(!entry)return;
+  const requested=cleanPlanName($("#savedPlanNameInput")?.value||entry.name);renameSavedPlan(entry.id,requested);updateSavedPlanFromCurrent(entry.id);save();closeSheet();renderSavedPlanSummary();toast("Saved plan updated");return
+ }
+ const confirmRename=e.target.closest("#confirmRenameSavedPlan");if(confirmRename){
+  const name=cleanPlanName($("#renameSavedPlanInput")?.value);const entry=renameSavedPlan(confirmRename.dataset.planid,name);
+  if(entry){save();openPlanLibrary();renderSavedPlanSummary();toast("Plan renamed")}return
+ }
+ const confirmActivate=e.target.closest(".confirmActivateSavedPlan");if(confirmActivate){
+  const id=confirmActivate.dataset.planid,mode=confirmActivate.dataset.mode||"new",entry=savedPlans().find(x=>x.id===id);if(!entry)return;
+  pushUndo(`Activated saved plan: ${entry.name}`);
+  preserveCurrentPlanBeforeSwitch();
+  if(applySavedPlanEntry(id,mode)){save();closeSheet();renderAll();switchView("cycle");toast(`${entry.name} is now active · Undo available`)}
+  return
+ }
  const runReliability=e.target.closest("#runReliabilityBtn");if(runReliability){runReliabilitySuite();return}
  const viewReliability=e.target.closest("#viewReliabilityBtn");if(viewReliability&&lastReliabilityResult){openSheet("RELIABILITY","Regression self-test",reliabilityResultHtml(lastReliabilityResult));return}
  const copyReliability=e.target.closest("#copyReliabilityBtn");if(copyReliability&&lastReliabilityResult){copyReliabilityReport();return}
@@ -3215,9 +3562,11 @@ $("#warmBtn").onclick=()=>{openSheet("WARM-UP",plan()[currentDay].title,"<ul cla
 $("#guideBtn").onclick=()=>openSheet("WORKOUT VISUALS",plan()[currentDay].title,workoutVisualGrid()+`<p class="tiny">These visuals are tied to the exact exercise currently in your plan. If an exact visual is unavailable, the app says so instead of showing a different movement.</p>`);
 $("#notesBtn").onclick=()=>{const d=plan()[currentDay];openSheet("SESSION NOTES",d.title,`<textarea id="dayNotes" class="field" rows="6">${esc(d.notes||"")}</textarea><button id="saveDayNotes" class="primary" style="margin-top:10px">Save notes</button>`);setTimeout(()=>$("#saveDayNotes").onclick=()=>{d.notes=$("#dayNotes").value;save();closeSheet();toast("Notes saved")},0)};
 $("#advanceWeekBtn").onclick=advanceWeek;$("#openCoachReviewBtn").onclick=openCoachReview;$("#logBodyBtn").onclick=logBody;
+$("#saveCurrentPlanBtn").onclick=openSaveCurrentPlan;
+$("#openPlanLibraryBtn").onclick=openPlanLibrary;
 $("#undoBtn").onclick=undoLast;
 $("#redoBtn").onclick=redoLast;
-$("#saveRecoveryBtn").onclick=()=>{const o={date:new Date().toISOString(),cycleNumber:cycle().number,week:cycle().week};$$(".recRange").forEach(x=>o[x.dataset.k]=Number(x.value));recoveryEntries().push(o);save();renderRecovery();renderToday();toast("Recovery check-in saved")};
+$("#saveRecoveryBtn").onclick=()=>{const o={date:new Date().toISOString(),planId:cycle().planId||state.activeSavedPlanId||null,cycleNumber:cycle().number,week:cycle().week};$$(".recRange").forEach(x=>o[x.dataset.k]=Number(x.value));recoveryEntries().push(o);save();renderRecovery();renderToday();toast("Recovery check-in saved")};
 $("#editProfileBtn").onclick=()=>showOnboarding(true,1);
 $("#planBuilderBtn").onclick=()=>showOnboarding(true,6);
 $("#changeDaysBtn").onclick=openDayEditor;
@@ -3227,7 +3576,7 @@ $("#applyPlanPreferencesBtn").onclick=applyPlanPersonalization;
 $("#regenBtn").onclick=()=>{if(confirm("Regenerate the exercise plan using your current Plan Builder mode? History and body data stay, but current week logs reset.\n\nYou can undo this afterward.")){pushUndo("Regenerated plan");generatePlan(true);renderAll();toast("Plan regenerated · Undo available")}};
 $("#newCycleBtn").onclick=()=>{if(confirm("Start a fresh training block now? Current plan exercises will be kept and manual target adjustments reset.\n\nYou can undo this afterward.")){pushUndo("Started a new training block");startCycle(profile().cycleLength||6,true);renderAll();toast("New training block started · Undo available")}};
 $("#exportBtn").onclick=exportData;$("#settingsExportBtn").onclick=exportData;
-$("#importInput").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!x.profile||!Array.isArray(x.plan)||!x.cycle)throw new Error();state=x;save();currentDay=0;renderAll();toast("Backup imported")}catch{alert("That file is not a valid Adaptive Workout Coach backup.")}};
+$("#importInput").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!x.profile||!Array.isArray(x.plan)||!x.cycle)throw new Error();state=x;state.savedPlans=Array.isArray(state.savedPlans)?state.savedPlans:[];state.activeSavedPlanId=state.activeSavedPlanId||null;save();currentDay=0;renderAll();toast("Backup imported")}catch{alert("That file is not a valid Adaptive Workout Coach backup.")}};
 $("#resetAllBtn").onclick=()=>{if(confirm("Permanently delete ALL local profile data, plans, workout logs, history, recovery entries and measurements on this device? This cannot be undone from inside the app unless you have an exported backup.")){localStorage.removeItem(KEY);localStorage.removeItem(UNDO_KEY);localStorage.removeItem(REDO_KEY);undoStack=[];redoStack=[];state={};showOnboarding(false)}};
 $("#closeSheet").onclick=closeSheet;
 $("#closeTimer").onclick=()=>{$("#timerSheet").classList.add("hidden")};
@@ -3262,8 +3611,8 @@ window.visualViewport?.addEventListener("resize",syncVisualViewport,{passive:tru
 window.visualViewport?.addEventListener("scroll",syncVisualViewport,{passive:true});
 sessionTicker=setInterval(()=>{if(profile())renderSessionClock()},1000);
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
-loadState();if(repairLegacyEquipmentPersonalization())save();loadUndoStacks();
-if(!profile()){showOnboarding(false)}else{if(!cycle())state.cycle={number:1,week:1,length:profile().cycleLength||6,start:new Date().toISOString(),weekSummaries:[]};repairPlanIfNeeded();renderAll()}
+loadState();state.savedPlans=Array.isArray(state.savedPlans)?state.savedPlans:[];state.activeSavedPlanId=state.activeSavedPlanId||null;if(repairLegacyEquipmentPersonalization())save();loadUndoStacks();
+if(!profile()){showOnboarding(false)}else{if(!cycle())state.cycle={number:nextGlobalCycleNumber(),week:1,length:profile().cycleLength||6,start:new Date().toISOString(),weekSummaries:[],planId:state.activeSavedPlanId||null};repairPlanIfNeeded();renderAll()}
 </script>
 </body>
 </html>
