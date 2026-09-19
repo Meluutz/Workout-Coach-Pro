@@ -1,6 +1,6 @@
-# Adaptive Workout Coach — v7.9.5
+# Adaptive Workout Coach — v7.9.6
 
-GitHub-ready PWA build. Current release: **v7.9.5 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+GitHub-ready PWA build. Current release: **v7.9.6 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
 ## What changed
 - Expanded the core exercise database from 54 to **120 exercises**.
@@ -998,3 +998,10 @@ This is an incremental patch to v7.9.2; it does not change training algorithms, 
 - Captures an immutable compact coaching snapshot when advancing or finishing a week; preserves it independently of training-cycle changes and saved-plan activation. Older sessions with sufficient cycle/week association remain accessible as history-only; unlinked sessions are not attributed to a specific saved plan.
 - The added archive and dismissals are ordinary local app state included in JSON backups. No remote data collection or automatic plan changes.
 - Keep a verified JSON backup before publishing. iPhone Safari/Home Screen/offline acceptance remains a real-device task; do not clear website data.
+
+
+## v7.9.6 — Backup wording and completed-unit notice cleanup
+
+- Settings now says **Export Backup**. Backup reminders, historical confirmation, CSV help, import failure messages, and profile/program confirmation text avoid unexplained file-format terminology. Export and restore are still the same compatible full-data `.json` format. CSV exports remain separate analysis-only files.
+- The historical-unit notice appears only if the customer's workout history has sessions with genuinely unspecified units. Once the correction is completed, the Settings notice disappears; the confirmation audit and original training data stay stored. It returns only if an older backup or new legacy records reintroduce missing units. Existing explicit lb/kg records are never changed by this display update.
+- No workout plan, training history, saved plans, coach recommendations, artwork, or existing customer storage is migrated by this release. Service-worker cache and visible release version are incremented. Check a saved backup file exists before updating; real iPhone Safari testing remains a device acceptance step.

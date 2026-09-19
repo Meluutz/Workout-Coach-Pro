@@ -972,7 +972,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.5 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.6 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1006,7 +1006,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  <div id="restMini" class="rest-mini hidden"><div><div class="label">Current rest</div><strong id="restMiniLabel">—</strong> · <strong id="restMiniTime">0:00</strong></div><div class="rest-mini-actions"><button id="restOpenBtn">Open</button><button id="restSkipBtn">Skip</button></div></div>
 </section>
 <div id="exerciseList"></div>
-<section class="card workout-tools-card"><h3 style="margin-top:0">Workout tools</h3><div class="grid2"><button id="finishBtn" class="primary">Finish session</button><button id="exportBtn">Export backup</button></div></section>
+<section class="card workout-tools-card"><h3 style="margin-top:0">Workout tools</h3><div class="grid2"><button id="finishBtn" class="primary">Finish session</button><button id="exportBtn">Export Backup</button></div></section>
 </section>
 
 <section id="progress" class="view">
@@ -1144,7 +1144,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  <p class="muted">Workout data is stored separately in each browser. Your phone and desktop do not automatically sync.</p>
  <div id="backupHealth" class="backup-health tiny" role="status"></div>
  <div id="historicalUnitsStatus" class="history-unit-status tiny" role="status"></div>
- <div class="grid2"><button id="settingsExportBtn">Export JSON backup</button><label class="import-label">Import backup<input id="importInput" type="file" accept="application/json,.json"></label></div>
+ <div class="grid2"><button id="settingsExportBtn">Export Backup</button><label class="import-label">Import backup<input id="importInput" type="file" accept="application/json,.json"></label></div>
  <div class="grid2" style="margin-top:8px"><label class="import-label">Validate backup only<input id="validateBackupInput" type="file" accept="application/json,.json"></label><button id="openCsvExportBtn">Export CSV data</button></div>
  <div id="backupValidation" class="tiny" role="status"></div>
  <p class="tiny">Backups are local files: exporting starts a download/share action, but the app cannot verify that the file was saved. Import replaces this device's app data only after validation and confirmation.</p>
@@ -1166,7 +1166,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.5</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.6</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -1823,7 +1823,7 @@ function renderBackupHealth(){
  const box=$("#backupHealth");if(!box)return;
  const s=backupReminderStatus();
  const status=s.last?`Last export started: ${new Date(s.last).toLocaleDateString()}`:"No backup export recorded";
- box.innerHTML=`<strong>${s.remind?"Backup reminder":"Backup status"}</strong><br>${esc(status)} · ${s.sessions} completed sessions.<br>${s.remind?"Consider exporting a JSON backup and checking that the file exists in Files or another location.":"Store exported backups somewhere you can retrieve them."}<br><span class="tiny">A started export does not prove the file was saved. Locate and keep the JSON file before relying on it; reminders appear only here.</span>`;
+ box.innerHTML=`<strong>${s.remind?"Backup reminder":"Backup status"}</strong><br>${esc(status)} · ${s.sessions} completed sessions.<br>${s.remind?"Use Export Backup and check that the saved file is in Files or another safe location.":"Store exported backups somewhere you can retrieve them."}<br><span class="tiny">A started export does not prove the file was saved. Locate and keep the backup file before relying on it; reminders appear only here.</span>`;
 }
 function isPlainRecord(x){return x!==null&&typeof x==="object"&&!Array.isArray(x)}
 function recordedWeightUnit(s){return ["kg","lb"].includes(s?.weightUnit)?s.weightUnit:["kg","lb"].includes(s?.unit)?s.unit:null}
@@ -1861,10 +1861,12 @@ function confirmedHistoricalUnitState(data,choice,at){
 }
 function renderHistoricalUnitsStatus(){
  const box=$("#historicalUnitsStatus");if(!box)return;
- const a=historicalUnitAudit(),last=Array.isArray(state.historyUnitConfirmations)?state.historyUnitConfirmations.at(-1):null;
+ const a=historicalUnitAudit();
+ if(!a.missing){box.textContent="";box.hidden=true;return}
+ box.hidden=false;
  const summary=`${a.missing} completed workout session${a.missing===1?"":"s"} without recorded units.`;
- box.innerHTML=`<strong>Historical workout units</strong><br>${esc(summary)} ${a.unrecognized?`<br>${a.unrecognized} record(s) have unrecognized metadata and will not be changed automatically.`:""}${last?`<br>Last confirmed: ${esc(last.sessionsUpdated)} session(s) as ${esc(last.unit)} on ${esc(last.at.slice(0,10))}.`:""}${a.missing?'<br><button id="reviewHistoryUnitsBtn">Review missing units</button>':"<br>There are no eligible sessions to confirm."}`;
- const btn=$("#reviewHistoryUnitsBtn");if(btn)btn.onclick=openHistoricalUnitsEditor;
+ box.innerHTML=`<strong>Historical workout units</strong><br>${esc(summary)} ${a.unrecognized?`<br>${a.unrecognized} record(s) have unrecognized metadata and will not be changed automatically.`:""}<br><button id="reviewHistoryUnitsBtn">Review missing units</button>`;
+ $("#reviewHistoryUnitsBtn").onclick=openHistoricalUnitsEditor;
 }
 function openHistoricalUnitsEditor(){
  const a=historicalUnitAudit();
@@ -1874,8 +1876,8 @@ function openHistoricalUnitsEditor(){
  <p>These ${a.missing} completed sessions did not save their original weight units. If you know that <strong>all</strong> of them used the same unit, you can label those sessions.</p>
  <label><strong>Unit used in every missing-unit session</strong><select id="historyUnitChoice" class="field"><option value="">Choose unit</option><option value="lb" ${choice==="lb"?"selected":""}>Pounds (lb)</option><option value="kg" ${choice==="kg"?"selected":""}>Kilograms (kg)</option></select></label>
  <p class="tiny">Preview: ${a.missing} missing-unit sessions will be labeled with the selected unit. ${a.knownLb} already labeled lb, ${a.knownKg} already labeled kg and ${a.unrecognized} unrecognized records will stay unchanged. No weights are converted. Your plan, current workout entries, cycle, saved plans and body measurements will not change.</p>
- <p class="tiny"><strong>Before continuing:</strong> Go to Settings → Export JSON backup, save it, and independently verify that the JSON file exists in Files or another safe location. The app cannot confirm a download. If you cannot confirm that all missing-unit sessions used the same unit, cancel and leave them unknown.</p>
- <label class="history-unit-check"><input id="historyUnitBackupVerified" type="checkbox"><span>I saved and located a current JSON backup, and I confirm that every missing-unit workout used the selected unit.</span></label>
+ <p class="tiny"><strong>Before continuing:</strong> Go to Settings → Export Backup, save it, and independently verify that the backup file exists in Files or another safe location. The app cannot confirm a download. If you cannot confirm that all missing-unit sessions used the same unit, cancel and leave them unknown.</p>
+ <label class="history-unit-check"><input id="historyUnitBackupVerified" type="checkbox"><span>I saved and located a current backup, and I confirm that every missing-unit workout used the selected unit.</span></label>
  <div class="history-unit-actions"><button id="cancelHistoryUnits">Cancel</button><button id="applyHistoryUnits" class="primary" disabled>Confirm historical units</button></div>
  </div>`);
  const button=$("#applyHistoryUnits"),select=$("#historyUnitChoice"),check=$("#historyUnitBackupVerified");
@@ -1886,7 +1888,7 @@ function openHistoricalUnitsEditor(){
   if(button.disabled||!check.checked||!["kg","lb"].includes(select.value))return;
   const fresh=historicalUnitAudit(),chosen=select.value;
   if(fresh.missing!==a.missing){alert("Workout history changed. Reopen this review to check the latest records.");closeSheet();renderAll();return}
-  if(!confirm(`Confirm ${fresh.missing} historical workout session(s) were recorded in ${chosen}?\n\nThis labels ONLY missing-unit sessions; it does not convert numbers or change existing recorded units. If this is incorrect, restoring your verified JSON backup would replace your current app data. Continue?`))return;
+  if(!confirm(`Confirm ${fresh.missing} historical workout session(s) were recorded in ${chosen}?\n\nThis labels ONLY missing-unit sessions; it does not convert numbers or change existing recorded units. If this is incorrect, restoring your verified backup would replace your current app data. Continue?`))return;
   let updated;
   try{
    updated=confirmedHistoricalUnitState(state,chosen,new Date().toISOString());
@@ -1901,7 +1903,7 @@ function safeCsvNumber(v){if(v===null||v===undefined||String(v).trim()==="")retu
 function validRecordDate(v){return (typeof v==="string"||typeof v==="number")&&Number.isFinite(Date.parse(v))}
 function validateBackupPayload(x){
  const errors=[],warnings=[];
- if(!isPlainRecord(x))return{ok:false,errors:["JSON root must be an object."],warnings};
+ if(!isPlainRecord(x))return{ok:false,errors:["The selected file is not a valid Workout Coach backup."],warnings};
  if(!isPlainRecord(x.profile))errors.push("Profile is missing or malformed.");
  else {
   if(!["kg","lb"].includes(x.profile.unit))warnings.push("Profile weight unit is missing or unfamiliar; check units after import.");
@@ -2041,7 +2043,7 @@ function exportCsvKind(kind){
  toast(`CSV export started · ${data.rows.length} rows`);
 }
 function openCsvExport(){
- openSheet("DATA EXPORT","Export training data as CSV",`<div class="saved-plan-sheet-note">Choose a file to export. CSVs can be opened in spreadsheet software; JSON remains the complete backup and only restore format. Historical set weights may not retain their original units if you changed units in older app versions.</div>
+ openSheet("DATA EXPORT","Export training data as CSV",`<div class="saved-plan-sheet-note">Choose a file to export. CSVs can be opened in spreadsheet software; Use Export Backup for a complete backup that can be restored; these spreadsheets are for analysis only. Historical set weights may not retain their original units if you changed units in older app versions.</div>
  <div class="saved-plan-list">${["sessions","sets","body","recovery"].map(k=>`<button class="csvExportChoice" data-csv="${k}">Export ${k==="sets"?"completed sets":k} CSV</button>`).join("")}</div>`);
 }
 function coachEvidenceData(){
@@ -3013,7 +3015,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.9.5 — Reliability Report",
+  "Adaptive Workout Coach v7.9.6 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -4198,7 +4200,7 @@ function openPersonalProfileEditor(){
  <label>Height format<select id="editPersonalHeightMode" class="field"><option value="metric" ${ht==="metric"?"selected":""}>Centimeters</option><option value="imperial" ${ht==="imperial"?"selected":""}>Feet + inches</option></select></label></div>
  <div id="editPersonalMetric"><label>Height (cm, optional)<input id="editPersonalCm" class="field" type="number" min="100" max="250" step="0.1" value="${height&&ht==="metric"?Math.round(height*10)/10:""}" placeholder="e.g. 178"></label></div>
  <div id="editPersonalImperial" class="inline-fields"><label>Feet<input id="editPersonalFeet" class="field" type="number" min="3" max="8" step="1" value="${height&&ht==="imperial"?feet:""}" placeholder="5"></label><label>Inches<input id="editPersonalInches" class="field" type="number" min="0" max="11.9" step="0.1" value="${height&&ht==="imperial"?inches:""}" placeholder="10"></label></div>
- <p class="tiny">Units are preferences, not conversions. Changing them does not relabel or convert older workout sets, body measurements or target loads. Editing this profile does not relabel old records. To confirm missing historical workout units, use Settings → Backup &amp; transfer after verifying a JSON backup. Use Progress → Log body measurement for a new weigh-in.</p>
+ <p class="tiny">Units are preferences, not conversions. Changing them does not relabel or convert older workout sets, body measurements or target loads. Editing this profile does not relabel old records. Use Progress → Log body measurement for a new weigh-in.</p>
  <div class="personal-profile-actions"><button id="cancelPersonalProfile">Cancel</button><button id="savePersonalProfile" class="primary">Save profile only</button></div>
  </div>`);
  const mode=$("#editPersonalHeightMode"),metric=$("#editPersonalMetric"),imperial=$("#editPersonalImperial");
@@ -4335,7 +4337,7 @@ function saveOnboarding(){
   const changed=trainingConfigFingerprint(nextProfile)!==trainingConfigFingerprint(previous);
   if(!changed){editingProfile=false;$("#onboarding").classList.add("hidden");toast("Training setup unchanged");return}
   if(cycle()?.week>nextProfile.cycleLength)return alert(`Your current cycle is at Week ${cycle().week}. Choose a program length of at least ${cycle().week} weeks, or use Start New Training Cycle separately.`);
-  if(!confirm("Regenerate the current exercise plan with these training-setup changes?\n\nThis clears in-progress workout entries and uncompleted current-cycle logs. Your completed session history, saved plans, body measurements, current cycle number and week stay intact.\n\nExport a JSON backup first if you want a separate recovery copy. Undo is available."))return;
+  if(!confirm("Regenerate the current exercise plan with these training-setup changes?\n\nThis clears in-progress workout entries and uncompleted current-cycle logs. Your completed session history, saved plans, body measurements, current cycle number and week stay intact.\n\nUse Export Backup first if you want a separate recovery copy. Undo is available."))return;
   pushUndo("Regenerated plan after training setup edit");
   if(previous?.equipment!==selectedEquipment){const ps=personalizationSettings();ps.exerciseBias="balanced";ps.exerciseBiasExplicit=false}
   state.profile=nextProfile;
@@ -4358,7 +4360,7 @@ function exportData(){
  try{
   backupMeta().lastExportInitiatedAt=new Date().toISOString();
   const content=JSON.stringify(state,null,2);
-  downloadLocalFile(content,`adaptive-workout-coach-v7-9-5-backup-${calendarToday()}.json`,"application/json");
+  downloadLocalFile(content,`adaptive-workout-coach-v7-9-6-backup-${calendarToday()}.json`,"application/json");
   try{save()}catch(err){console.warn("Export initiated but backup timestamp could not persist",err)}
   renderBackupHealth();toast("Backup export started · verify the file in Files");
  }catch(err){backupMeta().lastExportInitiatedAt=old;renderBackupHealth();alert("Backup export could not start. Your stored workout data has not been replaced: "+(err.message||err))}
@@ -4646,7 +4648,7 @@ function commitValidatedBackup(restored){
    console.error("Import rollback could not restore previous storage",rollbackError);
   }
   try{renderAll()}catch(renderError){console.error("Could not redraw previous data",renderError)}
-  if(!restoredStorage)throw new Error("Import display failed and restoring previous device storage also failed. Do not enter more data; preserve any existing JSON backup. "+(err.message||err));
+  if(!restoredStorage)throw new Error("Import display failed and restoring previous device storage also failed. Do not enter more data; preserve any existing backup file. "+(err.message||err));
   if(!persisted)throw new Error("Import was not saved; previous data was preserved: "+(err.message||err));
   throw new Error("Import cancelled and previous data restored because the imported data could not be displayed: "+(err.message||err));
  }
@@ -4664,7 +4666,7 @@ $("#importInput").onchange=async e=>{
   // Keep original storage, live state and Undo intact until rendering succeeds.
   commitValidatedBackup(restored);
   toast("Validated backup imported");
- }catch(err){reportBackupValidation({ok:false,errors:[err.message||"Invalid JSON"],warnings:[]},"Import");alert("Backup import failed: "+(err.message||"Invalid backup."))}
+ }catch(err){reportBackupValidation({ok:false,errors:[err.message||"Invalid backup file"],warnings:[]},"Import");alert("Backup import failed: "+(err.message||"Invalid backup."))}
 };
 $("#resetAllBtn").onclick=()=>{if(confirm("Permanently delete ALL local profile data, plans, workout logs, history, recovery entries and measurements on this device? This cannot be undone from inside the app unless you have an exported backup.")){localStorage.removeItem(KEY);localStorage.removeItem(UNDO_KEY);localStorage.removeItem(REDO_KEY);undoStack=[];redoStack=[];state={};showOnboarding(false)}};
 $("#closeSheet").onclick=closeSheet;
