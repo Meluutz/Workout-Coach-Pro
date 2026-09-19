@@ -831,6 +831,21 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 
 
+
+/* v7.9.5 weekly coach visibility and historic week inspection */
+.coach-week-dismissed{padding:12px;margin:10px 0;border:1px solid var(--line);border-radius:12px;background:var(--soft);font-size:12px;line-height:1.45}
+.coach-week-dismissed button{margin-top:9px;min-height:44px;width:100%}
+.week-review-row{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.week-review-row>div{min-width:0;flex:1}
+.week-review-row button{flex:0 0 auto;min-width:62px;min-height:44px;padding:9px 12px}
+.week-review-meta{font-size:11px;color:var(--muted);margin-top:4px;overflow-wrap:anywhere}
+.week-view-session{padding:10px;margin:8px 0;border:1px solid var(--line);border-radius:12px;overflow-wrap:anywhere}
+.week-view-session .tiny{margin-top:5px}
+.week-view-exercise{margin-top:9px;font-size:12px}.week-view-exercise summary{font-weight:750;cursor:pointer;min-height:44px;display:flex;align-items:center}.week-view-exercise ol{padding-left:24px;margin:4px 0 8px}.week-view-exercise li{margin:5px 0;overflow-wrap:anywhere}
+.coach-review-actions{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.coach-review-actions #dismissWeekCoach{grid-column:1/-1;white-space:normal}
+@media(max-width:360px){.week-review-row{gap:6px}.week-review-row button{min-width:58px;padding:8px}}
+
 /* v7.8.2 definitive mobile onboarding footer */
 @media(max-width:760px){
  .onboard-actions{
@@ -957,7 +972,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.4 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.5 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1151,7 +1166,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.4</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.5</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -1345,6 +1360,8 @@ function structuralSnapshot(label){
       cycle:state.cycle||null,
       weekLogs:state.weekLogs||{},
       coaching:state.coaching||{},
+      weekReviewArchive:state.weekReviewArchive||[],
+      weekRecommendationDismissals:state.weekRecommendationDismissals||{},
       savedPlans:state.savedPlans||[],
       activeSavedPlanId:state.activeSavedPlanId||null
     }))
@@ -1364,6 +1381,8 @@ function applySnapshot(snap){
   state.cycle=snap.data.cycle;
   state.weekLogs=snap.data.weekLogs;
   state.coaching=snap.data.coaching||{};
+  if(Object.prototype.hasOwnProperty.call(snap.data,"weekReviewArchive"))state.weekReviewArchive=snap.data.weekReviewArchive||[];
+  if(Object.prototype.hasOwnProperty.call(snap.data,"weekRecommendationDismissals"))state.weekRecommendationDismissals=snap.data.weekRecommendationDismissals||{};
   if(Object.prototype.hasOwnProperty.call(snap.data,"savedPlans"))state.savedPlans=snap.data.savedPlans||[];
   if(Object.prototype.hasOwnProperty.call(snap.data,"activeSavedPlanId"))state.activeSavedPlanId=snap.data.activeSavedPlanId||null;
   currentDay=Math.min(Number(snap.currentDay)||0,Math.max(0,(state.plan?.length||1)-1));
@@ -1512,6 +1531,7 @@ function deleteSavedPlan(id){
 function nextGlobalCycleNumber(){
  const nums=[Number(cycle()?.number)||0];
  history().forEach(s=>nums.push(Number(s.cycleNumber)||0));
+ (Array.isArray(state.weekReviewArchive)?state.weekReviewArchive:[]).forEach(w=>nums.push(Number(w?.cycleNumber)||0));
  savedPlans().forEach(p=>{if(p.cycle)nums.push(Number(p.cycle.number)||0)});
  return Math.max(0,...nums)+1;
 }
@@ -2993,7 +3013,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.9.4 — Reliability Report",
+  "Adaptive Workout Coach v7.9.5 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -3293,6 +3313,26 @@ function startCycle(length=profile()?.cycleLength||6,keepExercises=true){
  save();
 }
 function coachingState(){state.coaching??={};state.coaching.applied??={};state.coaching.planRevision=Number(state.coaching.planRevision)||0;return state.coaching}
+function weekIdentity(number,week,planId=null){
+ return JSON.stringify([planId||null,Number(number),Number(week)]);
+}
+function activeWeekIdentity(){const c=cycle();return c?weekIdentity(c.number,c.week,c.planId||null):""}
+function isCurrentWeekDismissed(){return !!state.weekRecommendationDismissals?.[activeWeekIdentity()]}
+function dismissCurrentWeekRecommendations(){
+ const key=activeWeekIdentity();if(!key||isCurrentWeekDismissed())return false;
+ if(!confirm("Dismiss this week's coaching recommendations?\n\nThis only hides them until you choose Show again. It does not delete workout history, supporting evidence, or applied plan changes. The next week is unaffected."))return false;
+ const before=state.weekRecommendationDismissals;
+ state.weekRecommendationDismissals={...(before||{}),[key]:new Date().toISOString()};
+ try{save()}catch(err){state.weekRecommendationDismissals=before;alert("Could not save your choice; recommendations are still visible.");return false}
+ renderCycle();openCoachReview();toast("Recommendations hidden for this week · Show is available");return true;
+}
+function showCurrentWeekRecommendations(){
+ const key=activeWeekIdentity();if(!state.weekRecommendationDismissals?.[key])return;
+ const before=state.weekRecommendationDismissals;
+ state.weekRecommendationDismissals={...before};delete state.weekRecommendationDismissals[key];
+ try{save()}catch(err){state.weekRecommendationDismissals=before;alert("Could not save this change.");return}
+ renderCycle();openCoachReview();toast("This week's recommendations shown");
+}
 function isDeload(){const cs=coachingState(),c=cycle();return !!(cs.deloadActive&&c&&cs.deloadCycle===c.number&&cs.deloadWeek===c.week)}
 function phaseName(){if(isDeload())return"Deload";const w=cycle()?.week||1,l=cycle()?.length||6;if(w===1)return"Base";if(w>=l-1)return"Peak build";return"Build"}
 
@@ -3544,6 +3584,7 @@ function renderCoachIntelligence(){
    <div><strong>${x.stalled}</strong><span>plateau watch</span></div>
    <div><strong>${x.fatigue.signalCount}</strong><span>fatigue signals</span></div>
   </div>${priority}<p class="tiny coach-intel-note">${esc(x.note)}</p>`;
+ if(btn&&isCurrentWeekDismissed()){btn.textContent="View dismissed recommendations";return}
  if(btn){btn.textContent=x.actionable.length?`Review ${x.actionable.length} plan change${x.actionable.length===1?"":"s"}`:"Review recommendations"}
 }
 function coachToneLabel(rec){
@@ -3554,7 +3595,7 @@ function coachToneLabel(rec){
  return"Maintain";
 }
 function openCoachReview(){
- const x=buildCoachIntelligence(),cs=coachingState(),priority=x.priorities&&x.topPriority?`<div class="coach-review-priority">Priority mode remains locked to your requested allocation; coaching changes do not rebalance it toward a generic program.</div>`:"";
+ const x=buildCoachIntelligence(),cs=coachingState(),dismissed=isCurrentWeekDismissed(),priority=x.priorities&&x.topPriority?`<div class="coach-review-priority">Priority mode remains locked to your requested allocation; coaching changes do not rebalance it toward a generic program.</div>`:"";
  const items=x.recommendations.slice(0,12).map(rec=>{
    const applied=!!cs.applied?.[rec.id],action=rec.action&&!applied;
    return `<div class="coach-review-item ${rec.tone}">
@@ -3564,7 +3605,7 @@ function openCoachReview(){
     ${action?`<button class="applyCoachRec primary" data-recid="${esc(rec.id)}">Apply this change</button>`:applied?`<div class="coach-applied">✓ Applied</div>`:""}
    </div>`;
  }).join("");
- const allBtn=x.actionable.length?`<button id="applyAllCoachRec" class="primary">Apply all ${x.actionable.length} plan change${x.actionable.length===1?"":"s"}</button>`:"";
+ const allBtn=!dismissed&&x.actionable.length?`<button id="applyAllCoachRec" class="primary">Apply all ${x.actionable.length} plan change${x.actionable.length===1?"":"s"}</button>`:"";
  openSheet("LONG-TERM COACH",`Week ${cycle().week} review`,
   `<div class="coach-review-shell">
     <div class="coach-review-hero"><span class="coach-status-badge ${x.tone}">${esc(x.status)}</span><h3>${esc(x.note)}</h3>
@@ -3572,8 +3613,8 @@ function openCoachReview(){
     </div>
     ${priority}
     <div class="coach-review-explain">Recommendations are based on completed working sets, reps, load, logged RPE, completion, and recovery check-ins. Nothing changes automatically.</div>
-    <div class="coach-review-list">${items||'<div class="historyitem">Complete more sessions to build coaching recommendations.</div>'}</div>
-    <div class="coach-review-actions">${allBtn}<button id="keepCoachPlan">Keep current plan</button></div>
+    ${dismissed?`<div class="coach-week-dismissed" role="status"><strong>Dismissed for Week ${cycle().week}.</strong><br>Recommendations are hidden, not deleted. Coaching evidence, exercise history and any applied changes remain available.<button id="showWeekCoach">Show this week's recommendations</button></div>`:`<div class="coach-review-list">${items||'<div class="historyitem">Complete more sessions to build coaching recommendations.</div>'}</div>
+    <div class="coach-review-actions">${allBtn}<button id="keepCoachPlan">Keep current plan</button><button id="dismissWeekCoach">Dismiss This Week</button></div>`}
    </div>`);
  $("#sheet").classList.add("coach-review-sheet");
 }
@@ -3767,6 +3808,90 @@ function renderProgramPlanOverview(){
   </div>
  </div>`).join("");
 }
+// Completed-week archive is append-only when a week closes; older versions have
+// summary/history fallback but do not acquire fabricated historic recommendations.
+function snapshotWeekReview(summary,intel){
+ const c=cycle(),pid=c.planId||null;
+ return {cycleNumber:c.number,planId:pid,week:c.week,closedAt:new Date().toISOString(),
+  summary:{...summary},coachSnapshot:{status:intel.status,note:intel.note,signals:[...intel.fatigue.signals],
+   recommendations:intel.recommendations.slice(0,12).map(r=>({title:r.title,text:r.text,tone:r.tone,
+    reasons:(r.reasons||[]).slice(0,6),applied:!!coachingState().applied?.[r.id]}))}};
+}
+function archiveWeekReview(summary,intel){
+ const c=cycle(),record=snapshotWeekReview(summary,intel),key=weekIdentity(c.number,c.week,c.planId||null);
+ state.weekReviewArchive=Array.isArray(state.weekReviewArchive)?state.weekReviewArchive:[];
+ const i=state.weekReviewArchive.findIndex(x=>x&&weekIdentity(x.cycleNumber,x.week,x.planId)===key);
+ if(i<0)state.weekReviewArchive.push(record);else state.weekReviewArchive[i]=record;
+}
+function completedWeekEntries(){
+ const entries=new Map(),c=cycle(),active=activeWeekIdentity();
+ const add=(number,week,pid,info={})=>{
+  if(!Number.isInteger(Number(number))||Number(number)<1||!Number.isInteger(Number(week))||Number(week)<1)return;
+  const key=weekIdentity(number,week,pid);
+  if(key===active)return;
+  entries.set(key,{...(entries.get(key)||{}),cycleNumber:Number(number),week:Number(week),planId:pid||null,...info,key});
+ };
+ for(const a of Array.isArray(state.weekReviewArchive)?state.weekReviewArchive:[]){
+  if(a&&a.summary)add(a.cycleNumber,a.week,a.planId,{summary:a.summary,coachSnapshot:a.coachSnapshot||null,closedAt:a.closedAt||null});
+ }
+ // Historical summary-only records remain viewable even without a new archive snapshot.
+ for(const sp of savedPlans()){
+  const sc=sp?.cycle;
+  if(!sc||!Array.isArray(sc.weekSummaries))continue;
+  for(const w of sc.weekSummaries)if(w)add(sc.number,w.week,sc.planId||null,{summary:w});
+ }
+ for(const w of c?.weekSummaries||[])if(w)add(c.number,w.week,c.planId||null,{summary:w});
+ for(const sess of history()){
+  if(!sess||!Number.isInteger(Number(sess.cycleNumber))||Number(sess.cycleNumber)<1||!Number.isInteger(Number(sess.week))||Number(sess.week)<1)continue;
+  const key=weekIdentity(sess.cycleNumber,sess.week,sess.planId||null);
+  if(key!==active&&!entries.has(key))add(sess.cycleNumber,sess.week,sess.planId||null,{});
+ }
+ return [...entries.values()].sort((a,b)=>b.cycleNumber-a.cycleNumber||b.week-a.week||String(a.planId).localeCompare(String(b.planId)));
+}
+function sessionsForCompletedWeek(entry){
+ return history().filter(s=>s&&Number(s.cycleNumber)===entry.cycleNumber&&Number(s.week)===entry.week&&(s.planId||null)===entry.planId)
+  .slice().sort((a,b)=>String(a.date||"").localeCompare(String(b.date||"")));
+}
+function historicalWeekLabel(entry){
+ const named=savedPlans().find(p=>p.id===entry.planId);
+ return named?named.name:entry.planId?"Saved plan (no longer in library)":"Unlinked / legacy plan";
+}
+function renderCompletedWeekHistory(){
+ const box=$("#weeklyReview");if(!box)return;
+ const rows=completedWeekEntries();
+ box.innerHTML=rows.length?`<p class="tiny">Read-only history. Select View for saved workout sessions and any coaching snapshot captured when that week ended. Earlier versions may have only a summary.</p>`+rows.map(w=>{
+  const ses=sessionsForCompletedWeek(w),summary=w.summary;
+  return `<div class="historyitem weekly-coach-history"><div class="week-review-row"><div><strong>Week ${w.week} · Cycle ${w.cycleNumber}</strong><div class="week-review-meta">${esc(historicalWeekLabel(w))} · ${summary?Number(summary.sessions)||0:ses.length} saved session${(summary?Number(summary.sessions)||0:ses.length)===1?"":"s"}${summary?` · ${esc(summary.coachStatus||"Summary")}`:" · history only"}</div></div><button class="viewCompletedWeek" data-weekkey="${esc(w.key)}" aria-label="View Cycle ${w.cycleNumber}, Week ${w.week}">View</button></div>${summary?`<div class="weekly-coach-note">${esc(summary.note||"")}</div>`:""}</div>`;
+ }).join(""):'<div class="historyitem">No completed weeks recorded yet. A week appears here after advancing; sessions from older cycles are also shown when identifiable.</div>';
+}
+function viewCompletedWeek(key){
+ const entry=completedWeekEntries().find(x=>x.key===key);if(!entry)return;
+ const sessions=sessionsForCompletedWeek(entry),summary=entry.summary||null,snap=entry.coachSnapshot;
+ const sessionRows=sessions.map(s=>{
+  const sets=(Array.isArray(s.exercises)?s.exercises:[]).reduce((n,e)=>n+(Array.isArray(e?.sets)?e.sets.filter(z=>z&&z.done===true).length:0),0);
+  const validUnit=s.weightUnit==="lb"||s.weightUnit==="kg"?s.weightUnit:"unit unknown";
+  const measured=Number(s.volume),volume=s.volume!==null&&s.volume!==undefined&&s.volume!==""&&Number.isFinite(measured)&&measured>=0?` · recorded volume ${esc(String(measured))} ${esc(validUnit)}·reps`:"";
+  const exercises=(Array.isArray(s.exercises)?s.exercises:[]).map(e=>{
+   const done=(Array.isArray(e?.sets)?e.sets:[]).filter(z=>z&&z.done===true);
+   if(!done.length)return"";
+   const name=EXMAP[e.id]?.name||e.id||"Older exercise";
+   const details=done.map(z=>{
+    const load=z.weight!==null&&z.weight!==undefined&&z.weight!==""&&Number.isFinite(Number(z.weight))?`${esc(String(z.weight))} ${esc(validUnit)}`:"load not recorded";
+    const reps=z.reps!==null&&z.reps!==undefined&&z.reps!==""&&Number.isFinite(Number(z.reps))?`${esc(String(z.reps))} reps`:"reps not recorded";
+    const rpe=z.rpe!==null&&z.rpe!==undefined&&z.rpe!==""&&Number.isFinite(Number(z.rpe))&&Number(z.rpe)>0?` · RPE ${esc(String(z.rpe))}`:"";
+    return `<li>${load} × ${reps}${rpe}</li>`;
+   }).join("");
+   return `<details class="week-view-exercise"><summary>${esc(name)} · ${done.length} completed set${done.length===1?"":"s"}</summary><ol>${details}</ol></details>`;
+  }).join("");
+  return `<div class="week-view-session"><strong>${esc(s.title||"Completed workout")}</strong><div class="tiny">${esc(s.date&&Number.isFinite(Date.parse(s.date))?new Date(s.date).toLocaleString():"Date unavailable")} · ${sets} completed sets · completion ${s.completion!==null&&s.completion!==undefined&&s.completion!==""&&Number.isFinite(Number(s.completion))?esc(String(s.completion))+"%":"unknown"}${Number.isFinite(Number(s.durationSec))&&Number(s.durationSec)>0?` · ${esc(fmtLong(Number(s.durationSec)))}`:""}${volume}</div>${exercises}</div>`;
+ }).join("");
+ const coach=snap?`<h4>Coaching review captured when this week ended</h4><p class="tiny"><strong>${esc(snap.status||"Recorded status")}</strong> · ${esc(snap.note||"")}</p>${(Array.isArray(snap.signals)?snap.signals:[]).map(signal=>`<p class="tiny">• ${esc(signal)}</p>`).join("")}${(Array.isArray(snap.recommendations)?snap.recommendations:[]).map(r=>`<div class="week-view-session"><strong>${esc(r.title||"Recommendation")}</strong>${r.applied?' <span class="tiny">· applied when captured</span>':""}<p class="tiny">${esc(r.text||"")}</p><details><summary>Why this recommendation?</summary>${(Array.isArray(r.reasons)?r.reasons:[]).map(reason=>`<p class="tiny">${esc(reason)}</p>`).join("")}</details></div>`).join("")||'<p class="tiny">No recommendations recorded.</p>'}`:'<p class="tiny">A coaching snapshot was not saved for this older week. The app will not reconstruct old advice using today’s data.</p>';
+ openSheet("COMPLETED WEEK",`Cycle ${entry.cycleNumber} · Week ${entry.week}`,
+ `<p class="tiny">${esc(historicalWeekLabel(entry))} · Read-only history. Viewing will not change the current plan or training week.</p>
+ <div class="saved-plan-sheet-note"><strong>${summary?Number(summary.sessions)||0:sessions.length} sessions in week summary</strong>${summary?` · average completion ${esc(String(summary.avgCompletion??"unknown"))}% · readiness ${esc(String(summary.readiness??"unknown"))}<br>${esc(summary.note||"")}`:" · session history only"}</div>
+ <h4>Completed sessions (${sessions.length})</h4>${sessionRows||'<p class="tiny">No saved sessions for this week.</p>'}
+ ${coach}`);
+}
 function renderCycle(){
  const c=cycle();$("#cycleHeading").textContent=`Program ${c.number} · Week ${c.week} of ${c.length}`;$("#cycleProgress").style.width=`${Math.round(c.week/c.length*100)}%`;
  $("#advanceWeekBtn").textContent=c.week>=c.length?"Finish program":"Advance week";
@@ -3776,7 +3901,7 @@ function renderCycle(){
  else $("#cycleAdvice").textContent=`Current phase: ${phaseName()}. Progress load or reps only when performance and recovery support it.`;
  renderCoachIntelligence();renderProgramPlanOverview();renderSavedPlanSummary();renderScheduledPlanReminder();
  const v=muscleVolume(),max=Math.max(1,...Object.values(v));$("#volumeBox").innerHTML=Object.entries(v).sort((a,b)=>b[1]-a[1]).map(([m,n])=>`<div class="volumeRow"><strong>${esc(m)}</strong><div class="volbar"><div style="width:${Math.min(100,n/max*100)}%"></div></div><span>${n.toFixed(1)}</span></div>`).join("");
- const ws=(c.weekSummaries||[]);$("#weeklyReview").innerHTML=ws.length?ws.slice().reverse().map(w=>`<div class="historyitem weekly-coach-history"><div class="row"><strong>Week ${w.week}</strong><span class="coach-mini-status">${esc(w.coachStatus||"Review")}</span></div><div class="tiny">${w.sessions} sessions · avg completion ${w.avgCompletion}% · readiness ${w.readiness??"—"}${w.progressing!==undefined?` · ${w.progressing} progressing · ${w.fatigueSignals||0} fatigue signals`:""}</div><div class="weekly-coach-note">${esc(w.note)}</div></div>`).join(""):'<div class="historyitem">No completed week summaries yet.</div>';
+ renderCompletedWeekHistory();
 }
 function weekSummary(){
  const c=cycle(),pid=c.planId||null,ses=history().filter(s=>s.cycleNumber===c.number&&s.week===c.week&&(!pid||s.planId===pid)),avg=ses.length?Math.round(ses.reduce((a,b)=>a+b.completion,0)/ses.length):0,read=readinessScore(),coach=buildCoachIntelligence();
@@ -3791,12 +3916,14 @@ function advanceWeek(){
  if(c.week<c.length){
    if(!confirm(`Advance from Week ${c.week} to Week ${c.week+1}?\n\nYou can undo this afterward.`))return;
    pushUndo(`Advanced from Week ${c.week}`);
-   c.weekSummaries??=[];c.weekSummaries.push(weekSummary());
+   const summary=weekSummary();archiveWeekReview(summary,buildCoachIntelligence());
+   c.weekSummaries??=[];c.weekSummaries.push(summary);
    c.week++;currentDay=0;const cs=coachingState();cs.deloadActive=false;cs.deloadCycle=null;cs.deloadWeek=null;save();renderAll();toast(`Week ${c.week} started · Coach updated · Undo available`);
  }else{
    if(confirm("Finish this training block and start the next block? Exercise choices will be kept, while manual target adjustments reset.\n\nYou can undo this afterward.")){
      pushUndo("Started a new training block");
-     c.weekSummaries??=[];c.weekSummaries.push(weekSummary());
+     const summary=weekSummary();archiveWeekReview(summary,buildCoachIntelligence());
+     c.weekSummaries??=[];c.weekSummaries.push(summary);
      startCycle(c.length,true);renderAll();toast("New training block started · Undo available")
    }
  }
@@ -4231,7 +4358,7 @@ function exportData(){
  try{
   backupMeta().lastExportInitiatedAt=new Date().toISOString();
   const content=JSON.stringify(state,null,2);
-  downloadLocalFile(content,`adaptive-workout-coach-v7-9-4-backup-${calendarToday()}.json`,"application/json");
+  downloadLocalFile(content,`adaptive-workout-coach-v7-9-5-backup-${calendarToday()}.json`,"application/json");
   try{save()}catch(err){console.warn("Export initiated but backup timestamp could not persist",err)}
   renderBackupHealth();toast("Backup export started · verify the file in Files");
  }catch(err){backupMeta().lastExportInitiatedAt=old;renderBackupHealth();alert("Backup export could not start. Your stored workout data has not been replaced: "+(err.message||err))}
@@ -4407,12 +4534,16 @@ document.addEventListener("click",e=>{
  const runReliability=e.target.closest("#runReliabilityBtn");if(runReliability){runReliabilitySuite();return}
  const viewReliability=e.target.closest("#viewReliabilityBtn");if(viewReliability&&lastReliabilityResult){openSheet("RELIABILITY","Regression self-test",reliabilityResultHtml(lastReliabilityResult));return}
  const copyReliability=e.target.closest("#copyReliabilityBtn");if(copyReliability&&lastReliabilityResult){copyReliabilityReport();return}
+ const viewWeek=e.target.closest(".viewCompletedWeek");if(viewWeek){viewCompletedWeek(viewWeek.dataset.weekkey);return}
+ const dismissWeek=e.target.closest("#dismissWeekCoach");if(dismissWeek){dismissCurrentWeekRecommendations();return}
+ const showWeek=e.target.closest("#showWeekCoach");if(showWeek){showCurrentWeekRecommendations();return}
  const rangeBtn=e.target.closest("#analyticsRangeControls button");if(rangeBtn){analyticsRange=rangeBtn.dataset.range||"8w";analyticsExerciseId=null;renderProgress();return}
  const customMove=e.target.closest(".custom-order-move");if(customMove){moveCustomExercise(customMove.dataset.orderId,Number(customMove.dataset.dir));return}
  const v=e.target.closest(".vtab");if(v)return switchView(v.dataset.view);
  const c=e.target.closest("[data-check]");if(c){const[s,j]=c.dataset.check.split(":").map(Number),it=plan()[currentDay].items[s],t=effectiveTarget(it),set=exLog(currentDay,s,t.sets).sets[j],was=set.done;set.done=!set.done;if(!was&&set.done){if(executionSettings().autoSession&&!sessionRuntime().running&&!sessionElapsed())startSession(true);if(executionSettings().autoRest)startRestFor(s,it.rest,`${EXMAP[it.id].name} · rest`,true)}save();renderToday();if(!was&&set.done&&j+1<t.sets)setTimeout(()=>document.querySelector(`input[data-slot="${s}"][data-set="${j+1}"][data-f="weight"]`)?.focus(),0);return}
 
  const applyCoach=e.target.closest(".applyCoachRec");if(applyCoach){
+   if(isCurrentWeekDismissed())return;
    const intel=buildCoachIntelligence(),rec=intel.recommendations.find(r=>r.id===applyCoach.dataset.recid);
    if(!rec?.action)return;
    pushUndo(`Applied coach recommendation: ${rec.title}`);
@@ -4420,6 +4551,7 @@ document.addEventListener("click",e=>{
    return
  }
  const applyAllCoach=e.target.closest("#applyAllCoachRec");if(applyAllCoach){
+   if(isCurrentWeekDismissed())return;
    const intel=buildCoachIntelligence(),changes=intel.actionable;
    if(!changes.length)return;
    if(!confirm(`Apply ${changes.length} coach-recommended plan change${changes.length===1?"":"s"}?\n\nNothing is changed automatically, and you can undo this afterward.`))return;

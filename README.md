@@ -1,6 +1,6 @@
-# Adaptive Workout Coach — v7.9.4
+# Adaptive Workout Coach — v7.9.5
 
-GitHub-ready PWA build. Current release: **v7.9.4 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+GitHub-ready PWA build. Current release: **v7.9.5 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
 ## What changed
 - Expanded the core exercise database from 54 to **120 exercises**.
@@ -990,3 +990,11 @@ This is an incremental patch to v7.9.2; it does not change training algorithms, 
 - Progression advice identifies exactly which measured fields are missing (load, RPE, or both), and the workout suggestion no longer proposes increasing external load if a top-range session lacks actual load or measured RPE. Programmed target RPE is not treated as a recorded value.
 - The always-available explanation disclosure is relabeled "Why this recommendation?"; it is not a warning or a historical-unit reminder.
 - Profile, active program, saved plans, history, exercise artwork, and existing historical-unit confirmations are not modified by this release. Keep a verified JSON backup before upgrading. Real-device Safari acceptance remains required.
+
+## v7.9.5 — Weekly coaching review and read-only completed-week history
+- Clarifies the difference: Review recommendations is for optional manual plan decisions; Inspect coaching evidence explains the input and reasoning.
+- Adds a confirmable **Dismiss This Week** control in the current week's review, with **Show this week's recommendations** to restore visibility. Dismissal never deletes recommendations, saved history, evidence or applied plan changes. Other weeks are unaffected.
+- Adds a **View** button on completed-week rows under Program → Weekly review. Displays that week's saved workout sessions (including expandable completed sets) and any coaching summary captured at the time, read-only. The app does not manufacture retrospective advice when an older release did not save a snapshot.
+- Captures an immutable compact coaching snapshot when advancing or finishing a week; preserves it independently of training-cycle changes and saved-plan activation. Older sessions with sufficient cycle/week association remain accessible as history-only; unlinked sessions are not attributed to a specific saved plan.
+- The added archive and dismissals are ordinary local app state included in JSON backups. No remote data collection or automatic plan changes.
+- Keep a verified JSON backup before publishing. iPhone Safari/Home Screen/offline acceptance remains a real-device task; do not clear website data.
