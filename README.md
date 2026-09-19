@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.9.6
+# Adaptive Workout Coach — v7.9.7
 
 GitHub-ready PWA build. Current release: **v7.9.6 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
@@ -1005,3 +1005,10 @@ This is an incremental patch to v7.9.2; it does not change training algorithms, 
 - Settings now says **Export Backup**. Backup reminders, historical confirmation, CSV help, import failure messages, and profile/program confirmation text avoid unexplained file-format terminology. Export and restore are still the same compatible full-data `.json` format. CSV exports remain separate analysis-only files.
 - The historical-unit notice appears only if the customer's workout history has sessions with genuinely unspecified units. Once the correction is completed, the Settings notice disappears; the confirmation audit and original training data stay stored. It returns only if an older backup or new legacy records reintroduce missing units. Existing explicit lb/kg records are never changed by this display update.
 - No workout plan, training history, saved plans, coach recommendations, artwork, or existing customer storage is migrated by this release. Service-worker cache and visible release version are incremented. Check a saved backup file exists before updating; real iPhone Safari testing remains a device acceptance step.
+
+
+## v7.9.7
+- Weekly review polish update.
+- Completed-week cards now use a clearer "Week # Session(s)" heading while keeping the cycle number in the metadata line.
+- Completed workout exercise rows now show a visible chevron so customers can see that each exercise can be expanded.
+- No data model changes; preserves workout history, saved plans, and prior coaching snapshots.
