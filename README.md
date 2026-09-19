@@ -1,6 +1,6 @@
-# Adaptive Workout Coach — v7.6.1
+# Adaptive Workout Coach — v7.9.1
 
-GitHub-ready PWA build.
+GitHub-ready PWA build. Current release: **v7.9.1 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
 ## What changed
 - Expanded the core exercise database from 54 to **120 exercises**.
@@ -29,7 +29,7 @@ Main files:
 - `icon-512.png`
 - `assets/exercises/`
 
-If an older version still appears after deployment, open the site once in a private/incognito window or clear the old site's service worker/cache.
+If an older version still appears after deployment, wait for GitHub Pages and reopen/reload the installed app. Do not clear Safari website data or remove the Home Screen app to force an update: those actions may delete local workout records. First save and independently verify a full JSON backup.
 
 ## Privacy
 Workout, recovery, profile, and body data remain stored locally in the browser using localStorage. This build adds no account system, analytics, or cloud sync.
@@ -950,6 +950,14 @@ To deploy: extract this archive over the repository root; commit and push with G
 
 ### Release verification and device check
 
-This package is a production-clean v7.9.0 update. Automated Chromium checks verified new-feature controls, JSON import safeguards and a v7.8.2-format import, preserved saved-plan data, CSV download content, 320–390 CSS-pixel layouts, and the existing on-device reliability suite. It does **not** constitute a real iPhone Safari / Home Screen acceptance test, verification of your own historical backup, or proof the download reached your iPhone Files. A network-restricted test environment also prevented a live service-worker offline navigation test; the service-worker JavaScript passed syntax checking.
+The v7.9.0 package was tested in Chromium before this v7.9.1 profile-edit update. Those earlier tests verified new-feature controls, JSON import safeguards and a v7.8.2-format import, preserved saved-plan data, CSV download content, 320–390 CSS-pixel layouts, and the existing on-device reliability suite. It does **not** constitute a real iPhone Safari / Home Screen acceptance test, verification of your own historical backup, or proof the download reached your iPhone Files. A network-restricted test environment also prevented a live service-worker offline navigation test; the service-worker JavaScript passed syntax checking.
 
-**Before updating:** Use v7.8.2 Settings → Export JSON backup and independently locate the file in Files or another safe place. Keep the old v7.8.2 ZIP. Replace only app files in the GitHub repository root; never delete the `.git` directory or clear iPhone Safari website data / Home Screen app data. Once published, check your real iPhone: plan library, workout history, footer, app refresh and offline behaviour. CSV exports are for analysis only; restore requires the full JSON backup.
+**Before updating:** Use your currently installed version’s Settings → Export JSON backup and independently locate the file in Files or another safe place. Keep the old v7.8.2 ZIP. Replace only app files in the GitHub repository root; never delete the `.git` directory or clear iPhone Safari website data / Home Screen app data. Once published, check your real iPhone: plan library, workout history, footer, app refresh and offline behaviour. CSV exports are for analysis only; restore requires the full JSON backup.
+
+
+## v7.9.1 — Safe profile editing (focused correction)
+
+- Settings → Edit profile now opens a concise personal-details editor instead of restarting six-step onboarding. Name, age, sex, preferred weight units and height can be updated or cancelled without touching the current exercise plan, week/cycle, workout logs, completed history, saved-plan library, body data, or unrelated optional metadata. Existing recorded weights are never relabeled or converted. Invalid entries are rejected; failed local-storage writes cannot adopt a partial update. Undo is available for saved edits.
+- Settings → Training setup & priorities remains a separate, deliberate program workflow. It now exposes Cancel, requires an explicit regeneration confirmation, and keeps the existing cycle number/week, saved plans, history and body entries. Regeneration does clear in-progress log entries, and Undo is available. Changing the training cycle duration to less than the current week is blocked.
+- Settings shows the selected weight preference and the last body measurement with its *recorded* unit (or unknown), not an assumed current unit. Historical training entries with absent units remain unknown.
+- This patch retains all approved v7.9.0 features and artwork. The service-worker cache and backup filename are bumped. Verify a fresh full JSON backup exists before deployment; do not clear Safari/PWA website data. Actual iPhone testing remains the user's acceptance step.

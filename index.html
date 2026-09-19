@@ -935,11 +935,19 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  #comparePlansBtn{grid-column:1/-1}
 }
 
+/* v7.9.1 non-destructive personal profile editor */
+.personal-profile-fields{display:grid;gap:12px;margin-top:12px;min-width:0}
+.personal-profile-fields label{display:block;min-width:0;font-weight:700;font-size:13px}
+.personal-profile-fields label .field{margin-top:6px}
+.personal-profile-fields .grid2,.personal-profile-fields .inline-fields{min-width:0}
+.personal-profile-actions{display:flex;flex-wrap:wrap;gap:9px;padding-bottom:12px}
+.personal-profile-actions button{flex:1 1 130px;min-height:46px}
+@media(max-width:420px){.personal-profile-fields .grid2,.personal-profile-fields .inline-fields{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.0 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.1 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1077,13 +1085,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 <section class="card">
  <div class="label">Plan & schedule</div><h2>Program controls</h2>
  <div class="settings-action-grid">
-  <button id="planBuilderBtn">Plan builder & priorities</button>
+  <button id="planBuilderBtn">Training setup & priorities</button>
   <button id="changeDaysBtn">Change workout days</button>
   <button id="regenBtn">Regenerate plan</button>
   <button id="browseVisualsBtn">Exercise library</button>
   <button id="newCycleBtn">Start New Training Cycle</button>
  </div>
- <p class="tiny">Changing workout days keeps your current exercises and history. Regenerating uses your current Plan Builder and personalization preferences.</p>
+ <p class="tiny">Edit profile changes only personal details and preferred units. Changing workout days keeps the exercises and history. Training setup &amp; Plan Builder changes require confirmation before regenerating exercises; regeneration resets in-progress logs, not completed history or your cycle week.</p>
 </section>
 
 <section class="card">
@@ -1132,7 +1140,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.0</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.1</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -1613,7 +1621,7 @@ function openCreatePlanSourceChooser(){
     <button class="create-plan-source" data-create-source="active" ${canClone?"":"disabled"}><strong>Create from Active Plan</strong><span class="tiny">${canClone?"Use the active plan's settings and Plan Builder as the starting point. If you make no changes, the saved copy keeps the exact current exercise plan.":"Build an active workout first before cloning it."}</span></button>
    </div>`);
 }
-function planCreatorSteps(){return planCreationMode?[1,2,4,5,6]:[1,2,3,4,5,6]}
+function planCreatorSteps(){return planCreationMode||editingProfile?[1,2,4,5,6]:[1,2,3,4,5,6]}
 function planCreatorStepPosition(){const seq=planCreatorSteps(),idx=seq.indexOf(obStep);return idx>=0?idx:0}
 function planCreationProfileFromForm(){
  const p=profile()||{},draft=formProfileDraft();
@@ -2874,7 +2882,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.9.0 — Reliability Report",
+  "Adaptive Workout Coach v7.9.1 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -3900,7 +3908,7 @@ function renderSettings(){
  <div class="profile-kv">
   <div><div class="label">Training</div>${esc(p.level)} · ${esc(p.goal.replace("both","muscle + strength"))}</div>
   <div><div class="label">Schedule</div>${(p.weekdays||defaultWeekdays(p.days)).map(d=>d.slice(0,3)).join(" · ")}<br><span class="tiny">${p.duration} min/session</span></div>
-  <div><div class="label">Profile</div>${p.age?`${p.age} years · `:""}${p.sex?esc(p.sex):"Sex optional"}${h?`<br>${esc(h)}`:""}${last?.weight?` · ${last.weight} ${unit()}`:""}</div>
+  <div><div class="label">Profile</div>${p.age?`${p.age} years · `:""}${p.sex?esc(p.sex):"Sex optional"}${h?`<br>${esc(h)}`:""}<br><span class="tiny">Preferred weight unit: ${esc(unit())}${last?.weight?` · Last recorded weight: ${esc(last.weight)} ${esc(["kg","lb"].includes(last.unit)?last.unit:"unit unknown")}`:""}</span></div>
   <div><div class="label">Plan</div>${p.cycleLength||6}-week program<br><span class="tiny">${esc(equipmentChoiceLabel(p.equipment))}</span></div>
   <div><div class="label">Personalization</div>${(()=>{const ps=personalizationSettings();const style=ps.exerciseBias==="balanced"?"Balanced":`Prefer ${ps.exerciseBias.replaceAll("_"," ")}`;return `Visual: ${avatarLabel(requestedVisualAvatar())}<br><span class="tiny">Exercise style: ${esc(style)} · ${ps.variety} variety · ${ps.coachingDetail} coaching</span>`})()}</div>
   <div><div class="label">Builder</div>${(()=>{const b=p.planBuilder||{mode:"coach"};if(b.mode==="priority"){const top=Object.entries(b.priorities||{}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([m,v])=>`${m} ${v}%`).join(" · ");return `Muscle Priority<br><span class="tiny">${esc(top)}</span>`}if(b.mode==="custom")return `Build Your Own<br><span class="tiny">${b.customMode==="manual"?"Fully manual targets":"Coach-programmed selections"}</span>`;return "Coach Suggested"})()}</div>
@@ -3925,6 +3933,90 @@ function renderSettings(){
 }
 function renderAll(){renderToday();renderProgress();renderCycle();renderRecovery();renderSettings();updateUndoUI();$("#headerSub").textContent=profile()?.name?`${profile().name}'s adaptive training cycle`:"Adaptive coaching · 169-exercise expanded library"}
 function switchView(v){currentView=v;$$(".vtab").forEach(b=>b.classList.toggle("active",b.dataset.view===v));$$(".view").forEach(x=>x.classList.remove("active"));$("#"+v).classList.add("active");if(v==="progress")renderProgress();if(v==="cycle")renderCycle();if(v==="recovery")renderRecovery();if(v==="settings")renderSettings()}
+
+// Personal profile edits are separate from program creation and never regenerate a plan.
+function openPersonalProfileEditor(){
+ const p=profile();if(!p)return;
+ const height=Number(p.heightCm)||0,total=height/2.54,feet=Math.floor(total/12),inches=Math.round((total-feet*12)*10)/10;
+ const ht=["metric","imperial"].includes(p.heightUnit)?p.heightUnit:"metric";
+ openSheet("PERSONAL PROFILE","Edit personal details",`<p class="tiny">Save here changes only your personal details and preferred units. Your exercises, training cycle, current set entries, saved plans and workout history stay unchanged.</p>
+ <div class="personal-profile-fields">
+ <label>Nickname<input id="editPersonalName" class="field" maxlength="80" value="${esc(p.name||"")}" autocomplete="nickname"></label>
+ <div class="grid2"><label>Age (optional)<input id="editPersonalAge" class="field" type="number" min="13" max="100" step="1" value="${esc(p.age??"")}"></label>
+ <label>Sex (optional)<select id="editPersonalSex" class="field"><option value="">Prefer not to say</option><option value="female" ${p.sex==="female"?"selected":""}>Female</option><option value="male" ${p.sex==="male"?"selected":""}>Male</option><option value="other" ${p.sex==="other"?"selected":""}>Other</option></select></label></div>
+ <div class="grid2"><label>Preferred weight unit<select id="editPersonalUnit" class="field"><option value="lb" ${p.unit==="lb"?"selected":""}>Pounds (lb)</option><option value="kg" ${p.unit!=="lb"?"selected":""}>Kilograms (kg)</option></select></label>
+ <label>Height format<select id="editPersonalHeightMode" class="field"><option value="metric" ${ht==="metric"?"selected":""}>Centimeters</option><option value="imperial" ${ht==="imperial"?"selected":""}>Feet + inches</option></select></label></div>
+ <div id="editPersonalMetric"><label>Height (cm, optional)<input id="editPersonalCm" class="field" type="number" min="100" max="250" step="0.1" value="${height&&ht==="metric"?Math.round(height*10)/10:""}" placeholder="e.g. 178"></label></div>
+ <div id="editPersonalImperial" class="inline-fields"><label>Feet<input id="editPersonalFeet" class="field" type="number" min="3" max="8" step="1" value="${height&&ht==="imperial"?feet:""}" placeholder="5"></label><label>Inches<input id="editPersonalInches" class="field" type="number" min="0" max="11.9" step="0.1" value="${height&&ht==="imperial"?inches:""}" placeholder="10"></label></div>
+ <p class="tiny">Units are preferences, not conversions. Changing them does not relabel or convert older workout sets, body measurements or target loads. Records with unknown historic units stay unknown. Use Progress → Log body measurement for a new weigh-in.</p>
+ <div class="personal-profile-actions"><button id="cancelPersonalProfile">Cancel</button><button id="savePersonalProfile" class="primary">Save profile only</button></div>
+ </div>`);
+ const mode=$("#editPersonalHeightMode"),metric=$("#editPersonalMetric"),imperial=$("#editPersonalImperial");
+ function heightUI(){const showImp=mode.value==="imperial";metric.classList.toggle("hidden",showImp);imperial.classList.toggle("hidden",!showImp)}
+ mode.onchange=()=>{ // Convert only the displayed height on a format switch, never saved history.
+  if(mode.value==="imperial"){
+   const cm=Number($("#editPersonalCm").value);if(cm>0){const all=cm/2.54,ft=Math.floor(all/12);$("#editPersonalFeet").value=ft;$("#editPersonalInches").value=Math.round((all-ft*12)*10)/10}
+  }else{
+   const ft=Number($("#editPersonalFeet").value),inch=Number($("#editPersonalInches").value);
+   if(ft>0)$("#editPersonalCm").value=Math.round((ft*12+inch)*2.54*10)/10;
+  }
+  heightUI();
+ };
+ heightUI();
+ mode.dataset.initialMode=ht;
+ mode.dataset.initialCm=$("#editPersonalCm").value;
+ mode.dataset.initialFeet=$("#editPersonalFeet").value;
+ mode.dataset.initialInches=$("#editPersonalInches").value;
+ $("#cancelPersonalProfile").onclick=closeSheet;
+ $("#savePersonalProfile").onclick=savePersonalProfile;
+}
+function savePersonalProfile(){
+ const p=profile();if(!p)return;
+ const rawAge=$("#editPersonalAge").value.trim(),age=rawAge===""?null:Number(rawAge);
+ if(rawAge!==""&&(!Number.isInteger(age)||age<13||age>100))return alert("Enter an age from 13 to 100, or leave it blank.");
+ const unitChoice=$("#editPersonalUnit").value,heightUnit=$("#editPersonalHeightMode").value;
+ if(!["kg","lb"].includes(unitChoice)||!["metric","imperial"].includes(heightUnit))return alert("Choose a valid unit and height format.");
+ let heightCm=null;
+ if(heightUnit==="metric"){
+  const raw=$("#editPersonalCm").value.trim();heightCm=raw===""?null:Number(raw);
+  if(heightCm!==null&&(!Number.isFinite(heightCm)||heightCm<100||heightCm>250))return alert("Height must be 100–250 cm, or blank.");
+ }else{
+  const ftRaw=$("#editPersonalFeet").value.trim(),inRaw=$("#editPersonalInches").value.trim();
+  if(ftRaw!==""||inRaw!==""){
+   const ft=Number(ftRaw),inch=inRaw===""?0:Number(inRaw);
+   if(ftRaw===""||!Number.isInteger(ft)||ft<3||ft>8||!Number.isFinite(inch)||inch<0||inch>=12)return alert("Enter 3–8 feet and 0–11.9 inches, or leave both blank.");
+   heightCm=Math.round((ft*12+inch)*2.54*100)/100;
+   if(heightCm<100||heightCm>250)return alert("Enter a height between 100 and 250 cm (equivalent).");
+  }
+ }
+ const mode=$("#editPersonalHeightMode");
+ const heightUntouched=heightUnit===mode.dataset.initialMode&&(heightUnit==="metric"?$("#editPersonalCm").value===mode.dataset.initialCm:$("#editPersonalFeet").value===mode.dataset.initialFeet&&$("#editPersonalInches").value===mode.dataset.initialInches);
+ if(heightUntouched)heightCm=p.heightCm??null; // Do not round stored height on a no-op save.
+ const changes={name:$("#editPersonalName").value.trim().slice(0,80),age,sex:$("#editPersonalSex").value||null,unit:unitChoice,heightUnit,heightCm,measureUnit:heightUnit==="imperial"?"in":"cm"};
+ if(![null,"female","male","other"].includes(changes.sex))return alert("Choose a valid sex option.");
+ const differs=Object.entries(changes).some(([k,v])=>v!==(p[k]??null));
+ if(!differs){closeSheet();toast("No profile changes to save");return}
+ if(unitChoice!==p.unit&&!confirm(`Switch preferred weight units from ${p.unit||"unknown"} to ${unitChoice}? Existing workout sets, targets and body measurements will NOT be converted or relabeled. Review any in-progress weight entries before continuing. Historic unknown units remain unknown.`))return;
+ // Write the complete state before adopting the edit; a failed storage write cannot erase live data.
+ const before=structuralSnapshot("Edited personal profile");
+ const updated={...state,profile:{...p,...changes}};
+ try{localStorage.setItem(KEY,JSON.stringify(updated))}catch(err){alert("Profile was not saved; your existing data is unchanged. Check available device storage. " +(err.message||""));return}
+ state=updated;undoStack.push(before);if(undoStack.length>12)undoStack.shift();redoStack=[];
+ persistUndoStacks();closeSheet();renderAll();toast("Profile saved · training plan unchanged");
+}
+
+function trainingConfigFingerprint(p){
+ const settings=planProfileSettings(p)||{},b=settings.planBuilder||{},mode=b.mode||"coach";
+ // Compare only builder settings that actually affect this chosen mode; legacy coach configs may lack unused fields.
+ settings.planBuilder={mode};
+ if(mode==="priority")settings.planBuilder.priorities=normalizePriorities(b.priorities||DEFAULT_PRIORITIES);
+ if(mode==="custom"){
+  settings.planBuilder.customMode=b.customMode||"coach";
+  settings.planBuilder.customExercises=Array.isArray(b.customExercises)?b.customExercises:[];
+  if(settings.planBuilder.customMode==="manual")settings.planBuilder.manual=b.manual||{};
+ }
+ return JSON.stringify(settings);
+}
 
 function showOnboarding(edit=false,startStep=1,creationSource=null){
  planCreationMode=creationSource?{source:creationSource,draftProfile:null,draftPlan:null,initialConfig:null,reviewing:false}:null;
@@ -3968,12 +4060,12 @@ function renderOb(){
  if($("#obProgressFill"))$("#obProgressFill").style.width=`${Math.round((pos+1)/seq.length*100)}%`;
  $("#obBack").style.visibility="visible";
  $("#obBack").classList.toggle("hidden",pos===0);
- $("#obCancel").classList.toggle("hidden",!planCreationMode);
- $("#obNicknameField")?.classList.toggle("hidden",!!planCreationMode);
- if($("#obBrandEyebrow"))$("#obBrandEyebrow").textContent=planCreationMode?"NEW PLAN":"SETUP";
- if($("#obBrandTitle"))$("#obBrandTitle").textContent=planCreationMode?(planCreationMode.source==="active"?"Create from Active Plan":"Create New Plan"):"Build your training plan";
- if($("#obBrandSub"))$("#obBrandSub").textContent=planCreationMode?"This draft is isolated. Your active plan will not change until you explicitly activate the new one.":"Six quick steps. Your answers stay on this device.";
- $("#obNext").textContent=obStep===6?(planCreationMode?"Review & save":"Build my plan"):"Continue";
+ $("#obCancel").classList.toggle("hidden",!planCreationMode&&!editingProfile);
+ $("#obNicknameField")?.classList.toggle("hidden",!!planCreationMode||editingProfile);
+ if($("#obBrandEyebrow"))$("#obBrandEyebrow").textContent=planCreationMode?"NEW PLAN":editingProfile?"TRAINING SETUP":"SETUP";
+ if($("#obBrandTitle"))$("#obBrandTitle").textContent=planCreationMode?(planCreationMode.source==="active"?"Create from Active Plan":"Create New Plan"):editingProfile?"Edit training setup":"Build your training plan";
+ if($("#obBrandSub"))$("#obBrandSub").textContent=planCreationMode?"This draft is isolated. Your active plan will not change until you explicitly activate the new one.":editingProfile?"Only confirmed changes regenerate exercises. Cancel leaves all data untouched; your current cycle week and completed history stay.":"Six quick steps. Your answers stay on this device.";
+ $("#obNext").textContent=obStep===6?(planCreationMode?"Review & save":editingProfile?"Review & regenerate plan":"Build my plan"):"Continue";
  if(obStep===2)updateDayPickHelp();if(obStep===3)updateHeightUI();if(obStep===4)renderEquipmentCoverageHint();if(obStep===6)renderBuilderUI();
  scrollOnboardingTop();
 }
@@ -3983,19 +4075,25 @@ function saveOnboarding(){
  if(weekdays.length!==days){alert(`Choose exactly ${days} workout days.`);obStep=2;renderOb();return}
  const planBuilder=builderProfileData(),draftP={...formProfileDraft(),weekdays};
  const builderError=validateBuilder(draftP,planBuilder);if(builderError){alert(builderError);obStep=6;renderOb();return}
- const previousEquipment=profile()?.equipment||null;
- const selectedEquipment=document.querySelector("input[name=equipment]:checked").value;
- if(editingProfile)pushUndo("Edited profile and regenerated plan");
- if(editingProfile&&previousEquipment&&previousEquipment!==selectedEquipment){
-  const ps=personalizationSettings();
-  ps.exerciseBias="balanced";
-  ps.exerciseBiasExplicit=false;
- }
+ const previous=profile(),selectedEquipment=document.querySelector("input[name=equipment]:checked").value;
  const heightUnit=$("#obHeightUnit").value,measurementUnit=heightUnit==="imperial"?"in":"cm";
- state.profile={level:$("#obLevel").value,goal:$("#obGoal").value,days,duration:Number($("#obDuration").value),cycleLength:Number($("#obCycle").value),weekdays,
-   equipment:selectedEquipment,unit:$("#obUnit").value,measureUnit:measurementUnit,
-   age:Number($("#obAge").value)||null,sex:$("#obSex").value||null,heightCm:heightCmFromForm(),heightUnit,
-   limitations:$$(".limit:checked").map(x=>x.value),name:$("#obName").value.trim(),avoid:$("#obAvoid").value.trim(),planBuilder};
+ const nextProfile={...(previous||{}),level:$("#obLevel").value,goal:$("#obGoal").value,days,duration:Number($("#obDuration").value),cycleLength:Number($("#obCycle").value),weekdays,
+   equipment:selectedEquipment,unit:editingProfile?previous.unit:$("#obUnit").value,measureUnit:editingProfile?previous.measureUnit:measurementUnit,
+   age:editingProfile?previous.age:Number($("#obAge").value)||null,sex:editingProfile?previous.sex:$("#obSex").value||null,heightCm:editingProfile?previous.heightCm:heightCmFromForm(),heightUnit:editingProfile?previous.heightUnit:heightUnit,
+   limitations:$$('.limit:checked').map(x=>x.value),name:editingProfile?previous.name:$("#obName").value.trim(),avoid:$("#obAvoid").value.trim(),planBuilder};
+ if(editingProfile){
+  const changed=trainingConfigFingerprint(nextProfile)!==trainingConfigFingerprint(previous);
+  if(!changed){editingProfile=false;$("#onboarding").classList.add("hidden");toast("Training setup unchanged");return}
+  if(cycle()?.week>nextProfile.cycleLength)return alert(`Your current cycle is at Week ${cycle().week}. Choose a program length of at least ${cycle().week} weeks, or use Start New Training Cycle separately.`);
+  if(!confirm("Regenerate the current exercise plan with these training-setup changes?\n\nThis clears in-progress workout entries and uncompleted current-cycle logs. Your completed session history, saved plans, body measurements, current cycle number and week stay intact.\n\nExport a JSON backup first if you want a separate recovery copy. Undo is available."))return;
+  pushUndo("Regenerated plan after training setup edit");
+  if(previous?.equipment!==selectedEquipment){const ps=personalizationSettings();ps.exerciseBias="balanced";ps.exerciseBiasExplicit=false}
+  state.profile=nextProfile;
+  if(cycle())cycle().length=nextProfile.cycleLength;
+  // Regeneration is explicit, does not create a new cycle and never removes saved plans.
+  generatePlan(true);editingProfile=false;$("#onboarding").classList.add("hidden");renderAll();toast("Training setup applied · cycle week kept · Undo available");return;
+ }
+ state.profile=nextProfile;
  state.history??=[];state.recovery??=[];state.body??=[];
  const bw=Number($("#obBodyweight").value)||0;
  if(bw){
@@ -4010,7 +4108,7 @@ function exportData(){
  try{
   backupMeta().lastExportInitiatedAt=new Date().toISOString();
   const content=JSON.stringify(state,null,2);
-  downloadLocalFile(content,`adaptive-workout-coach-v7-9-0-backup-${calendarToday()}.json`,"application/json");
+  downloadLocalFile(content,`adaptive-workout-coach-v7-9-1-backup-${calendarToday()}.json`,"application/json");
   try{save()}catch(err){console.warn("Export initiated but backup timestamp could not persist",err)}
   renderBackupHealth();toast("Backup export started · verify the file in Files");
  }catch(err){backupMeta().lastExportInitiatedAt=old;renderBackupHealth();alert("Backup export could not start. Your stored workout data has not been replaced: "+(err.message||err))}
@@ -4257,7 +4355,7 @@ $("#nextUnfinishedBtn").onclick=jumpToNextUnfinished;
 $("#undoBtn").onclick=undoLast;
 $("#redoBtn").onclick=redoLast;
 $("#saveRecoveryBtn").onclick=()=>{const o={date:new Date().toISOString(),planId:cycle().planId||state.activeSavedPlanId||null,cycleNumber:cycle().number,week:cycle().week};$$(".recRange").forEach(x=>o[x.dataset.k]=Number(x.value));recoveryEntries().push(o);save();renderRecovery();renderToday();toast("Recovery check-in saved")};
-$("#editProfileBtn").onclick=()=>showOnboarding(true,1);
+$("#editProfileBtn").onclick=openPersonalProfileEditor;
 $("#planBuilderBtn").onclick=()=>showOnboarding(true,6);
 $("#changeDaysBtn").onclick=openDayEditor;
 $("#browseVisualsBtn").onclick=openExerciseLibrary;
@@ -4307,7 +4405,7 @@ $("#themeBtn").onclick=()=>{
  syncThemeUI();
 };
 syncThemeUI();
-$("#obCancel").onclick=cancelPlanCreation;
+$("#obCancel").onclick=()=>{if(editingProfile&&!planCreationMode){editingProfile=false;$("#onboarding").classList.add("hidden");toast("Training setup changes discarded");return}cancelPlanCreation()};
 $("#obBack").onclick=()=>{
  const seq=planCreatorSteps(),pos=planCreatorStepPosition();
  if(pos>0){obStep=seq[pos-1];renderOb()}
