@@ -957,7 +957,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.3 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.4 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1151,7 +1151,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.3</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.4</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -2038,8 +2038,8 @@ function openCoachEvidence(){
  const rows=a.recommendations.map(r=>{
   const t=r.trend||{},support=(r.reasons||[]).slice(0,5);
   return `<div class="audit-exercise"><strong>${esc(r.name||r.title)} · ${esc(r.title)}</strong>
-   <div class="tiny">${t.samples||0} comparable exposures · ${t.samples<2?"Not enough data for a trend":esc(t.label||"Learning")}${Number.isFinite(t.changePct)?` · measured change ${t.changePct.toFixed(1)}%`:""}${Number.isFinite(t.rpeChange)?` · RPE change ${t.rpeChange.toFixed(1)}`:""}</div>
-   <p class="tiny">${esc(r.text)}</p><details><summary>Decision inputs</summary>${support.map(z=>`<p class="tiny">${esc(z)}</p>`).join("")||'<p class="tiny">Not enough evidence yet.</p>'}</details></div>`;
+   <div class="tiny">${t.samples||0} comparable exposures · ${t.samples<2?"Not enough data for a trend":esc(t.label||"Learning")}${Number.isFinite(t.changePct)?` · measured change ${t.changePct.toFixed(1)}%`:""}${Number.isFinite(t.rpeChange)?` · RPE change ${t.rpeChange.toFixed(1)}`:t.samples>=2?" · RPE comparison unavailable (missing logged effort)":""}</div>
+   <p class="tiny">${esc(r.text)}</p><details><summary>Why this recommendation?</summary>${support.map(z=>`<p class="tiny">${esc(z)}</p>`).join("")||'<p class="tiny">Not enough evidence yet.</p>'}</details></div>`;
  }).join("");
  openSheet("COACH EVIDENCE",`Week ${cycle()?.week||1} · evidence inspection`,
  `<div class="saved-plan-sheet-note"><strong>${esc(a.status)}</strong> · ${a.sessionCount} completed sessions in current cycle.<br>${a.completed} completed working sets in last four current-cycle sessions · ${a.reported} with RPE (${a.completed?Math.round(a.reported/a.completed*100):0}%).<br>${limited?"Limited current-cycle history: treat trends as preliminary.":"Review these signals alongside your actual performance."}</div>
@@ -2993,7 +2993,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.9.3 — Reliability Report",
+  "Adaptive Workout Coach v7.9.4 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -3349,7 +3349,8 @@ function recordPerformanceMetric(row){
  const rpes=valid.map(s=>Number(s.rpe)).filter(x=>x>0);
  const targetSets=Math.max(1,Number(rec.target?.sets)||valid.length);
  return{
-   metric,kind:loaded?"e1rm":"avgReps",avgRpe:rpes.length?rpes.reduce((a,b)=>a+b,0)/rpes.length:0,
+   metric,kind:loaded?"e1rm":"avgReps",avgRpe:rpes.length?rpes.reduce((a,b)=>a+b,0)/rpes.length:null,
+   rpeCount:rpes.length,
    completion:Math.min(1,valid.length/targetSets),validSets:valid.length,
    avgReps:valid.reduce((a,s)=>a+Number(s.reps||0),0)/valid.length,
    maxWeight:Math.max(...valid.map(s=>Number(s.weight)||0)),
@@ -3362,12 +3363,15 @@ function exerciseTrend(exId){
  const comparable=metrics.filter(x=>x.kind===metrics.at(-1).kind&&(!x.kind||x.kind!=="e1rm"||x.weightUnit&&x.weightUnit===metrics.at(-1).weightUnit)),first=comparable[0],last=comparable.at(-1);
  if(comparable.length<2||!first?.metric)return{status:"learning",label:"Learning",samples:metrics.length,changePct:null,rpeChange:null,metrics};
  const changePct=(last.metric-first.metric)/Math.max(.001,Math.abs(first.metric))*100;
- const rpeChange=(last.avgRpe&&first.avgRpe)?last.avgRpe-first.avgRpe:0;
+ // Do not convert missing or partially recorded effort into an apparent 0.0 change.
+ const completeRpe=x=>x.rpeCount===x.validSets&&x.validSets>0;
+ const rpeChange=completeRpe(first)&&completeRpe(last)?last.avgRpe-first.avgRpe:null;
  const avgCompletion=comparable.reduce((a,b)=>a+b.completion,0)/comparable.length;
  let status="stable",label="Stable";
- if(changePct>=2&&rpeChange<=1){status="progressing";label="Progressing"}
- else if(comparable.length>=3&&((changePct<=-3&&rpeChange>=.4)||changePct<=-5)){status="regressing";label="Regression"}
+ if(changePct>=2&&rpeChange!==null&&rpeChange<=1){status="progressing";label="Progressing"}
+ else if(comparable.length>=3&&((changePct<=-3&&rpeChange!==null&&rpeChange>=.4)||changePct<=-5)){status="regressing";label="Regression"}
  else if(comparable.length>=3&&Math.abs(changePct)<1.5&&avgCompletion>=.8){status="stalled";label="Plateau watch"}
+ else if(rpeChange===null){status="learning";label="Effort evidence incomplete"}
  return{status,label,samples:comparable.length,changePct,rpeChange,avgCompletion,metrics:comparable};
 }
 function recoveryEntryScore(r){
@@ -3445,10 +3449,13 @@ function longTermExerciseRecommendation(item,dayIdx,slot,fatigue){
      action:canReduce?{kind:"set",delta:-1}:null,
      reasons:[`Multi-session performance trend is ${trend.changePct?.toFixed(1)}%.`,avgRpe?`Latest average RPE is ${avgRpe.toFixed(1)}.`:"Latest effort data are limited.","The recommendation reduces fatigue before considering another load increase."]};
  }
- if(allTop&&ex.resistanceClass==="loaded"&&(maxW<=0||!rpes.length)){
-  return {...base,id:recommendationId(dayIdx,slot,"missing-inputs"),kind:"hold",tone:"learning",title:"Complete progression inputs",
-    text:`${ex.name}: the rep target was met, but log both actual load and RPE before accepting a load-increase suggestion.`,
-    reasons:[maxW<=0?"No positive external load was recorded.":"External load was recorded.",!rpes.length?"No working-set RPE was recorded.":"Working-set RPE was recorded.","Without these inputs, the coach cannot verify whether increasing load matches target effort."]};
+ const missingLoad=ex.resistanceClass==="loaded"&&valid.some(s=>!(Number(s.weight)>0));
+ const missingRpe=valid.some(s=>!(Number(s.rpe)>0));
+ if(allTop&&ex.resistanceClass==="loaded"&&(missingLoad||missingRpe)){
+  const missing=missingLoad&&missingRpe?"actual load and RPE":missingLoad?"actual load":"working-set RPE";
+  return {...base,id:recommendationId(dayIdx,slot,"missing-inputs"),kind:"hold",tone:"learning",title:`Record ${missing}`,
+    text:`${ex.name}: the rep target was met, but ${missing} ${missingLoad&&missingRpe?"were":"was"} not fully recorded for the completed sets. Keep the load unchanged until a comparable exposure has the missing input${missingLoad&&missingRpe?"s":""}.`,
+    reasons:[missingLoad?"At least one completed set has no positive external load.":"External load was recorded on every completed set.",missingRpe?"At least one completed set has no logged RPE; a target RPE is not a measured RPE.":"RPE was recorded on every completed set.","Missing effort or load is not evidence of low effort or safe load progression."]};
  }
  if(allTop&&(!avgRpe||avgRpe<=maxR)){
    if(nonLoadedNoNumericLoad){
@@ -3581,12 +3588,16 @@ function suggestion(item){
  if(ready!==null&&ready<5)return{cls:"low",type:"hold",text:"Recovery is low. Hold load today and consider one fewer set if performance drops.",why:[`Readiness is ${ready}/10.`,"Low readiness increases the chance that extra load or volume is poorly tolerated."]};
  if(!last)return{cls:"warn",type:"baseline",text:"Establish a clean baseline. Stay inside the rep range and target RPE.",why:["No completed previous session for this exercise is available."]};
  if(ex?.resistanceClass==="loaded"&&(last.sets||[]).some(s=>Number(s.weight)>0)&&recordedWeightUnit(lastSessionForExercise(item.id))!==unit())return{cls:"warn",type:"hold",text:"Previous load units are unknown or different. If the historic unit is missing and known, confirm it in Settings → Backup & transfer; otherwise record a comparable baseline before considering a load increase.",why:["Historical load may not use the current weight unit.","Do not compare or copy unverified weight units."]};
- const valid=(last.sets||[]).filter(s=>Number(s.reps)>0&&Number(s.weight)>=0);
+ const valid=(last.sets||[]).filter(s=>s.done!==false&&Number(s.reps)>0&&Number(s.weight)>=0);
  if(!valid.length)return{cls:"warn",type:"baseline",text:"Re-establish a baseline; prior set data were incomplete.",why:["The most recent session has no usable completed set data."]};
  const [lo,hi]=parseRange(target.reps),maxR=highRpe(target.rpe);
  const rpes=valid.map(s=>Number(s.rpe)).filter(x=>x>0), avgRpe=rpes.length?rpes.reduce((a,b)=>a+b,0)/rpes.length:0;
  const allTop=valid.length>=Math.min(target.sets,2)&&valid.every(s=>Number(s.reps)>=hi);
  const missed=valid.some(s=>Number(s.reps)<lo), maxW=Math.max(...valid.map(s=>Number(s.weight)||0)),bwNoLoad=(ex.equipment||[]).includes("bodyweight")&&maxW<=0;
+ if(allTop&&ex?.resistanceClass==="loaded"&&valid.some(s=>!(Number(s.weight)>0)||!(Number(s.rpe)>0))){
+   const needLoad=valid.some(s=>!(Number(s.weight)>0)),needRpe=valid.some(s=>!(Number(s.rpe)>0));
+   return{cls:"warn",type:"hold",text:`Keep your current load. Log ${needLoad&&needRpe?"actual weight and RPE":needLoad?"actual weight":"working-set RPE"} for every completed set before considering a load increase.`,why:[needLoad?"At least one completed set is missing actual weight.":"Recorded weight is available.",needRpe?"At least one completed set is missing measured RPE; the programmed target does not count as a measurement.":"Measured RPE is available."]};
+ }
  if(allTop&&(!avgRpe||avgRpe<=maxR)&&(ready===null||ready>=6.5)){
    if(bwNoLoad)return{cls:"good",type:"variation",text:"Progression signal: move to a harder bodyweight variation, add controlled tempo/pauses, or increase range of motion. Add external load only if it is actually available.",why:[`All usable sets reached the top of ${target.reps}.`,avgRpe?`Average logged RPE was ${avgRpe.toFixed(1)}, within the target ceiling.`:"Logged effort did not show excessive strain.","No external load was recorded, so bodyweight progression is prioritized over an artificial weight increase."]};
    const inc=unit()==="lb"?5:2.5, suggested=roundInc(maxW*1.025,unit()==="lb"?1:0.5);
@@ -4220,7 +4231,7 @@ function exportData(){
  try{
   backupMeta().lastExportInitiatedAt=new Date().toISOString();
   const content=JSON.stringify(state,null,2);
-  downloadLocalFile(content,`adaptive-workout-coach-v7-9-3-backup-${calendarToday()}.json`,"application/json");
+  downloadLocalFile(content,`adaptive-workout-coach-v7-9-4-backup-${calendarToday()}.json`,"application/json");
   try{save()}catch(err){console.warn("Export initiated but backup timestamp could not persist",err)}
   renderBackupHealth();toast("Backup export started · verify the file in Files");
  }catch(err){backupMeta().lastExportInitiatedAt=old;renderBackupHealth();alert("Backup export could not start. Your stored workout data has not been replaced: "+(err.message||err))}

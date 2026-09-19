@@ -1,6 +1,6 @@
-# Adaptive Workout Coach — v7.9.1
+# Adaptive Workout Coach — v7.9.4
 
-GitHub-ready PWA build. Current release: **v7.9.1 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+GitHub-ready PWA build. Current release: **v7.9.4 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
 ## What changed
 - Expanded the core exercise database from 54 to **120 exercises**.
@@ -983,3 +983,10 @@ This is an incremental patch to v7.9.2; it does not change training algorithms, 
 **Test scope:** Source-level syntax, 15 targeted browser checks for nested backup corruption and transactional failures, 129 existing feature/browser checks, 74 profile-edit checks, 120 historical-unit checks, 16 supplemental checks, and the existing synthetic reliability suite (1,819 scenarios / 423,293 assertions). A mocked service-worker test checked HTTP error/success cache decisions. Mobile viewports were simulated in Chromium; this is not Safari/device confirmation.
 
 **Still required for a commercial launch:** Real Safari/Home Screen/offline testing, customer-scale data and storage-quota testing, accessibility review, customer support/privacy/terms review, and an independent release acceptance process. This patch does **not** certify the app for sale. Do not clear iPhone website data or uninstall the Home Screen app to troubleshoot a version: that may erase local training data. Export and locate a full JSON backup before upgrading.
+
+## v7.9.4 — Coach evidence accuracy (targeted correction)
+- Corrected Coach Evidence's misleading RPE change of 0.0 when earlier completed sets lacked actual RPE. Now reports that an RPE comparison is unavailable; no historic sets are rewritten.
+- Load/repetition improvement without complete RPE at both comparison endpoints no longer earns an effort-supported "Progressing" classification. The descriptive measured performance change remains visible.
+- Progression advice identifies exactly which measured fields are missing (load, RPE, or both), and the workout suggestion no longer proposes increasing external load if a top-range session lacks actual load or measured RPE. Programmed target RPE is not treated as a recorded value.
+- The always-available explanation disclosure is relabeled "Why this recommendation?"; it is not a warning or a historical-unit reminder.
+- Profile, active program, saved plans, history, exercise artwork, and existing historical-unit confirmations are not modified by this release. Keep a verified JSON backup before upgrading. Real-device Safari acceptance remains required.
