@@ -932,3 +932,24 @@ v7.8.2 replaces that behavior with one definitive mobile rule:
 - The fix is tested down to 320 CSS px.
 
 No workout programming, Saved Plan, Create New Plan, exercise, analytics or stored-data behavior changed.
+
+## v7.9.0 — Data protection, coaching evidence, and long-term utilities
+
+- JSON export now records the **time an export was initiated**, displays a reminder after 3 completed sessions and 14 days without a recorded export, and explicitly asks you to verify the file exists. It cannot verify browser file downloads.
+- JSON backup validation checks the profile, current plan, cycles, supported exercise IDs, history arrays and saved-plan structure without changing data. Import validates and then asks for explicit confirmation before replacing local data. Validation-only upload does not import.
+- Completed-session, completed-set, recovery and body-measurement CSV exports. CSV is **not** a restorable backup. Historic set weight units may not be stored in earlier releases.
+- Coach evidence inspector shows supporting session counts, recorded RPE coverage, qualifying fatigue signals and per-exercise trend samples. This is a rule audit, **not scientific validation or proof of training effectiveness**.
+- Next unfinished exercise action and repeat-prior-completed-set prefill streamline logging; neither marks sets complete automatically.
+- Named plans can be assigned optional dates and show **in-app** reminders when the app opens. Dates **never** automatically activate a plan and are not push notifications.
+- Side-by-side descriptive saved-plan comparisons: days, target time, exercise overlap, prescribed sets and estimated muscle workload.
+- Cycle comparison and eight calendar-week session-consistency display, including zero-session weeks. Cycles are displayed descriptively and cannot be directly interpreted as equally long or causally comparable.
+- Existing 169 exercise visuals, programming rules, PWA behavior and local history retained.
+
+To deploy: extract this archive over the repository root; commit and push with GitHub Desktop. Keep a separate JSON backup and verify the resulting file in iPhone Files before installing a new build. 
+
+
+### Release verification and device check
+
+This package is a production-clean v7.9.0 update. Automated Chromium checks verified new-feature controls, JSON import safeguards and a v7.8.2-format import, preserved saved-plan data, CSV download content, 320–390 CSS-pixel layouts, and the existing on-device reliability suite. It does **not** constitute a real iPhone Safari / Home Screen acceptance test, verification of your own historical backup, or proof the download reached your iPhone Files. A network-restricted test environment also prevented a live service-worker offline navigation test; the service-worker JavaScript passed syntax checking.
+
+**Before updating:** Use v7.8.2 Settings → Export JSON backup and independently locate the file in Files or another safe place. Keep the old v7.8.2 ZIP. Replace only app files in the GitHub repository root; never delete the `.git` directory or clear iPhone Safari website data / Home Screen app data. Once published, check your real iPhone: plan library, workout history, footer, app refresh and offline behaviour. CSV exports are for analysis only; restore requires the full JSON backup.

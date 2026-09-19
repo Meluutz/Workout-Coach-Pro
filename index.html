@@ -902,11 +902,44 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  }
 }
 
+
+/* v7.9: workflow additions, mobile friendly */
+.backup-health{margin:10px 0;padding:11px;border:1px solid var(--line);border-radius:13px;background:var(--soft);line-height:1.45}
+#backupValidation{padding-top:7px;white-space:pre-wrap}
+.saved-plan-schedule{font-size:12px;color:var(--muted);margin-top:7px}
+#plannedPlanReminder{margin-top:8px;line-height:1.5}
+#coachEvidenceBtn{margin-top:8px;width:100%}
+#comparePlansBtn{grid-column:1 / -1}
+.audit-exercise,.cycle-compare-row{padding:10px 0;border-bottom:1px solid var(--line)}
+.audit-exercise:last-child,.cycle-compare-row:last-child{border-bottom:0}
+.audit-exercise strong,.cycle-compare-row strong{display:block;margin-bottom:3px}
+.plan-compare-fields{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.plan-compare-fields select{min-width:0;width:100%}
+.plan-compare-fields label{min-width:0;overflow-wrap:anywhere}
+.plan-compare-fields{min-width:0}
+.plan-compare-days{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:10px}
+.plan-compare-days>div{min-width:0;background:var(--soft);padding:10px;border-radius:12px;overflow-wrap:anywhere}
+.plan-compare-days p{margin:5px 0;font-size:12px}
+.audit-exercise{overflow-wrap:anywhere}
+.repeatSetBtn{min-height:44px}
+#nextUnfinishedBtn{min-height:44px}
+#planCompareResult,#cycleCompareResult{overflow-wrap:anywhere}
+.plan-compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.plan-compare-grid>div{min-width:0;background:var(--soft);padding:10px;border-radius:12px}
+.plan-compare-grid strong{display:block;overflow-wrap:anywhere}
+.cycles-list{display:grid;gap:8px;margin-top:8px}
+.cycles-list>div{background:var(--soft);padding:11px;border-radius:12px}
+@media(max-width:420px){
+ .plan-compare-grid,.plan-compare-days,.plan-compare-fields{grid-template-columns:1fr}
+ .saved-plan-card-head{display:flex}
+ #comparePlansBtn{grid-column:1/-1}
+}
+
 </style>
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.8.2 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.0 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -927,10 +960,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  </div>
 </section>
 <div id="dayTabs" class="daytabs"></div>
+<div id="nextSetNotice" class="tiny" style="margin:0 0 8px"></div>
 <section class="card today-card">
  <div class="label">Today's plan</div><h2 id="dayTitle" style="margin:6px 0 4px"></h2><div id="dayFocus" class="muted"></div>
  <div class="row" style="margin-top:14px"><span>Session progress</span><strong id="pct">0%</strong></div><div class="progress" style="margin-top:6px"><div id="bar"></div></div>
- <div class="chips" style="margin-top:12px"><button id="warmBtn" class="chip">Warm-up guide</button><button id="guideBtn" class="chip">Workout visuals</button><button id="notesBtn" class="chip">Session notes</button></div>
+ <div class="chips" style="margin-top:12px"><button id="warmBtn" class="chip">Warm-up guide</button><button id="guideBtn" class="chip">Workout visuals</button><button id="notesBtn" class="chip">Session notes</button><button id="nextUnfinishedBtn" class="chip">Next unfinished exercise ↓</button></div>
  <div class="session-strip">
   <div><div class="label">Session timer</div><div id="sessionClock" class="session-clock">00:00</div><div id="sessionStatus" class="tiny">Not started</div></div>
   <div class="session-controls"><button id="sessionToggle" class="primary">Start session</button><button id="sessionReset">Reset timer</button></div>
@@ -965,6 +999,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </section>
 
 <section class="card analytics-card">
+ <div class="analytics-heading"><div><div class="label">Cycles & consistency</div><h3>Long-term comparison</h3></div></div>
+ <div id="cycleComparison"></div>
+</section>
+
+<section class="card analytics-card">
  <div class="analytics-heading"><div><div class="label">Muscle balance</div><h3>Completed-set workload</h3></div></div>
  <p class="tiny analytics-note">Primary completed sets count as 1.0; secondary involvement uses the same fractional muscle map as the Program view. This estimates training exposure, not physiological stimulus.</p>
  <div id="muscleAnalytics"></div>
@@ -992,9 +1031,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   <button id="createNewPlanBtn" class="primary">Create new plan</button>
  </div>
  <div id="savedPlanSummary"></div>
+ <div id="plannedPlanReminder" class="tiny"></div>
  <div class="saved-plan-save-actions">
   <button id="saveCurrentPlanBtn">Save current</button>
-  <button id="openPlanLibraryBtn">Manage saved plans</button>
+  <button id="openPlanLibraryBtn">Manage saved plans</button><button id="comparePlansBtn">Compare plans</button>
  </div>
 </section>
 
@@ -1004,7 +1044,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   <span id="coachIntelStatus" class="coach-status-badge">Learning</span>
  </div>
  <div id="coachIntelSummary" class="coach-intel-summary"></div>
- <button id="openCoachReviewBtn" class="primary coach-review-open">Review recommendations</button>
+ <button id="openCoachReviewBtn" class="primary coach-review-open">Review recommendations</button><button id="coachEvidenceBtn" class="coach-review-open">Inspect coaching evidence</button>
 </section>
 
 <section class="card plan-overview-card">
@@ -1069,8 +1109,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 <section class="card">
  <div class="label">Backup & transfer</div><h2>Move data between devices</h2>
  <p class="muted">Workout data is stored separately in each browser. Your phone and desktop do not automatically sync.</p>
- <div class="grid2"><button id="settingsExportBtn">Export backup</button><label class="import-label">Import backup<input id="importInput" type="file" accept="application/json"></label></div>
- <p class="tiny">To copy your current plan and history to another device, export on this device and import the file on the other one.</p>
+ <div id="backupHealth" class="backup-health tiny" role="status"></div>
+ <div class="grid2"><button id="settingsExportBtn">Export JSON backup</button><label class="import-label">Import backup<input id="importInput" type="file" accept="application/json,.json"></label></div>
+ <div class="grid2" style="margin-top:8px"><label class="import-label">Validate backup only<input id="validateBackupInput" type="file" accept="application/json,.json"></label><button id="openCsvExportBtn">Export CSV data</button></div>
+ <div id="backupValidation" class="tiny" role="status"></div>
+ <p class="tiny">Backups are local files: exporting starts a download/share action, but the app cannot verify that the file was saved. Import replaces this device's app data only after validation and confirmation.</p>
 </section>
 
 <section class="card reliability-card">
@@ -1089,7 +1132,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.8.2</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.0</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -1393,6 +1436,7 @@ function savedPlanSnapshot(name,id=null,continuable=true){
   createdAt:existing?.createdAt||now,
   updatedAt:now,
   lastUsedAt:existing?.lastUsedAt||null,
+  scheduledStart:existing?.scheduledStart||null,
   profile:deepCopy(planProfileSettings()),
   plan:deepCopy(plan()),
   cycle:continuable?deepCopy(cycle()):null,
@@ -1431,7 +1475,7 @@ function preserveCurrentPlanBeforeSwitch(){
 function duplicateSavedPlan(id){
  const src=savedPlans().find(x=>x.id===id);if(!src)return null;
  const now=new Date().toISOString(),copy=deepCopy(src);
- copy.id=planLibraryId();copy.name=uniquePlanName(`${src.name} Copy`);copy.createdAt=copy.updatedAt=now;copy.lastUsedAt=null;
+ copy.id=planLibraryId();copy.name=uniquePlanName(`${src.name} Copy`);copy.createdAt=copy.updatedAt=now;copy.lastUsedAt=null;copy.scheduledStart=null;
  // A duplicate is a reusable template, not a second pointer to the same historical cycle.
  copy.cycle=null;copy.weekLogs={};copy.coaching={};copy.continuable=false;
  savedPlans().push(copy);return copy;
@@ -1471,6 +1515,7 @@ function applySavedPlanEntry(id,mode="new"){
   state.coaching={planRevision:0,applied:{},deloadActive:false,deloadCycle:null,deloadWeek:null};
  }
  entry.lastUsedAt=new Date().toISOString();
+ entry.scheduledStart=null; // A planned start is consumed on activation; never silently schedule again.
  return true;
 }
 function planModeLabel(entry){
@@ -1479,11 +1524,11 @@ function planModeLabel(entry){
  if(b.mode==="custom")return b.customMode==="manual"?"Build Your Own · Manual":"Build Your Own · Coach";
  return"Coach Suggested";
 }
-function equipmentLabel(v){return ({gym:"Full Gym",dumbbells:"Dumbbells + Bench",minimal:"Minimal Equipment",bodyweight:"Bodyweight Only"})[v]||v||"—"}
+function planEquipmentLabel(v){return ({gym:"Full Gym",dumbbells:"Dumbbells + Bench",minimal:"Minimal Equipment",bodyweight:"Bodyweight Only"})[v]||v||"—"}
 function goalLabel(v){return ({muscle:"Muscle",strength:"Strength",both:"Muscle + Strength",endurance:"Endurance",general:"General Fitness"})[v]||v||"—"}
 function savedPlanMeta(entry){
  const p=entry?.profile||{},days=Number(p.days)||entry?.plan?.length||0,ex=(entry?.plan||[]).reduce((n,d)=>n+(d.items||[]).length,0);
- return `${days} day${days===1?"":"s"} · ${equipmentLabel(p.equipment)} · ${goalLabel(p.goal)} · ${ex} exercises`;
+ return `${days} day${days===1?"":"s"} · ${planEquipmentLabel(p.equipment)} · ${goalLabel(p.goal)} · ${ex} exercises`;
 }
 function savedPlanDate(value){
  if(!value)return"Never";
@@ -1514,12 +1559,14 @@ function savedPlanItemHtml(entry){
    ${active?'<span class="saved-plan-badge active">ACTIVE</span>':""}
   </div>
   <div class="saved-plan-badges">${modified?'<span class="saved-plan-badge modified">Unsaved changes</span>':""}${entry.lastUsedAt?`<span class="saved-plan-badge">Last used ${esc(savedPlanDate(entry.lastUsedAt))}</span>`:""}${entry.continuable&&entry.cycle?`<span class="saved-plan-badge">Week ${Number(entry.cycle.week)||1}</span>`:""}</div>
+  ${entry.scheduledStart?`<div class="saved-plan-schedule">Planned start: ${esc(entry.scheduledStart)} · Activation is manual</div>`:""}
   <div class="saved-plan-item-actions">
-   <button class="savedPlanPreviewBtn" data-planid="${entry.id}">Preview</button>
-   ${active?'<button class="savedPlanUpdateBtn" data-planid="'+entry.id+'">Update saved</button>':'<button class="savedPlanActivateBtn primary" data-planid="'+entry.id+'">Make active</button>'}
-   <button class="savedPlanDuplicateBtn" data-planid="${entry.id}">Duplicate</button>
-   <button class="savedPlanRenameBtn" data-planid="${entry.id}">Rename</button>
-   <button class="savedPlanDeleteBtn saved-plan-danger" data-planid="${entry.id}">Delete</button>
+   <button class="savedPlanPreviewBtn" data-planid="${esc(entry.id)}">Preview</button>
+   <button class="savedPlanScheduleBtn" data-planid="${esc(entry.id)}">Schedule</button>
+   ${active?'<button class="savedPlanUpdateBtn" data-planid="'+esc(entry.id)+'">Update saved</button>':'<button class="savedPlanActivateBtn primary" data-planid="'+esc(entry.id)+'">Make active</button>'}
+   <button class="savedPlanDuplicateBtn" data-planid="${esc(entry.id)}">Duplicate</button>
+   <button class="savedPlanRenameBtn" data-planid="${esc(entry.id)}">Rename</button>
+   <button class="savedPlanDeleteBtn saved-plan-danger" data-planid="${esc(entry.id)}">Delete</button>
   </div>
  </div>`;
 }
@@ -1533,6 +1580,7 @@ function openPlanLibrary(){
    <div class="saved-plan-save-actions">
     <button id="sheetCreateNewPlanBtn" class="primary">Create New Plan</button>
     <button id="sheetSaveCurrentPlanBtn">Save current plan</button>
+    <button id="sheetComparePlansBtn" ${plans.length<2?"disabled":""}>Compare plans</button>
    </div>
    <div class="saved-plan-list">${plans.length?plans.map(savedPlanItemHtml).join(""):'<div class="saved-plan-empty">No saved plans yet.</div>'}</div>`);
 }
@@ -1645,13 +1693,13 @@ function savedPlanPreviewHtml(entry){
 }
 function openSavedPlanPreview(id){
  const entry=savedPlans().find(x=>x.id===id);if(!entry)return;
- openSheet("PLAN PREVIEW",entry.name,`${savedPlanPreviewHtml(entry)}<div class="saved-plan-activate-actions"><button id="previewBackToLibrary">Back to library</button>${entry.id===state.activeSavedPlanId?"":`<button class="savedPlanActivateBtn primary" data-planid="${entry.id}">Make active</button>`}</div>`);
+ openSheet("PLAN PREVIEW",entry.name,`${savedPlanPreviewHtml(entry)}<div class="saved-plan-activate-actions"><button id="previewBackToLibrary">Back to library</button>${entry.id===state.activeSavedPlanId?"":`<button class="savedPlanActivateBtn primary" data-planid="${esc(entry.id)}">Make active</button>`}</div>`);
 }
 function openSavedPlanRename(id){
  const entry=savedPlans().find(x=>x.id===id);if(!entry)return;
  openSheet("RENAME PLAN",entry.name,
   `<label><strong>New name</strong><input id="renameSavedPlanInput" class="field saved-plan-input" maxlength="60" value="${esc(entry.name)}" autocomplete="off"></label>
-   <button id="confirmRenameSavedPlan" class="primary" data-planid="${entry.id}" style="width:100%;margin-top:12px">Rename plan</button>`);
+   <button id="confirmRenameSavedPlan" class="primary" data-planid="${esc(entry.id)}" style="width:100%;margin-top:12px">Rename plan</button>`);
  requestAnimationFrame(()=>$("#renameSavedPlanInput")?.focus());
 }
 function openSavedPlanActivation(id){
@@ -1661,9 +1709,335 @@ function openSavedPlanActivation(id){
   `<div class="saved-plan-sheet-note"><strong>Your current plan will be preserved automatically before switching.</strong><br>Workout history and Progress analytics are never deleted.</div>
    ${savedPlanPreviewHtml(entry)}
    <div class="saved-plan-activate-actions">
-    <button class="confirmActivateSavedPlan primary" data-planid="${entry.id}" data-mode="new">Start as new cycle</button>
-    <button class="confirmActivateSavedPlan" data-planid="${entry.id}" data-mode="continue" ${canContinue?"":"disabled"}>${canContinue?`Continue saved cycle · Week ${Number(entry.cycle.week)||1}`:"No saved cycle to continue"}</button>
+    <button class="confirmActivateSavedPlan primary" data-planid="${esc(entry.id)}" data-mode="new">Start as new cycle</button>
+    <button class="confirmActivateSavedPlan" data-planid="${esc(entry.id)}" data-mode="continue" ${canContinue?"":"disabled"}>${canContinue?`Continue saved cycle · Week ${Number(entry.cycle.week)||1}`:"No saved cycle to continue"}</button>
    </div>`);
+}
+
+
+/* v7.9 safety, explainability, scheduling, analytics, and portable exports */
+function calendarToday(){
+ const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");
+}
+function validCalendarDate(s){
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(String(s||"")))return false;
+ const d=new Date(`${s}T12:00:00Z`);
+ return Number.isFinite(d.getTime())&&d.toISOString().slice(0,10)===s;
+}
+function renderScheduledPlanReminder(){
+ const box=$("#plannedPlanReminder");if(!box)return;
+ const pending=savedPlans().filter(p=>p.id!==state.activeSavedPlanId&&validCalendarDate(p.scheduledStart)).sort((a,b)=>a.scheduledStart.localeCompare(b.scheduledStart));
+ if(!pending.length){box.innerHTML="";return}
+ const today=calendarToday(),due=pending.filter(p=>p.scheduledStart<=today),first=due[0]||pending[0];
+ const note=due.length?`Planned date reached for ${due.length} saved plan${due.length===1?"":"s"}`:`Next planned start: ${first.scheduledStart}`;
+ box.innerHTML=`<div class="saved-plan-active"><strong>${esc(note)}</strong><p class="tiny">${esc(first.name)} · ${esc(first.scheduledStart)}. Dates are reminders inside this app only; plans never activate automatically.</p><button class="savedPlanActivateBtn" data-planid="${esc(first.id)}">Review activation</button></div>`;
+}
+function openScheduleSavedPlan(id){
+ const p=savedPlans().find(x=>x.id===id);if(!p)return;
+ openSheet("PLAN SCHEDULE",p.name,`<div class="saved-plan-sheet-note">Choose an intended start date. This reminder appears on the Program page when you open the app; there are no push notifications or automatic plan changes.</div>
+ <label style="display:block;margin-top:12px">Planned start date<input id="plannedStartInput" class="field" type="date" value="${esc(p.scheduledStart||"")}"></label>
+ <div class="saved-plan-save-actions"><button class="savePlanStartBtn primary" data-planid="${esc(id)}">Save date</button><button class="clearPlanStartBtn" data-planid="${esc(id)}">Clear date</button></div>`);
+}
+function storePlanStart(id,date){
+ const p=savedPlans().find(x=>x.id===id);if(!p||date&&!validCalendarDate(date))return false;
+ p.scheduledStart=date||null;p.updatedAt=new Date().toISOString();return true;
+}
+function planStatsForCompare(p){
+ const days=p?.plan||[],items=days.flatMap(d=>d.items||[]);
+ return {days:days.length,exercises:items.length,unique:new Set(items.map(x=>x.id)),
+  sets:items.reduce((s,x)=>s+(Number.isFinite(Number(x.baseSets))?Math.max(0,Number(x.baseSets)):0),0),
+  minutes:Number(p?.profile?.duration)||0,
+  workload:planVolume(days)};
+}
+function renderPlanComparison(){
+ const a=savedPlans().find(p=>p.id===$("#compareA")?.value),b=savedPlans().find(p=>p.id===$("#compareB")?.value),box=$("#planCompareResult");
+ if(!box)return;
+ if(!a||!b||a.id===b.id){box.innerHTML='<p class="tiny">Choose two different saved plans to compare.</p>';return}
+ const x=planStatsForCompare(a),y=planStatsForCompare(b),overlap=[...x.unique].filter(id=>y.unique.has(id)).length;
+ const kpis=[["Days per week",x.days,y.days],["Planned exercises",x.exercises,y.exercises],["Planned working sets",x.sets,y.sets],["Target minutes / session",x.minutes,y.minutes],["Unique shared exercises",overlap,overlap]];
+ box.innerHTML=`<div class="plan-compare-grid"><div><strong>${esc(a.name)}</strong><span class="tiny">${esc(planModeLabel(a))} · ${esc(planEquipmentLabel(a.profile?.equipment))}</span></div><div><strong>${esc(b.name)}</strong><span class="tiny">${esc(planModeLabel(b))} · ${esc(planEquipmentLabel(b.profile?.equipment))}</span></div></div>
+ <div class="tiny" style="margin-top:8px">Same-exercise overlap: ${overlap} shared of ${x.unique.size} and ${y.unique.size} unique movements. No program is automatically selected.</div>
+ ${kpis.filter(r=>r[0]!=="Unique shared exercises").map(([label,v,w])=>`<div class="cycle-compare-row"><strong>${esc(label)}</strong><span>${v} / ${w}</span></div>`).join("")}
+ <h4>Prescribed exercises by training day</h4>
+ <div class="plan-compare-days">${[a,b].map(p=>`<div><strong>${esc(p.name)}</strong>${(p.plan||[]).map((d,i)=>`<p><strong>${esc(d.weekday||`Day ${i+1}`)} · ${esc(d.title||d.type||"Workout")}</strong></p>${(d.items||[]).map(it=>`<p>${esc(EXMAP[it.id]?.name||it.id)} · ${esc(it.baseSets)} sets × ${esc(it.baseReps||"—")} reps · RPE ${esc(it.baseRpe||"—")}</p>`).join("")||'<p>No exercises</p>'}`).join("")}</div>`).join("")}</div>
+ <h4>Planned muscle exposure (fractional sets)</h4>
+ ${PRIORITY_MUSCLES.map(m=>`<div class="cycle-compare-row"><strong>${esc(m)}</strong>${(x.workload[m]||0).toFixed(1)} / ${(y.workload[m]||0).toFixed(1)}</div>`).join("")}
+ <p class="tiny">Left / right follow the selected plans. Planned exposure is estimated from prescribed sets and muscle mapping; it is not measured muscle growth. Session minutes are user-selected time targets, not measured durations. Exercise and set totals are prescribed, not completed.</p>`;
+}
+function openCompareSavedPlans(){
+ const plans=savedPlans();
+ if(plans.length<2){toast("Save at least two plans to compare");return}
+ const opts=plans.map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join("");
+ openSheet("PLAN COMPARISON","Compare two saved plans",
+ `<div class="saved-plan-sheet-note">This is a descriptive comparison of programming, not a recommendation to switch plans.</div>
+ <div class="plan-compare-fields"><label>Plan A<select id="compareA" class="field">${opts}</select></label><label>Plan B<select id="compareB" class="field">${opts}</select></label></div><div id="planCompareResult"></div>`);
+ $("#compareA").value=plans[0].id;$("#compareB").value=plans[1].id;renderPlanComparison();
+}
+function backupMeta(){state.backupMeta??={};return state.backupMeta}
+function backupReminderStatus(now=Date.now()){
+ const last=Date.parse(backupMeta().lastExportInitiatedAt||"");
+ const elapsed=Number.isFinite(last)?(now-last)/86400000:Infinity;
+ const sessions=history().length;
+ return {remind:sessions>=3&&elapsed>=14,last: Number.isFinite(last)?last:null,sessions};
+}
+function renderBackupHealth(){
+ const box=$("#backupHealth");if(!box)return;
+ const s=backupReminderStatus();
+ const status=s.last?`Last export started: ${new Date(s.last).toLocaleDateString()}`:"No backup export recorded";
+ box.innerHTML=`<strong>${s.remind?"Backup reminder":"Backup status"}</strong><br>${esc(status)} · ${s.sessions} completed sessions.<br>${s.remind?"Consider exporting a JSON backup and checking that the file exists in Files or another location.":"Store exported backups somewhere you can retrieve them."}<br><span class="tiny">A started export does not prove the file was saved. Locate and keep the JSON file before relying on it; reminders appear only here.</span>`;
+}
+function isPlainRecord(x){return x!==null&&typeof x==="object"&&!Array.isArray(x)}
+function recordedWeightUnit(s){return ["kg","lb"].includes(s?.weightUnit)?s.weightUnit:["kg","lb"].includes(s?.unit)?s.unit:null}
+function safeCsvNumber(v){if(v===null||v===undefined||String(v).trim()==="")return"";const n=Number(v);return Number.isFinite(n)?n:""}
+function validRecordDate(v){return (typeof v==="string"||typeof v==="number")&&Number.isFinite(Date.parse(v))}
+function validateBackupPayload(x){
+ const errors=[],warnings=[];
+ if(!isPlainRecord(x))return{ok:false,errors:["JSON root must be an object."],warnings};
+ if(!isPlainRecord(x.profile))errors.push("Profile is missing or malformed.");
+ else {
+  if(!["kg","lb"].includes(x.profile.unit))warnings.push("Profile weight unit is missing or unfamiliar; check units after import.");
+  if(x.profile.days!==undefined&&(!Number.isInteger(Number(x.profile.days))||Number(x.profile.days)<1||Number(x.profile.days)>7))errors.push("Profile training-day count is invalid.");
+ }
+ if(!isPlainRecord(x.cycle))errors.push("Training cycle is missing or malformed.");
+ else if(!Number.isInteger(Number(x.cycle.week))||Number(x.cycle.week)<1||!Number.isInteger(Number(x.cycle.length))||Number(x.cycle.length)<1||Number(x.cycle.length)>104||x.cycle.number!==undefined&&(!Number.isInteger(Number(x.cycle.number))||Number(x.cycle.number)<1))errors.push("Training cycle number, week, or length is invalid.");
+ function checkPlan(p,where){
+  if(!Array.isArray(p)||p.length<1||p.length>7){errors.push(`${where} requires between one and seven training days.`);return}
+  p.forEach((d,i)=>{
+   if(!isPlainRecord(d)||!Array.isArray(d.items)){errors.push(`${where} day ${i+1} has no usable exercise list.`);return}
+   if(d.items.length>100){errors.push(`${where} day ${i+1} has too many exercises.`);return}
+   d.items.forEach((it,j)=>{
+    if(!isPlainRecord(it)||typeof it.id!=="string"||!EXMAP[it.id])errors.push(`${where} day ${i+1}, exercise ${j+1} has an unknown or malformed ID.`);
+    else if(it.baseSets!==undefined&&(!Number.isFinite(Number(it.baseSets))||Number(it.baseSets)<1||Number(it.baseSets)>100))errors.push(`${where} day ${i+1}, exercise ${j+1} has invalid working sets.`);
+   });
+  });
+ }
+ checkPlan(x.plan,"Current plan");
+ for(const key of ["history","recovery","body","savedPlans"]){if(x[key]!==undefined&&!Array.isArray(x[key]))errors.push(`${key} must be an array.`)}
+ if(x.weekLogs!==undefined&&!isPlainRecord(x.weekLogs))errors.push("Current week logs are malformed.");
+ if(x.coaching!==undefined&&!isPlainRecord(x.coaching))errors.push("Coaching state is malformed.");
+ if(Array.isArray(x.history)){
+  if(x.history.length>100000)errors.push("Workout history exceeds the supported import limit.");
+  x.history.forEach((h,i)=>{
+   if(!isPlainRecord(h)||!validRecordDate(h.date)){errors.push(`Session ${i+1} has a missing/invalid date.`);return}
+   if(h.exercises!==undefined&&!Array.isArray(h.exercises)){errors.push(`Session ${i+1} exercises are malformed.`);return}
+   (h.exercises||[]).forEach((ex,j)=>{
+    if(!isPlainRecord(ex)||typeof ex.id!=="string"||!Array.isArray(ex.sets)){errors.push(`Session ${i+1}, exercise ${j+1} is malformed.`);return}
+    if(!EXMAP[ex.id]&&warnings.length<30)warnings.push(`Session ${i+1} refers to an older/unknown exercise ${ex.id}; history will be retained.`);
+    ex.sets.forEach((set,k)=>{
+     if(!isPlainRecord(set)||!["",null,undefined].includes(set.reps)&&(!Number.isFinite(Number(set.reps))||Number(set.reps)<0)||!["",null,undefined].includes(set.weight)&&(!Number.isFinite(Number(set.weight))||Number(set.weight)<0)||!["",null,undefined].includes(set.rpe)&&(!Number.isFinite(Number(set.rpe))||Number(set.rpe)<0||Number(set.rpe)>10))errors.push(`Session ${i+1}, exercise ${j+1}, set ${k+1} is malformed.`);
+    });
+   });
+   if(h.planId!==undefined&&h.planId!==null&&typeof h.planId!=="string")errors.push(`Session ${i+1} has an invalid plan link.`);
+  });
+ }
+ for(const key of ["recovery","body"]){if(Array.isArray(x[key]))x[key].forEach((r,i)=>{if(!isPlainRecord(r)||!validRecordDate(r.date))errors.push(`${key} record ${i+1} has an invalid date or structure.`)})}
+ if(Array.isArray(x.savedPlans)){
+  const ids=new Set();
+  x.savedPlans.forEach((p,i)=>{
+   if(!isPlainRecord(p)||typeof p.id!=="string"||!p.id.trim()||ids.has(p.id)||!isPlainRecord(p.profile)) {errors.push(`Saved plan ${i+1} is malformed or has a duplicate ID.`);return}
+   ids.add(p.id);checkPlan(p.plan,`Saved plan ${i+1}`);
+   if(p.scheduledStart&& !validCalendarDate(p.scheduledStart))errors.push(`Saved plan ${i+1} has an invalid scheduled date.`);
+   if(p.cycle!==undefined&&p.cycle!==null&&(!isPlainRecord(p.cycle)||!Number.isInteger(Number(p.cycle.number))||Number(p.cycle.number)<1))errors.push(`Saved plan ${i+1} has an invalid stored cycle.`);
+   if(p.weekLogs!==undefined&&!isPlainRecord(p.weekLogs))errors.push(`Saved plan ${i+1} has invalid week logs.`);
+  });
+  if(x.activeSavedPlanId!==undefined&&x.activeSavedPlanId!==null&&!ids.has(x.activeSavedPlanId))errors.push("The active saved-plan ID does not exist in the library; correct the backup before import.");
+ }else if(x.activeSavedPlanId)errors.push("Active saved-plan ID is present without a valid library.");
+ if(isPlainRecord(x.profile)&&Array.isArray(x.plan)&&x.profile.days!==undefined&&Number(x.profile.days)!==x.plan.length)warnings.push("Plan days differ from the profile schedule.");
+ if(Array.isArray(x.history)&&x.history.some(h=>h&&!recordedWeightUnit(h)))warnings.push("Older sessions lack recorded weight units; those weights will be labeled unknown rather than guessed.");
+ return{ok:errors.length===0,errors:errors.slice(0,35),warnings:warnings.slice(0,15),days:Array.isArray(x.plan)?x.plan.length:0,plans:Array.isArray(x.savedPlans)?x.savedPlans.length:0,sessions:Array.isArray(x.history)?x.history.length:0};
+}
+
+async function inspectBackupFile(file){
+ if(!file)throw new Error("No file selected.");
+ if(file.size>20*1024*1024)throw new Error("File exceeds the 20 MB import limit.");
+ const parsed=JSON.parse(await file.text());
+ const report=validateBackupPayload(parsed);
+ return {parsed,report};
+}
+function reportBackupValidation(report,mode){
+ const box=$("#backupValidation");if(!box)return;
+ box.textContent=report.ok?`${mode}: structurally valid · ${report.days} days · ${report.plans} saved plans · ${report.sessions} sessions.${report.warnings.length?" Warnings: "+report.warnings.join(" "):""}`:`${mode} blocked: ${report.errors.join(" ")}${report.warnings.length?" Warnings: "+report.warnings.join(" "):""}`;
+}
+function downloadLocalFile(content,name,mime){
+ const blob=new Blob([content],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),30000);
+}
+function csvCell(value){
+ if(value===null||value===undefined)return"";
+ let s=String(value);
+ if(typeof value==="string"&&(/^[\s\u200B-\u200D\uFEFF]*[=+@-]/.test(s)||/^[\t\r\n]/.test(s)))s="'"+s;
+ return '"'+s.replace(/"/g,'""')+'"';
+}
+function csvContent(headers,rows){
+ return "\ufeff"+[headers,...rows].map(row=>row.map(csvCell).join(",")).join("\r\n")+"\r\n";
+}
+function csvRows(kind){
+ const labels=new Map(savedPlans().filter(isPlainRecord).map(p=>[p.id,p.name]));
+ const planName=id=>id?labels.get(id)||"Former saved plan":"Unlinked / legacy";
+ const sessions=history().filter(s=>isPlainRecord(s)&&validRecordDate(s.date));
+ if(kind==="sessions")return{
+  name:"sessions",headers:["date","plan_id","plan_name","cycle","week","day","title","completion_pct","duration_seconds","working_volume","volume_unit","pr_count"],
+  rows:sessions.map(s=>[s.date,s.planId||"",planName(s.planId),safeCsvNumber(s.cycleNumber),safeCsvNumber(s.week),safeCsvNumber(s.dayIndex),s.title||"",safeCsvNumber(s.completion),safeCsvNumber(s.durationSec),safeCsvNumber(s.volume),recordedWeightUnit(s)?`${recordedWeightUnit(s)}·reps`:"unknown",Array.isArray(s.prs)?s.prs.length:0])
+ };
+ if(kind==="sets")return{
+  name:"completed-sets",headers:["session_date","plan_id","plan_name","cycle","week","exercise_id","exercise","set","weight","weight_unit","reps","rpe"],
+  rows:sessions.flatMap(s=>(Array.isArray(s.exercises)?s.exercises:[]).flatMap(ex=>isPlainRecord(ex)&&(Array.isArray(ex.sets))?ex.sets.flatMap((set,i)=>isPlainRecord(set)&&set.done===true&&Number.isFinite(Number(set.reps))&&Number(set.reps)>0?[[s.date,s.planId||"",planName(s.planId),safeCsvNumber(s.cycleNumber),safeCsvNumber(s.week),ex.id||"",EXMAP[ex.id]?.name||ex.id||"Unknown",i+1,safeCsvNumber(set.weight),recordedWeightUnit(s)||"unknown",safeCsvNumber(set.reps),safeCsvNumber(set.rpe)]]:[]):[]))
+ };
+ if(kind==="body")return{
+  name:"body",headers:["date","weight","weight_unit","waist","chest","arm","thigh","measurement_unit","source"],
+  rows:bodyEntries().filter(isPlainRecord).map(b=>[b.date||"",safeCsvNumber(b.weight),["kg","lb"].includes(b.unit)?b.unit:"unknown",safeCsvNumber(b.waist),safeCsvNumber(b.chest),safeCsvNumber(b.arm),safeCsvNumber(b.thigh),["cm","in"].includes(b.measureUnit)?b.measureUnit:"unknown",b.source||""])
+ };
+ if(kind==="recovery")return{
+  name:"recovery",headers:["date","plan_id","plan_name","cycle","week","recovery","sleep","energy","stress","joint_discomfort"],
+  rows:recoveryEntries().filter(isPlainRecord).map(r=>[r.date||"",r.planId||"",planName(r.planId),safeCsvNumber(r.cycleNumber),safeCsvNumber(r.week),safeCsvNumber(r.recovery),safeCsvNumber(r.sleep),safeCsvNumber(r.energy),safeCsvNumber(r.stress),safeCsvNumber(r.joint)])
+ };
+ return null;
+}
+
+function exportCsvKind(kind){
+ const data=csvRows(kind);if(!data)return;
+ if(!data.rows.length){toast("No records yet for this CSV; nothing exported");return}
+ downloadLocalFile(csvContent(data.headers,data.rows),`workout-coach-${data.name}-${calendarToday()}.csv`,"text/csv;charset=utf-8");
+ toast(`CSV export started · ${data.rows.length} rows`);
+}
+function openCsvExport(){
+ openSheet("DATA EXPORT","Export training data as CSV",`<div class="saved-plan-sheet-note">Choose a file to export. CSVs can be opened in spreadsheet software; JSON remains the complete backup and only restore format. Historical set weights may not retain their original units if you changed units in older app versions.</div>
+ <div class="saved-plan-list">${["sessions","sets","body","recovery"].map(k=>`<button class="csvExportChoice" data-csv="${k}">Export ${k==="sets"?"completed sets":k} CSV</button>`).join("")}</div>`);
+}
+function coachEvidenceData(){
+ const x=buildCoachIntelligence(),c=cycle(),ids=[...new Set(plan().flatMap(d=>(d.items||[]).map(it=>it.id)))];
+ const recent=history().filter(s=>s.cycleNumber===c?.number&&(!c?.planId||s.planId===c.planId)).slice(-4);
+ const completed=recent.flatMap(s=>analyticsCompletedSets(s)),reported=completed.filter(x=>Number(x.set.rpe)>0);
+ const exposures=ids.map(id=>({id,trend:exerciseTrend(id)}));
+ return {status:x.status,sessionCount:x.sessions,signals:x.fatigue.signals||[],signalCount:x.fatigue.signalCount,deload:x.fatigue.deloadRecommended,
+  completion:x.fatigue.avgCompletion,reported:reported.length,completed:completed.length,exposures,
+  recommendations:x.recommendations};
+}
+function openCoachEvidence(){
+ const a=coachEvidenceData(),limited=a.sessionCount<4;
+ const rows=a.recommendations.map(r=>{
+  const t=r.trend||{},support=(r.reasons||[]).slice(0,5);
+  return `<div class="audit-exercise"><strong>${esc(r.name||r.title)} · ${esc(r.title)}</strong>
+   <div class="tiny">${t.samples||0} comparable exposures · ${t.samples<2?"Not enough data for a trend":esc(t.label||"Learning")}${Number.isFinite(t.changePct)?` · measured change ${t.changePct.toFixed(1)}%`:""}${Number.isFinite(t.rpeChange)?` · RPE change ${t.rpeChange.toFixed(1)}`:""}</div>
+   <p class="tiny">${esc(r.text)}</p><details><summary>Decision inputs</summary>${support.map(z=>`<p class="tiny">${esc(z)}</p>`).join("")||'<p class="tiny">Not enough evidence yet.</p>'}</details></div>`;
+ }).join("");
+ openSheet("COACH EVIDENCE",`Week ${cycle()?.week||1} · evidence inspection`,
+ `<div class="saved-plan-sheet-note"><strong>${esc(a.status)}</strong> · ${a.sessionCount} completed sessions in current cycle.<br>${a.completed} completed working sets in last four current-cycle sessions · ${a.reported} with RPE (${a.completed?Math.round(a.reported/a.completed*100):0}%).<br>${limited?"Limited current-cycle history: treat trends as preliminary.":"Review these signals alongside your actual performance."}</div>
+ <h4>Fatigue signals</h4>${a.signals.length?a.signals.map(s=>`<p class="tiny">• ${esc(s)}</p>`).join(""):'<p class="tiny">No qualifying fatigue signal currently detected.</p>'}
+ <p class="tiny">Automatic deload: never. Deload threshold met: ${a.deload?"Yes":"No"}; requires at least four sessions in the current cycle plus multiple fatigue indicators.</p>
+ <h4>Exercise-level evidence</h4>${rows||'<p class="tiny">No plan exercises yet.</p>'}
+ <p class="tiny">This audit displays inputs and rule explanations, not a clinical or independently validated assessment of training effectiveness. Exercise trends use the last four recorded exposures across plans; current-cycle fatigue uses current-cycle sessions.</p>`);
+}
+function nextUnfinishedExerciseIndex(){
+ const day=plan()[currentDay];if(!day)return-1;
+ return day.items.findIndex((it,slot)=>{
+  const t=effectiveTarget(it),l=exLog(currentDay,slot,t.sets);
+  return l.sets.slice(0,t.sets).some(x=>!x.done);
+ });
+}
+function jumpToNextUnfinished(){
+ const i=nextUnfinishedExerciseIndex();if(i<0){toast("All working sets marked complete");return}
+ const el=document.querySelector(`.exercise[data-exslot="${i}"]`);
+ const it=plan()[currentDay].items[i],target=effectiveTarget(it),firstPending=exLog(currentDay,i,target.sets).sets.findIndex(s=>!s.done);
+ el?.scrollIntoView({behavior:"smooth",block:"center"});
+ const first=el?.querySelector(`input[data-set="${firstPending}"][data-f="weight"]`);
+ if(first&&!window.matchMedia("(pointer:coarse)").matches)first.focus({preventScroll:true});
+ toast(`Next unfinished: ${EXMAP[plan()[currentDay].items[i].id]?.name||"exercise"}`);
+}
+function repeatPriorCompletedSet(slot){
+ const it=plan()?.[currentDay]?.items?.[slot];if(!it)return false;
+ const t=effectiveTarget(it),sets=exLog(currentDay,slot,t.sets).sets;
+ const next=sets.findIndex((s,i)=>i<t.sets&&!s.done);
+ if(next<=0||!sets[next-1].done||Number(sets[next-1].reps)<=0)return false;
+ const to=sets[next],from=sets[next-1];
+ if((String(to.weight||"").trim()||String(to.reps||"").trim()||String(to.rpe||"").trim())&&!confirm("Replace the next set's existing entries with the preceding completed set?"))return null;
+ to.weight=from.weight;to.reps=from.reps;to.rpe=from.rpe;to.done=false;
+ save();renderToday();return true;
+}
+function cycleSummaryRows(sessions=history()){
+ const group=new Map(),names=new Map(savedPlans().filter(isPlainRecord).map(x=>[x.id,x.name]));
+ (Array.isArray(sessions)?sessions:[]).forEach(s=>{
+  if(!isPlainRecord(s)||!validRecordDate(s.date))return;
+  const id=typeof s.planId==="string"&&s.planId?s.planId:null;
+  const number=Number.isInteger(Number(s.cycleNumber))&&Number(s.cycleNumber)>0?String(s.cycleNumber):"unknown";
+  if(number==="unknown")return; // Do not fabricate a shared training cycle from unlinked legacy sessions.
+  const key=`${id||"legacy"}::${number}`;
+  if(!group.has(key))group.set(key,{key,planId:id,cycle:number,name:id?names.get(id)||"Former saved plan":"Unlinked / legacy",sessions:[],sets:0,minutes:0,volumeByUnit:{},completionTotal:0,completionCount:0});
+  const x=group.get(key);x.sessions.push(s);x.sets+=analyticsCompletedSets(s).length;
+  if(Number.isFinite(Number(s.durationSec))&&Number(s.durationSec)>=0)x.minutes+=Number(s.durationSec)/60;
+  const u=recordedWeightUnit(s)||"unknown",volume=Number(s.volume);
+  if(Number.isFinite(volume)&&volume>=0)x.volumeByUnit[u]=(x.volumeByUnit[u]||0)+volume;
+  if(Number.isFinite(Number(s.completion))){x.completionTotal+=Number(s.completion);x.completionCount++}
+ });
+ return [...group.values()].map(x=>{
+  x.sessions.sort((a,b)=>Date.parse(a.date)-Date.parse(b.date));
+  x.avgCompletion=x.completionCount?x.completionTotal/x.completionCount:null;
+  x.first=x.sessions[0]?.date;x.last=x.sessions.at(-1)?.date;
+  return x;
+ }).sort((a,b)=>Date.parse(a.last)-Date.parse(b.last));
+}
+function cycleExerciseChanges(cycleRow){
+ const ids=[...new Set(cycleRow.sessions.flatMap(s=>(Array.isArray(s.exercises)?s.exercises:[]).filter(isPlainRecord).map(x=>x.id)))];
+ return ids.map(id=>{
+  const points=analyticsExerciseSeries(id,cycleRow.sessions).filter(x=>!x.loaded||recordedWeightUnit(x.session));
+  if(points.length<2||points[0].loaded!==points.at(-1).loaded||points[0].loaded&&new Set(points.map(p=>recordedWeightUnit(p.session))).size!==1)return null;
+  const change=analyticsPctChange(points[0].value,points.at(-1).value);
+  return change===null?null:{id,count:points.length,first:points[0].value,last:points.at(-1).value,loaded:points[0].loaded,unit:points[0].loaded?recordedWeightUnit(points[0].session):"reps",change};
+ }).filter(Boolean).sort((a,b)=>b.count-a.count).slice(0,3);
+}
+function localCalendarDate(value){
+ if(typeof value==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(value)&&validCalendarDate(value))return value;
+ const d=new Date(value);if(!Number.isFinite(d.getTime()))return null;
+ return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");
+}
+function consistencyWeeks(source=history(),now=new Date()){
+ const mon=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+ mon.setDate(mon.getDate()-((mon.getDay()+6)%7));
+ return Array.from({length:8},(_,i)=>{
+  const start=new Date(mon);start.setDate(mon.getDate()-(7-i)*7);const end=new Date(start);end.setDate(start.getDate()+7);
+  const startKey=localCalendarDate(start),endKey=localCalendarDate(end);
+  const n=(Array.isArray(source)?source:[]).filter(s=>{const key=localCalendarDate(s?.date);return key&&key>=startKey&&key<endKey}).length;
+  return{label:start.toLocaleDateString(undefined,{month:"short",day:"numeric"}),sessions:n,partial:i===7,start:startKey,end:endKey};
+ });
+}
+function renderCycleComparison(){
+ const box=$("#cycleComparison");if(!box)return;
+ const selectedA=$("#cycleA")?.value,selectedB=$("#cycleB")?.value;
+ const cycles=cycleSummaryRows(),weeks=consistencyWeeks(),total=weeks.reduce((n,w)=>n+w.sessions,0),unlinked=history().filter(s=>isPlainRecord(s)&&validRecordDate(s.date)&&!(Number.isInteger(Number(s.cycleNumber))&&Number(s.cycleNumber)>0)).length;
+ const bars=`<div class="analytics-week-row">${weeks.map(w=>`<div class="analytics-week-chip"><strong>${w.sessions} session${w.sessions===1?"":"s"}</strong><span>${esc(w.label)}${w.partial?" · partial week":""}</span></div>`).join("")}</div>`;
+ let output=`<p class="tiny">Completed sessions by calendar week · last eight weeks, including zero-session weeks. The current week is partial. Rest days are not missed sessions; past plan schedules may differ, so an empty week alone is not proof of a missed workout. ${total} recorded sessions.${unlinked?` ${unlinked} sessions lack cycle identifiers and cannot be assigned to a cycle comparison.`:""}</p>${bars}`;
+ if(cycles.length<2){box.innerHTML=output+'<div class="analytics-empty">Finish sessions in at least two distinct training cycles to compare them.</div>';return}
+ const options=cycles.map(c=>`<option value="${esc(c.key)}">${esc(c.name)} · Cycle ${esc(c.cycle)} (${c.sessions.length} sessions)</option>`).join("");
+ output+=`<h4>Compare training cycles</h4><div class="plan-compare-fields"><label>Cycle A<select id="cycleA" class="field">${options}</select></label><label>Cycle B<select id="cycleB" class="field">${options}</select></label></div><div id="cycleCompareResult"></div>`;
+ box.innerHTML=output;
+ $("#cycleA").value=cycles.some(c=>c.key===selectedA)?selectedA:cycles.at(-2).key;
+ $("#cycleB").value=cycles.some(c=>c.key===selectedB)?selectedB:cycles.at(-1).key;
+ renderCycleComparisonResult();
+}
+function cycleVolumeText(c){
+ const keys=Object.keys(c.volumeByUnit).filter(k=>c.volumeByUnit[k]>0);
+ if(!keys.length)return"No logged volume";
+ if(keys.length!==1||keys[0]==="unknown")return"Unknown / mixed units";
+ return `${Number(c.volumeByUnit[keys[0]].toFixed(1))} ${keys[0]}·reps`;
+}
+function renderCycleComparisonResult(){
+ const box=$("#cycleCompareResult");if(!box)return;
+ const all=cycleSummaryRows(),a=all.find(x=>x.key===$("#cycleA")?.value),b=all.find(x=>x.key===$("#cycleB")?.value);
+ if(!a||!b){box.innerHTML="";return}
+ if(a.key===b.key){box.innerHTML='<p class="tiny">Choose two different cycles.</p>';return}
+ const span=c=>Math.max(1,Math.round((Date.parse(c.last)-Date.parse(c.first))/86400000)+1);
+ const metrics=[["Recorded dates",a.first?.slice(0,10)+" – "+a.last?.slice(0,10),b.first?.slice(0,10)+" – "+b.last?.slice(0,10)],["Observed span (days)",span(a),span(b)],["Completed sessions",a.sessions.length,b.sessions.length],["Working sets",a.sets,b.sets],["Avg session completion",a.avgCompletion===null?"Unknown":a.avgCompletion.toFixed(0)+"%",b.avgCompletion===null?"Unknown":b.avgCompletion.toFixed(0)+"%"],["Training hours",Number((a.minutes/60).toFixed(1)),Number((b.minutes/60).toFixed(1))],["Logged volume",cycleVolumeText(a),cycleVolumeText(b)]];
+ const ex=cycleExerciseChanges(b),differentPlans=a.planId!==b.planId;
+ const exerciseIds=c=>new Set(c.sessions.flatMap(s=>(Array.isArray(s.exercises)?s.exercises:[]).filter(isPlainRecord).map(x=>x.id)));
+ const idsA=exerciseIds(a),idsB=exerciseIds(b),shared=[...idsA].filter(id=>idsB.has(id)),added=[...idsB].filter(id=>!idsA.has(id)),removed=[...idsA].filter(id=>!idsB.has(id));
+ const names=ids=>ids.map(id=>EXMAP[id]?.name||id).join(", ")||"None";
+ box.innerHTML=`<p class="tiny" style="margin-top:8px">Left / right represent different recorded cycles. Observed spans are ${span(a)===span(b)?"equal":"unequal"} (${span(a)} vs ${span(b)} days), and session counts may differ${differentPlans?"; these are different saved plans":""}. Volume uses recorded units only; unknown/mixed units cannot be fairly compared. Completion is the mean of available saved session percentages.</p>
+ ${metrics.map(([name,x,y])=>`<div class="cycle-compare-row"><strong>${esc(name)}</strong>${esc(x)} / ${esc(y)}</div>`).join("")}
+ <h4>Exercises across the cycles</h4><p class="tiny">Shared: ${shared.length} · only Cycle B: ${added.length} · only Cycle A: ${removed.length}. Recorded exercises reflect completed sessions, not an archived plan prescription.</p>
+ <div class="cycle-compare-row"><strong>Only Cycle B</strong>${esc(names(added))}</div>
+ <div class="cycle-compare-row"><strong>Only Cycle A</strong>${esc(names(removed))}</div>
+ <h4>Exercise trends within Cycle B</h4>${ex.length?ex.map(e=>`<div class="cycle-compare-row"><strong>${esc(EXMAP[e.id]?.name||e.id)}</strong>${e.count} exposures · ${e.loaded?`estimated 1RM (${e.unit})`:"best-set reps"} ${e.first.toFixed(1)} → ${e.last.toFixed(1)} (${e.change>=0?"+":""}${e.change.toFixed(1)}%)</div>`).join(""):'<p class="tiny">At least two comparable completed exposures with known matching units are needed per exercise.</p>'}`;
 }
 
 function personalizationSettings(){
@@ -1776,13 +2150,17 @@ function renderSessionClock(){
 function clearSessionRuntime(dayIdx=currentDay){if(state.sessionRuntime)delete state.sessionRuntime[sessionKey(dayIdx)]}
 function isCompoundExercise(ex){return !!ex&&COMPOUND_PATTERNS.has(ex.pattern)}
 function lastPerformanceSummary(exId){
- const rec=lastRecord(exId);if(!rec)return null;const valid=(rec.sets||[]).filter(s=>s.done!==false&&Number(s.reps)>0);
- if(!valid.length)return null;const parts=valid.slice(0,4).map(s=>`${Number(s.weight)||0}${unit()} × ${Number(s.reps)||0}${Number(s.rpe)>0?` @${Number(s.rpe)}`:""}`);
- return {text:parts.join(" · "),record:rec};
+ const row=exerciseHistoryRows(exId).at(-1);if(!row)return null;
+ const rec=row.record,valid=(rec.sets||[]).filter(s=>s.done!==false&&Number(s.reps)>0);
+ if(!valid.length)return null;
+ const u=recordedWeightUnit(row.session);
+ const parts=valid.slice(0,4).map(s=>`${Number(s.weight)||0} ${u||"unit unknown"} × ${Number(s.reps)||0}${Number(s.rpe)>0?` @${Number(s.rpe)}`:""}`);
+ return{text:parts.join(" · "),record:rec,unit:u};
 }
 function lastSessionForExercise(exId){
- const sessions=history().filter(s=>(s.exercises||[]).some(x=>x.id===exId));return sessions.at(-1)||null;
+ const rows=exerciseHistoryRows(exId);return rows.at(-1)?.session||null;
 }
+
 function workingVolumeForLogs(d){let v=0;d.items.forEach((it,slot)=>{const t=effectiveTarget(it),l=exLog(currentDay,slot,t.sets);l.sets.slice(0,t.sets).filter(s=>s.done).forEach(s=>v+=(Number(s.weight)||0)*(Number(s.reps)||0))});return v}
 
 function toast(m){const e=$("#toast");e.textContent=m;e.classList.remove("hidden");clearTimeout(e.t);e.t=setTimeout(()=>e.classList.add("hidden"),2400)}
@@ -2496,7 +2874,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.8.2 — Reliability Report",
+  "Adaptive Workout Coach v7.9.0 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -2646,6 +3024,39 @@ async function runReliabilitySuite(){
   check(JSON.stringify(copyOfActive.plan)===JSON.stringify(plan()),"Create New Plan: active-plan clone did not preserve exact workout structure");
   check(savedPlans().some(x=>x.id===createdOnly.id)&&savedPlans().some(x=>x.id===copyOfActive.id),"Create New Plan: created plans missing from library");
 
+
+  // v7.9 non-destructive safety/analytics coverage checks.
+  const backupSample={profile:reliabilityClone(profile()),cycle:reliabilityClone(cycle()),plan:reliabilityClone(plan()),savedPlans:[],history:[]};
+  check(validateBackupPayload(backupSample).ok,"Data safety: valid backup rejected");
+  check(!validateBackupPayload({...backupSample,plan:[{items:[{id:"not_real_exercise"}]}]}).ok,"Data safety: unknown exercise passed validation");
+  check(!validateBackupPayload({...backupSample,history:"invalid"}).ok,"Data safety: malformed history passed validation");
+  check(validCalendarDate("2026-09-30")&&!validCalendarDate("2026-02-31"),"Scheduling: invalid calendar date accepted");
+  const scheduleTest=savedPlans()[0];check(storePlanStart(scheduleTest.id,"2026-09-30")&&scheduleTest.scheduledStart==="2026-09-30","Scheduling: date was not saved");
+  const compStats=planStatsForCompare(scheduleTest);
+  check(compStats.days>0&&compStats.exercises>0,"Plan comparison: plan statistics missing");
+  const csvExample=csvContent(["name","sets"],[["=SUM(1,2)",3]]);
+  check(csvExample.includes("'=SUM")&&csvExample.includes('"3"'),"CSV export: formula injection escaping failed");
+  const seedCycle={date:"2026-09-08T12:00:00Z",planId:"p",cycleNumber:11,completion:100,volume:100,durationSec:3600,exercises:[{id:"db_bench",sets:[{done:true,reps:10,weight:20,rpe:7}]}]};
+  const grouped=cycleSummaryRows([seedCycle,{...seedCycle,cycleNumber:12,date:"2026-09-09T12:00:00Z"}]);
+  check(grouped.length===2&&grouped.every(c=>c.sets===1),"Cycle analytics: histories incorrectly combined");
+  check(!validateBackupPayload({...backupSample,history:[null]}).ok,"Data safety: malformed session record passed validation");
+  check(consistencyWeeks([],new Date("2026-09-18T12:00:00")).length===8,"Consistency: empty weeks not retained");
+  check(csvRows("sessions").headers.length===12&&csvRows("sessions").headers.includes("volume_unit"),"CSV export: session unit columns are incomplete");
+  // v7.9 data-integrity / unit / lifecycle adversarial tests.
+  check(!validateBackupPayload({...backupSample,history:[{date:"2026-09-08",exercises:[{id:"db_bench",sets:null}]}]}).ok,"Data safety: malformed nested session passed validation");
+  check(!validateBackupPayload({...backupSample,activeSavedPlanId:"orphan-id"}).ok,"Data safety: dangling saved-plan ID passed validation");
+  check(!validateBackupPayload({...backupSample,savedPlans:[{id:"x",profile:profile(),plan:[{items:[{id:"missing"}]}]}]}).ok,"Data safety: invalid saved plan exercise passed validation");
+  check(validateBackupPayload({...backupSample,history:[{date:"2026-09-08",cycleNumber:1,exercises:[{id:"old_discontinued",sets:[{done:true,reps:5}]}]}]}).ok,"Data safety: historical unrecognized exercise should be retained with a warning");
+  check(csvContent(["user"],[["\t=1+1"],["line\n=@SUM(1)"]]).includes("'\t=1+1"),"CSV export: tab/line control-cell injection protection missing");
+  check(safeCsvNumber("Infinity")===""&&safeCsvNumber("not a number")==="","CSV export: invalid numeric values not filtered");
+  const oldCycle=cycleSummaryRows([{...seedCycle,cycleNumber:null},{...seedCycle,cycleNumber:17,weightUnit:"kg"}]);
+  check(oldCycle.length===1&&oldCycle[0].cycle==="17","Cycle analytics: fabricated a cycle for missing legacy IDs");
+  check(consistencyWeeks([{...seedCycle,date:"2026-09-14"}],new Date("2026-09-18T12:00:00")).at(-1).sessions===1,"Consistency: date-only local week was misclassified");
+  const dupScheduled= savedPlans().find(p=>p.id===scheduleTest.id);
+  const duplicate=duplicateSavedPlan(dupScheduled.id);
+  check(duplicate.scheduledStart===null&&dupScheduled.scheduledStart==="2026-09-30","Scheduling: duplicate inherited an existing reminder date");
+  check(recordedWeightUnit({})===null&&recordedWeightUnit({weightUnit:"lb"})==="lb","Historical weight units: guessed absent metadata");
+  check(csvRows("sets").headers.includes("weight_unit"),"CSV export: set unit metadata missing");
 
   const levels=["Beginner","Intermediate","Advanced"];
   const equipment=["gym","dumbbells","minimal","bodyweight"];
@@ -2804,7 +3215,7 @@ function parseRange(s){const n=String(s).match(/\d+/g)?.map(Number)||[0,0];retur
 function highRpe(s){const n=String(s).match(/\d+(?:\.\d+)?/g)?.map(Number)||[8];return n[n.length-1]}
 function e1rm(w,r){w=Number(w);r=Number(r);return w>0&&r>0?w*(1+r/30):0}
 function previousRecords(exId){return history().flatMap(s=>(s.exercises||[]).filter(x=>x.id===exId))}
-function lastRecord(exId){const a=previousRecords(exId);return a.at(-1)||null}
+function lastRecord(exId){return exerciseHistoryRows(exId).at(-1)?.record||null}
 
 function exerciseHistoryRows(exId){
  return history().flatMap(session=>{
@@ -2827,9 +3238,9 @@ function recordPerformanceMetric(row){
  };
 }
 function exerciseTrend(exId){
- const metrics=exerciseHistoryRows(exId).map(recordPerformanceMetric).filter(Boolean).slice(-4);
+ const metrics=exerciseHistoryRows(exId).map(row=>{const m=recordPerformanceMetric(row);return m?{...m,weightUnit:recordedWeightUnit(row.session)}:null}).filter(Boolean).slice(-4);
  if(metrics.length<2)return{status:"learning",label:"Learning",samples:metrics.length,changePct:null,rpeChange:null,metrics};
- const comparable=metrics.filter(x=>x.kind===metrics.at(-1).kind),first=comparable[0],last=comparable.at(-1);
+ const comparable=metrics.filter(x=>x.kind===metrics.at(-1).kind&&(!x.kind||x.kind!=="e1rm"||x.weightUnit&&x.weightUnit===metrics.at(-1).weightUnit)),first=comparable[0],last=comparable.at(-1);
  if(comparable.length<2||!first?.metric)return{status:"learning",label:"Learning",samples:metrics.length,changePct:null,rpeChange:null,metrics};
  const changePct=(last.metric-first.metric)/Math.max(.001,Math.abs(first.metric))*100;
  const rpeChange=(last.avgRpe&&first.avgRpe)?last.avgRpe-first.avgRpe:0;
@@ -2899,6 +3310,7 @@ function easierProgressionOption(e,p){
 function longTermExerciseRecommendation(item,dayIdx,slot,fatigue){
  const ex=EXMAP[item.id],target=effectiveTarget(item),trend=exerciseTrend(item.id),last=lastRecord(item.id);
  const base={dayIdx,slot,exId:item.id,name:ex?.name||item.id,trend,priorityMuscle:item.priorityMuscle||exerciseCategory(ex),action:null,reasons:[]};
+ if(last&&ex?.resistanceClass==="loaded"&&(last.sets||[]).some(s=>Number(s.weight)>0)&&recordedWeightUnit(lastSessionForExercise(item.id))!==unit())return{...base,id:recommendationId(dayIdx,slot,"unit-unknown"),kind:"hold",tone:"learning",title:"Confirm weight units",text:`${ex.name}: the previous recorded load is from an unknown or different unit. Log a fresh comparable performance before considering load changes.`,reasons:["An older session did not preserve units, or its units differ from the current profile.","Never treat an unknown historical load as the current unit."]};
  if(!last)return{...base,id:recommendationId(dayIdx,slot,"baseline"),kind:"baseline",tone:"learning",title:"Establish baseline",text:`${ex.name}: complete a clean baseline inside ${target.reps} reps at RPE ${target.rpe}.`,reasons:["No completed performance history exists for this exercise yet."]};
  const valid=(last.sets||[]).filter(s=>s.done!==false&&Number(s.reps)>0);
  if(!valid.length)return{...base,id:recommendationId(dayIdx,slot,"baseline2"),kind:"baseline",tone:"learning",title:"Re-establish baseline",text:`${ex.name}: prior data are incomplete; hold the programmed target and log the working sets.`,reasons:["The most recent saved exposure has no usable completed sets."]};
@@ -2913,6 +3325,11 @@ function longTermExerciseRecommendation(item,dayIdx,slot,fatigue){
      text:canReduce?`${ex.name}: reduce ${target.sets} → ${target.sets-1} working sets next exposure and hold load.`:`${ex.name}: hold the current target until performance stabilizes.`,
      action:canReduce?{kind:"set",delta:-1}:null,
      reasons:[`Multi-session performance trend is ${trend.changePct?.toFixed(1)}%.`,avgRpe?`Latest average RPE is ${avgRpe.toFixed(1)}.`:"Latest effort data are limited.","The recommendation reduces fatigue before considering another load increase."]};
+ }
+ if(allTop&&ex.resistanceClass==="loaded"&&(maxW<=0||!rpes.length)){
+  return {...base,id:recommendationId(dayIdx,slot,"missing-inputs"),kind:"hold",tone:"learning",title:"Complete progression inputs",
+    text:`${ex.name}: the rep target was met, but log both actual load and RPE before accepting a load-increase suggestion.`,
+    reasons:[maxW<=0?"No positive external load was recorded.":"External load was recorded.",!rpes.length?"No working-set RPE was recorded.":"Working-set RPE was recorded.","Without these inputs, the coach cannot verify whether increasing load matches target effort."]};
  }
  if(allTop&&(!avgRpe||avgRpe<=maxR)){
    if(nonLoadedNoNumericLoad){
@@ -3035,13 +3452,16 @@ function openCoachReview(){
  $("#sheet").classList.add("coach-review-sheet");
 }
 
-function previousBestE1RM(exId){let best=0;previousRecords(exId).forEach(r=>(r.sets||[]).forEach(s=>{if(s.done!==false)best=Math.max(best,e1rm(s.weight,s.reps))}));return best}
+function previousBestE1RM(exId){
+ let best=0;exerciseHistoryRows(exId).filter(row=>recordedWeightUnit(row.session)===unit()).forEach(row=>(row.record.sets||[]).forEach(s=>{if(s.done!==false)best=Math.max(best,e1rm(s.weight,s.reps))}));return best;
+}
 function suggestion(item){
  const target=effectiveTarget(item),ex=EXMAP[item.id],last=lastRecord(item.id),ready=readinessScore(),rec=latestRecovery();
  if(isDeload())return{cls:"deload",type:"deload",text:"Deload week: reduce working sets and keep effort around RPE 6–7. Avoid chasing PRs.",why:["You applied a coach-recommended deload for the current week.","The app reduces effective set count and target effort temporarily.","The deload ends automatically when the week advances."]};
  if(rec&&rec.joint>=7)return{cls:"low",type:"hold",text:"High joint/tendon discomfort reported. Hold progression and consider swapping the exercise if it irritates the affected area.",why:["Latest joint/tendon discomfort is 7/10 or higher.","Progression is deprioritized when discomfort is high."]};
  if(ready!==null&&ready<5)return{cls:"low",type:"hold",text:"Recovery is low. Hold load today and consider one fewer set if performance drops.",why:[`Readiness is ${ready}/10.`,"Low readiness increases the chance that extra load or volume is poorly tolerated."]};
  if(!last)return{cls:"warn",type:"baseline",text:"Establish a clean baseline. Stay inside the rep range and target RPE.",why:["No completed previous session for this exercise is available."]};
+ if(ex?.resistanceClass==="loaded"&&(last.sets||[]).some(s=>Number(s.weight)>0)&&recordedWeightUnit(lastSessionForExercise(item.id))!==unit())return{cls:"warn",type:"hold",text:"Previous load units are unknown or different. Record a new comparable baseline before considering a load increase.",why:["Historical load may not use the current weight unit.","Do not compare or copy unverified weight units."]};
  const valid=(last.sets||[]).filter(s=>Number(s.reps)>0&&Number(s.weight)>=0);
  if(!valid.length)return{cls:"warn",type:"baseline",text:"Re-establish a baseline; prior set data were incomplete.",why:["The most recent session has no usable completed set data."]};
  const [lo,hi]=parseRange(target.reps),maxR=highRpe(target.rpe);
@@ -3124,18 +3544,21 @@ function renderToday(){
  const box=$("#exerciseList");box.innerHTML="";
  d.items.forEach((item,slot)=>{
    const ex=EXMAP[item.id],t=effectiveTarget(item),log=exLog(currentDay,slot,t.sets),rec=suggestion(item),prev=lastPerformanceSummary(item.id);
-   const c=document.createElement("section");c.className="card exercise";
+   const c=document.createElement("section");c.className="card exercise";c.dataset.exslot=String(slot);
    c.innerHTML=`<div class="exhead"><h3>${slot+1}. ${esc(ex.name)}</h3><div class="muted"><strong>${t.sets} sets · ${esc(t.reps)} reps · RPE ${esc(t.rpe)}${t.load?` · target ${t.load} ${unit()}`:""}</strong></div><span class="badge">${esc(ex.muscles)}</span><span class="badge">Rest ${fmt(item.rest)}</span>${isAdjusted(item)?'<span class="badge adjusted">User adjusted</span>':""}</div>
    <div class="targetrow"><button class="repMinus" data-slot="${slot}">−1 rep</button><button class="repPlus" data-slot="${slot}">+1 rep</button><button class="setMinus" data-slot="${slot}">− set</button><button class="setPlus" data-slot="${slot}">+ set</button><button class="editTarget" data-slot="${slot}">Edit target</button>${isAdjusted(item)?`<button class="resetTarget" data-slot="${slot}">Reset target</button>`:""}</div>
    ${prev?`<div class="prevperf"><div class="row"><div><strong>Last performance</strong><br>${esc(prev.text)}</div><button class="useLastBtn" data-slot="${slot}">Prefill last</button></div></div>`:`<div class="prevperf"><strong>Last performance:</strong> No completed history yet.</div>`}
    ${coachingRecommendationHtml(item,slot,rec)}
-   <div class="actions"><button class="exerciseDetailBtn" data-exid="${item.id}">Exercise details</button><button class="visualBtn" data-slot="${slot}">Visual only</button><button class="swapBtn" data-slot="${slot}">Swap exercise</button><button class="timerBtn" data-slot="${slot}">⏱ Rest</button></div>
+   <div class="actions"><button class="exerciseDetailBtn" data-exid="${item.id}">Exercise details</button><button class="visualBtn" data-slot="${slot}">Visual only</button><button class="swapBtn" data-slot="${slot}">Swap exercise</button><button class="timerBtn" data-slot="${slot}">⏱ Rest</button><button class="repeatSetBtn" data-slot="${slot}">Repeat previous set</button></div>
    <div class="working-label">Working sets</div>
    <div class="sets"><div class="setrow head"><div>Set</div><div>Weight</div><div>Reps</div><div>RPE</div><div>Done</div></div>${log.sets.slice(0,t.sets).map((s,j)=>`<div class="setrow"><strong>${j+1}</strong><input data-slot="${slot}" data-set="${j}" data-f="weight" value="${esc(s.weight)}" inputmode="decimal" placeholder="${(ex.equipment||[]).includes("bodyweight")?"load "+unit():unit()}"><input data-slot="${slot}" data-set="${j}" data-f="reps" value="${esc(s.reps)}" inputmode="numeric" placeholder="reps"><input data-slot="${slot}" data-set="${j}" data-f="rpe" value="${esc(s.rpe)}" inputmode="decimal" placeholder="${esc(t.rpe)}"><button class="check ${s.done?"done":""}" data-check="${slot}:${j}">${s.done?"✓":""}</button></div>`).join("")}</div>
    <div class="note"><textarea data-note="${slot}" placeholder="Exercise notes...">${esc(log.note||"")}</textarea></div>`;
    box.appendChild(c);
  });
- updateProgress();renderSessionClock();$("#bodyweightLimitation")?.classList.toggle("hidden",profile().equipment!=="bodyweight");save();
+ updateProgress();renderSessionClock();
+ const upcoming=nextUnfinishedExerciseIndex(),notice=$("#nextSetNotice");
+ if(notice)notice.textContent=upcoming<0?"All working sets checked off.":"Next unfinished: "+(EXMAP[d.items[upcoming].id]?.name||"Exercise");
+ $("#bodyweightLimitation")?.classList.toggle("hidden",profile().equipment!=="bodyweight");save();
 }
 function updateProgress(){
  const d=plan()[currentDay];let total=0,done=0;d.items.forEach((it,s)=>{const t=effectiveTarget(it);total+=t.sets;done+=exLog(currentDay,s,t.sets).sets.slice(0,t.sets).filter(x=>x.done).length});const p=total?Math.round(done/total*100):0;$("#pct").textContent=p+"%";$("#bar").style.width=p+"%";
@@ -3195,7 +3618,7 @@ function finishSession(){
 function finalizeSession(){
  const s=computeFinishSummary(),pid=cycle().planId||state.activeSavedPlanId||null,existing=history().findIndex(x=>x.cycleNumber===cycle().number&&x.week===cycle().week&&(!pid||x.planId===pid)&&(x.dayIndex===currentDay||(x.dayIndex===undefined&&x.title===s.d.title)));
  if(existing>=0&&!confirm("A saved session already exists for this training day and week. Replace that saved session instead of creating a duplicate?"))return;
- pauseSession();const record={date:new Date().toISOString(),planId:pid,cycleNumber:cycle().number,week:cycle().week,dayIndex:currentDay,title:s.d.title,completion:s.completion,durationSec:s.durationSec,volume:s.volume,warmupSets:s.warmupDone,prs:s.prs,exercises:s.records};
+ pauseSession();const record={date:new Date().toISOString(),weightUnit:unit(),planId:pid,cycleNumber:cycle().number,week:cycle().week,dayIndex:currentDay,title:s.d.title,completion:s.completion,durationSec:s.durationSec,volume:s.volume,warmupSets:s.warmupDone,prs:s.prs,exercises:s.records};
  if(existing>=0)history()[existing]=record;else history().push(record);clearSessionRuntime();save();renderProgress();closeSheet();
  openSheet("SESSION COMPLETE",s.d.title,`<div class="finish-grid"><div class="finish-stat"><div class="label">Completion</div><strong>${s.completion}%</strong></div><div class="finish-stat"><div class="label">Duration</div><strong>${fmtLong(s.durationSec)}</strong></div><div class="finish-stat"><div class="label">Working volume</div><strong>${Math.round(s.volume).toLocaleString()}</strong></div><div class="finish-stat"><div class="label">PRs</div><strong>${s.prs.length}</strong></div></div>${s.prs.length?s.prs.map(p=>`<div class="summary-pr"><strong>PR · ${esc(p.name)}</strong><br>${p.weight} ${p.unit} × ${p.reps} · estimated 1RM ${Math.round(p.e1rm*10)/10} ${p.unit}</div>`).join(""):'<p class="muted">No new estimated-1RM PRs this session. Consistent quality work still counts.</p>'}<p class="tiny">Warm-up work was recorded separately and excluded from working-volume and PR calculations.</p>`);renderToday();toast("Session saved")
 }
@@ -3221,7 +3644,7 @@ function renderCycle(){
  if(isDeload())$("#cycleAdvice").textContent="Coach-recommended deload is active: effective working sets are reduced and target effort is RPE 6–7 for this week.";
  else if(c.week>=c.length)$("#cycleAdvice").textContent="Final scheduled week. Deloading is no longer automatic; Coach Review uses accumulated performance and recovery data to recommend it only when supported.";
  else $("#cycleAdvice").textContent=`Current phase: ${phaseName()}. Progress load or reps only when performance and recovery support it.`;
- renderCoachIntelligence();renderProgramPlanOverview();renderSavedPlanSummary();
+ renderCoachIntelligence();renderProgramPlanOverview();renderSavedPlanSummary();renderScheduledPlanReminder();
  const v=muscleVolume(),max=Math.max(1,...Object.values(v));$("#volumeBox").innerHTML=Object.entries(v).sort((a,b)=>b[1]-a[1]).map(([m,n])=>`<div class="volumeRow"><strong>${esc(m)}</strong><div class="volbar"><div style="width:${Math.min(100,n/max*100)}%"></div></div><span>${n.toFixed(1)}</span></div>`).join("");
  const ws=(c.weekSummaries||[]);$("#weeklyReview").innerHTML=ws.length?ws.slice().reverse().map(w=>`<div class="historyitem weekly-coach-history"><div class="row"><strong>Week ${w.week}</strong><span class="coach-mini-status">${esc(w.coachStatus||"Review")}</span></div><div class="tiny">${w.sessions} sessions · avg completion ${w.avgCompletion}% · readiness ${w.readiness??"—"}${w.progressing!==undefined?` · ${w.progressing} progressing · ${w.fatigueSignals||0} fatigue signals`:""}</div><div class="weekly-coach-note">${esc(w.note)}</div></div>`).join(""):'<div class="historyitem">No completed week summaries yet.</div>';
 }
@@ -3368,20 +3791,23 @@ function renderStrengthAnalytics(h){
  }
  if(!analyticsExerciseId||!options.some(x=>x.id===analyticsExerciseId))analyticsExerciseId=options[0].id;
  select.innerHTML=options.map(o=>`<option value="${o.id}"${o.id===analyticsExerciseId?" selected":""}>${esc(o.name)} · ${o.count}</option>`).join("");
- const ex=EXMAP[analyticsExerciseId],series=analyticsExerciseSeries(analyticsExerciseId,h);
- if(!series.length){$("#strengthAnalytics").innerHTML='<div class="analytics-empty">No usable completed sets in this range.</div>';return}
- const loaded=series.some(x=>x.loaded),vals=series.map(x=>x.value),first=vals[0],last=vals.at(-1),delta=analyticsPctChange(first,last);
+ const ex=EXMAP[analyticsExerciseId],raw=analyticsExerciseSeries(analyticsExerciseId,h);
+ if(!raw.length){$("#strengthAnalytics").innerHTML='<div class="analytics-empty">No usable completed sets in this range.</div>';return}
+ const latest=raw.at(-1),loaded=latest.loaded,recordUnit=loaded?recordedWeightUnit(latest.session):null;
+ if(loaded&&!recordUnit){$("#strengthAnalytics").innerHTML='<div class="analytics-empty">The most recent loaded workout has no stored weight unit. Its weights are preserved, but a comparable trend cannot be calculated until you log a new session with a known unit.</div>';return}
+ const series=raw.filter(x=>x.loaded===loaded&&(!loaded||recordedWeightUnit(x.session)===recordUnit));
+ const excluded=raw.length-series.length,vals=series.map(x=>x.value),first=vals[0],last=vals.at(-1),delta=series.length>1?analyticsPctChange(first,last):null;
  const labels=series.map(x=>new Date(x.date).toLocaleDateString(undefined,{month:"short",day:"numeric"}));
  const best=Math.max(...vals),lastSet=series.at(-1).bestSet;
  const deltaText=delta===null?"Baseline":`${delta>=0?"+":""}${delta.toFixed(1)}%`;
  const deltaClass=delta===null?"flat":delta>1?"up":delta<-1?"down":"flat";
- const metricLabel=loaded?"Estimated 1RM":"Best-set reps",metricUnit=loaded?` ${unit()}`:" reps";
- $("#strengthAnalytics").innerHTML=`<div class="analytics-main-stat"><div><span class="tiny">${metricLabel}</span><br><strong>${analyticsNumber(last,loaded?1:0)}${metricUnit}</strong></div><span class="analytics-delta ${deltaClass}">${deltaText}</span></div>
+ const metricLabel=loaded?"Estimated 1RM":"Best-set reps",metricUnit=loaded?` ${recordUnit}`:" reps";
+ $("#strengthAnalytics").innerHTML=`${excluded?`<p class="tiny">${excluded} exposure${excluded===1?" was":"s were"} excluded from this trend because the performance type or recorded weight unit was different/unknown. No unit conversion is inferred.</p>`:""}<div class="analytics-main-stat"><div><span class="tiny">${metricLabel}</span><br><strong>${analyticsNumber(last,loaded?1:0)}${metricUnit}</strong></div><span class="analytics-delta ${deltaClass}">${deltaText}</span></div>
  ${analyticsLineSvg(vals,labels,v=>`${analyticsNumber(v,loaded?1:0)}${metricUnit}`)}
  <div class="analytics-mini-stats">
   <div class="analytics-mini-stat"><span class="tiny">Best in range</span><strong>${analyticsNumber(best,loaded?1:0)}${metricUnit}</strong></div>
-  <div class="analytics-mini-stat"><span class="tiny">Logged exposures</span><strong>${series.length}</strong></div>
-  <div class="analytics-mini-stat"><span class="tiny">Latest best set</span><strong>${lastSet?`${Number(lastSet.weight)||0} ${unit()} × ${Number(lastSet.reps)||0}`:"—"}</strong></div>
+  <div class="analytics-mini-stat"><span class="tiny">Comparable exposures</span><strong>${series.length}</strong></div>
+  <div class="analytics-mini-stat"><span class="tiny">Latest best set</span><strong>${lastSet?`${Number(lastSet.weight)||0} ${loaded?recordUnit:"bodyweight/no load"} × ${Number(lastSet.reps)||0}`:"—"}</strong></div>
   <div class="analytics-mini-stat"><span class="tiny">Progression</span><strong>${esc(progressionModeLabel(ex))}</strong></div>
  </div>`;
 }
@@ -3390,11 +3816,14 @@ function renderWeeklyAnalytics(h){
  if(!weeks.length){$("#weeklyAnalytics").innerHTML='<div class="analytics-empty">No completed sessions in this range.</div>';return}
  const totalSets=sets.reduce((a,b)=>a+b,0),volume=weeks.reduce((a,b)=>a+b.volume,0),minutes=weeks.reduce((a,b)=>a+b.minutes,0),pace=analyticsSchedulePace(h);
  const latest=sets.at(-1),prev=sets.length>1?sets.at(-2):null,delta=prev?analyticsPctChange(prev,latest):null;
+ const volumeSessions=h.filter(s=>Number(s?.volume)>0||analyticsCompletedSets(s).some(x=>Number(x.set.weight)>0));
+ const volumeUnits=[...new Set(volumeSessions.map(s=>recordedWeightUnit(s)||"unknown"))];
+ const volumeLabel=!volumeSessions.length?"No loaded volume":volumeUnits.length===1&&volumeUnits[0]!=="unknown"?`${analyticsNumber(volume)} ${volumeUnits[0]}·reps`:"Unknown / mixed units (not summed)";
  $("#weeklyAnalytics").innerHTML=`<div class="analytics-main-stat"><div><span class="tiny">Latest week · completed working sets</span><br><strong>${latest}</strong></div><span class="analytics-delta ${delta===null?"flat":delta>1?"up":delta<-1?"down":"flat"}">${delta===null?"Baseline":`${delta>=0?"+":""}${delta.toFixed(0)}% vs prior week`}</span></div>
  ${analyticsLineSvg(sets,labels,v=>`${analyticsNumber(v)} sets`)}
  <div class="analytics-mini-stats">
   <div class="analytics-mini-stat"><span class="tiny">Working sets</span><strong>${analyticsNumber(totalSets)}</strong></div>
-  <div class="analytics-mini-stat"><span class="tiny">Loaded volume</span><strong>${analyticsNumber(volume)} ${unit()}·reps</strong></div>
+  <div class="analytics-mini-stat"><span class="tiny">Loaded volume</span><strong>${volumeLabel}</strong></div>
   <div class="analytics-mini-stat"><span class="tiny">Training time</span><strong>${analyticsNumber(minutes/60,1)} h</strong></div>
   <div class="analytics-mini-stat"><span class="tiny">Schedule pace</span><strong>${pace?`${analyticsNumber(pace.pace,1)} / ${pace.target} wk`:"—"}</strong></div>
  </div>
@@ -3418,8 +3847,8 @@ function renderProgress(){
   <div class="analytics-kpi"><div class="label">Training time</div><div class="metric">${sessions?analyticsNumber(totalMinutes/60,1)+"h":"—"}</div><span class="tiny">${weeks.length} active week${weeks.length===1?"":"s"}</span></div>
   <div class="analytics-kpi"><div class="label">PRs</div><div class="metric">${allPrs.length}</div><span class="tiny">estimated 1RM</span></div>
  </div>`;
- renderStrengthAnalytics(h);renderWeeklyAnalytics(h);renderMuscleAnalytics(h);
- $("#prList").innerHTML=allPrs.length?allPrs.slice().reverse().slice(0,15).map(p=>`<div class="pritem"><strong>${esc(p.name)}</strong> · estimated 1RM ${p.e1rm.toFixed(1)} ${esc(p.unit)}<br><span class="tiny">${p.weight} ${p.unit} × ${p.reps} · ${new Date(p.date).toLocaleDateString()}${bodyEntries().at(-1)?.weight?` · ${(p.e1rm/bodyEntries().at(-1).weight).toFixed(2)}× bodyweight`:""}</span></div>`).join(""):'<div class="historyitem">No PRs recorded in this range yet.</div>';
+ renderStrengthAnalytics(h);renderWeeklyAnalytics(h);renderMuscleAnalytics(h);renderCycleComparison();
+ $("#prList").innerHTML=allPrs.length?allPrs.slice().reverse().slice(0,15).map(p=>`<div class="pritem"><strong>${esc(p.name)}</strong> · estimated 1RM ${p.e1rm.toFixed(1)} ${esc(p.unit)}<br><span class="tiny">${p.weight} ${p.unit} × ${p.reps} · ${new Date(p.date).toLocaleDateString()}${bodyEntries().at(-1)?.weight&&["kg","lb"].includes(bodyEntries().at(-1).unit)&&bodyEntries().at(-1).unit===p.unit?` · ${(p.e1rm/bodyEntries().at(-1).weight).toFixed(2)}× bodyweight`:""}</span></div>`).join(""):'<div class="historyitem">No PRs recorded in this range yet.</div>';
  $("#historyList").innerHTML=h.length?h.slice().reverse().slice(0,20).map(s=>`<div class="historyitem"><strong>${esc(s.title)}</strong> · Week ${s.week||"—"}<br><span class="tiny">${new Date(s.date).toLocaleString()}</span><br>Completion: ${s.completion}%${Number(s.durationSec)?` · ${fmtLong(Number(s.durationSec))}`:""}${(s.prs||[]).length?` · <span class="goodText">${s.prs.length} PR${s.prs.length>1?"s":""}</span>`:""}</div>`).join(""):'<div class="historyitem">No completed sessions in this range.</div>';
  renderBody();
 }
@@ -3429,8 +3858,12 @@ function sparkline(vals){
 }
 function renderBody(){
  const b=bodyEntries(),last=b.at(-1),first=b[0];if(!last){$("#bodySummary").innerHTML='<div class="historyitem">No body measurements logged yet.</div>';return}
- const change=first?last.weight-first.weight:0,vals=b.slice(-12).map(x=>Number(x.weight)).filter(x=>x>0);
- $("#bodySummary").innerHTML=`<div class="grid3"><div class="summarybox"><div class="label">Latest weight</div><div class="metric small">${last.weight} ${unit()}</div></div><div class="summarybox"><div class="label">Change</div><div class="metric small">${change>=0?"+":""}${change.toFixed(1)} ${unit()}</div></div><div class="summarybox"><div class="label">Entries</div><div class="metric small">${b.length}</div></div></div>${sparkline(vals)}<div class="tiny">Latest: ${new Date(last.date).toLocaleDateString()}${last.waist?` · Waist ${last.waist} ${measureUnit()}`:""}${last.chest?` · Chest ${last.chest} ${measureUnit()}`:""}${last.arm?` · Arm ${last.arm} ${measureUnit()}`:""}${last.thigh?` · Thigh ${last.thigh} ${measureUnit()}`:""}</div>`;
+ const lastUnit=["kg","lb"].includes(last.unit)?last.unit:null;
+ const firstComparable=b.find(x=>lastUnit&&x.unit===lastUnit&&Number.isFinite(Number(x.weight))&&Number(x.weight)>0);
+ const change=firstComparable?Number(last.weight)-Number(firstComparable.weight):null;
+ const vals=b.filter(x=>lastUnit&&x.unit===lastUnit).slice(-12).map(x=>Number(x.weight)).filter(x=>Number.isFinite(x)&&x>0);
+ const measure=["cm","in"].includes(last.measureUnit)?last.measureUnit:"unit unknown";
+ $("#bodySummary").innerHTML=`<div class="grid3"><div class="summarybox"><div class="label">Latest weight</div><div class="metric small">${esc(last.weight)} ${lastUnit||"unit unknown"}</div></div><div class="summarybox"><div class="label">Change</div><div class="metric small">${change===null?"Not comparable":`${change>=0?"+":""}${change.toFixed(1)} ${lastUnit}`}</div></div><div class="summarybox"><div class="label">Entries</div><div class="metric small">${b.length}</div></div></div>${sparkline(vals)}<div class="tiny">Latest: ${new Date(last.date).toLocaleDateString()}${last.waist?` · Waist ${esc(last.waist)} ${measure}`:""}${last.chest?` · Chest ${esc(last.chest)} ${measure}`:""}${last.arm?` · Arm ${esc(last.arm)} ${measure}`:""}${last.thigh?` · Thigh ${esc(last.thigh)} ${measure}`:""}${!lastUnit?" · Historic bodyweight unit not recorded; change and trend cannot be computed.":""}</div>`;
 }
 function logBody(){
  openSheet("BODY TRACKING","Log measurement",`<div class="grid2"><label>Bodyweight (${unit()})<input id="bodyWeight" class="field" type="number" step="0.1"></label><label>Date<input id="bodyDate" class="field" type="date" value="${new Date().toISOString().slice(0,10)}"></label><label>Waist (${measureUnit()})<input id="waist" class="field" type="number" step="0.1"></label><label>Chest (${measureUnit()})<input id="chest" class="field" type="number" step="0.1"></label><label>Arm (${measureUnit()})<input id="arm" class="field" type="number" step="0.1"></label><label>Thigh (${measureUnit()})<input id="thigh" class="field" type="number" step="0.1"></label></div><button id="saveBody" class="primary" style="margin-top:12px">Save measurement</button>`);
@@ -3488,6 +3921,7 @@ function renderSettings(){
  }
  if($("#varietySetting"))$("#varietySetting").value=ps.variety;
  if($("#coachingDetailSetting"))$("#coachingDetailSetting").value=ps.coachingDetail;
+ renderBackupHealth();
 }
 function renderAll(){renderToday();renderProgress();renderCycle();renderRecovery();renderSettings();updateUndoUI();$("#headerSub").textContent=profile()?.name?`${profile().name}'s adaptive training cycle`:"Adaptive coaching · 169-exercise expanded library"}
 function switchView(v){currentView=v;$$(".vtab").forEach(b=>b.classList.toggle("active",b.dataset.view===v));$$(".view").forEach(x=>x.classList.remove("active"));$("#"+v).classList.add("active");if(v==="progress")renderProgress();if(v==="cycle")renderCycle();if(v==="recovery")renderRecovery();if(v==="settings")renderSettings()}
@@ -3572,12 +4006,22 @@ function saveOnboarding(){
  state.activeSavedPlanId=null;state.cycle={number:nextGlobalCycleNumber(),week:1,length:state.profile.cycleLength,start:new Date().toISOString(),weekSummaries:[],planId:null};generatePlan(true);save();switchView("today");$("#onboarding").classList.add("hidden");renderAll();toast("Personalized plan created");
 }
 function exportData(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="adaptive-workout-coach-v7-8-2-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const old=backupMeta().lastExportInitiatedAt;
+ try{
+  backupMeta().lastExportInitiatedAt=new Date().toISOString();
+  const content=JSON.stringify(state,null,2);
+  downloadLocalFile(content,`adaptive-workout-coach-v7-9-0-backup-${calendarToday()}.json`,"application/json");
+  try{save()}catch(err){console.warn("Export initiated but backup timestamp could not persist",err)}
+  renderBackupHealth();toast("Backup export started · verify the file in Files");
+ }catch(err){backupMeta().lastExportInitiatedAt=old;renderBackupHealth();alert("Backup export could not start. Your stored workout data has not been replaced: "+(err.message||err))}
+
 }
 
 
 document.addEventListener("change",e=>{
  if(e.target.id==="analyticsExerciseSelect"){analyticsExerciseId=e.target.value;renderStrengthAnalytics(analyticsHistory());return}
+ if(["compareA","compareB"].includes(e.target.id)){renderPlanComparison();return}
+ if(["cycleA","cycleB"].includes(e.target.id)){renderCycleComparisonResult();return}
  if(["libraryMuscle","libraryEquipment","libraryDifficulty"].includes(e.target.id)){renderExerciseLibraryResults();return}
  if(e.target.id==="autoRestSetting"){executionSettings().autoRest=e.target.checked;save();return}
  if(e.target.id==="autoSessionSetting"){executionSettings().autoSession=e.target.checked;save();return}
@@ -3685,6 +4129,22 @@ document.addEventListener("keydown",e=>{
 document.addEventListener("click",e=>{
  const sourceChoice=e.target.closest(".create-plan-source");if(sourceChoice&&!sourceChoice.disabled){beginPlanCreation(sourceChoice.dataset.createSource);return}
  const sheetCreate=e.target.closest("#sheetCreateNewPlanBtn");if(sheetCreate){openCreatePlanSourceChooser();return}
+ const compareClick=e.target.closest("#sheetComparePlansBtn");if(compareClick){openCompareSavedPlans();return}
+ const scheduled=e.target.closest(".savedPlanScheduleBtn");if(scheduled){openScheduleSavedPlan(scheduled.dataset.planid);return}
+ const saveDate=e.target.closest(".savePlanStartBtn");if(saveDate){
+  const value=$("#plannedStartInput")?.value||"";
+  if(!validCalendarDate(value))return alert("Choose a valid calendar date.");
+  if(storePlanStart(saveDate.dataset.planid,value)){save();openPlanLibrary();renderSavedPlanSummary();renderScheduledPlanReminder();toast("Planned date saved")}return
+ }
+ const clearDate=e.target.closest(".clearPlanStartBtn");if(clearDate){
+  if(storePlanStart(clearDate.dataset.planid,null)){save();openPlanLibrary();renderSavedPlanSummary();renderScheduledPlanReminder();toast("Planned date cleared")}return
+ }
+ const csv=e.target.closest(".csvExportChoice");if(csv){exportCsvKind(csv.dataset.csv);return}
+ const repeat=e.target.closest(".repeatSetBtn");if(repeat){
+  const outcome=repeatPriorCompletedSet(Number(repeat.dataset.slot));
+  if(outcome===true)toast("Previous set copied · mark done when completed");
+  else if(outcome===false)toast("Complete a prior set first, then repeat it");return
+ }
  const backCreator=e.target.closest("#backToPlanCreatorBtn");if(backCreator){resumePlanCreation();return}
  const saveCreatedOnly=e.target.closest("#saveCreatedPlanOnlyBtn");if(saveCreatedOnly){commitCreatedPlan(false);return}
  const saveCreatedActive=e.target.closest("#saveAndActivateCreatedPlanBtn");if(saveCreatedActive){commitCreatedPlan(true);return}
@@ -3751,7 +4211,7 @@ document.addEventListener("click",e=>{
  const emptyBuild=e.target.closest(".emptyBuildBtn");if(emptyBuild){showOnboarding(!!profile(),1);return}
  const emptyImport=e.target.closest(".emptyImportBtn");if(emptyImport){switchView("settings");renderSettings();setTimeout(()=>$("#importInput")?.click(),50);return}
  const jump=e.target.closest(".jumpToTrainBtn");if(jump){currentDay=Number(jump.dataset.day)||0;switchView("today");renderToday();window.scrollTo({top:0,behavior:"auto"});return}
- const ul=e.target.closest(".useLastBtn");if(ul){const s=Number(ul.dataset.slot),it=plan()[currentDay].items[s],t=effectiveTarget(it),last=lastRecord(it.id);if(!last)return;const l=exLog(currentDay,s,t.sets),src=(last.sets||[]).filter(x=>x.done!==false),hasToday=l.sets.slice(0,t.sets).some(x=>x.done||String(x.weight||"").trim()||String(x.reps||"").trim()||String(x.rpe||"").trim());if(hasToday&&!confirm("Today already has working-set entries for this exercise. Replace those entries with the last completed performance? Warm-up sets and notes will not be changed."))return;for(let j=0;j<Math.min(t.sets,src.length);j++){l.sets[j].weight=src[j].weight;l.sets[j].reps=src[j].reps;l.sets[j].rpe=src[j].rpe;l.sets[j].done=false}save();renderToday();toast("Last performance prefilled");return}
+ const ul=e.target.closest(".useLastBtn");if(ul){const s=Number(ul.dataset.slot),it=plan()[currentDay].items[s],t=effectiveTarget(it),last=lastRecord(it.id);if(!last)return;const recordedUnit=recordedWeightUnit(lastSessionForExercise(it.id));if((last.sets||[]).some(x=>Number(x.weight)>0)&&recordedUnit!==unit()){alert("Previous loaded performance uses an unknown or different weight unit. Enter weight manually to avoid copying incompatible values.");return}const l=exLog(currentDay,s,t.sets),src=(last.sets||[]).filter(x=>x.done!==false),hasToday=l.sets.slice(0,t.sets).some(x=>x.done||String(x.weight||"").trim()||String(x.reps||"").trim()||String(x.rpe||"").trim());if(hasToday&&!confirm("Today already has working-set entries for this exercise. Replace those entries with the last completed performance? Warm-up sets and notes will not be changed."))return;for(let j=0;j<Math.min(t.sets,src.length);j++){l.sets[j].weight=src[j].weight;l.sets[j].reps=src[j].reps;l.sets[j].rpe=src[j].rpe;l.sets[j].done=false}save();renderToday();toast("Last performance prefilled");return}
  const detailBtn=e.target.closest(".exerciseDetailBtn");if(detailBtn){openExerciseDetails(detailBtn.dataset.exid);return}
  const cf=e.target.closest("#confirmFinishBtn");if(cf){finalizeSession();return}
 
@@ -3791,6 +4251,9 @@ $("#advanceWeekBtn").onclick=advanceWeek;$("#openCoachReviewBtn").onclick=openCo
 $("#createNewPlanBtn").onclick=openCreatePlanSourceChooser;
 $("#saveCurrentPlanBtn").onclick=openSaveCurrentPlan;
 $("#openPlanLibraryBtn").onclick=openPlanLibrary;
+$("#comparePlansBtn").onclick=openCompareSavedPlans;
+$("#coachEvidenceBtn").onclick=openCoachEvidence;
+$("#nextUnfinishedBtn").onclick=jumpToNextUnfinished;
 $("#undoBtn").onclick=undoLast;
 $("#redoBtn").onclick=redoLast;
 $("#saveRecoveryBtn").onclick=()=>{const o={date:new Date().toISOString(),planId:cycle().planId||state.activeSavedPlanId||null,cycleNumber:cycle().number,week:cycle().week};$$(".recRange").forEach(x=>o[x.dataset.k]=Number(x.value));recoveryEntries().push(o);save();renderRecovery();renderToday();toast("Recovery check-in saved")};
@@ -3803,7 +4266,26 @@ $("#applyPlanPreferencesBtn").onclick=applyPlanPersonalization;
 $("#regenBtn").onclick=()=>{if(confirm("Regenerate the exercise plan using your current Plan Builder mode? History and body data stay, but current week logs reset.\n\nYou can undo this afterward.")){pushUndo("Regenerated plan");generatePlan(true);renderAll();toast("Plan regenerated · Undo available")}};
 $("#newCycleBtn").onclick=()=>{if(confirm("Start a new training cycle at Week 1? Your current plan exercises will be kept and current-cycle manual target adjustments will reset. Workout history and analytics stay intact.\n\nYou can undo this afterward.")){pushUndo("Started a new training cycle");startCycle(profile().cycleLength||6,true);renderAll();toast("New training cycle started · Undo available")}};
 $("#exportBtn").onclick=exportData;$("#settingsExportBtn").onclick=exportData;
-$("#importInput").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!x.profile||!Array.isArray(x.plan)||!x.cycle)throw new Error();state=x;state.savedPlans=Array.isArray(state.savedPlans)?state.savedPlans:[];state.activeSavedPlanId=state.activeSavedPlanId||null;save();currentDay=0;renderAll();toast("Backup imported")}catch{alert("That file is not a valid Adaptive Workout Coach backup.")}};
+$("#openCsvExportBtn").onclick=openCsvExport;
+$("#validateBackupInput").onchange=async e=>{
+ const f=e.target.files?.[0];e.target.value="";if(!f)return;
+ try{const {report}=await inspectBackupFile(f);reportBackupValidation(report,"Validation only")}
+ catch(err){reportBackupValidation({ok:false,errors:[err.message||"Could not parse file"],warnings:[]},"Validation only")}
+};
+$("#importInput").onchange=async e=>{
+ const f=e.target.files?.[0];e.target.value="";if(!f)return;
+ try{
+  const {parsed,report}=await inspectBackupFile(f);reportBackupValidation(report,"Import validation");
+  if(!report.ok){alert("Import blocked: "+report.errors.join(" "));return}
+  if(!confirm(`Replace all current data on this device with this backup?\n\nBackup contents: ${report.sessions} sessions and ${report.plans} saved plans.\n\nExport your current data first if you want to preserve it. This action cannot be undone inside the app.`))return;
+  // Persist the validated payload before adopting it in memory. A quota/write failure leaves the current app untouched.
+  const restored={...parsed,savedPlans:Array.isArray(parsed.savedPlans)?parsed.savedPlans:[],activeSavedPlanId:parsed.activeSavedPlanId||null};
+  localStorage.setItem(KEY,JSON.stringify(restored));
+  state=restored;currentDay=0;undoStack=[];redoStack=[];
+  try{localStorage.removeItem(UNDO_KEY);localStorage.removeItem(REDO_KEY)}catch{}
+  renderAll();toast("Validated backup imported");
+ }catch(err){reportBackupValidation({ok:false,errors:[err.message||"Invalid JSON"],warnings:[]},"Import");alert("Import not performed: "+(err.message||"Invalid backup."))}
+};
 $("#resetAllBtn").onclick=()=>{if(confirm("Permanently delete ALL local profile data, plans, workout logs, history, recovery entries and measurements on this device? This cannot be undone from inside the app unless you have an exported backup.")){localStorage.removeItem(KEY);localStorage.removeItem(UNDO_KEY);localStorage.removeItem(REDO_KEY);undoStack=[];redoStack=[];state={};showOnboarding(false)}};
 $("#closeSheet").onclick=closeSheet;
 $("#closeTimer").onclick=()=>{$("#timerSheet").classList.add("hidden")};

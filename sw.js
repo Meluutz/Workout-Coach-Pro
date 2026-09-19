@@ -1,4 +1,4 @@
-const CACHE='adaptive-workout-coach-v7-8-2-mobile-footer-rebuild';
+const CACHE='adaptive-workout-coach-v7-9-0-verified-release-1';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png','./assets/branding/workout-coach-app-icon.png'];
 self.addEventListener('install',e=>{
   self.skipWaiting();
@@ -6,7 +6,7 @@ self.addEventListener('install',e=>{
 });
 self.addEventListener('activate',e=>{
   e.waitUntil(caches.keys()
-    .then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))
+    .then(keys=>Promise.all(keys.filter(k=>k.startsWith('adaptive-workout-coach-')&&k!==CACHE).map(k=>caches.delete(k))))
     .then(()=>self.clients.claim()));
 });
 self.addEventListener('fetch',e=>{
