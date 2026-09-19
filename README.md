@@ -970,3 +970,16 @@ The v7.9.0 package was tested in Chromium before this v7.9.1 profile-edit update
 - Every corrected session records user-confirmation provenance and timestamp. Unknown legacy records from future imports can be reviewed separately. Existing plan, cycle, current workout entries, saved plans, recovery, body measurements and unrelated metadata remain unchanged.
 - This operation is not part of plan Undo, because plan Undo does not restore completed history. A mistaken historical-unit choice requires restoring the pre-correction JSON backup, which replaces current data. Make this correction only if all missing-unit sessions used the chosen unit.
 - The update changes only index.html, sw.js, README.md versus v7.9.1; 169 exercise visuals, approved branding, the v7.8.2 mobile footer correction and existing v7.9.0 features remain intact. Real iPhone Safari/Home Screen acceptance and offline testing require a device.
+
+## v7.9.3 — Focused commercial reliability audit and import protection
+
+This is an incremental patch to v7.9.2; it does not change training algorithms, user records, approved visuals, onboarding, branding or the stable mobile footer.
+
+- JSON backup validation now inspects nested in-progress workout logs (including saved-plan log snapshots), rather than checking only the top-level shape. Bad exercise set arrays and malformed nested records block import before any replacement.
+- Validated import now retains the prior persisted data, in-memory data, current workout selection and Undo history if writing or rendering the replacement fails. It clears the previous Undo history only after the new data renders successfully. If restoration itself fails, an explicit warning explains the risk rather than falsely reporting that nothing changed.
+- A service-worker navigation response with an HTTP error no longer replaces the last successful cached page. The cache identifier was bumped for this update.
+- Backup filenames and visible app version now show v7.9.3. No customer workout data is shipped in the release ZIP.
+
+**Test scope:** Source-level syntax, 15 targeted browser checks for nested backup corruption and transactional failures, 129 existing feature/browser checks, 74 profile-edit checks, 120 historical-unit checks, 16 supplemental checks, and the existing synthetic reliability suite (1,819 scenarios / 423,293 assertions). A mocked service-worker test checked HTTP error/success cache decisions. Mobile viewports were simulated in Chromium; this is not Safari/device confirmation.
+
+**Still required for a commercial launch:** Real Safari/Home Screen/offline testing, customer-scale data and storage-quota testing, accessibility review, customer support/privacy/terms review, and an independent release acceptance process. This patch does **not** certify the app for sale. Do not clear iPhone website data or uninstall the Home Screen app to troubleshoot a version: that may erase local training data. Export and locate a full JSON backup before upgrading.

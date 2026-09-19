@@ -1,4 +1,4 @@
-const CACHE='adaptive-workout-coach-v7-9-2-history-units-1';
+const CACHE='adaptive-workout-coach-v7-9-3-audit-1';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png','./assets/branding/workout-coach-app-icon.png'];
 self.addEventListener('install',e=>{
   self.skipWaiting();
@@ -15,7 +15,8 @@ self.addEventListener('fetch',e=>{
     e.respondWith(
       fetch(e.request).then(r=>{
         const cp=r.clone();
-        caches.open(CACHE).then(c=>c.put('./index.html',cp));
+        // Never overwrite the last working offline page with an error response.
+        if(r.ok)caches.open(CACHE).then(c=>c.put('./index.html',cp)).catch(err=>console.warn('Offline cache update failed',err));
         return r;
       }).catch(()=>caches.match('./index.html'))
     );
