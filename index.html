@@ -935,6 +935,16 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  #comparePlansBtn{grid-column:1/-1}
 }
 
+/* v7.9.2 history-unit confirmation: contained controls on narrow phones */
+.history-unit-status{margin:10px 0;padding:11px;border:1px solid var(--line);border-radius:13px;background:var(--soft);overflow-wrap:anywhere}
+.history-unit-status button{min-height:46px;margin-top:9px;max-width:100%;white-space:normal}
+.history-unit-fields{display:grid;gap:12px;margin-top:12px;overflow-wrap:anywhere}
+.history-unit-fields label{display:block;min-width:0}
+.history-unit-fields select{width:100%;min-height:44px}
+.history-unit-check{display:flex!important;align-items:flex-start;gap:10px;padding:10px;border:1px solid var(--line);border-radius:12px}
+.history-unit-check input{flex:0 0 auto;width:22px;height:22px;margin-top:1px}
+.history-unit-actions{display:flex;flex-wrap:wrap;gap:9px;padding-bottom:12px}
+.history-unit-actions button{flex:1 1 130px;min-height:46px}
 /* v7.9.1 non-destructive personal profile editor */
 .personal-profile-fields{display:grid;gap:12px;margin-top:12px;min-width:0}
 .personal-profile-fields label{display:block;min-width:0;font-weight:700;font-size:13px}
@@ -947,7 +957,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.1 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.2 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1118,6 +1128,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  <div class="label">Backup & transfer</div><h2>Move data between devices</h2>
  <p class="muted">Workout data is stored separately in each browser. Your phone and desktop do not automatically sync.</p>
  <div id="backupHealth" class="backup-health tiny" role="status"></div>
+ <div id="historicalUnitsStatus" class="history-unit-status tiny" role="status"></div>
  <div class="grid2"><button id="settingsExportBtn">Export JSON backup</button><label class="import-label">Import backup<input id="importInput" type="file" accept="application/json,.json"></label></div>
  <div class="grid2" style="margin-top:8px"><label class="import-label">Validate backup only<input id="validateBackupInput" type="file" accept="application/json,.json"></label><button id="openCsvExportBtn">Export CSV data</button></div>
  <div id="backupValidation" class="tiny" role="status"></div>
@@ -1140,7 +1151,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.1</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.2</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -1796,6 +1807,76 @@ function renderBackupHealth(){
 }
 function isPlainRecord(x){return x!==null&&typeof x==="object"&&!Array.isArray(x)}
 function recordedWeightUnit(s){return ["kg","lb"].includes(s?.weightUnit)?s.weightUnit:["kg","lb"].includes(s?.unit)?s.unit:null}
+// Only genuinely absent/unknown session units are eligible; preserve explicitly
+// recorded units, unexpected legacy unit strings and every original weight value.
+function hasUnspecifiedHistoryUnit(s){
+ if(!isPlainRecord(s)||recordedWeightUnit(s))return false;
+ const unspecified=v=>v===undefined||v===null||v===""||v==="unknown";
+ return unspecified(s.weightUnit)&&unspecified(s.unit);
+}
+function historicalUnitAudit(data=state){
+ const rows=Array.isArray(data.history)?data.history:[];
+ const out={missing:0,knownLb:0,knownKg:0,unrecognized:0};
+ rows.forEach(s=>{
+  if(!isPlainRecord(s)){out.unrecognized++;return}
+  const recorded=recordedWeightUnit(s);
+  if(recorded==="lb")out.knownLb++;
+  else if(recorded==="kg")out.knownKg++;
+  else if(hasUnspecifiedHistoryUnit(s))out.missing++;
+  else out.unrecognized++;
+ });
+ return out;
+}
+function confirmedHistoricalUnitState(data,choice,at){
+ if(!["kg","lb"].includes(choice))throw new Error("Choose a valid weight unit.");
+ if(!Array.isArray(data.history))throw new Error("Workout history cannot be read safely.");
+ const counts=historicalUnitAudit(data);
+ if(!counts.missing)throw new Error("No eligible sessions need unit confirmation.");
+ const history=data.history.map(s=>hasUnspecifiedHistoryUnit(s)?{
+  ...s,weightUnit:choice,weightUnitSource:"user-confirmed-history",weightUnitConfirmedAt:at
+ }:s);
+ return {...data,history,historyUnitConfirmations:[...(Array.isArray(data.historyUnitConfirmations)?data.historyUnitConfirmations:[]),{
+  at,unit:choice,sessionsUpdated:counts.missing,source:"explicit-user-confirmation"
+ }]};
+}
+function renderHistoricalUnitsStatus(){
+ const box=$("#historicalUnitsStatus");if(!box)return;
+ const a=historicalUnitAudit(),last=Array.isArray(state.historyUnitConfirmations)?state.historyUnitConfirmations.at(-1):null;
+ const summary=`${a.missing} completed workout session${a.missing===1?"":"s"} without recorded units.`;
+ box.innerHTML=`<strong>Historical workout units</strong><br>${esc(summary)} ${a.unrecognized?`<br>${a.unrecognized} record(s) have unrecognized metadata and will not be changed automatically.`:""}${last?`<br>Last confirmed: ${esc(last.sessionsUpdated)} session(s) as ${esc(last.unit)} on ${esc(last.at.slice(0,10))}.`:""}${a.missing?'<br><button id="reviewHistoryUnitsBtn">Review missing units</button>':"<br>There are no eligible sessions to confirm."}`;
+ const btn=$("#reviewHistoryUnitsBtn");if(btn)btn.onclick=openHistoricalUnitsEditor;
+}
+function openHistoricalUnitsEditor(){
+ const a=historicalUnitAudit();
+ if(!a.missing){renderHistoricalUnitsStatus();return}
+ const choice=["kg","lb"].includes(profile()?.unit)?profile().unit:"";
+ openSheet("WORKOUT HISTORY","Confirm historical weight units",`<div class="history-unit-fields">
+ <p>These ${a.missing} completed sessions did not save their original weight units. If you know that <strong>all</strong> of them used the same unit, you can label those sessions.</p>
+ <label><strong>Unit used in every missing-unit session</strong><select id="historyUnitChoice" class="field"><option value="">Choose unit</option><option value="lb" ${choice==="lb"?"selected":""}>Pounds (lb)</option><option value="kg" ${choice==="kg"?"selected":""}>Kilograms (kg)</option></select></label>
+ <p class="tiny">Preview: ${a.missing} missing-unit sessions will be labeled with the selected unit. ${a.knownLb} already labeled lb, ${a.knownKg} already labeled kg and ${a.unrecognized} unrecognized records will stay unchanged. No weights are converted. Your plan, current workout entries, cycle, saved plans and body measurements will not change.</p>
+ <p class="tiny"><strong>Before continuing:</strong> Go to Settings → Export JSON backup, save it, and independently verify that the JSON file exists in Files or another safe location. The app cannot confirm a download. If you cannot confirm that all missing-unit sessions used the same unit, cancel and leave them unknown.</p>
+ <label class="history-unit-check"><input id="historyUnitBackupVerified" type="checkbox"><span>I saved and located a current JSON backup, and I confirm that every missing-unit workout used the selected unit.</span></label>
+ <div class="history-unit-actions"><button id="cancelHistoryUnits">Cancel</button><button id="applyHistoryUnits" class="primary" disabled>Confirm historical units</button></div>
+ </div>`);
+ const button=$("#applyHistoryUnits"),select=$("#historyUnitChoice"),check=$("#historyUnitBackupVerified");
+ function update(){button.disabled=!["kg","lb"].includes(select.value)||!check.checked}
+ select.onchange=update;check.onchange=update;
+ $("#cancelHistoryUnits").onclick=closeSheet;
+ button.onclick=()=>{
+  if(button.disabled||!check.checked||!["kg","lb"].includes(select.value))return;
+  const fresh=historicalUnitAudit(),chosen=select.value;
+  if(fresh.missing!==a.missing){alert("Workout history changed. Reopen this review to check the latest records.");closeSheet();renderAll();return}
+  if(!confirm(`Confirm ${fresh.missing} historical workout session(s) were recorded in ${chosen}?\n\nThis labels ONLY missing-unit sessions; it does not convert numbers or change existing recorded units. If this is incorrect, restoring your verified JSON backup would replace your current app data. Continue?`))return;
+  let updated;
+  try{
+   updated=confirmedHistoricalUnitState(state,chosen,new Date().toISOString());
+   // Persist the new complete state before adopting it. Storage failure leaves
+   // both live and persisted records unchanged; this is not an automatic migration.
+   localStorage.setItem(KEY,JSON.stringify(updated));
+  }catch(err){alert("No historical units were changed. Storage or validation failed: "+(err.message||err));return}
+  state=updated;closeSheet();renderAll();toast(`${fresh.missing} historical sessions confirmed as ${chosen}`);
+ };
+}
 function safeCsvNumber(v){if(v===null||v===undefined||String(v).trim()==="")return"";const n=Number(v);return Number.isFinite(n)?n:""}
 function validRecordDate(v){return (typeof v==="string"||typeof v==="number")&&Number.isFinite(Date.parse(v))}
 function validateBackupPayload(x){
@@ -2882,7 +2963,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.9.1 — Reliability Report",
+  "Adaptive Workout Coach v7.9.2 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -3318,7 +3399,7 @@ function easierProgressionOption(e,p){
 function longTermExerciseRecommendation(item,dayIdx,slot,fatigue){
  const ex=EXMAP[item.id],target=effectiveTarget(item),trend=exerciseTrend(item.id),last=lastRecord(item.id);
  const base={dayIdx,slot,exId:item.id,name:ex?.name||item.id,trend,priorityMuscle:item.priorityMuscle||exerciseCategory(ex),action:null,reasons:[]};
- if(last&&ex?.resistanceClass==="loaded"&&(last.sets||[]).some(s=>Number(s.weight)>0)&&recordedWeightUnit(lastSessionForExercise(item.id))!==unit())return{...base,id:recommendationId(dayIdx,slot,"unit-unknown"),kind:"hold",tone:"learning",title:"Confirm weight units",text:`${ex.name}: the previous recorded load is from an unknown or different unit. Log a fresh comparable performance before considering load changes.`,reasons:["An older session did not preserve units, or its units differ from the current profile.","Never treat an unknown historical load as the current unit."]};
+ if(last&&ex?.resistanceClass==="loaded"&&(last.sets||[]).some(s=>Number(s.weight)>0)&&recordedWeightUnit(lastSessionForExercise(item.id))!==unit())return{...base,id:recommendationId(dayIdx,slot,"unit-unknown"),kind:"hold",tone:"learning",title:"Confirm weight units",text:`${ex.name}: the previous recorded load is from an unknown or different unit. If you know the missing historical unit, confirm it in Settings → Backup & transfer; otherwise log a fresh comparable performance before considering load changes.`,reasons:["An older session did not preserve units, or its units differ from the current profile.","Never treat an unknown historical load as the current unit."]};
  if(!last)return{...base,id:recommendationId(dayIdx,slot,"baseline"),kind:"baseline",tone:"learning",title:"Establish baseline",text:`${ex.name}: complete a clean baseline inside ${target.reps} reps at RPE ${target.rpe}.`,reasons:["No completed performance history exists for this exercise yet."]};
  const valid=(last.sets||[]).filter(s=>s.done!==false&&Number(s.reps)>0);
  if(!valid.length)return{...base,id:recommendationId(dayIdx,slot,"baseline2"),kind:"baseline",tone:"learning",title:"Re-establish baseline",text:`${ex.name}: prior data are incomplete; hold the programmed target and log the working sets.`,reasons:["The most recent saved exposure has no usable completed sets."]};
@@ -3469,7 +3550,7 @@ function suggestion(item){
  if(rec&&rec.joint>=7)return{cls:"low",type:"hold",text:"High joint/tendon discomfort reported. Hold progression and consider swapping the exercise if it irritates the affected area.",why:["Latest joint/tendon discomfort is 7/10 or higher.","Progression is deprioritized when discomfort is high."]};
  if(ready!==null&&ready<5)return{cls:"low",type:"hold",text:"Recovery is low. Hold load today and consider one fewer set if performance drops.",why:[`Readiness is ${ready}/10.`,"Low readiness increases the chance that extra load or volume is poorly tolerated."]};
  if(!last)return{cls:"warn",type:"baseline",text:"Establish a clean baseline. Stay inside the rep range and target RPE.",why:["No completed previous session for this exercise is available."]};
- if(ex?.resistanceClass==="loaded"&&(last.sets||[]).some(s=>Number(s.weight)>0)&&recordedWeightUnit(lastSessionForExercise(item.id))!==unit())return{cls:"warn",type:"hold",text:"Previous load units are unknown or different. Record a new comparable baseline before considering a load increase.",why:["Historical load may not use the current weight unit.","Do not compare or copy unverified weight units."]};
+ if(ex?.resistanceClass==="loaded"&&(last.sets||[]).some(s=>Number(s.weight)>0)&&recordedWeightUnit(lastSessionForExercise(item.id))!==unit())return{cls:"warn",type:"hold",text:"Previous load units are unknown or different. If the historic unit is missing and known, confirm it in Settings → Backup & transfer; otherwise record a comparable baseline before considering a load increase.",why:["Historical load may not use the current weight unit.","Do not compare or copy unverified weight units."]};
  const valid=(last.sets||[]).filter(s=>Number(s.reps)>0&&Number(s.weight)>=0);
  if(!valid.length)return{cls:"warn",type:"baseline",text:"Re-establish a baseline; prior set data were incomplete.",why:["The most recent session has no usable completed set data."]};
  const [lo,hi]=parseRange(target.reps),maxR=highRpe(target.rpe);
@@ -3930,6 +4011,7 @@ function renderSettings(){
  if($("#varietySetting"))$("#varietySetting").value=ps.variety;
  if($("#coachingDetailSetting"))$("#coachingDetailSetting").value=ps.coachingDetail;
  renderBackupHealth();
+ renderHistoricalUnitsStatus();
 }
 function renderAll(){renderToday();renderProgress();renderCycle();renderRecovery();renderSettings();updateUndoUI();$("#headerSub").textContent=profile()?.name?`${profile().name}'s adaptive training cycle`:"Adaptive coaching · 169-exercise expanded library"}
 function switchView(v){currentView=v;$$(".vtab").forEach(b=>b.classList.toggle("active",b.dataset.view===v));$$(".view").forEach(x=>x.classList.remove("active"));$("#"+v).classList.add("active");if(v==="progress")renderProgress();if(v==="cycle")renderCycle();if(v==="recovery")renderRecovery();if(v==="settings")renderSettings()}
@@ -3948,7 +4030,7 @@ function openPersonalProfileEditor(){
  <label>Height format<select id="editPersonalHeightMode" class="field"><option value="metric" ${ht==="metric"?"selected":""}>Centimeters</option><option value="imperial" ${ht==="imperial"?"selected":""}>Feet + inches</option></select></label></div>
  <div id="editPersonalMetric"><label>Height (cm, optional)<input id="editPersonalCm" class="field" type="number" min="100" max="250" step="0.1" value="${height&&ht==="metric"?Math.round(height*10)/10:""}" placeholder="e.g. 178"></label></div>
  <div id="editPersonalImperial" class="inline-fields"><label>Feet<input id="editPersonalFeet" class="field" type="number" min="3" max="8" step="1" value="${height&&ht==="imperial"?feet:""}" placeholder="5"></label><label>Inches<input id="editPersonalInches" class="field" type="number" min="0" max="11.9" step="0.1" value="${height&&ht==="imperial"?inches:""}" placeholder="10"></label></div>
- <p class="tiny">Units are preferences, not conversions. Changing them does not relabel or convert older workout sets, body measurements or target loads. Records with unknown historic units stay unknown. Use Progress → Log body measurement for a new weigh-in.</p>
+ <p class="tiny">Units are preferences, not conversions. Changing them does not relabel or convert older workout sets, body measurements or target loads. Editing this profile does not relabel old records. To confirm missing historical workout units, use Settings → Backup &amp; transfer after verifying a JSON backup. Use Progress → Log body measurement for a new weigh-in.</p>
  <div class="personal-profile-actions"><button id="cancelPersonalProfile">Cancel</button><button id="savePersonalProfile" class="primary">Save profile only</button></div>
  </div>`);
  const mode=$("#editPersonalHeightMode"),metric=$("#editPersonalMetric"),imperial=$("#editPersonalImperial");
@@ -4108,7 +4190,7 @@ function exportData(){
  try{
   backupMeta().lastExportInitiatedAt=new Date().toISOString();
   const content=JSON.stringify(state,null,2);
-  downloadLocalFile(content,`adaptive-workout-coach-v7-9-1-backup-${calendarToday()}.json`,"application/json");
+  downloadLocalFile(content,`adaptive-workout-coach-v7-9-2-backup-${calendarToday()}.json`,"application/json");
   try{save()}catch(err){console.warn("Export initiated but backup timestamp could not persist",err)}
   renderBackupHealth();toast("Backup export started · verify the file in Files");
  }catch(err){backupMeta().lastExportInitiatedAt=old;renderBackupHealth();alert("Backup export could not start. Your stored workout data has not been replaced: "+(err.message||err))}

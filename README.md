@@ -961,3 +961,12 @@ The v7.9.0 package was tested in Chromium before this v7.9.1 profile-edit update
 - Settings → Training setup & priorities remains a separate, deliberate program workflow. It now exposes Cancel, requires an explicit regeneration confirmation, and keeps the existing cycle number/week, saved plans, history and body entries. Regeneration does clear in-progress log entries, and Undo is available. Changing the training cycle duration to less than the current week is blocked.
 - Settings shows the selected weight preference and the last body measurement with its *recorded* unit (or unknown), not an assumed current unit. Historical training entries with absent units remain unknown.
 - This patch retains all approved v7.9.0 features and artwork. The service-worker cache and backup filename are bumped. Verify a fresh full JSON backup exists before deployment; do not clear Safari/PWA website data. Actual iPhone testing remains the user's acceptance step.
+
+
+## v7.9.2 — Explicit confirmation of historical workout units
+
+- In Settings → Backup & transfer, review completed sessions missing their original weight-unit metadata. The app does not relabel them automatically based on your current preference.
+- After exporting and independently locating a full JSON backup, select pounds or kilograms, check the explicit confirmation and approve the final dialog. Only sessions with genuinely missing/unknown units are labeled; previously recorded lb/kg or unrecognized metadata are untouched, and no numeric weights are converted.
+- Every corrected session records user-confirmation provenance and timestamp. Unknown legacy records from future imports can be reviewed separately. Existing plan, cycle, current workout entries, saved plans, recovery, body measurements and unrelated metadata remain unchanged.
+- This operation is not part of plan Undo, because plan Undo does not restore completed history. A mistaken historical-unit choice requires restoring the pre-correction JSON backup, which replaces current data. Make this correction only if all missing-unit sessions used the chosen unit.
+- The update changes only index.html, sw.js, README.md versus v7.9.1; 169 exercise visuals, approved branding, the v7.8.2 mobile footer correction and existing v7.9.0 features remain intact. Real iPhone Safari/Home Screen acceptance and offline testing require a device.
