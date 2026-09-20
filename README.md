@@ -1,6 +1,6 @@
 # Adaptive Workout Coach — v7.9.8
 
-GitHub-ready PWA build. Current release: **v7.9.6 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+GitHub-ready PWA build. Current release: **v7.9.8 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
 ## What changed
 - Expanded the core exercise database from 54 to **120 exercises**.
