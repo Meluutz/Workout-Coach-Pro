@@ -972,7 +972,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.7 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.8 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1093,7 +1093,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </section>
 
 <section class="card"><h3 style="margin-top:0">Approximate weekly muscle volume</h3><p class="tiny">Primary sets count as 1.0 and secondary involvement as 0.5–0.75. This is a planning estimate, not a direct measure of stimulus.</p><div id="volumeBox"></div></section>
-<section class="card"><h3 style="margin-top:0">Weekly review</h3><div id="weeklyReview"></div></section>
+<section class="card"><h3 style="margin-top:0">Weekly review</h3><h4 style="margin:5px 0 7px">Completed in current week</h4><div id="currentWeekCompleted"></div><h4 style="margin:16px 0 7px">Earlier weeks</h4><div id="weeklyReview"></div></section>
 </section>
 
 <section id="recovery" class="view">
@@ -1536,25 +1536,44 @@ function nextGlobalCycleNumber(){
  return Math.max(0,...nums)+1;
 }
 function applySavedPlanEntry(id,mode="new"){
- const entry=savedPlans().find(x=>x.id===id);if(!entry)return false;
+ const entry=savedPlans().find(x=>x.id===id);if(!entry||!["new","current","continue"].includes(mode))return false;
+ const prior=cycle()?deepCopy(cycle()):null;
+ if(mode==="current"&&(!prior||!Number.isInteger(Number(prior.week))||Number(prior.week)<1||Number(prior.week)>Number(prior.length)))return false;
+ if(mode==="continue"&&!(entry.continuable&&entry.cycle))return false;
+ // Take the incoming plan's previous same-week draft BEFORE saving the outgoing plan;
+ // never carry unrelated exercise-slot logs into a different workout plan.
+ const sameWeekDraft=mode==="current"&&entry.cycle&&prior&&
+  Number(entry.cycle.number)===Number(prior.number)&&Number(entry.cycle.week)===Number(prior.week)&&
+  (entry.cycle.planId||entry.id)===id;
+ const incomingLogs=sameWeekDraft?deepCopy(entry.weekLogs||{}):{};
+ const incomingCoaching=sameWeekDraft?deepCopy(entry.coaching||{}):null;
  const currentIdentity=profile()||{};
  state.profile=mergePlanProfileSettings(currentIdentity,entry.profile);
  state.plan=deepCopy(entry.plan||[]);
  state.activeSavedPlanId=id;
  currentDay=0;
  state.sessionRuntime={};
- if(mode==="continue"&&entry.continuable&&entry.cycle){
+ if(mode==="continue"){
+  // Resume the SAVED plan's earlier timeline, distinct from keeping CURRENT week.
   state.cycle=deepCopy(entry.cycle);
   state.cycle.planId=id;
   state.weekLogs=deepCopy(entry.weekLogs||{});
   state.coaching=deepCopy(entry.coaching||{});
+ }else if(mode==="current"){
+  // Keep the running cycle's identity, week and duration; attribute older weekly
+  // summaries to their original plan before changing the active association.
+  prior.weekSummaries=(prior.weekSummaries||[]).map(w=>w?{...w,planId:w.planId||prior.planId||null}:w);
+  prior.planId=id;
+  state.cycle=prior;
+  state.weekLogs=incomingLogs;
+  state.coaching=incomingCoaching||{planRevision:0,applied:{},deloadActive:false,deloadCycle:null,deloadWeek:null};
  }else{
   state.cycle={number:nextGlobalCycleNumber(),week:1,length:Number(entry.profile?.cycleLength)||6,start:new Date().toISOString(),weekSummaries:[],planId:id};
   state.weekLogs={};
   state.coaching={planRevision:0,applied:{},deloadActive:false,deloadCycle:null,deloadWeek:null};
  }
  entry.lastUsedAt=new Date().toISOString();
- entry.scheduledStart=null; // A planned start is consumed on activation; never silently schedule again.
+ entry.scheduledStart=null; // Consumed only on actual activation, never on preview/saving.
  return true;
 }
 function planModeLabel(entry){
@@ -1686,7 +1705,7 @@ function openPlanCreationReview(){
  const temp=planCreationTempEntry();if(!temp)return;
  const suggested=defaultDraftPlanName(planCreationMode.draftProfile);
  openSheet("NEW PLAN PREVIEW","Review and name your plan",
-  `<div class="creator-isolated-note"><strong>Active plan unchanged.</strong> This is still a draft. Save Only keeps your current workout active; Save & Make Active saves this plan and starts it at Week 1.</div>
+  `<div class="creator-isolated-note"><strong>Active plan unchanged.</strong> This is still a draft. Save Only keeps your current workout active; Save &amp; Make Active saves the plan, then lets you choose whether to continue your current week or start Week 1.</div>
    <label style="display:block;margin-top:12px"><strong>Plan name</strong><input id="createdPlanNameInput" class="field saved-plan-input" maxlength="60" value="${esc(suggested)}" autocomplete="off"></label>
    ${savedPlanPreviewHtml(temp)}
    <div class="create-plan-review-actions">
@@ -1703,13 +1722,11 @@ function resumePlanCreation(){
 function commitCreatedPlan(makeActive=false){
  if(!planCreationMode?.draftProfile||!Array.isArray(planCreationMode.draftPlan))return null;
  const name=cleanPlanName($("#createdPlanNameInput")?.value||defaultDraftPlanName(planCreationMode.draftProfile));
+ const before=deepCopy(state);
  const entry=createSavedPlanFromDraft(name,planCreationMode.draftProfile,planCreationMode.draftPlan);
- if(makeActive){
-  pushUndo(`Activated newly created plan: ${entry.name}`);
-  preserveCurrentPlanBeforeSwitch();applySavedPlanEntry(entry.id,"new");
- }
- planCreationMode=null;editingProfile=false;save();closeSheet();renderAll();
- if(makeActive){switchView("cycle");toast(`${entry.name} saved and activated · Week 1 · Undo available`)}
+ try{save()}catch(err){state=before;alert("Plan could not be saved. The active plan and workout history are unchanged.");return null}
+ planCreationMode=null;editingProfile=false;closeSheet();renderAll();
+ if(makeActive){openSavedPlanActivation(entry.id);toast(`${entry.name} saved · choose how to activate it`)}
  else toast(`${entry.name} saved · current plan unchanged`);
  return entry;
 }
@@ -1741,16 +1758,35 @@ function openSavedPlanRename(id){
    <button id="confirmRenameSavedPlan" class="primary" data-planid="${esc(entry.id)}" style="width:100%;margin-top:12px">Rename plan</button>`);
  requestAnimationFrame(()=>$("#renameSavedPlanInput")?.focus());
 }
+function currentWeekSessions(){
+ const c=cycle();return c?history().filter(s=>s&&Number(s.cycleNumber)===Number(c.number)&&Number(s.week)===Number(c.week)):[];
+}
+function currentWeekDraftCount(){
+ const c=cycle(),days=state.weekLogs?.[String(c?.week)]||{};
+ let count=0;
+ for(const day of Object.values(days))for(const log of Object.values(day||{})){
+  if(!log||typeof log!=="object")continue;
+  if((log.sets||[]).some(z=>z&&(z.done||z.weight!==""&&z.weight!=null||z.reps!==""&&z.reps!=null||z.rpe!==""&&z.rpe!=null))||
+    (log.warmups||[]).some(z=>z&&(z.done||z.weight||z.reps))||String(log.note||"").trim())count++;
+ }
+ return count;
+}
 function openSavedPlanActivation(id){
  const entry=savedPlans().find(x=>x.id===id);if(!entry)return;
- const canContinue=!!(entry.continuable&&entry.cycle);
+ const c=cycle(),canCurrent=!!(c&&Number(c.week)>=1&&Number(c.week)<=Number(c.length)&&hasUsablePlan());
+ const canResume=!!(entry.continuable&&entry.cycle);
+ const done=currentWeekSessions().length,drafts=currentWeekDraftCount();
+ const differentLength=canCurrent&&Number(entry.profile?.cycleLength||6)!==Number(c.length);
  openSheet("ACTIVATE PLAN",entry.name,
-  `<div class="saved-plan-sheet-note"><strong>Your current plan will be preserved automatically before switching.</strong><br>Workout history and Progress analytics are never deleted.</div>
-   ${savedPlanPreviewHtml(entry)}
-   <div class="saved-plan-activate-actions">
-    <button class="confirmActivateSavedPlan primary" data-planid="${esc(entry.id)}" data-mode="new">Start as new cycle</button>
-    <button class="confirmActivateSavedPlan" data-planid="${esc(entry.id)}" data-mode="continue" ${canContinue?"":"disabled"}>${canContinue?`Continue saved cycle · Week ${Number(entry.cycle.week)||1}`:"No saved cycle to continue"}</button>
-   </div>`);
+  `<div class="saved-plan-sheet-note"><strong>Your current plan will be saved before switching.</strong><br>${done} completed workout${done===1?"":"s"} in current week remain in history under their original plan and week. ${drafts?`${drafts} exercise log${drafts===1?"":"s"} with unfinished or recorded entries will be preserved with your outgoing plan, not copied into different exercises.`:"No unsaved set entries detected."}<br>Recovery, body tracking and Progress history are retained.</div>
+   <div class="saved-plan-activate-actions" style="grid-template-columns:1fr">
+    <button class="confirmActivateSavedPlan primary" data-planid="${esc(entry.id)}" data-mode="current" ${canCurrent?"":"disabled"}>${canCurrent?`Continue CURRENT cycle · Week ${Number(c.week)} of ${Number(c.length)}`:"No current cycle to continue"}</button>
+    ${differentLength?`<div class="tiny">Continuing keeps the existing ${Number(c.length)}-week timeline; the selected plan's ${Number(entry.profile.cycleLength)}-week cycle length applies only when starting fresh.</div>`:""}
+    <button class="confirmActivateSavedPlan" data-planid="${esc(entry.id)}" data-mode="new">Start NEW cycle · Week 1</button>
+    ${canResume?`<button class="confirmActivateSavedPlan" data-planid="${esc(entry.id)}" data-mode="continue">Resume this plan's OLD saved cycle · Week ${Number(entry.cycle.week)||1}</button>`:""}
+    <button class="savedPlanCancelActivate" data-planid="${esc(entry.id)}">Cancel · keep current plan</button>
+   </div>
+   <details style="margin-top:12px"><summary style="cursor:pointer;font-weight:700;padding:10px 0">Review selected plan exercises</summary>${savedPlanPreviewHtml(entry)}</details>`);
 }
 
 
@@ -3830,7 +3866,8 @@ function completedWeekEntries(){
  const add=(number,week,pid,info={})=>{
   if(!Number.isInteger(Number(number))||Number(number)<1||!Number.isInteger(Number(week))||Number(week)<1)return;
   const key=weekIdentity(number,week,pid);
-  if(key===active)return;
+  // A previous plan's sessions from the SAME running week are not an earlier week.
+  if(c&&Number(number)===Number(c.number)&&Number(week)===Number(c.week))return;
   entries.set(key,{...(entries.get(key)||{}),cycleNumber:Number(number),week:Number(week),planId:pid||null,...info,key});
  };
  for(const a of Array.isArray(state.weekReviewArchive)?state.weekReviewArchive:[]){
@@ -3840,26 +3877,44 @@ function completedWeekEntries(){
  for(const sp of savedPlans()){
   const sc=sp?.cycle;
   if(!sc||!Array.isArray(sc.weekSummaries))continue;
-  for(const w of sc.weekSummaries)if(w)add(sc.number,w.week,sc.planId||null,{summary:w});
+  for(const w of sc.weekSummaries)if(w)add(sc.number,w.week,w.planId||sc.planId||null,{summary:w});
  }
- for(const w of c?.weekSummaries||[])if(w)add(c.number,w.week,c.planId||null,{summary:w});
+ for(const w of c?.weekSummaries||[])if(w)add(c.number,w.week,w.planId||c.planId||null,{summary:w});
  for(const sess of history()){
   if(!sess||!Number.isInteger(Number(sess.cycleNumber))||Number(sess.cycleNumber)<1||!Number.isInteger(Number(sess.week))||Number(sess.week)<1)continue;
   const key=weekIdentity(sess.cycleNumber,sess.week,sess.planId||null);
   if(key!==active&&!entries.has(key))add(sess.cycleNumber,sess.week,sess.planId||null,{});
  }
+ // A week that used multiple plans is one week, not duplicate Week 4 cards.
+ for(const record of entries.values()){
+  if((record.summary?.planIds||[]).length<2)continue;
+  record.mixedPlans=true;
+  for(const [key,other] of entries)if(key!==record.key&&other.cycleNumber===record.cycleNumber&&other.week===record.week)entries.delete(key);
+ }
  return [...entries.values()].sort((a,b)=>b.cycleNumber-a.cycleNumber||b.week-a.week||String(a.planId).localeCompare(String(b.planId)));
 }
 function sessionsForCompletedWeek(entry){
- return history().filter(s=>s&&Number(s.cycleNumber)===entry.cycleNumber&&Number(s.week)===entry.week&&(s.planId||null)===entry.planId)
+ return history().filter(s=>s&&Number(s.cycleNumber)===entry.cycleNumber&&Number(s.week)===entry.week&&(entry.mixedPlans||((s.planId||null)===entry.planId)))
   .slice().sort((a,b)=>String(a.date||"").localeCompare(String(b.date||"")));
 }
 function historicalWeekLabel(entry){
+ if(entry.mixedPlans)return "Multiple plans (original workout labels preserved)";
  const named=savedPlans().find(p=>p.id===entry.planId);
  return named?named.name:entry.planId?"Saved plan (no longer in library)":"Unlinked / legacy plan";
 }
+function renderCurrentWeekCompleted(){
+ const box=$("#currentWeekCompleted");if(!box)return;
+ const rows=currentWeekSessions().slice().sort((a,b)=>String(a.date||"").localeCompare(String(b.date||"")));
+ box.innerHTML=rows.length?`<p class="tiny">Completed workouts stay recorded under the plan used when they were performed, even if you switch plans mid-week.</p>`+rows.map(s=>{
+  const named=savedPlans().find(p=>p.id===s.planId);
+  const label=named?.name||(s.planId?"Previously saved plan":"Unlinked / legacy plan");
+  const done=(s.exercises||[]).reduce((n,e)=>n+(e.sets||[]).filter(z=>z&&z.done===true).length,0);
+  return `<div class="historyitem"><strong>${esc(s.title||"Completed workout")}</strong><div class="tiny">${esc(label)} · ${esc(s.date&&Number.isFinite(Date.parse(s.date))?new Date(s.date).toLocaleString():"Date unavailable")} · ${done} completed sets · ${Number(s.completion)||0}% complete</div></div>`;
+ }).join(""):'<p class="tiny">No completed workouts saved in this week yet.</p>';
+}
 function renderCompletedWeekHistory(){
  const box=$("#weeklyReview");if(!box)return;
+ renderCurrentWeekCompleted();
  const rows=completedWeekEntries();
  box.innerHTML=rows.length?`<p class="tiny">Read-only history. Select View for saved workout sessions and any coaching snapshot captured when that week ended. Earlier versions may have only a summary.</p>`+rows.map(w=>{
   const ses=sessionsForCompletedWeek(w),summary=w.summary;
@@ -3875,6 +3930,7 @@ function viewCompletedWeek(key){
  const entry=completedWeekEntries().find(x=>x.key===key);if(!entry)return;
  const sessions=sessionsForCompletedWeek(entry),summary=entry.summary||null,snap=entry.coachSnapshot;
  const sessionRows=sessions.map(s=>{
+  const sessionPlanName=savedPlans().find(p=>p.id===s.planId)?.name||(s.planId?"Saved plan (no longer in library)":"Unlinked / legacy plan");
   const sets=(Array.isArray(s.exercises)?s.exercises:[]).reduce((n,e)=>n+(Array.isArray(e?.sets)?e.sets.filter(z=>z&&z.done===true).length:0),0);
   const validUnit=s.weightUnit==="lb"||s.weightUnit==="kg"?s.weightUnit:"unit unknown";
   const measured=Number(s.volume),volume=s.volume!==null&&s.volume!==undefined&&s.volume!==""&&Number.isFinite(measured)&&measured>=0?` · recorded volume ${esc(String(measured))} ${esc(validUnit)}·reps`:"";
@@ -3890,7 +3946,7 @@ function viewCompletedWeek(key){
    }).join("");
    return `<details class="week-view-exercise"><summary><span class="summary-label">${esc(name)} · ${done.length} completed set${done.length===1?"":"s"}</span><span class="summary-chevron" aria-hidden="true">▾</span></summary><ol>${details}</ol></details>`;
   }).join("");
-  return `<div class="week-view-session"><strong>${esc(s.title||"Completed workout")}</strong><div class="tiny">${esc(s.date&&Number.isFinite(Date.parse(s.date))?new Date(s.date).toLocaleString():"Date unavailable")} · ${sets} completed sets · completion ${s.completion!==null&&s.completion!==undefined&&s.completion!==""&&Number.isFinite(Number(s.completion))?esc(String(s.completion))+"%":"unknown"}${Number.isFinite(Number(s.durationSec))&&Number(s.durationSec)>0?` · ${esc(fmtLong(Number(s.durationSec)))}`:""}${volume}</div>${exercises}</div>`;
+  return `<div class="week-view-session"><strong>${esc(s.title||"Completed workout")}</strong><div class="tiny">${esc(sessionPlanName)} · ${esc(s.date&&Number.isFinite(Date.parse(s.date))?new Date(s.date).toLocaleString():"Date unavailable")} · ${sets} completed sets · completion ${s.completion!==null&&s.completion!==undefined&&s.completion!==""&&Number.isFinite(Number(s.completion))?esc(String(s.completion))+"%":"unknown"}${Number.isFinite(Number(s.durationSec))&&Number(s.durationSec)>0?` · ${esc(fmtLong(Number(s.durationSec)))}`:""}${volume}</div>${exercises}</div>`;
  }).join("");
  const coach=snap?`<h4>Coaching review captured when this week ended</h4><p class="tiny"><strong>${esc(snap.status||"Recorded status")}</strong> · ${esc(snap.note||"")}</p>${(Array.isArray(snap.signals)?snap.signals:[]).map(signal=>`<p class="tiny">• ${esc(signal)}</p>`).join("")}${(Array.isArray(snap.recommendations)?snap.recommendations:[]).map(r=>`<div class="week-view-session"><strong>${esc(r.title||"Recommendation")}</strong>${r.applied?' <span class="tiny">· applied when captured</span>':""}<p class="tiny">${esc(r.text||"")}</p><details><summary>Why this recommendation?</summary>${(Array.isArray(r.reasons)?r.reasons:[]).map(reason=>`<p class="tiny">${esc(reason)}</p>`).join("")}</details></div>`).join("")||'<p class="tiny">No recommendations recorded.</p>'}`:'<p class="tiny">A coaching snapshot was not saved for this older week. The app will not reconstruct old advice using today’s data.</p>';
  openSheet("COMPLETED WEEK",`Cycle ${entry.cycleNumber} · Week ${entry.week}`,
@@ -3911,10 +3967,11 @@ function renderCycle(){
  renderCompletedWeekHistory();
 }
 function weekSummary(){
- const c=cycle(),pid=c.planId||null,ses=history().filter(s=>s.cycleNumber===c.number&&s.week===c.week&&(!pid||s.planId===pid)),avg=ses.length?Math.round(ses.reduce((a,b)=>a+b.completion,0)/ses.length):0,read=readinessScore(),coach=buildCoachIntelligence();
+ const c=cycle(),ses=currentWeekSessions(),pids=[...new Set(ses.map(s=>s.planId||null))],avg=ses.length?Math.round(ses.reduce((a,b)=>a+b.completion,0)/ses.length):0,read=readinessScore(),coach=buildCoachIntelligence();
  let note=coach.note;
  if(!ses.length)note="No completed sessions were saved this week.";
- return{week:c.week,sessions:ses.length,avgCompletion:avg,readiness:read,note,
+ if(pids.length>1)note+=" Sessions include multiple plans; coaching suggestions reflect the active plan only.";
+ return{week:c.week,planId:c.planId||null,planIds:pids,sessions:ses.length,avgCompletion:avg,readiness:read,note,
   coachStatus:coach.status,progressing:coach.progressing,stalled:coach.stalled,regressing:coach.regressing,
   fatigueSignals:coach.fatigue.signalCount,deloadRecommended:coach.fatigue.deloadRecommended};
 }
@@ -4531,12 +4588,26 @@ document.addEventListener("click",e=>{
   const name=cleanPlanName($("#renameSavedPlanInput")?.value);const entry=renameSavedPlan(confirmRename.dataset.planid,name);
   if(entry){save();openPlanLibrary();renderSavedPlanSummary();toast("Plan renamed")}return
  }
+ const cancelActivation=e.target.closest(".savedPlanCancelActivate");if(cancelActivation){closeSheet();renderAll();toast("Plan switch cancelled · current program unchanged");return}
  const confirmActivate=e.target.closest(".confirmActivateSavedPlan");if(confirmActivate){
   const id=confirmActivate.dataset.planid,mode=confirmActivate.dataset.mode||"new",entry=savedPlans().find(x=>x.id===id);if(!entry)return;
+  if(!["new","current","continue"].includes(mode))return;
+  // Safeguard the entire in-memory data model and avoid claiming success when a
+  // full localStorage write fails (e.g. storage quota / private browsing).
+  const before=deepCopy(state),oldDay=currentDay;
   pushUndo(`Activated saved plan: ${entry.name}`);
-  preserveCurrentPlanBeforeSwitch();
-  if(applySavedPlanEntry(id,mode)){save();closeSheet();renderAll();switchView("cycle");toast(`${entry.name} is now active · Undo available`)}
-  return
+  try{
+   preserveCurrentPlanBeforeSwitch();
+   if(!applySavedPlanEntry(id,mode))throw Error("The chosen cycle is no longer available");
+   save();
+  }catch(err){
+   state=before;currentDay=oldDay;undoStack.pop();persistUndoStacks();
+   try{renderAll()}catch{} // Data is restored in memory even if storage remains unavailable.
+   alert(`The plan was not changed: ${err?.message||"Unable to save"}`);return;
+  }
+  closeSheet();renderAll();switchView("cycle");
+  toast(`${entry.name} active · Week ${cycle().week} · prior workouts preserved · Undo available`);
+  return;
  }
  const runReliability=e.target.closest("#runReliabilityBtn");if(runReliability){runReliabilitySuite();return}
  const viewReliability=e.target.closest("#viewReliabilityBtn");if(viewReliability&&lastReliabilityResult){openSheet("RELIABILITY","Regression self-test",reliabilityResultHtml(lastReliabilityResult));return}

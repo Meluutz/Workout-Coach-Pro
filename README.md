@@ -1,4 +1,4 @@
-# Adaptive Workout Coach — v7.9.7
+# Adaptive Workout Coach — v7.9.8
 
 GitHub-ready PWA build. Current release: **v7.9.6 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
@@ -1012,3 +1012,15 @@ This is an incremental patch to v7.9.2; it does not change training algorithms, 
 - Completed-week cards now use a clearer "Week # Session(s)" heading while keeping the cycle number in the metadata line.
 - Completed workout exercise rows now show a visible chevron so customers can see that each exercise can be expanded.
 - No data model changes; preserves workout history, saved plans, and prior coaching snapshots.
+
+
+## v7.9.8 — Explicit plan-switch choices and same-week workout protection
+
+- Saved-plan activation (and Save & Make Active from Create New Plan) now requires choosing between **Continue CURRENT cycle at the existing week** and **Start NEW cycle at Week 1**. Existing **Resume this plan’s OLD saved cycle** remains available when the saved plan has an earlier stored cycle. No option is chosen automatically. A cancellation leaves the active plan unchanged.
+- Before confirming, the app shows how many workouts were completed in the current week and how many exercise entries contain recorded or unfinished work. The old plan and its current-week entries are snapshotted. In-progress entries never transfer into unrelated exercise slots; returning to the same plan in the same week restores its own entries.
+- Previously completed sessions remain in global history, retaining exact recorded weights, reps, effort, dates, cycle/week and original plan IDs. The Program page displays **Completed in current week** across plan switches. When a mixed-plan week closes, it produces one weekly review, preserves original plan attribution inside each workout, and avoids double-counting the week. Coach suggestions still reflect the active plan, while mixed weekly session counts include all plans.
+- Current-cycle continuation retains original cycle number, week and six-week duration even if the incoming saved plan has a different cycle length; starting fresh uses the incoming plan’s own cycle duration. The user's choice is visible in the activation dialog before the exercise preview, including 320px mobile screens.
+- Saved-plan **Schedule** remains a local, date-only reminder. Future/due dates and Save/Clear actions were exercised in headless Chromium. Schedule neither sends push notifications nor automatically switches the active plan. The date is cleared only after activation.
+- LocalStorage failures during activation restore the previous in-memory state and report failure; completed history is not rewritten. Full JSON backup validation accepts the mixed-plan week metadata.
+
+**Pre-deployment precautions:** This release was tested with synthetic data in headless Chromium (including a localStorage test shim); this is not a real-user-data test or iPhone Safari/Home Screen acceptance. Before replacing any files in GitHub, export a complete JSON backup using Settings → Export Backup and check the downloaded file exists outside the browser. Keep the previous v7.9.7 ZIP as rollback. Deploy only after testing the real device and verifying history, plan scheduling, and offline updates. Do not uninstall the app or clear browser website data to refresh it. Exercise artwork, icons and branding have not been modified.
