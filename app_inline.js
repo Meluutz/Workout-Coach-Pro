@@ -1765,7 +1765,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.9.12 — Reliability Report",
+  "Adaptive Workout Coach v7.9.13 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -3197,7 +3197,7 @@ function exportData(){
  try{
   backupMeta().lastExportInitiatedAt=new Date().toISOString();
   const content=JSON.stringify(state,null,2);
-  downloadLocalFile(content,`adaptive-workout-coach-v7-9-12-backup-${calendarToday()}.json`,"application/json");
+  downloadLocalFile(content,`adaptive-workout-coach-v7-9-13-backup-${calendarToday()}.json`,"application/json");
   try{save()}catch(err){console.warn("Export initiated but backup timestamp could not persist",err)}
   renderBackupHealth();toast("Backup export started · verify the file in Files");
  }catch(err){backupMeta().lastExportInitiatedAt=old;renderBackupHealth();alert("Backup export could not start. Your stored workout data has not been replaced: "+(err.message||err))}

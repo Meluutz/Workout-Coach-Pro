@@ -1,6 +1,14 @@
-# Adaptive Workout Coach — v7.9.12
+# Adaptive Workout Coach — v7.9.13
 
-GitHub-ready PWA build. Current release: **v7.9.12 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+GitHub-ready PWA build. Current release: **v7.9.13 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+
+## v7.9.13 — Mobile-first Program screen candidate
+- Refocused Program around the active plan, current week and immediate plan actions.
+- Added a direct Open workout action and preserved Advance week as a secondary action.
+- Simplified the plan library card for mobile: Manage plans, Create plan and Save current.
+- Converted the weekly schedule to compact day cards with exercise lists disclosed on demand.
+- Moved change-days, plan comparison, undo/redo, weekly muscle volume and weekly review behind More program tools.
+- Preserved saved-plan switching, scheduling, comparison, coaching intelligence, weekly history, plan attribution and all Train-screen v7.9.12 behavior.
 
 ## What changed
 - Expanded the core exercise database from 54 to **120 exercises**.
@@ -1052,7 +1060,7 @@ This is an incremental patch to v7.9.2; it does not change training algorithms, 
 - The explainer is contextual and does not appear in Coach Logic sheets that do not mention RPE.
 
 
-## v7.9.12 — Exercise-complete auto-advance
+## v7.9.13 — Exercise-complete auto-advance
 - On mobile, completing the final required working set of an exercise now confirms “Exercise complete ✓” and smoothly brings the next exercise card to the top of the usable page.
 - Auto-advance triggers only when the final required set is checked and every required working set for that exercise is complete. Unchecking sets or editing prior entries never triggers scrolling.
 - If the completed exercise is the final exercise and the entire workout is complete, the app does not scroll; it surfaces the existing workout-complete/finish state instead.

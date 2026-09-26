@@ -1,4 +1,4 @@
-const CACHE='adaptive-workout-coach-v7-9-12-auto-advance-1';
+const CACHE='adaptive-workout-coach-v7-9-13-program-mobile-1';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png','./assets/branding/workout-coach-app-icon.png'];
 self.addEventListener('install',e=>{
   self.skipWaiting();

@@ -1013,11 +1013,36 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  .mobile-session-bar{left:6px;right:6px}.mobile-session-button{grid-template-columns:auto auto minmax(0,1fr) auto;gap:6px;padding-left:8px!important;padding-right:8px!important}.mobile-session-time{font-size:14px}.mobile-session-meta{font-size:10px}
 }
 
+
+/* v7.9.13 — mobile-first Program screen */
+.program-mobile-hero{padding:15px}
+.program-hero-top,.program-section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.program-hero-copy{min-width:0}.program-hero-copy h2{margin:5px 0 2px;font-size:24px;letter-spacing:-.025em;overflow-wrap:anywhere}.program-cycle-meta{font-size:12px;color:var(--muted);font-weight:750}
+.program-progress-row{display:flex;justify-content:space-between;gap:10px;margin-top:13px;font-size:11px;color:var(--muted)}.program-progress-row strong{color:var(--text)}.program-week-progress{margin-top:6px}
+.program-advice{margin:10px 0 0;line-height:1.45}.program-hero-actions{display:grid;grid-template-columns:1.2fr .8fr;gap:8px;margin-top:12px}.program-hero-actions button{min-height:46px}
+.program-plan-library .saved-plan-active{margin-top:8px}.program-plan-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}.program-plan-actions button{min-height:44px}.program-save-current{grid-column:1/-1}
+.program-section-head h3{margin:4px 0 0}.program-schedule-card{padding:14px}.program-schedule-card .program-plan-overview{gap:8px;margin-top:11px}
+.program-day{border-radius:14px}.program-day.selected-day{border-color:color-mix(in srgb,var(--blue) 55%,var(--line));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--blue) 16%,transparent)}
+.program-day-title{display:flex;align-items:center;gap:6px}.program-day-badge{display:inline-flex;align-items:center;min-height:20px;padding:2px 6px;border-radius:999px;background:color-mix(in srgb,var(--blue) 14%,var(--surface));color:var(--blue);font-size:8px;font-weight:900;letter-spacing:.04em}
+.program-day-details{border-top:1px solid var(--line)}.program-day-details summary{cursor:pointer;list-style:none;padding:9px 12px;font-size:11px;font-weight:850;color:var(--blue)}.program-day-details summary::-webkit-details-marker{display:none}.program-day-details summary::after{content:'⌄';float:right;color:var(--muted)}.program-day-details[open] summary::after{content:'⌃'}
+.program-coach-card{margin-bottom:10px}.program-more-card{padding:0;overflow:hidden}.program-more-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;border:0;background:transparent;padding:14px;text-align:left}.program-more-toggle strong{display:block;font-size:14px}.program-more-toggle small{display:block;margin-top:3px;font-size:10px;color:var(--muted);font-weight:650}.program-more-toggle>span:last-child{font-size:18px;color:var(--muted)}
+.program-more-panel{border-top:1px solid var(--line);padding:12px}.program-more-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.program-more-actions button{min-height:44px}.program-history-row{margin-top:12px;padding:11px;border:1px solid var(--line);border-radius:13px;background:var(--surface-2)}
+.program-insight-details{margin-top:10px;border:1px solid var(--line);border-radius:13px;background:var(--surface-2);overflow:hidden}.program-insight-details>summary{cursor:pointer;padding:12px;font-weight:850;font-size:13px;list-style:none}.program-insight-details>summary::-webkit-details-marker{display:none}.program-insight-details>summary::after{content:'⌄';float:right;color:var(--muted)}.program-insight-details[open]>summary::after{content:'⌃'}.program-insight-details>p,.program-insight-details>#volumeBox,.program-insight-details>#currentWeekCompleted,.program-insight-details>#weeklyReview,.program-insight-details>h4{margin-left:12px;margin-right:12px}.program-insight-details>h4{margin-top:12px;margin-bottom:7px}.program-insight-details>#weeklyReview{padding-bottom:12px}
+@media(max-width:760px){
+ #cycle .card{margin-bottom:9px}.program-mobile-hero{padding:12px}.program-hero-copy h2{font-size:20px;line-height:1.15}.program-hero-top .phase{font-size:10px;padding:5px 8px}.program-cycle-meta{font-size:11px}.program-advice{font-size:11px}.program-hero-actions{grid-template-columns:1fr 1fr}.program-hero-actions button{min-height:44px;font-size:12px}
+ .program-plan-library{padding:12px}.program-plan-library .saved-plan-card-head h3{font-size:17px}.program-plan-library .saved-plan-active{padding:10px}.program-plan-library .saved-plan-name{font-size:15px}.program-plan-actions{gap:6px}.program-plan-actions button{font-size:11px}.program-save-current{grid-column:1/-1}
+ .program-schedule-card{padding:12px}.program-section-head h3{font-size:17px}.program-day-head{padding:10px}.program-day-head strong{font-size:14px}.program-day-head span{font-size:10px;line-height:1.3}.program-day-head button{min-height:40px;padding:7px 10px}.program-day-details summary{min-height:42px;display:flex;align-items:center;justify-content:space-between;padding:10px}.program-day-details summary::after{float:none;margin-left:auto}
+ .program-table-row{grid-template-columns:minmax(0,1fr) 42px 64px;padding:8px 10px;gap:5px}.program-table-row strong{font-size:12px}.program-table-head{font-size:9px}
+ .program-coach-card{padding:12px}.program-coach-card .coach-intel-grid{grid-template-columns:repeat(4,1fr);gap:5px;margin:10px 0 8px}.program-coach-card .coach-intel-grid>div{padding:7px 4px}.program-coach-card .coach-intel-grid strong{font-size:15px}.program-coach-card .coach-intel-grid span{font-size:8px}.program-coach-card .coach-review-open{min-height:44px!important}
+ .program-more-toggle{min-height:60px;padding:12px}.program-more-panel{padding:10px}.program-more-actions{gap:6px}.program-more-actions button{font-size:11px}.program-history-row{flex-direction:column;align-items:stretch;gap:9px}.program-history-row .plan-history-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}.program-history-row .plan-history-actions button{min-height:42px}
+}
+@media(max-width:390px){.program-hero-actions{grid-template-columns:1fr}.program-plan-actions{grid-template-columns:1fr 1fr}.program-more-actions{grid-template-columns:1fr 1fr}}
+
 </style>
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.12 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.13 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1102,26 +1127,34 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </section>
 
 <section id="cycle" class="view">
-<section class="card program-summary-card">
- <div class="row program-summary-row"><div><div class="label">Program</div><h2 style="margin:6px 0" id="cycleHeading"></h2></div><button id="advanceWeekBtn" class="primary">Advance week</button></div>
- <p id="cycleAdvice" class="muted"></p>
- <div class="progress"><div id="cycleProgress"></div></div>
+<section class="card program-summary-card program-mobile-hero">
+ <div class="program-hero-top">
+  <div class="program-hero-copy"><div class="label">Active program</div><h2 id="programActivePlanName">Current workout plan</h2><div id="cycleHeading" class="program-cycle-meta"></div></div>
+  <span id="programPhaseBadge" class="phase">—</span>
+ </div>
+ <div class="program-progress-row"><span id="programWeekProgressText">Program progress</span><strong id="programWeekPct">0%</strong></div>
+ <div class="progress program-week-progress"><div id="cycleProgress"></div></div>
+ <p id="cycleAdvice" class="muted program-advice"></p>
+ <div class="program-hero-actions"><button id="programOpenTrainBtn" class="primary">Open workout</button><button id="advanceWeekBtn">Advance week</button></div>
 </section>
 
-<section class="card saved-plan-library-card">
- <div class="saved-plan-card-head">
-  <div><div class="label">Plan library</div><h3>Saved workout plans</h3></div>
-  <button id="createNewPlanBtn" class="primary">Create new plan</button>
- </div>
+<section class="card saved-plan-library-card program-plan-library">
+ <div class="saved-plan-card-head"><div><div class="label">Plan library</div><h3>Your workout plans</h3></div></div>
  <div id="savedPlanSummary"></div>
  <div id="plannedPlanReminder" class="tiny"></div>
- <div class="saved-plan-save-actions">
-  <button id="saveCurrentPlanBtn">Save current</button>
-  <button id="openPlanLibraryBtn">Manage saved plans</button><button id="comparePlansBtn">Compare plans</button>
+ <div class="program-plan-actions">
+  <button id="openPlanLibraryBtn" class="primary">Manage plans</button>
+  <button id="createNewPlanBtn">Create plan</button>
+  <button id="saveCurrentPlanBtn" class="program-save-current">Save current</button>
  </div>
 </section>
 
-<section class="card coach-intelligence-card">
+<section class="card plan-overview-card program-schedule-card">
+ <div class="program-section-head"><div><div class="label">Weekly schedule</div><h3>Your training days</h3></div><span id="programPlanMeta" class="tiny"></span></div>
+ <div id="programPlanOverview" class="program-plan-overview"></div>
+</section>
+
+<section class="card coach-intelligence-card program-coach-card">
  <div class="coach-intel-head">
   <div><div class="label">Long-Term Coach</div><h3 style="margin:5px 0 0">Training intelligence</h3></div>
   <span id="coachIntelStatus" class="coach-status-badge">Learning</span>
@@ -1130,20 +1163,18 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  <button id="openCoachReviewBtn" class="primary coach-review-open">Review recommendations</button><button id="coachEvidenceBtn" class="coach-review-open">Inspect coaching evidence</button>
 </section>
 
-<section class="card plan-overview-card">
- <div class="row"><div><div class="label">Workout plan</div><h3 style="margin:5px 0 0">Your weekly schedule</h3></div><span id="programPlanMeta" class="tiny"></span></div>
- <div id="programPlanOverview" class="program-plan-overview"></div>
-</section>
-
-<section class="card plan-history-card">
- <div class="plan-history-row">
-  <div><div class="label">Recent plan change</div><div id="lastChangeText" class="muted">No changes to undo</div></div>
-  <div class="plan-history-actions"><button id="undoBtn">Undo</button><button id="redoBtn">Redo</button></div>
+<section class="card program-more-card">
+ <button id="programMoreToggle" class="program-more-toggle" aria-expanded="false"><span><strong>More program tools</strong><small>Schedule, comparison, history &amp; insights</small></span><span aria-hidden="true">⌄</span></button>
+ <div id="programMorePanel" class="program-more-panel hidden">
+  <div class="program-more-actions"><button id="programChangeDaysBtn">Change workout days</button><button id="comparePlansBtn">Compare plans</button></div>
+  <div class="plan-history-row program-history-row">
+   <div><div class="label">Recent plan change</div><div id="lastChangeText" class="muted">No changes to undo</div></div>
+   <div class="plan-history-actions"><button id="undoBtn">Undo</button><button id="redoBtn">Redo</button></div>
+  </div>
+  <details class="program-insight-details"><summary>Approximate weekly muscle volume</summary><p class="tiny">Primary sets count as 1.0 and secondary involvement as 0.5–0.75. This is a planning estimate, not a direct measure of stimulus.</p><div id="volumeBox"></div></details>
+  <details class="program-insight-details"><summary>Weekly review</summary><h4>Completed in current week</h4><div id="currentWeekCompleted"></div><h4>Earlier weeks</h4><div id="weeklyReview"></div></details>
  </div>
 </section>
-
-<section class="card"><h3 style="margin-top:0">Approximate weekly muscle volume</h3><p class="tiny">Primary sets count as 1.0 and secondary involvement as 0.5–0.75. This is a planning estimate, not a direct measure of stimulus.</p><div id="volumeBox"></div></section>
-<section class="card"><h3 style="margin-top:0">Weekly review</h3><h4 style="margin:5px 0 7px">Completed in current week</h4><div id="currentWeekCompleted"></div><h4 style="margin:16px 0 7px">Earlier weeks</h4><div id="weeklyReview"></div></section>
 </section>
 
 <section id="recovery" class="view">
@@ -1216,7 +1247,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.12</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.13</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -3129,7 +3160,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.9.12 — Reliability Report",
+  "Adaptive Workout Coach v7.9.13 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -3971,15 +4002,16 @@ function muscleVolume(){
 }
 function renderProgramPlanOverview(){
  const box=$("#programPlanOverview"),meta=$("#programPlanMeta");if(!box)return;
- const days=plan();if(meta)meta.textContent=`${days.length} training day${days.length===1?"":"s"} / week`;
+ const days=plan();if(meta)meta.textContent=`${days.length} day${days.length===1?"":"s"} / week`;
  if(!days.length){box.innerHTML=noPlanHtml();return}
- box.innerHTML=days.map((d,dayIdx)=>`<div class="program-day">
-  <div class="program-day-head"><div><strong>${esc(d.weekday||`Day ${dayIdx+1}`)}</strong><span>${esc((d.type||"Workout").replace(/^./,c=>c.toUpperCase()))}</span></div><button class="jumpToTrainBtn" data-day="${dayIdx}">Open in Train</button></div>
-  <div class="program-table">
-   <div class="program-table-row program-table-head"><span>Exercise</span><span>Sets</span><span>Reps</span></div>
-   ${(d.items||[]).map(it=>{const ex=EXMAP[it.id],t=effectiveTarget(it);return `<div class="program-table-row"><span><strong>${esc(ex?.name||it.id)}</strong></span><span>${t.sets}</span><span>${esc(t.reps)}</span></div>`}).join("")}
-  </div>
- </div>`).join("");
+ box.innerHTML=days.map((d,dayIdx)=>{const count=(d.items||[]).length,totalSets=(d.items||[]).reduce((n,it)=>n+Number(effectiveTarget(it).sets||0),0),selected=dayIdx===currentDay;
+  return `<div class="program-day ${selected?"selected-day":""}">
+   <div class="program-day-head"><div><div class="program-day-title"><strong>${esc(d.weekday||`Day ${dayIdx+1}`)}</strong>${selected?'<span class="program-day-badge">SELECTED</span>':""}</div><span>${esc(d.title||((d.type||"Workout").replace(/^./,c=>c.toUpperCase())))} · ${count} exercise${count===1?"":"s"} · ${totalSets} sets</span></div><button class="jumpToTrainBtn" data-day="${dayIdx}">Train</button></div>
+   <details class="program-day-details"><summary>View exercises</summary><div class="program-table">
+    <div class="program-table-row program-table-head"><span>Exercise</span><span>Sets</span><span>Reps</span></div>
+    ${(d.items||[]).map(it=>{const ex=EXMAP[it.id],t=effectiveTarget(it);return `<div class="program-table-row"><span><strong>${esc(ex?.name||it.id)}</strong></span><span>${t.sets}</span><span>${esc(t.reps)}</span></div>`}).join("")}
+   </div></details>
+  </div>`}).join("");
 }
 // Completed-week archive is append-only when a week closes; older versions have
 // summary/history fallback but do not acquire fabricated historic recommendations.
@@ -4091,8 +4123,14 @@ function viewCompletedWeek(key){
  ${coach}`);
 }
 function renderCycle(){
- const c=cycle();$("#cycleHeading").textContent=`Program ${c.number} · Week ${c.week} of ${c.length}`;$("#cycleProgress").style.width=`${Math.round(c.week/c.length*100)}%`;
+ const c=cycle(),pct=Math.round(c.week/c.length*100),active=activeSavedPlan();
+ $("#cycleHeading").textContent=`Program ${c.number} · Week ${c.week} of ${c.length}`;$("#cycleProgress").style.width=`${pct}%`;
+ if($("#programWeekPct"))$("#programWeekPct").textContent=`${pct}%`;
+ if($("#programWeekProgressText"))$("#programWeekProgressText").textContent=`Week ${c.week} of ${c.length}`;
+ if($("#programActivePlanName"))$("#programActivePlanName").textContent=active?.name||"Current workout plan";
+ if($("#programPhaseBadge"))$("#programPhaseBadge").textContent=phaseName();
  $("#advanceWeekBtn").textContent=c.week>=c.length?"Finish program":"Advance week";
+ if($("#comparePlansBtn"))$("#comparePlansBtn").disabled=savedPlans().length<2;
  const intel=buildCoachIntelligence();
  if(isDeload())$("#cycleAdvice").textContent="Coach-recommended deload is active: effective working sets are reduced and target effort is RPE 6–7 for this week.";
  else if(c.week>=c.length)$("#cycleAdvice").textContent="Final scheduled week. Deloading is no longer automatic; Coach Review uses accumulated performance and recovery data to recommend it only when supported.";
@@ -4561,7 +4599,7 @@ function exportData(){
  try{
   backupMeta().lastExportInitiatedAt=new Date().toISOString();
   const content=JSON.stringify(state,null,2);
-  downloadLocalFile(content,`adaptive-workout-coach-v7-9-12-backup-${calendarToday()}.json`,"application/json");
+  downloadLocalFile(content,`adaptive-workout-coach-v7-9-13-backup-${calendarToday()}.json`,"application/json");
   try{save()}catch(err){console.warn("Export initiated but backup timestamp could not persist",err)}
   renderBackupHealth();toast("Backup export started · verify the file in Files");
  }catch(err){backupMeta().lastExportInitiatedAt=old;renderBackupHealth();alert("Backup export could not start. Your stored workout data has not been replaced: "+(err.message||err))}
@@ -4827,6 +4865,9 @@ $("#createNewPlanBtn").onclick=openCreatePlanSourceChooser;
 $("#saveCurrentPlanBtn").onclick=openSaveCurrentPlan;
 $("#openPlanLibraryBtn").onclick=openPlanLibrary;
 $("#comparePlansBtn").onclick=openCompareSavedPlans;
+$("#programChangeDaysBtn").onclick=openDayEditor;
+$("#programOpenTrainBtn").onclick=()=>{setCurrentTrainDay(scheduledTrainDayIndex(),true);switchView("today",true);renderToday()};
+$("#programMoreToggle").onclick=()=>{const panel=$("#programMorePanel"),btn=$("#programMoreToggle");if(!panel||!btn)return;const willOpen=panel.classList.contains("hidden");panel.classList.toggle("hidden",!willOpen);btn.setAttribute("aria-expanded",String(willOpen));const arrow=btn.lastElementChild;if(arrow)arrow.textContent=willOpen?"⌃":"⌄"};
 $("#coachEvidenceBtn").onclick=openCoachEvidence;
 $("#nextUnfinishedBtn").onclick=jumpToNextUnfinished;
 $("#trainToolsBtn").onclick=()=>{const panel=$("#trainToolsPanel"),btn=$("#trainToolsBtn"),open=panel.classList.contains("hidden");panel.classList.toggle("hidden",!open);btn.setAttribute("aria-expanded",open?"true":"false");btn.textContent=open?"Close tools":"Tools"};
