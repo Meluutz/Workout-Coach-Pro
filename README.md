@@ -1,6 +1,6 @@
-# Adaptive Workout Coach — v7.9.8
+# Adaptive Workout Coach — v7.9.9
 
-GitHub-ready PWA build. Current release: **v7.9.8 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+GitHub-ready PWA build. Current release: **v7.9.9 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
 ## What changed
 - Expanded the core exercise database from 54 to **120 exercises**.
@@ -1024,3 +1024,13 @@ This is an incremental patch to v7.9.2; it does not change training algorithms, 
 - LocalStorage failures during activation restore the previous in-memory state and report failure; completed history is not rewritten. Full JSON backup validation accepts the mixed-plan week metadata.
 
 **Pre-deployment precautions:** This release was tested with synthetic data in headless Chromium (including a localStorage test shim); this is not a real-user-data test or iPhone Safari/Home Screen acceptance. Before replacing any files in GitHub, export a complete JSON backup using Settings → Export Backup and check the downloaded file exists outside the browser. Keep the previous v7.9.7 ZIP as rollback. Deploy only after testing the real device and verifying history, plan scheduling, and offline updates. Do not uninstall the app or clear browser website data to refresh it. Exercise artwork, icons and branding have not been modified.
+
+## v7.9.9 — Mobile-first Train screen
+- Reworked the Train screen for faster one-handed workout logging on phones.
+- Compressed the workout header into a clear workout title, progress, next-unfinished action, compact tools menu, and session timer.
+- Consolidated per-exercise controls so Exercise Guide and Swap stay visible while target changes, rest, and repeat-set actions live under More.
+- Removed Backup export from the active workout workflow; backup remains under Settings.
+- Added a mobile sticky Finish Workout control once a session has started or a working set is completed.
+- Improved mobile touch targets and set-row density without removing weight, reps, RPE, notes, coaching, or previous-performance data.
+- Remembered the selected Train day for the current calendar day; on a new day the app opens today's scheduled incomplete workout or the next incomplete scheduled workout.
+- Added per-tab scroll restoration so switching between Train, Progress, Program, Recovery, and Settings does not drop the user into an unrelated scroll position.

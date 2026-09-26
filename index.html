@@ -968,11 +968,47 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .personal-profile-actions{display:flex;flex-wrap:wrap;gap:9px;padding-bottom:12px}
 .personal-profile-actions button{flex:1 1 130px;min-height:46px}
 @media(max-width:420px){.personal-profile-fields .grid2,.personal-profile-fields .inline-fields{grid-template-columns:1fr}}
+
+
+/* v7.9.9 — mobile-first Train screen focus */
+.train-overview-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start}
+.train-overview-copy h2{margin:5px 0 3px;letter-spacing:-.02em}
+.train-progress-badge{min-width:62px;text-align:center;border:1px solid var(--line);border-radius:14px;background:var(--surface-2);padding:8px 9px}
+.train-progress-badge strong{display:block;font-size:20px;line-height:1;font-variant-numeric:tabular-nums}.train-progress-badge span{display:block;margin-top:3px;font-size:10px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.train-progress{margin-top:11px}.train-next-label{margin:8px 0 0;font-weight:700}
+.train-primary-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:10px}.train-primary-row button{min-height:46px}
+.train-tools-panel{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:9px;padding-top:9px;border-top:1px solid var(--line)}.train-tools-panel button{min-height:44px;padding:8px 9px;font-size:12px}
+.exercise-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.exercise-title-row h3{min-width:0}.exercise-rest{flex:0 0 auto;font-size:10px;font-weight:800;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:5px 7px;white-space:nowrap}
+.exercise-target{margin-top:2px}.exercise-main-actions{align-items:stretch}.exercise-more-panel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding:0 16px 12px}.exercise-more-panel button{min-height:44px;padding:8px 9px;font-size:12px}
+.mobile-finish-bar{display:none}
+@media(max-width:760px){
+ #today{padding-bottom:76px}
+ .train-program-card{padding:9px 11px}.train-program-card .cyclebar{grid-template-columns:minmax(0,1fr) auto}.train-program-card .label{font-size:9px}.train-program-card .weekbig{font-size:18px;line-height:1.15}.train-program-card #cycleText{font-size:11px;margin-top:2px}.train-program-card .phase{font-size:10px;padding:5px 8px}
+ #today .daytabs{margin-bottom:8px}.train-overview-card{padding:12px}.train-overview-copy h2{font-size:19px;line-height:1.15;margin-top:4px}.train-overview-copy #dayFocus{font-size:11px;line-height:1.35}.train-progress-badge{min-width:58px;padding:7px 8px}.train-progress-badge strong{font-size:19px}
+ .train-primary-row{grid-template-columns:minmax(0,1fr) 72px}.train-primary-row #nextUnfinishedBtn{white-space:normal;line-height:1.2;text-align:left;padding:9px 11px}.train-primary-row #trainToolsBtn{padding-left:8px;padding-right:8px}
+ .train-tools-panel{grid-template-columns:1fr 1fr}.train-tools-panel button{font-size:11px}
+ .train-session-strip{grid-template-columns:minmax(0,1fr) auto!important;align-items:center;padding:9px 10px!important}.train-session-strip .session-clock{font-size:22px}.train-session-strip .session-controls{display:block!important;width:auto!important}.train-session-strip .session-controls button{width:auto!important;min-width:106px;min-height:44px}
+ #today .exercise{border-radius:17px}.exercise .exhead{padding:12px 11px 7px}.exercise-title-row h3{font-size:16px;line-height:1.2;margin:0}.exercise-rest{font-size:9px}.exercise-target{font-size:11px}.exercise .badge{font-size:10px;padding:4px 7px;margin-top:4px}
+ #today .prevperf{margin:0 9px 8px;padding:8px 9px;font-size:11px}.prevperf button{min-height:44px}.coach-line{margin-left:9px!important;margin-right:9px!important}.coach-info{width:44px!important;height:44px!important;min-height:44px!important}
+ #today .exercise-main-actions{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,.72fr) 68px!important;gap:6px;padding:0 9px 9px}.exercise-main-actions button{min-height:45px!important;font-size:11px!important;padding:8px 7px!important}.exercise-main-actions .exerciseDetailBtn{background:var(--soft);border-color:color-mix(in srgb,var(--blue) 24%,var(--line));color:var(--blue);font-weight:900}
+ #today .exercise-more-panel{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:0 9px 9px}.exercise-more-panel button{min-height:44px;font-size:10.5px;padding:7px 6px}
+ #today .targetrow{display:grid!important;grid-template-columns:1fr 1fr!important;overflow:visible!important;gap:6px;padding:0 9px 9px}.targetrow button{width:100%!important;min-height:44px!important;font-size:11px!important;padding:7px 6px!important}#today .targetrow.hidden{display:none!important}
+ #today .working-label{padding:8px 10px 5px}.sets{overflow:visible!important}.setrow{min-width:0!important;grid-template-columns:27px minmax(0,1.2fr) minmax(0,.8fr) minmax(0,.8fr) 44px!important;gap:5px!important;padding:8px 6px!important}.setrow input{min-height:44px;font-size:16px!important;padding:8px 3px!important}.check{width:44px!important;height:44px!important}.note{padding:8px 9px 10px!important}.note textarea{min-height:52px!important}
+ .desktop-workout-tools{display:none!important}
+ .mobile-finish-bar{position:fixed;left:8px;right:8px;bottom:calc(var(--mobile-nav-h) + 8px + env(safe-area-inset-bottom));z-index:99;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 9px 9px 12px;background:color-mix(in srgb,var(--surface) 97%,transparent);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 30px rgba(15,23,42,.14)}.mobile-finish-bar.hidden{display:none!important}.mobile-finish-copy{min-width:0}.mobile-finish-copy strong{display:block;font-size:12px}.mobile-finish-copy span{display:block;margin-top:2px;font-size:10px;color:var(--muted)}.mobile-finish-bar button{flex:0 0 auto;min-height:44px;padding:8px 12px;font-size:12px}
+}
+@media(max-width:390px){
+ .train-overview-head{gap:8px}.train-progress-badge{min-width:54px}.train-primary-row{grid-template-columns:minmax(0,1fr) 66px}.train-session-strip .session-controls button{min-width:96px;font-size:11px}
+ #today .exercise-main-actions{grid-template-columns:minmax(0,1fr) 70px 62px!important}.exercise-main-actions button{font-size:10.5px!important}.exercise-more-panel button{font-size:10px}
+ .setrow{grid-template-columns:25px minmax(0,1.15fr) minmax(0,.75fr) minmax(0,.75fr) 42px!important;gap:4px!important;padding-left:4px!important;padding-right:4px!important}.check{width:42px!important;height:42px!important}
+ .mobile-finish-bar{left:6px;right:6px}.mobile-finish-copy strong{font-size:11px}.mobile-finish-bar button{padding-left:10px;padding-right:10px}
+}
+
 </style>
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.8 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.9 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -986,27 +1022,32 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </nav>
 
 <section id="today" class="view active">
-<section class="card program-card">
+<section class="card program-card train-program-card">
  <div class="cyclebar">
   <div><div class="label">Current program</div><div class="weekbig" id="weekLabel"></div><div class="muted" id="cycleText"></div></div>
   <div><span class="phase" id="phaseBadge"></span></div>
  </div>
 </section>
 <div id="dayTabs" class="daytabs"></div>
-<div id="nextSetNotice" class="tiny" style="margin:0 0 8px"></div>
-<section class="card today-card">
- <div class="label">Today's plan</div><h2 id="dayTitle" style="margin:6px 0 4px"></h2><div id="dayFocus" class="muted"></div>
- <div class="row" style="margin-top:14px"><span>Session progress</span><strong id="pct">0%</strong></div><div class="progress" style="margin-top:6px"><div id="bar"></div></div>
- <div class="chips" style="margin-top:12px"><button id="warmBtn" class="chip">Warm-up guide</button><button id="guideBtn" class="chip">Workout visuals</button><button id="notesBtn" class="chip">Session notes</button><button id="nextUnfinishedBtn" class="chip">Next unfinished exercise ↓</button></div>
- <div class="session-strip">
-  <div><div class="label">Session timer</div><div id="sessionClock" class="session-clock">00:00</div><div id="sessionStatus" class="tiny">Not started</div></div>
-  <div class="session-controls"><button id="sessionToggle" class="primary">Start session</button><button id="sessionReset">Reset timer</button></div>
+<section class="card today-card train-overview-card">
+ <div class="train-overview-head">
+  <div class="train-overview-copy"><div class="label">Today's workout</div><h2 id="dayTitle"></h2><div id="dayFocus" class="muted"></div></div>
+  <div class="train-progress-badge" aria-label="Workout completion"><strong id="pct">0%</strong><span>done</span></div>
+ </div>
+ <div class="progress train-progress"><div id="bar"></div></div>
+ <div id="nextSetNotice" class="train-next-label tiny"></div>
+ <div class="train-primary-row"><button id="nextUnfinishedBtn" class="primary">Continue workout</button><button id="trainToolsBtn" aria-expanded="false">Tools</button></div>
+ <div id="trainToolsPanel" class="train-tools-panel hidden"><button id="warmBtn">Warm-up</button><button id="guideBtn">Workout visuals</button><button id="notesBtn">Session notes</button><button id="sessionReset">Reset timer</button></div>
+ <div class="session-strip train-session-strip">
+  <div><div class="label">Session</div><div id="sessionClock" class="session-clock">00:00</div><div id="sessionStatus" class="tiny">Not started</div></div>
+  <div class="session-controls"><button id="sessionToggle" class="primary">Start session</button></div>
  </div>
  <div id="bodyweightLimitation" class="bodyweight-limitation hidden"><strong>Bodyweight-only programming:</strong> no dedicated training equipment is assumed. Loaded and unloaded movement variants are kept separate, so a bodyweight exercise will never borrow a dumbbell/gym visual. Because true loaded pulling is limited without an anchor/bar, the coach uses floor-based back/scapular work instead of falsely labeling it as equivalent to rows or pull-ups.</div>
  <div id="restMini" class="rest-mini hidden"><div><div class="label">Current rest</div><strong id="restMiniLabel">—</strong> · <strong id="restMiniTime">0:00</strong></div><div class="rest-mini-actions"><button id="restOpenBtn">Open</button><button id="restSkipBtn">Skip</button></div></div>
 </section>
 <div id="exerciseList"></div>
-<section class="card workout-tools-card"><h3 style="margin-top:0">Workout tools</h3><div class="grid2"><button id="finishBtn" class="primary">Finish session</button><button id="exportBtn">Export Backup</button></div></section>
+<section class="card workout-tools-card desktop-workout-tools"><button id="finishBtn" class="primary" style="width:100%">Finish workout</button><button id="exportBtn" class="hidden" aria-hidden="true" tabindex="-1">Export Backup</button></section>
+<div id="mobileFinishBar" class="mobile-finish-bar hidden"><div class="mobile-finish-copy"><strong>Workout in progress</strong><span id="mobileFinishMeta">0% complete</span></div><button id="mobileFinishBtn" class="primary">Finish workout</button></div>
 </section>
 
 <section id="progress" class="view">
@@ -1166,7 +1207,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.8</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.9</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -1319,7 +1360,7 @@ const EX=DATA.EXERCISES, EXMAP=Object.fromEntries(EX.map(e=>[e.id,e]));
 const KEY="adaptiveWorkoutCoachV6", OLDKEY="adaptiveWorkoutCoachV5";
 const UNDO_KEY="adaptiveWorkoutCoachV6Undo", REDO_KEY="adaptiveWorkoutCoachV6Redo";
 let undoStack=[], redoStack=[];
-let state={}, currentDay=0, currentView="today", obStep=1, editingProfile=false, builderDraft=null, pendingFinish=null, sessionTicker=null, timer={base:180,remaining:180,running:false,id:null,slot:null,label:"",auto:false};
+let state={}, currentDay=0, currentView="today", viewScroll={today:0,progress:0,cycle:0,recovery:0,settings:0}, obStep=1, editingProfile=false, builderDraft=null, pendingFinish=null, sessionTicker=null, timer={base:180,remaining:180,running:false,id:null,slot:null,label:"",auto:false};
 let reliabilityRunning=false,lastReliabilityResult=null;
 let analyticsRange="8w",analyticsExerciseId=null;
 let customOrderDrag={active:false,id:null,targetId:null,pointerId:null,after:false};
@@ -2319,10 +2360,19 @@ function fmtLong(sec){sec=Math.max(0,Math.floor(Number(sec)||0));const h=Math.fl
 function startSession(auto=false){const r=sessionRuntime();if(r.running)return;r.running=true;r.startedAt=Date.now();save();renderSessionClock();if(!auto)toast("Session timer started")}
 function pauseSession(){const r=sessionRuntime();if(!r.running)return;r.elapsed=sessionElapsed();r.running=false;r.startedAt=null;save();renderSessionClock()}
 function resetSessionTimer(){const r=sessionRuntime();if(sessionElapsed()>0&&!confirm("Reset the current session timer to 00:00? Workout entries will not be deleted."))return;r.elapsed=0;r.running=false;r.startedAt=null;save();renderSessionClock();toast("Session timer reset")}
+function currentDayHasCompletedSet(){
+ const d=plan()?.[currentDay];if(!d?.items?.length)return false;
+ return d.items.some((it,slot)=>{const t=effectiveTarget(it),sets=state.weekLogs?.[String(cycle()?.week||1)]?.[currentDay]?.[slot]?.sets||[];return sets.slice(0,t.sets).some(x=>x?.done)});
+}
+function syncMobileFinishBar(hasDone=false){
+ const bar=$("#mobileFinishBar");if(!bar||!profile()||!hasUsablePlan())return;
+ const active=hasDone||currentDayHasCompletedSet()||sessionElapsed()>0||sessionRuntime().running;
+ bar.classList.toggle("hidden",!active);
+}
 function renderSessionClock(){
  const clock=$("#sessionClock"),status=$("#sessionStatus"),btn=$("#sessionToggle");if(!clock||!status||!btn||!profile())return;
  const r=sessionRuntime(),elapsed=sessionElapsed();clock.textContent=fmtLong(elapsed);status.textContent=r.running?"Workout in progress":elapsed?"Paused":"Not started";btn.textContent=r.running?"Pause session":elapsed?"Resume session":"Start session";
- renderRestMini();
+ renderRestMini();syncMobileFinishBar(false);
 }
 function clearSessionRuntime(dayIdx=currentDay){if(state.sessionRuntime)delete state.sessionRuntime[sessionKey(dayIdx)]}
 function isCompoundExercise(ex){return !!ex&&COMPOUND_PATTERNS.has(ex.pattern)}
@@ -3051,7 +3101,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.9.8 — Reliability Report",
+  "Adaptive Workout Coach v7.9.9 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -3694,8 +3744,38 @@ function renderCycleHeader(){
  const c=cycle();if(!c)return;
  $("#weekLabel").textContent=`Week ${c.week} of ${c.length}`;$("#cycleText").textContent=`Training Block ${c.number} · ${phaseName()} phase`;$("#phaseBadge").textContent=phaseName();
 }
+function trainUiState(){state.uiState??={};return state.uiState}
+function dayIsComplete(dayIdx){
+ const d=plan()?.[dayIdx];if(!d?.items?.length)return false;
+ const logs=state.weekLogs?.[String(cycle()?.week||1)]?.[dayIdx]||{};
+ return d.items.every((it,slot)=>{
+  const t=effectiveTarget(it),sets=logs?.[slot]?.sets||[];
+  return sets.slice(0,t.sets).length>=t.sets&&sets.slice(0,t.sets).every(x=>x?.done);
+ });
+}
+function scheduledTrainDayIndex(){
+ const days=plan();if(!days.length)return 0;
+ const ui=trainUiState(),todayKey=calendarToday(),saved=Number(ui.trainDay);
+ if(ui.trainDayDate===todayKey&&Number.isInteger(saved)&&saved>=0&&saved<days.length)return saved;
+ const jsDay=new Date().getDay(),order=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],todayName=order[jsDay];
+ const todayIdx=days.findIndex(d=>d.weekday===todayName);
+ let chosen=todayIdx>=0&&!dayIsComplete(todayIdx)?todayIdx:-1;
+ if(chosen<0){
+  for(let offset=1;offset<=7;offset++){
+   const name=order[(jsDay+offset)%7],idx=days.findIndex(d=>d.weekday===name);
+   if(idx>=0&&!dayIsComplete(idx)){chosen=idx;break}
+  }
+ }
+ if(chosen<0)chosen=days.findIndex((_,i)=>!dayIsComplete(i));
+ if(chosen<0)chosen=todayIdx>=0?todayIdx:0;
+ ui.trainDay=chosen;ui.trainDayDate=todayKey;return chosen;
+}
+function setCurrentTrainDay(dayIdx,persist=true){
+ const max=Math.max(0,(plan()?.length||1)-1);currentDay=Math.max(0,Math.min(Number(dayIdx)||0,max));
+ if(persist){const ui=trainUiState();ui.trainDay=currentDay;ui.trainDayDate=calendarToday();save()}
+}
 function renderDayTabs(){
- const b=$("#dayTabs");b.innerHTML="";plan().forEach((d,i)=>{const x=document.createElement("button");x.textContent=d.weekday;x.classList.toggle("active",i===currentDay);x.onclick=()=>{currentDay=i;renderToday()};b.appendChild(x)});
+ const b=$("#dayTabs");b.innerHTML="";plan().forEach((d,i)=>{const x=document.createElement("button");x.textContent=d.weekday;x.classList.toggle("active",i===currentDay);x.onclick=()=>{setCurrentTrainDay(i,true);renderToday()};b.appendChild(x)});
 }
 function visualFor(exId){return visualChoice(exId).path}
 function visualStyleName(exId){
@@ -3754,23 +3834,28 @@ function renderToday(){
  d.items.forEach((item,slot)=>{
    const ex=EXMAP[item.id],t=effectiveTarget(item),log=exLog(currentDay,slot,t.sets),rec=suggestion(item),prev=lastPerformanceSummary(item.id);
    const c=document.createElement("section");c.className="card exercise";c.dataset.exslot=String(slot);
-   c.innerHTML=`<div class="exhead"><h3>${slot+1}. ${esc(ex.name)}</h3><div class="muted"><strong>${t.sets} sets · ${esc(t.reps)} reps · RPE ${esc(t.rpe)}${t.load?` · target ${t.load} ${unit()}`:""}</strong></div><span class="badge">${esc(ex.muscles)}</span><span class="badge">Rest ${fmt(item.rest)}</span>${isAdjusted(item)?'<span class="badge adjusted">User adjusted</span>':""}</div>
-   <div class="targetrow"><button class="repMinus" data-slot="${slot}">−1 rep</button><button class="repPlus" data-slot="${slot}">+1 rep</button><button class="setMinus" data-slot="${slot}">− set</button><button class="setPlus" data-slot="${slot}">+ set</button><button class="editTarget" data-slot="${slot}">Edit target</button>${isAdjusted(item)?`<button class="resetTarget" data-slot="${slot}">Reset target</button>`:""}</div>
+   c.innerHTML=`<div class="exhead"><div class="exercise-title-row"><h3>${slot+1}. ${esc(ex.name)}</h3><span class="exercise-rest">${fmt(item.rest)} rest</span></div><div class="muted exercise-target"><strong>${t.sets} sets · ${esc(t.reps)} reps · RPE ${esc(t.rpe)}${t.load?` · target ${t.load} ${unit()}`:""}</strong></div><span class="badge">${esc(ex.muscles)}</span>${isAdjusted(item)?'<span class="badge adjusted">User adjusted</span>':""}</div>
    ${prev?`<div class="prevperf"><div class="row"><div><strong>Last performance</strong><br>${esc(prev.text)}</div><button class="useLastBtn" data-slot="${slot}">Prefill last</button></div></div>`:`<div class="prevperf"><strong>Last performance:</strong> No completed history yet.</div>`}
    ${coachingRecommendationHtml(item,slot,rec)}
-   <div class="actions"><button class="exerciseDetailBtn" data-exid="${item.id}">Exercise details</button><button class="visualBtn" data-slot="${slot}">Visual only</button><button class="swapBtn" data-slot="${slot}">Swap exercise</button><button class="timerBtn" data-slot="${slot}">⏱ Rest</button><button class="repeatSetBtn" data-slot="${slot}">Repeat previous set</button></div>
+   <div class="actions exercise-main-actions"><button class="exerciseDetailBtn" data-exid="${item.id}">Exercise guide</button><button class="swapBtn" data-slot="${slot}">Swap</button><button class="exerciseMoreBtn" data-slot="${slot}" aria-expanded="false">More</button></div>
+   <div class="exercise-more-panel hidden" data-exmore="${slot}"><button class="adjustTargetBtn" data-slot="${slot}" aria-expanded="false">Adjust target</button><button class="timerBtn" data-slot="${slot}">Rest timer</button><button class="repeatSetBtn" data-slot="${slot}">Repeat last set</button></div>
+   <div class="targetrow hidden" data-targetrow="${slot}"><button class="repMinus" data-slot="${slot}">−1 rep</button><button class="repPlus" data-slot="${slot}">+1 rep</button><button class="setMinus" data-slot="${slot}">− set</button><button class="setPlus" data-slot="${slot}">+ set</button><button class="editTarget" data-slot="${slot}">Edit target</button>${isAdjusted(item)?`<button class="resetTarget" data-slot="${slot}">Reset target</button>`:""}</div>
    <div class="working-label">Working sets</div>
    <div class="sets"><div class="setrow head"><div>Set</div><div>Weight</div><div>Reps</div><div>RPE</div><div>Done</div></div>${log.sets.slice(0,t.sets).map((s,j)=>`<div class="setrow"><strong>${j+1}</strong><input data-slot="${slot}" data-set="${j}" data-f="weight" value="${esc(s.weight)}" inputmode="decimal" placeholder="${(ex.equipment||[]).includes("bodyweight")?"load "+unit():unit()}"><input data-slot="${slot}" data-set="${j}" data-f="reps" value="${esc(s.reps)}" inputmode="numeric" placeholder="reps"><input data-slot="${slot}" data-set="${j}" data-f="rpe" value="${esc(s.rpe)}" inputmode="decimal" placeholder="${esc(t.rpe)}"><button class="check ${s.done?"done":""}" data-check="${slot}:${j}">${s.done?"✓":""}</button></div>`).join("")}</div>
    <div class="note"><textarea data-note="${slot}" placeholder="Exercise notes...">${esc(log.note||"")}</textarea></div>`;
    box.appendChild(c);
  });
  updateProgress();renderSessionClock();
- const upcoming=nextUnfinishedExerciseIndex(),notice=$("#nextSetNotice");
- if(notice)notice.textContent=upcoming<0?"All working sets checked off.":"Next unfinished: "+(EXMAP[d.items[upcoming].id]?.name||"Exercise");
- $("#bodyweightLimitation")?.classList.toggle("hidden",profile().equipment!=="bodyweight");save();
+ const upcoming=nextUnfinishedExerciseIndex(),notice=$("#nextSetNotice"),nextBtn=$("#nextUnfinishedBtn");
+ const nextName=upcoming<0?"":(EXMAP[d.items[upcoming].id]?.name||"Exercise");
+ if(notice)notice.textContent=upcoming<0?"All working sets checked off.":`Next unfinished · ${nextName}`;
+ if(nextBtn){nextBtn.disabled=upcoming<0;nextBtn.textContent=upcoming<0?"Workout complete ✓":`Continue · ${nextName}`}
+ $("#bodyweightLimitation")?.classList.toggle("hidden",profile().equipment!=="bodyweight");const ui=trainUiState();ui.trainDay=currentDay;ui.trainDayDate=calendarToday();save();
 }
 function updateProgress(){
  const d=plan()[currentDay];let total=0,done=0;d.items.forEach((it,s)=>{const t=effectiveTarget(it);total+=t.sets;done+=exLog(currentDay,s,t.sets).sets.slice(0,t.sets).filter(x=>x.done).length});const p=total?Math.round(done/total*100):0;$("#pct").textContent=p+"%";$("#bar").style.width=p+"%";
+ const meta=$("#mobileFinishMeta");if(meta)meta.textContent=`${p}% complete`;
+ syncMobileFinishBar(done>0);
 }
 
 
@@ -4246,8 +4331,12 @@ function renderSettings(){
  renderHistoricalUnitsStatus();
 }
 function renderAll(){renderToday();renderProgress();renderCycle();renderRecovery();renderSettings();updateUndoUI();$("#headerSub").textContent=profile()?.name?`${profile().name}'s adaptive training cycle`:"Adaptive coaching · 169-exercise expanded library"}
-function switchView(v){currentView=v;$$(".vtab").forEach(b=>b.classList.toggle("active",b.dataset.view===v));$$(".view").forEach(x=>x.classList.remove("active"));$("#"+v).classList.add("active");if(v==="progress")renderProgress();if(v==="cycle")renderCycle();if(v==="recovery")renderRecovery();if(v==="settings")renderSettings()}
-
+function switchView(v,resetScroll=false){
+ if(v!==currentView)viewScroll[currentView]=window.scrollY||0;
+ currentView=v;$$('.vtab').forEach(b=>b.classList.toggle('active',b.dataset.view===v));$$('.view').forEach(x=>x.classList.remove('active'));$('#'+v).classList.add('active');
+ if(v==='progress')renderProgress();if(v==='cycle')renderCycle();if(v==='recovery')renderRecovery();if(v==='settings')renderSettings();
+ const y=resetScroll?0:(viewScroll[v]||0);if(resetScroll)viewScroll[v]=0;requestAnimationFrame(()=>window.scrollTo({top:y,behavior:'auto'}));
+}
 // Personal profile edits are separate from program creation and never regenerate a plan.
 function openPersonalProfileEditor(){
  const p=profile();if(!p)return;
@@ -4422,7 +4511,7 @@ function exportData(){
  try{
   backupMeta().lastExportInitiatedAt=new Date().toISOString();
   const content=JSON.stringify(state,null,2);
-  downloadLocalFile(content,`adaptive-workout-coach-v7-9-6-backup-${calendarToday()}.json`,"application/json");
+  downloadLocalFile(content,`adaptive-workout-coach-v7-9-9-backup-${calendarToday()}.json`,"application/json");
   try{save()}catch(err){console.warn("Export initiated but backup timestamp could not persist",err)}
   renderBackupHealth();toast("Backup export started · verify the file in Files");
  }catch(err){backupMeta().lastExportInitiatedAt=old;renderBackupHealth();alert("Backup export could not start. Your stored workout data has not been replaced: "+(err.message||err))}
@@ -4641,7 +4730,9 @@ document.addEventListener("click",e=>{
 
  const emptyBuild=e.target.closest(".emptyBuildBtn");if(emptyBuild){showOnboarding(!!profile(),1);return}
  const emptyImport=e.target.closest(".emptyImportBtn");if(emptyImport){switchView("settings");renderSettings();setTimeout(()=>$("#importInput")?.click(),50);return}
- const jump=e.target.closest(".jumpToTrainBtn");if(jump){currentDay=Number(jump.dataset.day)||0;switchView("today");renderToday();window.scrollTo({top:0,behavior:"auto"});return}
+ const jump=e.target.closest(".jumpToTrainBtn");if(jump){setCurrentTrainDay(Number(jump.dataset.day)||0,true);switchView("today",true);renderToday();return}
+ const more=e.target.closest(".exerciseMoreBtn");if(more){const slot=Number(more.dataset.slot),panel=document.querySelector(`[data-exmore="${slot}"]`),open=panel?.classList.contains("hidden");panel?.classList.toggle("hidden",!open);more.setAttribute("aria-expanded",open?"true":"false");more.textContent=open?"Less":"More";return}
+ const adjust=e.target.closest(".adjustTargetBtn");if(adjust){const slot=Number(adjust.dataset.slot),row=document.querySelector(`[data-targetrow="${slot}"]`),open=row?.classList.contains("hidden");row?.classList.toggle("hidden",!open);adjust.setAttribute("aria-expanded",open?"true":"false");adjust.textContent=open?"Hide adjustments":"Adjust target";return}
  const ul=e.target.closest(".useLastBtn");if(ul){const s=Number(ul.dataset.slot),it=plan()[currentDay].items[s],t=effectiveTarget(it),last=lastRecord(it.id);if(!last)return;const recordedUnit=recordedWeightUnit(lastSessionForExercise(it.id));if((last.sets||[]).some(x=>Number(x.weight)>0)&&recordedUnit!==unit()){alert("Previous loaded performance uses an unknown or different weight unit. Enter weight manually to avoid copying incompatible values.");return}const l=exLog(currentDay,s,t.sets),src=(last.sets||[]).filter(x=>x.done!==false),hasToday=l.sets.slice(0,t.sets).some(x=>x.done||String(x.weight||"").trim()||String(x.reps||"").trim()||String(x.rpe||"").trim());if(hasToday&&!confirm("Today already has working-set entries for this exercise. Replace those entries with the last completed performance? Warm-up sets and notes will not be changed."))return;for(let j=0;j<Math.min(t.sets,src.length);j++){l.sets[j].weight=src[j].weight;l.sets[j].reps=src[j].reps;l.sets[j].rpe=src[j].rpe;l.sets[j].done=false}save();renderToday();toast("Last performance prefilled");return}
  const detailBtn=e.target.closest(".exerciseDetailBtn");if(detailBtn){openExerciseDetails(detailBtn.dataset.exid);return}
  const cf=e.target.closest("#confirmFinishBtn");if(cf){finalizeSession();return}
@@ -4685,6 +4776,8 @@ $("#openPlanLibraryBtn").onclick=openPlanLibrary;
 $("#comparePlansBtn").onclick=openCompareSavedPlans;
 $("#coachEvidenceBtn").onclick=openCoachEvidence;
 $("#nextUnfinishedBtn").onclick=jumpToNextUnfinished;
+$("#trainToolsBtn").onclick=()=>{const panel=$("#trainToolsPanel"),btn=$("#trainToolsBtn"),open=panel.classList.contains("hidden");panel.classList.toggle("hidden",!open);btn.setAttribute("aria-expanded",open?"true":"false");btn.textContent=open?"Close tools":"Tools"};
+$("#mobileFinishBtn").onclick=finishSession;
 $("#undoBtn").onclick=undoLast;
 $("#redoBtn").onclick=redoLast;
 $("#saveRecoveryBtn").onclick=()=>{const o={date:new Date().toISOString(),planId:cycle().planId||state.activeSavedPlanId||null,cycleNumber:cycle().number,week:cycle().week};$$(".recRange").forEach(x=>o[x.dataset.k]=Number(x.value));recoveryEntries().push(o);save();renderRecovery();renderToday();toast("Recovery check-in saved")};
@@ -4787,7 +4880,7 @@ window.visualViewport?.addEventListener("scroll",syncVisualViewport,{passive:tru
 sessionTicker=setInterval(()=>{if(profile())renderSessionClock()},1000);
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
 loadState();state.savedPlans=Array.isArray(state.savedPlans)?state.savedPlans:[];state.activeSavedPlanId=state.activeSavedPlanId||null;if(repairLegacyEquipmentPersonalization())save();loadUndoStacks();
-if(!profile()){showOnboarding(false)}else{if(!cycle())state.cycle={number:nextGlobalCycleNumber(),week:1,length:profile().cycleLength||6,start:new Date().toISOString(),weekSummaries:[],planId:state.activeSavedPlanId||null};repairPlanIfNeeded();renderAll()}
+if(!profile()){showOnboarding(false)}else{if(!cycle())state.cycle={number:nextGlobalCycleNumber(),week:1,length:profile().cycleLength||6,start:new Date().toISOString(),weekSummaries:[],planId:state.activeSavedPlanId||null};repairPlanIfNeeded();currentDay=scheduledTrainDayIndex();save();renderAll()}
 </script>
 </body>
 </html>
