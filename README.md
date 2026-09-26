@@ -1,6 +1,6 @@
-# Adaptive Workout Coach — v7.9.10
+# Adaptive Workout Coach — v7.9.11
 
-GitHub-ready PWA build. Current release: **v7.9.10 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+GitHub-ready PWA build. Current release: **v7.9.11 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
 ## What changed
 - Expanded the core exercise database from 54 to **120 exercises**.
@@ -1043,3 +1043,10 @@ This is an incremental patch to v7.9.2; it does not change training algorithms, 
 - When every working set is complete, the compact bar changes to a clear finish-ready state and tapping it opens the existing finish review.
 - Finish Workout remains available at the bottom of the Train screen and from Train → Tools as fallbacks.
 - No workout-history, saved-plan, exercise-library, progression, recovery, or data-storage behavior was intentionally changed.
+
+
+## v7.9.11 — Contextual RPE explanation
+- Keeps the compact Coach recommendation strip and existing information icon unchanged.
+- When a Coach Logic recommendation or evidence mentions RPE, the existing Coach Logic sheet now includes a short “What is RPE?” explainer.
+- Explains RPE as Rate of Perceived Exertion and gives practical RPE 10/9/8/7 rep-in-reserve examples.
+- The explainer is contextual and does not appear in Coach Logic sheets that do not mention RPE.
