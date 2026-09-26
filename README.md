@@ -1,6 +1,6 @@
-# Adaptive Workout Coach — v7.9.9
+# Adaptive Workout Coach — v7.9.10
 
-GitHub-ready PWA build. Current release: **v7.9.9 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+GitHub-ready PWA build. Current release: **v7.9.10 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
 ## What changed
 - Expanded the core exercise database from 54 to **120 exercises**.
@@ -1034,3 +1034,12 @@ This is an incremental patch to v7.9.2; it does not change training algorithms, 
 - Improved mobile touch targets and set-row density without removing weight, reps, RPE, notes, coaching, or previous-performance data.
 - Remembered the selected Train day for the current calendar day; on a new day the app opens today's scheduled incomplete workout or the next incomplete scheduled workout.
 - Added per-tab scroll restoration so switching between Train, Progress, Program, Recovery, and Settings does not drop the user into an unrelated scroll position.
+
+
+## v7.9.10 — Compact mobile session status
+- Replaced the persistent mobile Finish Workout button with a compact Session status bar above bottom navigation.
+- During a workout the bar shows elapsed session time and completion percentage; tapping it opens session controls.
+- Session controls provide pause/resume, session notes, timer reset, and Finish Workout.
+- When every working set is complete, the compact bar changes to a clear finish-ready state and tapping it opens the existing finish review.
+- Finish Workout remains available at the bottom of the Train screen and from Train → Tools as fallbacks.
+- No workout-history, saved-plan, exercise-library, progression, recovery, or data-storage behavior was intentionally changed.

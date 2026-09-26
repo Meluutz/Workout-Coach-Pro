@@ -971,6 +971,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 
 /* v7.9.9 — mobile-first Train screen focus */
+/* v7.9.10 — compact mobile session status bar + session controls */
 .train-overview-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start}
 .train-overview-copy h2{margin:5px 0 3px;letter-spacing:-.02em}
 .train-progress-badge{min-width:62px;text-align:center;border:1px solid var(--line);border-radius:14px;background:var(--surface-2);padding:8px 9px}
@@ -994,21 +995,21 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  #today .exercise-more-panel{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:0 9px 9px}.exercise-more-panel button{min-height:44px;font-size:10.5px;padding:7px 6px}
  #today .targetrow{display:grid!important;grid-template-columns:1fr 1fr!important;overflow:visible!important;gap:6px;padding:0 9px 9px}.targetrow button{width:100%!important;min-height:44px!important;font-size:11px!important;padding:7px 6px!important}#today .targetrow.hidden{display:none!important}
  #today .working-label{padding:8px 10px 5px}.sets{overflow:visible!important}.setrow{min-width:0!important;grid-template-columns:27px minmax(0,1.2fr) minmax(0,.8fr) minmax(0,.8fr) 44px!important;gap:5px!important;padding:8px 6px!important}.setrow input{min-height:44px;font-size:16px!important;padding:8px 3px!important}.check{width:44px!important;height:44px!important}.note{padding:8px 9px 10px!important}.note textarea{min-height:52px!important}
- .desktop-workout-tools{display:none!important}
- .mobile-finish-bar{position:fixed;left:8px;right:8px;bottom:calc(var(--mobile-nav-h) + 8px + env(safe-area-inset-bottom));z-index:99;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 9px 9px 12px;background:color-mix(in srgb,var(--surface) 97%,transparent);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 30px rgba(15,23,42,.14)}.mobile-finish-bar.hidden{display:none!important}.mobile-finish-copy{min-width:0}.mobile-finish-copy strong{display:block;font-size:12px}.mobile-finish-copy span{display:block;margin-top:2px;font-size:10px;color:var(--muted)}.mobile-finish-bar button{flex:0 0 auto;min-height:44px;padding:8px 12px;font-size:12px}
+ .desktop-workout-tools{display:block!important;margin-bottom:4px}.desktop-workout-tools #finishBtn{min-height:46px}
+ .mobile-session-bar{position:fixed;left:8px;right:8px;bottom:calc(var(--mobile-nav-h) + 8px + env(safe-area-inset-bottom));z-index:99;display:block;background:color-mix(in srgb,var(--surface) 97%,transparent);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:15px;box-shadow:0 10px 30px rgba(15,23,42,.14);overflow:hidden}.mobile-session-bar.hidden{display:none!important}.mobile-session-button{width:100%;min-height:50px;border:0!important;border-radius:0!important;background:transparent!important;display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;align-items:center;gap:8px;padding:8px 10px!important;text-align:left;color:var(--text)!important}.mobile-session-kicker{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.055em;color:var(--muted)}.mobile-session-time{font-size:15px;font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}.mobile-session-meta{min-width:0;font-size:11px;color:var(--muted);font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mobile-session-chevron{font-size:19px;line-height:1;color:var(--muted);font-weight:900}.mobile-session-bar.ready-to-finish{border-color:var(--blue);background:var(--blue)}.mobile-session-bar.ready-to-finish .mobile-session-button{color:#fff!important}.mobile-session-bar.ready-to-finish .mobile-session-kicker,.mobile-session-bar.ready-to-finish .mobile-session-meta,.mobile-session-bar.ready-to-finish .mobile-session-chevron{color:#fff}.train-tools-panel #trainFinishBtn{grid-column:1/-1;color:var(--danger);border-color:color-mix(in srgb,var(--danger) 28%,var(--line))}
 }
 @media(max-width:390px){
  .train-overview-head{gap:8px}.train-progress-badge{min-width:54px}.train-primary-row{grid-template-columns:minmax(0,1fr) 66px}.train-session-strip .session-controls button{min-width:96px;font-size:11px}
  #today .exercise-main-actions{grid-template-columns:minmax(0,1fr) 70px 62px!important}.exercise-main-actions button{font-size:10.5px!important}.exercise-more-panel button{font-size:10px}
  .setrow{grid-template-columns:25px minmax(0,1.15fr) minmax(0,.75fr) minmax(0,.75fr) 42px!important;gap:4px!important;padding-left:4px!important;padding-right:4px!important}.check{width:42px!important;height:42px!important}
- .mobile-finish-bar{left:6px;right:6px}.mobile-finish-copy strong{font-size:11px}.mobile-finish-bar button{padding-left:10px;padding-right:10px}
+ .mobile-session-bar{left:6px;right:6px}.mobile-session-button{grid-template-columns:auto auto minmax(0,1fr) auto;gap:6px;padding-left:8px!important;padding-right:8px!important}.mobile-session-time{font-size:14px}.mobile-session-meta{font-size:10px}
 }
 
 </style>
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.9 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.10 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1037,7 +1038,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  <div class="progress train-progress"><div id="bar"></div></div>
  <div id="nextSetNotice" class="train-next-label tiny"></div>
  <div class="train-primary-row"><button id="nextUnfinishedBtn" class="primary">Continue workout</button><button id="trainToolsBtn" aria-expanded="false">Tools</button></div>
- <div id="trainToolsPanel" class="train-tools-panel hidden"><button id="warmBtn">Warm-up</button><button id="guideBtn">Workout visuals</button><button id="notesBtn">Session notes</button><button id="sessionReset">Reset timer</button></div>
+ <div id="trainToolsPanel" class="train-tools-panel hidden"><button id="warmBtn">Warm-up</button><button id="guideBtn">Workout visuals</button><button id="notesBtn">Session notes</button><button id="sessionReset">Reset timer</button><button id="trainFinishBtn">Finish workout</button></div>
  <div class="session-strip train-session-strip">
   <div><div class="label">Session</div><div id="sessionClock" class="session-clock">00:00</div><div id="sessionStatus" class="tiny">Not started</div></div>
   <div class="session-controls"><button id="sessionToggle" class="primary">Start session</button></div>
@@ -1047,7 +1048,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </section>
 <div id="exerciseList"></div>
 <section class="card workout-tools-card desktop-workout-tools"><button id="finishBtn" class="primary" style="width:100%">Finish workout</button><button id="exportBtn" class="hidden" aria-hidden="true" tabindex="-1">Export Backup</button></section>
-<div id="mobileFinishBar" class="mobile-finish-bar hidden"><div class="mobile-finish-copy"><strong>Workout in progress</strong><span id="mobileFinishMeta">0% complete</span></div><button id="mobileFinishBtn" class="primary">Finish workout</button></div>
+<div id="mobileSessionBar" class="mobile-session-bar hidden"><button id="mobileSessionBtn" class="mobile-session-button" type="button" aria-label="Open session controls"><span class="mobile-session-kicker">Session</span><strong id="mobileSessionTime" class="mobile-session-time">00:00</strong><span id="mobileSessionMeta" class="mobile-session-meta">0% complete</span><span class="mobile-session-chevron" aria-hidden="true">›</span></button></div>
 </section>
 
 <section id="progress" class="view">
@@ -1207,7 +1208,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.9</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.10</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -2364,15 +2365,34 @@ function currentDayHasCompletedSet(){
  const d=plan()?.[currentDay];if(!d?.items?.length)return false;
  return d.items.some((it,slot)=>{const t=effectiveTarget(it),sets=state.weekLogs?.[String(cycle()?.week||1)]?.[currentDay]?.[slot]?.sets||[];return sets.slice(0,t.sets).some(x=>x?.done)});
 }
-function syncMobileFinishBar(hasDone=false){
- const bar=$("#mobileFinishBar");if(!bar||!profile()||!hasUsablePlan())return;
- const active=hasDone||currentDayHasCompletedSet()||sessionElapsed()>0||sessionRuntime().running;
- bar.classList.toggle("hidden",!active);
+function currentWorkoutProgress(){
+ const d=plan()?.[currentDay];if(!d?.items?.length)return 0;let total=0,done=0;
+ d.items.forEach((it,s)=>{const t=effectiveTarget(it);total+=t.sets;done+=exLog(currentDay,s,t.sets).sets.slice(0,t.sets).filter(x=>x.done).length});
+ return total?Math.round(done/total*100):0;
+}
+function syncMobileSessionBar(hasDone=false){
+ const bar=$("#mobileSessionBar"),time=$("#mobileSessionTime"),meta=$("#mobileSessionMeta");if(!bar||!profile()||!hasUsablePlan())return;
+ const active=hasDone||currentDayHasCompletedSet()||sessionElapsed()>0||sessionRuntime().running,pct=currentWorkoutProgress(),complete=dayIsComplete(currentDay);
+ bar.classList.toggle("hidden",!active);bar.classList.toggle("ready-to-finish",active&&complete);
+ if(time)time.textContent=fmtLong(sessionElapsed());
+ if(meta)meta.textContent=complete?"Workout complete · tap to finish":`${pct}% complete · tap for controls`;
+ const btn=$("#mobileSessionBtn");if(btn)btn.setAttribute("aria-label",complete?"Finish workout":"Open session controls");
+}
+function openMobileSessionPanel(){
+ const d=plan()?.[currentDay];if(!d)return;const pct=currentWorkoutProgress(),r=sessionRuntime(),elapsed=sessionElapsed();
+ openSheet("SESSION",d.title,`<div class="finish-grid"><div class="finish-stat"><div class="label">Session time</div><strong>${fmtLong(elapsed)}</strong></div><div class="finish-stat"><div class="label">Completion</div><strong>${pct}%</strong></div></div><div class="grid2" style="margin-top:12px"><button id="mobileSheetToggle" class="primary">${r.running?"Pause session":elapsed?"Resume session":"Start session"}</button><button id="mobileSheetNotes">Session notes</button><button id="mobileSheetReset">Reset timer</button><button id="mobileSheetFinish">Finish workout</button></div><p class="tiny" style="margin-top:10px">Finishing early is allowed. If working sets are incomplete, you will review that before saving.</p>`);
+ setTimeout(()=>{
+  const toggle=$("#mobileSheetToggle"),notes=$("#mobileSheetNotes"),reset=$("#mobileSheetReset"),finish=$("#mobileSheetFinish");
+  if(toggle)toggle.onclick=()=>{sessionRuntime().running?pauseSession():startSession();closeSheet()};
+  if(notes)notes.onclick=()=>{closeSheet();$("#notesBtn")?.click()};
+  if(reset)reset.onclick=()=>{resetSessionTimer();closeSheet()};
+  if(finish)finish.onclick=()=>{closeSheet();finishSession()};
+ },0);
 }
 function renderSessionClock(){
  const clock=$("#sessionClock"),status=$("#sessionStatus"),btn=$("#sessionToggle");if(!clock||!status||!btn||!profile())return;
  const r=sessionRuntime(),elapsed=sessionElapsed();clock.textContent=fmtLong(elapsed);status.textContent=r.running?"Workout in progress":elapsed?"Paused":"Not started";btn.textContent=r.running?"Pause session":elapsed?"Resume session":"Start session";
- renderRestMini();syncMobileFinishBar(false);
+ renderRestMini();syncMobileSessionBar(false);
 }
 function clearSessionRuntime(dayIdx=currentDay){if(state.sessionRuntime)delete state.sessionRuntime[sessionKey(dayIdx)]}
 function isCompoundExercise(ex){return !!ex&&COMPOUND_PATTERNS.has(ex.pattern)}
@@ -3101,7 +3121,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.9.9 — Reliability Report",
+  "Adaptive Workout Coach v7.9.10 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -3854,8 +3874,7 @@ function renderToday(){
 }
 function updateProgress(){
  const d=plan()[currentDay];let total=0,done=0;d.items.forEach((it,s)=>{const t=effectiveTarget(it);total+=t.sets;done+=exLog(currentDay,s,t.sets).sets.slice(0,t.sets).filter(x=>x.done).length});const p=total?Math.round(done/total*100):0;$("#pct").textContent=p+"%";$("#bar").style.width=p+"%";
- const meta=$("#mobileFinishMeta");if(meta)meta.textContent=`${p}% complete`;
- syncMobileFinishBar(done>0);
+ syncMobileSessionBar(done>0);
 }
 
 
@@ -4777,7 +4796,8 @@ $("#comparePlansBtn").onclick=openCompareSavedPlans;
 $("#coachEvidenceBtn").onclick=openCoachEvidence;
 $("#nextUnfinishedBtn").onclick=jumpToNextUnfinished;
 $("#trainToolsBtn").onclick=()=>{const panel=$("#trainToolsPanel"),btn=$("#trainToolsBtn"),open=panel.classList.contains("hidden");panel.classList.toggle("hidden",!open);btn.setAttribute("aria-expanded",open?"true":"false");btn.textContent=open?"Close tools":"Tools"};
-$("#mobileFinishBtn").onclick=finishSession;
+$("#trainFinishBtn").onclick=finishSession;
+$("#mobileSessionBtn").onclick=()=>{dayIsComplete(currentDay)?finishSession():openMobileSessionPanel()};
 $("#undoBtn").onclick=undoLast;
 $("#redoBtn").onclick=redoLast;
 $("#saveRecoveryBtn").onclick=()=>{const o={date:new Date().toISOString(),planId:cycle().planId||state.activeSavedPlanId||null,cycleNumber:cycle().number,week:cycle().week};$$(".recRange").forEach(x=>o[x.dataset.k]=Number(x.value));recoveryEntries().push(o);save();renderRecovery();renderToday();toast("Recovery check-in saved")};
