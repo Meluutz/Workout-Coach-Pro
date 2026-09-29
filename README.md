@@ -1,6 +1,24 @@
-# Adaptive Workout Coach — v7.9.14
+# Adaptive Workout Coach — v7.9.16
 
-GitHub-ready PWA build. Current release: **v7.9.14 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+GitHub-ready PWA build. Current release: **v7.9.16 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+
+
+## v7.9.16 — Mid-week plan switching
+
+- Removed the old **Resume this plan's previous cycle** activation choice.
+- Replaced **Continue current cycle** with **Switch for remaining workouts**. Completed workouts in the current week remain locked under the plan they were actually performed with.
+- Unstarted workout slots are replaced by the newly selected plan, while the current cycle/week number stays unchanged. The full selected-plan schedule takes over when the next week begins.
+- If recorded sets, warm-ups, RPE, or notes exist in an unfinished workout, the app now asks whether to **Keep in-progress workout** or **Discard it and switch now**.
+- Keeping an in-progress workout preserves its original plan attribution; the selected plan begins with the next unstarted workout. Discarding clears only that unfinished active-week log before replacement.
+- Saved-plan canonical templates remain separate from the one-week hybrid transition schedule, preventing a partial transition week from overwriting the saved plan.
+
+## v7.9.15 — Mobile-first plan switching
+- Redesigned Make Active / Switch Plan as a phone-first decision screen without changing the underlying activation safeguards.
+- Presents Continue current cycle, Start fresh at Week 1, and Resume this plan's previous saved cycle (when available) as separate large option cards with plain-language consequences.
+- Shows current-week completed-workout and in-progress exercise-log protection before the user chooses.
+- Keeps both Continue and Start Fresh visually equal so no activation mode is chosen or implied automatically.
+- Keeps the selected-plan exercise preview collapsed by default and retains an explicit Cancel option.
+- Preserves completed workout history, current-week attribution, outgoing in-progress logs, recovery/body/progress data, Undo support, storage-failure rollback, and all v7.9.14 Manage Plans / v7.9.13 Program / v7.9.12 Train behavior.
 
 ## v7.9.14 — Mobile-first Manage Plans candidate
 - Simplified each saved-plan card around the two actions users need most: View plan and Make active / Update saved.

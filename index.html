@@ -158,6 +158,37 @@ body.custom-reordering{user-select:none;-webkit-user-select:none;overflow:hidden
  .saved-plan-item-main-actions,.saved-plan-more-panel{grid-template-columns:1fr 1fr}
  .saved-plan-item-actions{display:none}
 }
+
+/* v7.9.16 — mid-week plan switching with protected completed/in-progress workouts */
+.plan-switch-protection{padding:11px 12px;border:1px solid color-mix(in srgb,var(--blue) 18%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--blue) 6%,var(--surface));line-height:1.4}
+.plan-switch-protection strong{display:block;font-size:13px;margin-bottom:3px}.plan-switch-protection span{display:block;font-size:11px;color:var(--muted)}
+.plan-switch-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.plan-switch-stat{padding:9px 10px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);min-width:0}
+.plan-switch-stat strong{display:block;font-size:17px;line-height:1.05}.plan-switch-stat span{display:block;margin-top:3px;font-size:9.5px;line-height:1.25;color:var(--muted);font-weight:750}
+.plan-switch-heading{margin:14px 0 7px;font-size:13px;font-weight:900}
+.plan-switch-choices{display:grid;gap:8px}
+.plan-switch-choice{width:100%;min-height:112px;padding:11px 12px;border:1px solid var(--line);border-radius:15px;background:var(--surface);text-align:left;color:var(--text);display:block}
+.plan-switch-choice:not(:disabled):hover{border-color:color-mix(in srgb,var(--blue) 42%,var(--line));background:color-mix(in srgb,var(--blue) 4%,var(--surface))}
+.plan-switch-choice:disabled{opacity:.48;cursor:not-allowed}
+.plan-switch-choice-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px}
+.plan-switch-kicker{display:inline-flex;align-items:center;min-height:22px;padding:2px 7px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:9px;font-weight:900;letter-spacing:.055em;text-transform:uppercase}
+.plan-switch-chevron{font-size:21px;line-height:1;color:var(--muted)}
+.plan-switch-choice strong{display:block;font-size:15px;line-height:1.2;margin-bottom:4px}.plan-switch-choice-copy{display:block;font-size:11px;line-height:1.4;color:var(--muted)}
+.plan-switch-choice-meta{display:block;margin-top:7px;font-size:10px;line-height:1.35;font-weight:800;color:var(--text)}
+.plan-switch-preview{margin-top:11px;border:1px solid var(--line);border-radius:13px;background:var(--surface-2);overflow:hidden}
+.plan-switch-preview>summary{cursor:pointer;list-style:none;padding:11px 12px;font-size:12px;font-weight:850}.plan-switch-preview>summary::-webkit-details-marker{display:none}.plan-switch-preview>summary::after{content:'⌄';float:right;color:var(--muted)}.plan-switch-preview[open]>summary::after{content:'⌃'}
+.plan-switch-preview>.saved-plan-sheet-note,.plan-switch-preview>.saved-plan-preview-days{margin-left:10px;margin-right:10px}.plan-switch-preview>.saved-plan-preview-days{margin-bottom:10px}
+.plan-switch-cancel{width:100%;min-height:44px;margin-top:10px;background:transparent;color:var(--muted)}
+.plan-switch-inprogress{margin-top:10px;padding:11px 12px;border:1px solid color-mix(in srgb,var(--warn) 30%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--warn) 7%,var(--surface));font-size:11px;line-height:1.45}
+.plan-switch-inprogress strong{display:block;font-size:13px;margin-bottom:4px}
+.plan-switch-inprogress-list{display:grid;gap:6px;margin:9px 0 0}.plan-switch-inprogress-item{padding:8px 9px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2);font-size:11px;font-weight:800}
+.plan-switch-decision-actions{display:grid;gap:8px;margin-top:11px}.plan-switch-decision-actions button{width:100%;min-height:52px;text-align:left;padding:10px 12px}.plan-switch-decision-actions button strong{display:block;font-size:13px;margin-bottom:3px}.plan-switch-decision-actions button span{display:block;font-size:10.5px;line-height:1.35;color:var(--muted);font-weight:650}
+.plan-switch-decision-actions .discard-progress{border-color:color-mix(in srgb,var(--danger) 35%,var(--line));color:var(--danger)}
+.program-transition-note{margin-top:8px;padding:8px 10px;border-radius:11px;border:1px solid color-mix(in srgb,var(--blue) 20%,var(--line));background:color-mix(in srgb,var(--blue) 6%,var(--surface));font-size:10.5px;line-height:1.4;color:var(--muted)}
+.program-day.transition-rest{opacity:.72}.program-day.transition-rest .program-day-head button{display:none}
+@media(max-width:430px){
+ .plan-switch-choice{min-height:118px;padding:11px}.plan-switch-stats{grid-template-columns:1fr 1fr}.plan-switch-choice strong{font-size:14px}.plan-switch-choice-copy{font-size:10.5px}
+}
 .saved-plan-sheet-note{padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);font-size:12px;line-height:1.45}
 .saved-plan-preview-days{display:grid;gap:9px;margin-top:10px}
 .saved-plan-preview-day{border:1px solid var(--line);border-radius:13px;padding:10px;background:var(--surface-2)}
@@ -1057,7 +1088,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.14 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.16 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1262,7 +1293,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.14</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.16</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -1430,7 +1461,20 @@ function syncVisualViewport(){
 const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
 const eMap={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"};
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>eMap[m])}
-function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function activePlanTransition(){
+ const c=cycle(),t=c?.planTransition;
+ return t&&Number(t.week)===Number(c?.week)&&t.incomingPlanId===state.activeSavedPlanId&&Array.isArray(t.weekPlan)?t:null;
+}
+function syncTransitionEditsToCanonical(){
+ const t=activePlanTransition(),canonical=state.plan||[];if(!t)return;
+ (t.incomingIndexByDay||[]).forEach((incomingIdx,dayIdx)=>{
+  if(!Number.isInteger(incomingIdx)||incomingIdx<0||!canonical[incomingIdx]||!t.weekPlan?.[dayIdx]||t.weekPlan[dayIdx].transitionRest)return;
+  const weekday=canonical[incomingIdx].weekday,copy=deepCopy(t.weekPlan[dayIdx]);
+  copy.weekday=weekday;delete copy.transitionSourceWeekday;delete copy.transitionIncomingIndex;
+  canonical[incomingIdx]=copy;
+ });
+}
+function save(){syncTransitionEditsToCanonical();localStorage.setItem(KEY,JSON.stringify(state))}
 function loadUndoStacks(){
   try{undoStack=JSON.parse(localStorage.getItem(UNDO_KEY)||"[]")}catch{undoStack=[]}
   try{redoStack=JSON.parse(localStorage.getItem(REDO_KEY)||"[]")}catch{redoStack=[]}
@@ -1511,8 +1555,13 @@ function updateUndoUI(){
   ["#redoBtn","#settingsRedoBtn"].forEach(s=>{const b=$(s);if(b)b.disabled=!redoStack.length});
 }
 function profile(){return state.profile||null}
-function plan(){return state.plan||[]}
+function canonicalPlan(){return state.plan||[]}
+function plan(){return activePlanTransition()?.weekPlan||canonicalPlan()}
 function cycle(){return state.cycle||null}
+function activeWorkoutPlanId(dayIdx=currentDay){
+ const t=activePlanTransition(),pid=t?.dayPlanIds?.[dayIdx];
+ return pid||cycle()?.planId||state.activeSavedPlanId||null;
+}
 function history(){state.history??=[];return state.history}
 function recoveryEntries(){state.recovery??=[];return state.recovery}
 function bodyEntries(){state.body??=[];return state.body}
@@ -1544,7 +1593,7 @@ function mergePlanProfileSettings(current,saved){
  return out;
 }
 function currentPlanFingerprint(){
- return JSON.stringify({profile:planProfileSettings(),plan:plan()});
+ return JSON.stringify({profile:planProfileSettings(),plan:canonicalPlan()});
 }
 function savedPlanFingerprint(entry){
  return JSON.stringify({profile:entry?.profile||null,plan:entry?.plan||[]});
@@ -1572,7 +1621,7 @@ function savedPlanSnapshot(name,id=null,continuable=true){
   lastUsedAt:existing?.lastUsedAt||null,
   scheduledStart:existing?.scheduledStart||null,
   profile:deepCopy(planProfileSettings()),
-  plan:deepCopy(plan()),
+  plan:deepCopy(canonicalPlan()),
   cycle:continuable?deepCopy(cycle()):null,
   weekLogs:continuable?deepCopy(state.weekLogs||{}):{},
   coaching:continuable?deepCopy(state.coaching||{}):{},
@@ -1631,47 +1680,116 @@ function nextGlobalCycleNumber(){
  savedPlans().forEach(p=>{if(p.cycle)nums.push(Number(p.cycle.number)||0)});
  return Math.max(0,...nums)+1;
 }
-function applySavedPlanEntry(id,mode="new"){
- const entry=savedPlans().find(x=>x.id===id);if(!entry||!["new","current","continue"].includes(mode))return false;
+function currentWeekCompletedDayMap(){
+ const map=new Map();
+ currentWeekSessions().forEach(session=>{
+  const idx=Number(session?.dayIndex);
+  if(Number.isInteger(idx)&&idx>=0)map.set(idx,session);
+ });
+ return map;
+}
+function dayHasRecordedEntries(dayIdx){
+ const c=cycle(),logs=state.weekLogs?.[String(c?.week)]?.[dayIdx]||{};
+ return Object.values(logs).some(log=>{
+  if(!log||typeof log!=="object")return false;
+  return (log.sets||[]).some(z=>z&&(z.done||z.weight!==""&&z.weight!=null||z.reps!==""&&z.reps!=null||z.rpe!==""&&z.rpe!=null))||
+   (log.warmups||[]).some(z=>z&&(z.done||z.weight||z.reps))||String(log.note||"").trim();
+ });
+}
+function currentWeekInProgressDayIndices(){
+ const completed=currentWeekCompletedDayMap();
+ return plan().map((_,i)=>i).filter(i=>!completed.has(i)&&dayHasRecordedEntries(i));
+}
+function planSwitchDayLabel(dayIdx){
+ const d=plan()?.[dayIdx];return d?`${d.weekday||`Day ${dayIdx+1}`} · ${d.title||d.type||"Workout"}`:`Workout ${dayIdx+1}`;
+}
+function clearWeekDayLog(dayIdx){
+ const c=cycle(),week=state.weekLogs?.[String(c?.week)];if(!week)return;
+ delete week[dayIdx];
+}
+function buildTransitionWeekPlan(entry,behavior="replace"){
+ const prior=cycle()?deepCopy(cycle()):null,outgoingPlan=deepCopy(plan()),existingTransition=activePlanTransition();
+ if(!prior||!outgoingPlan.length)return null;
+ const completed=currentWeekCompletedDayMap(),inProgress=new Set(currentWeekInProgressDayIndices());
+ const outgoingPlanId=state.activeSavedPlanId||prior.planId||null,weekPlan=[],dayPlanIds=[],incomingIndexByDay=[];
+ let incomingIdx=0;
+ outgoingPlan.forEach((oldDay,dayIdx)=>{
+  const completedSession=completed.get(dayIdx),keepProgress=behavior==="keep"&&inProgress.has(dayIdx),protectedDay=!!completedSession||keepProgress;
+  if(protectedDay){
+   weekPlan.push(deepCopy(oldDay));
+   dayPlanIds.push(completedSession?.planId||existingTransition?.dayPlanIds?.[dayIdx]||outgoingPlanId);
+   incomingIndexByDay.push(-1);
+   return;
+  }
+  if(inProgress.has(dayIdx))clearWeekDayLog(dayIdx);
+  const incoming=entry.plan?.[incomingIdx];
+  if(incoming){
+   const copy=deepCopy(incoming),slotWeekday=oldDay?.weekday||copy.weekday;
+   copy.transitionSourceWeekday=copy.weekday||null;copy.transitionIncomingIndex=incomingIdx;copy.weekday=slotWeekday;
+   weekPlan.push(copy);dayPlanIds.push(entry.id);incomingIndexByDay.push(incomingIdx);incomingIdx++;
+  }else{
+   weekPlan.push({weekday:oldDay?.weekday||`Day ${dayIdx+1}`,title:"No workout scheduled",type:"rest",items:[],transitionRest:true});
+   dayPlanIds.push(entry.id);incomingIndexByDay.push(-1);clearWeekDayLog(dayIdx);
+  }
+ });
+ return {prior,outgoingPlan,outgoingPlanId,weekPlan,dayPlanIds,incomingIndexByDay,replacedCount:incomingIndexByDay.filter(i=>i>=0).length,keptInProgress:[...inProgress].filter(i=>behavior==="keep"),discardedInProgress:[...inProgress].filter(i=>behavior==="discard")};
+}
+function completePlanTransitionForNextWeek(){
+ const c=cycle();if(!c?.planTransition)return false;
+ delete c.planTransition;c.planId=state.activeSavedPlanId||c.planId;return true;
+}
+function applySavedPlanEntry(id,mode="new",behavior="replace"){
+ const entry=savedPlans().find(x=>x.id===id);if(!entry||!["new","current"].includes(mode))return false;
  const prior=cycle()?deepCopy(cycle()):null;
  if(mode==="current"&&(!prior||!Number.isInteger(Number(prior.week))||Number(prior.week)<1||Number(prior.week)>Number(prior.length)))return false;
- if(mode==="continue"&&!(entry.continuable&&entry.cycle))return false;
- // Take the incoming plan's previous same-week draft BEFORE saving the outgoing plan;
- // never carry unrelated exercise-slot logs into a different workout plan.
- const sameWeekDraft=mode==="current"&&entry.cycle&&prior&&
-  Number(entry.cycle.number)===Number(prior.number)&&Number(entry.cycle.week)===Number(prior.week)&&
-  (entry.cycle.planId||entry.id)===id;
- const incomingLogs=sameWeekDraft?deepCopy(entry.weekLogs||{}):{};
- const incomingCoaching=sameWeekDraft?deepCopy(entry.coaching||{}):null;
+ const transition=mode==="current"?buildTransitionWeekPlan(entry,behavior):null;
+ if(mode==="current"&&!transition)return false;
  const currentIdentity=profile()||{};
  state.profile=mergePlanProfileSettings(currentIdentity,entry.profile);
  state.plan=deepCopy(entry.plan||[]);
  state.activeSavedPlanId=id;
- currentDay=0;
  state.sessionRuntime={};
- if(mode==="continue"){
-  // Resume the SAVED plan's earlier timeline, distinct from keeping CURRENT week.
-  state.cycle=deepCopy(entry.cycle);
-  state.cycle.planId=id;
-  state.weekLogs=deepCopy(entry.weekLogs||{});
-  state.coaching=deepCopy(entry.coaching||{});
- }else if(mode==="current"){
-  // Keep the running cycle's identity, week and duration; attribute older weekly
-  // summaries to their original plan before changing the active association.
+ if(mode==="current"){
   prior.weekSummaries=(prior.weekSummaries||[]).map(w=>w?{...w,planId:w.planId||prior.planId||null}:w);
   prior.planId=id;
+  prior.planTransition={
+   incomingPlanId:id,outgoingPlanId:transition.outgoingPlanId,week:Number(prior.week),switchedAt:new Date().toISOString(),
+   weekPlan:transition.weekPlan,dayPlanIds:transition.dayPlanIds,incomingIndexByDay:transition.incomingIndexByDay,
+   keptInProgress:transition.keptInProgress,discardedInProgress:transition.discardedInProgress
+  };
   state.cycle=prior;
-  state.weekLogs=incomingLogs;
-  state.coaching=incomingCoaching||{planRevision:0,applied:{},deloadActive:false,deloadCycle:null,deloadWeek:null};
+  state.coaching={planRevision:0,applied:{},deloadActive:false,deloadCycle:null,deloadWeek:null};
+  const firstAvailable=plan().findIndex((d,i)=>!d?.transitionRest&&!currentWeekCompletedDayMap().has(i)&&(behavior!=="keep"||!transition.keptInProgress.includes(i)));
+  currentDay=firstAvailable>=0?firstAvailable:Math.min(currentDay,Math.max(0,plan().length-1));
  }else{
   state.cycle={number:nextGlobalCycleNumber(),week:1,length:Number(entry.profile?.cycleLength)||6,start:new Date().toISOString(),weekSummaries:[],planId:id};
   state.weekLogs={};
   state.coaching={planRevision:0,applied:{},deloadActive:false,deloadCycle:null,deloadWeek:null};
+  currentDay=0;
  }
  entry.lastUsedAt=new Date().toISOString();
- entry.scheduledStart=null; // Consumed only on actual activation, never on preview/saving.
+ entry.scheduledStart=null;
  return true;
 }
+function commitSavedPlanActivation(id,mode="new",behavior="replace"){
+ const entry=savedPlans().find(x=>x.id===id);if(!entry)return false;
+ const before=deepCopy(state),oldDay=currentDay;
+ pushUndo(`Activated saved plan: ${entry.name}`);
+ try{
+  preserveCurrentPlanBeforeSwitch();
+  if(!applySavedPlanEntry(id,mode,behavior))throw Error("The selected plan could not be applied");
+  save();
+ }catch(err){
+  state=before;currentDay=oldDay;undoStack.pop();persistUndoStacks();
+  try{renderAll()}catch{}
+  alert(`The plan was not changed: ${err?.message||"Unable to save"}`);return false;
+ }
+ closeSheet();renderAll();switchView("cycle");
+ const transition=activePlanTransition();
+ toast(transition?`${entry.name} active · completed workouts preserved · new plan starts with remaining workouts · Undo available`:`${entry.name} active · Week ${cycle().week} · prior workouts preserved · Undo available`);
+ return true;
+}
+
 function planModeLabel(entry){
  const b=entry?.profile?.planBuilder||{};
  if(b.mode==="priority")return"Muscle Priority";
@@ -1870,23 +1988,46 @@ function currentWeekDraftCount(){
  }
  return count;
 }
+function openInProgressPlanSwitch(id){
+ const entry=savedPlans().find(x=>x.id===id);if(!entry)return;
+ const days=currentWeekInProgressDayIndices(),labels=days.map(planSwitchDayLabel);
+ if(!days.length){commitSavedPlanActivation(id,"current","replace");return}
+ openSheet("IN-PROGRESS WORKOUT",entry.name,
+  `<div class="plan-switch-inprogress"><strong>${days.length===1?"You have a workout in progress":"You have workouts in progress"}</strong>The app found recorded sets, warm-ups, RPE, or notes in ${days.length===1?"this workout":"these workouts"}. Choose what should happen before the new plan takes over.<div class="plan-switch-inprogress-list">${labels.map(x=>`<div class="plan-switch-inprogress-item">${esc(x)}</div>`).join("")}</div></div>
+   <div class="plan-switch-decision-actions">
+    <button class="confirmRemainingPlanSwitch primary" data-planid="${esc(id)}" data-behavior="keep"><strong>Keep in-progress workout</strong><span>Finish what you already started. The new plan begins with your next unstarted workout.</span></button>
+    <button class="confirmRemainingPlanSwitch discard-progress" data-planid="${esc(id)}" data-behavior="discard"><strong>Discard it and switch now</strong><span>Remove the unfinished entries from the active week and replace that workout with the new plan's next workout.</span></button>
+   </div>
+   <button class="savedPlanCancelActivate plan-switch-cancel" data-planid="${esc(id)}">Cancel · keep current plan</button>`);
+}
 function openSavedPlanActivation(id){
  const entry=savedPlans().find(x=>x.id===id);if(!entry)return;
  const c=cycle(),canCurrent=!!(c&&Number(c.week)>=1&&Number(c.week)<=Number(c.length)&&hasUsablePlan());
- const canResume=!!(entry.continuable&&entry.cycle);
- const done=currentWeekSessions().length,drafts=currentWeekDraftCount();
- const differentLength=canCurrent&&Number(entry.profile?.cycleLength||6)!==Number(c.length);
- openSheet("ACTIVATE PLAN",entry.name,
-  `<div class="saved-plan-sheet-note"><strong>Your current plan will be saved before switching.</strong><br>${done} completed workout${done===1?"":"s"} in current week remain in history under their original plan and week. ${drafts?`${drafts} exercise log${drafts===1?"":"s"} with unfinished or recorded entries will be preserved with your outgoing plan, not copied into different exercises.`:"No unsaved set entries detected."}<br>Recovery, body tracking and Progress history are retained.</div>
-   <div class="saved-plan-activate-actions" style="grid-template-columns:1fr">
-    <button class="confirmActivateSavedPlan primary" data-planid="${esc(entry.id)}" data-mode="current" ${canCurrent?"":"disabled"}>${canCurrent?`Continue CURRENT cycle · Week ${Number(c.week)} of ${Number(c.length)}`:"No current cycle to continue"}</button>
-    ${differentLength?`<div class="tiny">Continuing keeps the existing ${Number(c.length)}-week timeline; the selected plan's ${Number(entry.profile.cycleLength)}-week cycle length applies only when starting fresh.</div>`:""}
-    <button class="confirmActivateSavedPlan" data-planid="${esc(entry.id)}" data-mode="new">Start NEW cycle · Week 1</button>
-    ${canResume?`<button class="confirmActivateSavedPlan" data-planid="${esc(entry.id)}" data-mode="continue">Resume this plan's OLD saved cycle · Week ${Number(entry.cycle.week)||1}</button>`:""}
-    <button class="savedPlanCancelActivate" data-planid="${esc(entry.id)}">Cancel · keep current plan</button>
+ const done=currentWeekSessions().length,inProgress=currentWeekInProgressDayIndices().length,currentLength=Number(c?.length)||0,incomingLength=Number(entry.profile?.cycleLength)||6;
+ const remaining=Math.max(0,plan().filter(d=>!d?.transitionRest).length-new Set(currentWeekSessions().map(x=>Number(x.dayIndex)).filter(Number.isInteger)).size);
+ const currentMeta=canCurrent?`Stay in Program ${Number(c.number)}, Week ${Number(c.week)} of ${currentLength}. Completed workouts stay exactly as logged; only unfinished workout slots change.`:"A current training cycle is not available.";
+ const freshMeta=`Begin this plan at Week 1 of ${incomingLength} with a new training-cycle timeline.`;
+ openSheet("SWITCH PLAN",entry.name,
+  `<div class="plan-switch-protection"><strong>Your completed workouts stay untouched</strong><span>Switching mid-week never rewrites workouts you already finished. The selected plan takes over only the workout slots that are still unfinished.</span></div>
+   <div class="plan-switch-stats">
+    <div class="plan-switch-stat"><strong>${done}</strong><span>completed workout${done===1?"":"s"} this week locked</span></div>
+    <div class="plan-switch-stat"><strong>${remaining}</strong><span>unfinished workout slot${remaining===1?"":"s"} available to switch${inProgress?` · ${inProgress} in progress`:""}</span></div>
    </div>
-   <details style="margin-top:12px"><summary style="cursor:pointer;font-weight:700;padding:10px 0">Review selected plan exercises</summary>${savedPlanPreviewHtml(entry)}</details>`);
+   <div class="plan-switch-heading">How would you like to start this plan?</div>
+   <div class="plan-switch-choices" role="group" aria-label="Choose how to activate ${esc(entry.name)}">
+    <button class="confirmActivateSavedPlan plan-switch-choice" data-planid="${esc(entry.id)}" data-mode="current" ${canCurrent?"":"disabled"}>
+     <span class="plan-switch-choice-top"><span class="plan-switch-kicker">Keep this week</span><span class="plan-switch-chevron" aria-hidden="true">›</span></span>
+     <strong>Switch for remaining workouts</strong><span class="plan-switch-choice-copy">Keep workouts already completed this week. Replace only workouts you have not finished yet, then use this plan going forward.</span><span class="plan-switch-choice-meta">${esc(currentMeta)}</span>
+    </button>
+    <button class="confirmActivateSavedPlan plan-switch-choice" data-planid="${esc(entry.id)}" data-mode="new">
+     <span class="plan-switch-choice-top"><span class="plan-switch-kicker">Fresh start</span><span class="plan-switch-chevron" aria-hidden="true">›</span></span>
+     <strong>Start fresh at Week 1</strong><span class="plan-switch-choice-copy">Start a completely new training cycle using this plan's own program length.</span><span class="plan-switch-choice-meta">${esc(freshMeta)}</span>
+    </button>
+   </div>
+   <details class="plan-switch-preview"><summary>Review selected plan exercises</summary>${savedPlanPreviewHtml(entry)}</details>
+   <button class="savedPlanCancelActivate plan-switch-cancel" data-planid="${esc(entry.id)}">Cancel · keep current plan</button>`);
 }
+
 
 
 /* v7.9 safety, explainability, scheduling, analytics, and portable exports */
@@ -3178,7 +3319,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.9.14 — Reliability Report",
+  "Adaptive Workout Coach v7.9.16 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -3308,11 +3449,30 @@ async function runReliabilitySuite(){
   check(history().length===historyBefore&&bodyEntries().length===bodyBefore,"Saved Plans: activation altered history or body data");
   check(plan().length===savedB.plan.length,"Saved Plans: activated plan structure mismatch");
   check(renameSavedPlan(savedB.id,"Hypertrophy Block")?.name==="Hypertrophy Block","Saved Plans: rename failed");
-  const savedBCycle=deepCopy(savedB.cycle);
-  if(savedBCycle){
-   check(applySavedPlanEntry(savedB.id,"continue")===true,"Saved Plans: continue-cycle activation failed");
-   check(cycle().planId===savedB.id,"Saved Plans: continued cycle lost plan association");
-  }
+  check(applySavedPlanEntry(savedB.id,"continue")===false,"Saved Plans: retired previous-cycle resume mode is still active");
+
+  // Mid-week plan-switch regression checks: completed days stay locked, an
+  // in-progress day can be kept, and the new plan begins on the next unstarted slot.
+  const beforeMidSwitch=reliabilityClone(state),beforeMidDay=currentDay;
+  const oldPlanProfile=reliabilityProfile("Intermediate","gym","both",3,60,{mode:"coach"});
+  state.profile=oldPlanProfile;state.plan=buildCoachPlan(oldPlanProfile);state.history=[];state.recovery=[];state.body=[];
+  state.cycle={number:5,week:3,length:6,start:new Date().toISOString(),weekSummaries:[],planId:"old_plan"};
+  state.activeSavedPlanId="old_plan";state.savedPlans=[{id:"old_plan",name:"Old Plan",profile:deepCopy(planProfileSettings(oldPlanProfile)),plan:deepCopy(state.plan),cycle:deepCopy(state.cycle),weekLogs:{},coaching:{},continuable:true}];
+  state.weekLogs={"3":{1:{0:{sets:[{weight:20,reps:10,rpe:8,done:false}],warmups:[],note:"started"}}}};
+  state.history=[{date:new Date().toISOString(),weightUnit:"kg",planId:"old_plan",cycleNumber:5,week:3,dayIndex:0,title:state.plan[0].title,completion:100,durationSec:1800,volume:1000,exercises:[],prs:[]}];
+  const incomingProfile=reliabilityProfile("Intermediate","dumbbells","muscle",3,60,{mode:"coach"}),incomingPlan=buildCoachPlan(incomingProfile);
+  const incoming=createSavedPlanFromDraft("Incoming Plan",incomingProfile,incomingPlan);
+  check(currentWeekInProgressDayIndices().join(",")==="1","Plan switch: in-progress workout was not detected");
+  const oldDay0=JSON.stringify(plan()[0]),oldDay1=JSON.stringify(plan()[1]);
+  check(applySavedPlanEntry(incoming.id,"current","keep")===true,"Plan switch: keep-current-week activation failed");
+  check(JSON.stringify(plan()[0])===oldDay0,"Plan switch: completed workout was rewritten");
+  check(JSON.stringify(plan()[1])===oldDay1,"Plan switch: kept in-progress workout was rewritten");
+  check(plan()[2]?.transitionIncomingIndex===0,"Plan switch: new plan did not begin on the next unstarted workout");
+  check(activeWorkoutPlanId(1)==="old_plan"&&activeWorkoutPlanId(2)===incoming.id,"Plan switch: per-workout plan attribution is incorrect");
+  check(cycle().number===5&&cycle().week===3,"Plan switch: current cycle/week moved unexpectedly");
+  const canonicalIncoming=JSON.stringify(canonicalPlan());
+  check(completePlanTransitionForNextWeek()===true&&JSON.stringify(plan())===canonicalIncoming,"Plan switch: full incoming schedule did not take over for the next week");
+  state=beforeMidSwitch;currentDay=beforeMidDay;
 
 
   // Create New Plan isolation regression checks.
@@ -3468,7 +3628,7 @@ function generatePlan(preserveHistory=true){
  save();
 }
 function startCycle(length=profile()?.cycleLength||6,keepExercises=true){
- const oldPlan=plan();
+ completePlanTransitionForNextWeek();const oldPlan=canonicalPlan();
  state.cycle={number:nextGlobalCycleNumber(),week:1,length:Number(length),start:new Date().toISOString(),weekSummaries:[],planId:state.activeSavedPlanId||null};
  state.weekLogs={};
  if(keepExercises&&oldPlan.length){
@@ -3823,7 +3983,7 @@ function renderCycleHeader(){
 }
 function trainUiState(){state.uiState??={};return state.uiState}
 function dayIsComplete(dayIdx){
- const d=plan()?.[dayIdx];if(!d?.items?.length)return false;
+ const d=plan()?.[dayIdx];if(d?.transitionRest)return true;if(!d?.items?.length)return false;
  const logs=state.weekLogs?.[String(cycle()?.week||1)]?.[dayIdx]||{};
  return d.items.every((it,slot)=>{
   const t=effectiveTarget(it),sets=logs?.[slot]?.sets||[];
@@ -3852,7 +4012,7 @@ function setCurrentTrainDay(dayIdx,persist=true){
  if(persist){const ui=trainUiState();ui.trainDay=currentDay;ui.trainDayDate=calendarToday();save()}
 }
 function renderDayTabs(){
- const b=$("#dayTabs");b.innerHTML="";plan().forEach((d,i)=>{const x=document.createElement("button");x.textContent=d.weekday;x.classList.toggle("active",i===currentDay);x.onclick=()=>{setCurrentTrainDay(i,true);renderToday()};b.appendChild(x)});
+ const b=$("#dayTabs");b.innerHTML="";plan().forEach((d,i)=>{const x=document.createElement("button");x.textContent=d.weekday;x.classList.toggle("active",i===currentDay);x.disabled=!!d.transitionRest;x.onclick=()=>{if(d.transitionRest)return;setCurrentTrainDay(i,true);renderToday()};b.appendChild(x)});
 }
 function visualFor(exId){return visualChoice(exId).path}
 function visualStyleName(exId){
@@ -4009,7 +4169,7 @@ function finishSession(){
  openSheet("REVIEW SESSION","Ready to save?",`<div class="finish-grid"><div class="finish-stat"><div class="label">Working sets</div><strong>${s.done}/${s.total}</strong></div><div class="finish-stat"><div class="label">Completion</div><strong>${s.completion}%</strong></div><div class="finish-stat"><div class="label">Session time</div><strong>${fmtLong(s.durationSec)}</strong></div><div class="finish-stat"><div class="label">Volume load</div><strong>${Math.round(s.volume).toLocaleString()}</strong><div class="tiny">${unit()}·reps</div></div></div>${incomplete?`<div class="builder-warning">${s.total-s.done} working set${s.total-s.done===1?" is":"s are"} still incomplete. You can save now, or close this review and continue training.</div>`:""}<p class="tiny">Warm-up sets completed: ${s.warmupDone}. Warm-ups are not included in progression, PR, completion, or volume calculations.</p><button id="confirmFinishBtn" class="primary" style="width:100%;margin-top:10px">Save this session</button>`);
 }
 function finalizeSession(){
- const s=computeFinishSummary(),pid=cycle().planId||state.activeSavedPlanId||null,existing=history().findIndex(x=>x.cycleNumber===cycle().number&&x.week===cycle().week&&(!pid||x.planId===pid)&&(x.dayIndex===currentDay||(x.dayIndex===undefined&&x.title===s.d.title)));
+ const s=computeFinishSummary(),pid=activeWorkoutPlanId(currentDay),existing=history().findIndex(x=>x.cycleNumber===cycle().number&&x.week===cycle().week&&(!pid||x.planId===pid)&&(x.dayIndex===currentDay||(x.dayIndex===undefined&&x.title===s.d.title)));
  if(existing>=0&&!confirm("A saved session already exists for this training day and week. Replace that saved session instead of creating a duplicate?"))return;
  pauseSession();const record={date:new Date().toISOString(),weightUnit:unit(),planId:pid,cycleNumber:cycle().number,week:cycle().week,dayIndex:currentDay,title:s.d.title,completion:s.completion,durationSec:s.durationSec,volume:s.volume,warmupSets:s.warmupDone,prs:s.prs,exercises:s.records};
  if(existing>=0)history()[existing]=record;else history().push(record);clearSessionRuntime();save();renderProgress();closeSheet();
@@ -4023,8 +4183,8 @@ function renderProgramPlanOverview(){
  const days=plan();if(meta)meta.textContent=`${days.length} day${days.length===1?"":"s"} / week`;
  if(!days.length){box.innerHTML=noPlanHtml();return}
  box.innerHTML=days.map((d,dayIdx)=>{const count=(d.items||[]).length,totalSets=(d.items||[]).reduce((n,it)=>n+Number(effectiveTarget(it).sets||0),0),selected=dayIdx===currentDay;
-  return `<div class="program-day ${selected?"selected-day":""}">
-   <div class="program-day-head"><div><div class="program-day-title"><strong>${esc(d.weekday||`Day ${dayIdx+1}`)}</strong>${selected?'<span class="program-day-badge">SELECTED</span>':""}</div><span>${esc(d.title||((d.type||"Workout").replace(/^./,c=>c.toUpperCase())))} · ${count} exercise${count===1?"":"s"} · ${totalSets} sets</span></div><button class="jumpToTrainBtn" data-day="${dayIdx}">Train</button></div>
+  return `<div class="program-day ${selected?"selected-day":""} ${d.transitionRest?"transition-rest":""}">
+   <div class="program-day-head"><div><div class="program-day-title"><strong>${esc(d.weekday||`Day ${dayIdx+1}`)}</strong>${selected?'<span class="program-day-badge">SELECTED</span>':""}</div><span>${d.transitionRest?"No workout · selected plan has fewer remaining sessions this week":`${esc(d.title||((d.type||"Workout").replace(/^./,c=>c.toUpperCase())))} · ${count} exercise${count===1?"":"s"} · ${totalSets} sets`}</span></div>${d.transitionRest?'<span class="tiny">Rest</span>':`<button class="jumpToTrainBtn" data-day="${dayIdx}">Train</button>`}</div>
    <details class="program-day-details"><summary>View exercises</summary><div class="program-table">
     <div class="program-table-row program-table-head"><span>Exercise</span><span>Sets</span><span>Reps</span></div>
     ${(d.items||[]).map(it=>{const ex=EXMAP[it.id],t=effectiveTarget(it);return `<div class="program-table-row"><span><strong>${esc(ex?.name||it.id)}</strong></span><span>${t.sets}</span><span>${esc(t.reps)}</span></div>`}).join("")}
@@ -4150,7 +4310,9 @@ function renderCycle(){
  $("#advanceWeekBtn").textContent=c.week>=c.length?"Finish program":"Advance week";
  if($("#comparePlansBtn"))$("#comparePlansBtn").disabled=savedPlans().length<2;
  const intel=buildCoachIntelligence();
- if(isDeload())$("#cycleAdvice").textContent="Coach-recommended deload is active: effective working sets are reduced and target effort is RPE 6–7 for this week.";
+ const transition=activePlanTransition();
+ if(transition)$("#cycleAdvice").textContent=`Plan switch this week: completed and kept in-progress workouts stay under their original plan. Remaining workouts use ${activeSavedPlan()?.name||"the new plan"}; the full new schedule takes over next week.`;
+ else if(isDeload())$("#cycleAdvice").textContent="Coach-recommended deload is active: effective working sets are reduced and target effort is RPE 6–7 for this week.";
  else if(c.week>=c.length)$("#cycleAdvice").textContent="Final scheduled week. Deloading is no longer automatic; Coach Review uses accumulated performance and recovery data to recommend it only when supported.";
  else $("#cycleAdvice").textContent=`Current phase: ${phaseName()}. Progress load or reps only when performance and recovery support it.`;
  renderCoachIntelligence();renderProgramPlanOverview();renderSavedPlanSummary();renderScheduledPlanReminder();
@@ -4173,13 +4335,13 @@ function advanceWeek(){
    pushUndo(`Advanced from Week ${c.week}`);
    const summary=weekSummary();archiveWeekReview(summary,buildCoachIntelligence());
    c.weekSummaries??=[];c.weekSummaries.push(summary);
-   c.week++;currentDay=0;const cs=coachingState();cs.deloadActive=false;cs.deloadCycle=null;cs.deloadWeek=null;save();renderAll();toast(`Week ${c.week} started · Coach updated · Undo available`);
+   completePlanTransitionForNextWeek();c.week++;currentDay=0;const cs=coachingState();cs.deloadActive=false;cs.deloadCycle=null;cs.deloadWeek=null;save();renderAll();toast(`Week ${c.week} started · Coach updated · Undo available`);
  }else{
    if(confirm("Finish this training block and start the next block? Exercise choices will be kept, while manual target adjustments reset.\n\nYou can undo this afterward.")){
      pushUndo("Started a new training block");
      const summary=weekSummary();archiveWeekReview(summary,buildCoachIntelligence());
      c.weekSummaries??=[];c.weekSummaries.push(summary);
-     startCycle(c.length,true);renderAll();toast("New training block started · Undo available")
+     completePlanTransitionForNextWeek();startCycle(c.length,true);renderAll();toast("New training block started · Undo available")
    }
  }
 }
@@ -4617,7 +4779,7 @@ function exportData(){
  try{
   backupMeta().lastExportInitiatedAt=new Date().toISOString();
   const content=JSON.stringify(state,null,2);
-  downloadLocalFile(content,`adaptive-workout-coach-v7-9-14-backup-${calendarToday()}.json`,"application/json");
+  downloadLocalFile(content,`adaptive-workout-coach-v7-9-15-backup-${calendarToday()}.json`,"application/json");
   try{save()}catch(err){console.warn("Export initiated but backup timestamp could not persist",err)}
   renderBackupHealth();toast("Backup export started · verify the file in Files");
  }catch(err){backupMeta().lastExportInitiatedAt=old;renderBackupHealth();alert("Backup export could not start. Your stored workout data has not been replaced: "+(err.message||err))}
@@ -4790,26 +4952,17 @@ document.addEventListener("click",e=>{
   if(entry){save();openPlanLibrary();renderSavedPlanSummary();toast("Plan renamed")}return
  }
  const cancelActivation=e.target.closest(".savedPlanCancelActivate");if(cancelActivation){closeSheet();renderAll();toast("Plan switch cancelled · current program unchanged");return}
+ const remainingSwitch=e.target.closest(".confirmRemainingPlanSwitch");if(remainingSwitch){
+  const id=remainingSwitch.dataset.planid,behavior=remainingSwitch.dataset.behavior==="discard"?"discard":"keep";
+  commitSavedPlanActivation(id,"current",behavior);return
+ }
  const confirmActivate=e.target.closest(".confirmActivateSavedPlan");if(confirmActivate){
   const id=confirmActivate.dataset.planid,mode=confirmActivate.dataset.mode||"new",entry=savedPlans().find(x=>x.id===id);if(!entry)return;
-  if(!["new","current","continue"].includes(mode))return;
-  // Safeguard the entire in-memory data model and avoid claiming success when a
-  // full localStorage write fails (e.g. storage quota / private browsing).
-  const before=deepCopy(state),oldDay=currentDay;
-  pushUndo(`Activated saved plan: ${entry.name}`);
-  try{
-   preserveCurrentPlanBeforeSwitch();
-   if(!applySavedPlanEntry(id,mode))throw Error("The chosen cycle is no longer available");
-   save();
-  }catch(err){
-   state=before;currentDay=oldDay;undoStack.pop();persistUndoStacks();
-   try{renderAll()}catch{} // Data is restored in memory even if storage remains unavailable.
-   alert(`The plan was not changed: ${err?.message||"Unable to save"}`);return;
-  }
-  closeSheet();renderAll();switchView("cycle");
-  toast(`${entry.name} active · Week ${cycle().week} · prior workouts preserved · Undo available`);
-  return;
+  if(!["new","current"].includes(mode))return;
+  if(mode==="current"&&currentWeekInProgressDayIndices().length){openInProgressPlanSwitch(id);return}
+  commitSavedPlanActivation(id,mode,"replace");return
  }
+
  const runReliability=e.target.closest("#runReliabilityBtn");if(runReliability){runReliabilitySuite();return}
  const viewReliability=e.target.closest("#viewReliabilityBtn");if(viewReliability&&lastReliabilityResult){openSheet("RELIABILITY","Regression self-test",reliabilityResultHtml(lastReliabilityResult));return}
  const copyReliability=e.target.closest("#copyReliabilityBtn");if(copyReliability&&lastReliabilityResult){copyReliabilityReport();return}
@@ -4842,7 +4995,7 @@ document.addEventListener("click",e=>{
 
  const emptyBuild=e.target.closest(".emptyBuildBtn");if(emptyBuild){showOnboarding(!!profile(),1);return}
  const emptyImport=e.target.closest(".emptyImportBtn");if(emptyImport){switchView("settings");renderSettings();setTimeout(()=>$("#importInput")?.click(),50);return}
- const jump=e.target.closest(".jumpToTrainBtn");if(jump){setCurrentTrainDay(Number(jump.dataset.day)||0,true);switchView("today",true);renderToday();return}
+ const jump=e.target.closest(".jumpToTrainBtn");if(jump){const idx=Number(jump.dataset.day)||0;if(plan()?.[idx]?.transitionRest)return;setCurrentTrainDay(idx,true);switchView("today",true);renderToday();return}
  const more=e.target.closest(".exerciseMoreBtn");if(more){const slot=Number(more.dataset.slot),panel=document.querySelector(`[data-exmore="${slot}"]`),open=panel?.classList.contains("hidden");panel?.classList.toggle("hidden",!open);more.setAttribute("aria-expanded",open?"true":"false");more.textContent=open?"Less":"More";return}
  const adjust=e.target.closest(".adjustTargetBtn");if(adjust){const slot=Number(adjust.dataset.slot),row=document.querySelector(`[data-targetrow="${slot}"]`),open=row?.classList.contains("hidden");row?.classList.toggle("hidden",!open);adjust.setAttribute("aria-expanded",open?"true":"false");adjust.textContent=open?"Hide adjustments":"Adjust target";return}
  const ul=e.target.closest(".useLastBtn");if(ul){const s=Number(ul.dataset.slot),it=plan()[currentDay].items[s],t=effectiveTarget(it),last=lastRecord(it.id);if(!last)return;const recordedUnit=recordedWeightUnit(lastSessionForExercise(it.id));if((last.sets||[]).some(x=>Number(x.weight)>0)&&recordedUnit!==unit()){alert("Previous loaded performance uses an unknown or different weight unit. Enter weight manually to avoid copying incompatible values.");return}const l=exLog(currentDay,s,t.sets),src=(last.sets||[]).filter(x=>x.done!==false),hasToday=l.sets.slice(0,t.sets).some(x=>x.done||String(x.weight||"").trim()||String(x.reps||"").trim()||String(x.rpe||"").trim());if(hasToday&&!confirm("Today already has working-set entries for this exercise. Replace those entries with the last completed performance? Warm-up sets and notes will not be changed."))return;for(let j=0;j<Math.min(t.sets,src.length);j++){l.sets[j].weight=src[j].weight;l.sets[j].reps=src[j].reps;l.sets[j].rpe=src[j].rpe;l.sets[j].done=false}save();renderToday();toast("Last performance prefilled");return}
