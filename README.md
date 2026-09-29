@@ -1,6 +1,13 @@
-# Adaptive Workout Coach — v7.9.13
+# Adaptive Workout Coach — v7.9.14
 
-GitHub-ready PWA build. Current release: **v7.9.13 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+GitHub-ready PWA build. Current release: **v7.9.14 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+
+## v7.9.14 — Mobile-first Manage Plans candidate
+- Simplified each saved-plan card around the two actions users need most: View plan and Make active / Update saved.
+- Moved Start reminder, Duplicate, Rename and Delete behind a per-plan More options disclosure to reduce mobile clutter.
+- Renamed Schedule to Start reminder so users are not led to expect automatic plan activation or push notifications.
+- Strengthened the active-plan visual state and kept unsaved-change, last-used and resumable-week context visible.
+- Preserved plan switching, current-week continuation, fresh Week 1 activation, old-cycle resume, plan creation, history protection and all v7.9.13 Program / v7.9.12 Train behavior.
 
 ## v7.9.13 — Mobile-first Program screen candidate
 - Refocused Program around the active plan, current week and immediate plan actions.
@@ -1060,7 +1067,7 @@ This is an incremental patch to v7.9.2; it does not change training algorithms, 
 - The explainer is contextual and does not appear in Coach Logic sheets that do not mention RPE.
 
 
-## v7.9.13 — Exercise-complete auto-advance
+## v7.9.14 — Exercise-complete auto-advance
 - On mobile, completing the final required working set of an exercise now confirms “Exercise complete ✓” and smoothly brings the next exercise card to the top of the usable page.
 - Auto-advance triggers only when the final required set is checked and every required working set for that exercise is complete. Unchecking sets or editing prior entries never triggers scrolling.
 - If the completed exercise is the final exercise and the entire workout is complete, the app does not scroll; it surfaces the existing workout-complete/finish state instead.

@@ -143,6 +143,21 @@ body.custom-reordering{user-select:none;-webkit-user-select:none;overflow:hidden
 .saved-plan-item-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
 .saved-plan-item-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
 .saved-plan-item-actions button{min-height:42px}
+/* v7.9.14 — mobile-first Manage Plans */
+.plan-library-top-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.plan-library-top-actions #sheetComparePlansBtn{grid-column:1/-1}
+.saved-plan-item-main-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.saved-plan-item-main-actions button{min-height:44px}
+.saved-plan-more-btn{width:100%;min-height:42px;margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 11px;background:transparent;color:var(--muted);font-size:11px}
+.saved-plan-more-btn>span:last-child{font-size:16px;line-height:1}
+.saved-plan-more-panel{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
+.saved-plan-more-panel button{min-height:44px;font-size:11px}
+.saved-plan-schedule{margin-top:8px;padding:7px 9px;border-radius:10px;background:color-mix(in srgb,var(--blue) 7%,var(--surface));border:1px solid color-mix(in srgb,var(--blue) 16%,var(--line));font-size:10.5px;color:var(--muted)}
+@media(max-width:430px){
+ .plan-library-top-actions{grid-template-columns:1fr 1fr}.plan-library-top-actions #sheetComparePlansBtn{grid-column:1/-1}
+ .saved-plan-item-main-actions,.saved-plan-more-panel{grid-template-columns:1fr 1fr}
+ .saved-plan-item-actions{display:none}
+}
 .saved-plan-sheet-note{padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);font-size:12px;line-height:1.45}
 .saved-plan-preview-days{display:grid;gap:9px;margin-top:10px}
 .saved-plan-preview-day{border:1px solid var(--line);border-radius:13px;padding:10px;background:var(--surface-2)}
@@ -1042,7 +1057,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.13 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.14 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1247,7 +1262,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.13</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.14</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -1692,17 +1707,20 @@ function renderSavedPlanSummary(){
 }
 function savedPlanItemHtml(entry){
  const active=entry.id===state.activeSavedPlanId,modified=active&&activePlanModified();
- return `<div class="saved-plan-item ${active?"active-plan":""}">
+ return `<div class="saved-plan-item ${active?"active-plan":""}" data-plan-card="${esc(entry.id)}">
   <div class="saved-plan-item-head">
    <div><div class="saved-plan-name">${esc(entry.name)}</div><div class="saved-plan-meta">${esc(savedPlanMeta(entry))}<br>${esc(planModeLabel(entry))} · Updated ${esc(savedPlanDate(entry.updatedAt))}</div></div>
    ${active?'<span class="saved-plan-badge active">ACTIVE</span>':""}
   </div>
   <div class="saved-plan-badges">${modified?'<span class="saved-plan-badge modified">Unsaved changes</span>':""}${entry.lastUsedAt?`<span class="saved-plan-badge">Last used ${esc(savedPlanDate(entry.lastUsedAt))}</span>`:""}${entry.continuable&&entry.cycle?`<span class="saved-plan-badge">Week ${Number(entry.cycle.week)||1}</span>`:""}</div>
-  ${entry.scheduledStart?`<div class="saved-plan-schedule">Planned start: ${esc(entry.scheduledStart)} · Activation is manual</div>`:""}
-  <div class="saved-plan-item-actions">
-   <button class="savedPlanPreviewBtn" data-planid="${esc(entry.id)}">Preview</button>
-   <button class="savedPlanScheduleBtn" data-planid="${esc(entry.id)}">Schedule</button>
+  ${entry.scheduledStart?`<div class="saved-plan-schedule"><strong>Start reminder</strong> · ${esc(entry.scheduledStart)} · activates only when you choose it</div>`:""}
+  <div class="saved-plan-item-main-actions">
+   <button class="savedPlanPreviewBtn" data-planid="${esc(entry.id)}">View plan</button>
    ${active?'<button class="savedPlanUpdateBtn" data-planid="'+esc(entry.id)+'">Update saved</button>':'<button class="savedPlanActivateBtn primary" data-planid="'+esc(entry.id)+'">Make active</button>'}
+  </div>
+  <button class="savedPlanMoreBtn" data-planid="${esc(entry.id)}" aria-expanded="false"><span>More options</span><span aria-hidden="true">⌄</span></button>
+  <div class="saved-plan-more-panel hidden" data-planmore="${esc(entry.id)}">
+   <button class="savedPlanScheduleBtn" data-planid="${esc(entry.id)}">Start reminder</button>
    <button class="savedPlanDuplicateBtn" data-planid="${esc(entry.id)}">Duplicate</button>
    <button class="savedPlanRenameBtn" data-planid="${esc(entry.id)}">Rename</button>
    <button class="savedPlanDeleteBtn saved-plan-danger" data-planid="${esc(entry.id)}">Delete</button>
@@ -1714,11 +1732,11 @@ function openPlanLibrary(){
   if(a.id===state.activeSavedPlanId)return-1;if(b.id===state.activeSavedPlanId)return 1;
   return new Date(b.updatedAt||0)-new Date(a.updatedAt||0);
  });
- openSheet("PLAN LIBRARY","Saved workout plans",
-  `<div class="saved-plan-sheet-note">Saved plans are stored on this device and included in normal app backups. Switching plans never deletes workout history, recovery logs, body measurements, or Progress analytics.</div>
-   <div class="saved-plan-save-actions">
-    <button id="sheetCreateNewPlanBtn" class="primary">Create New Plan</button>
-    <button id="sheetSaveCurrentPlanBtn">Save current plan</button>
+ openSheet("PLAN LIBRARY","Your workout plans",
+  `<div class="saved-plan-sheet-note"><strong>Your workout history is protected.</strong><br>Plans stay on this device and are included in normal backups. Switching plans does not delete workouts, recovery, body measurements or Progress analytics.</div>
+   <div class="plan-library-top-actions">
+    <button id="sheetCreateNewPlanBtn" class="primary">Create new plan</button>
+    <button id="sheetSaveCurrentPlanBtn">Save current</button>
     <button id="sheetComparePlansBtn" ${plans.length<2?"disabled":""}>Compare plans</button>
    </div>
    <div class="saved-plan-list">${plans.length?plans.map(savedPlanItemHtml).join(""):'<div class="saved-plan-empty">No saved plans yet.</div>'}</div>`);
@@ -1890,9 +1908,9 @@ function renderScheduledPlanReminder(){
 }
 function openScheduleSavedPlan(id){
  const p=savedPlans().find(x=>x.id===id);if(!p)return;
- openSheet("PLAN SCHEDULE",p.name,`<div class="saved-plan-sheet-note">Choose an intended start date. This reminder appears on the Program page when you open the app; there are no push notifications or automatic plan changes.</div>
+ openSheet("START REMINDER",p.name,`<div class="saved-plan-sheet-note">Choose the date you intend to start this plan. This is an in-app reminder only: the plan will never activate automatically and no push notification is sent.</div>
  <label style="display:block;margin-top:12px">Planned start date<input id="plannedStartInput" class="field" type="date" value="${esc(p.scheduledStart||"")}"></label>
- <div class="saved-plan-save-actions"><button class="savePlanStartBtn primary" data-planid="${esc(id)}">Save date</button><button class="clearPlanStartBtn" data-planid="${esc(id)}">Clear date</button></div>`);
+ <div class="saved-plan-save-actions"><button class="savePlanStartBtn primary" data-planid="${esc(id)}">Save reminder</button><button class="clearPlanStartBtn" data-planid="${esc(id)}">Clear reminder</button></div>`);
 }
 function storePlanStart(id,date){
  const p=savedPlans().find(x=>x.id===id);if(!p||date&&!validCalendarDate(date))return false;
@@ -3160,7 +3178,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.9.13 — Reliability Report",
+  "Adaptive Workout Coach v7.9.14 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -4599,7 +4617,7 @@ function exportData(){
  try{
   backupMeta().lastExportInitiatedAt=new Date().toISOString();
   const content=JSON.stringify(state,null,2);
-  downloadLocalFile(content,`adaptive-workout-coach-v7-9-13-backup-${calendarToday()}.json`,"application/json");
+  downloadLocalFile(content,`adaptive-workout-coach-v7-9-14-backup-${calendarToday()}.json`,"application/json");
   try{save()}catch(err){console.warn("Export initiated but backup timestamp could not persist",err)}
   renderBackupHealth();toast("Backup export started · verify the file in Files");
  }catch(err){backupMeta().lastExportInitiatedAt=old;renderBackupHealth();alert("Backup export could not start. Your stored workout data has not been replaced: "+(err.message||err))}
@@ -4719,14 +4737,20 @@ document.addEventListener("click",e=>{
  const sourceChoice=e.target.closest(".create-plan-source");if(sourceChoice&&!sourceChoice.disabled){beginPlanCreation(sourceChoice.dataset.createSource);return}
  const sheetCreate=e.target.closest("#sheetCreateNewPlanBtn");if(sheetCreate){openCreatePlanSourceChooser();return}
  const compareClick=e.target.closest("#sheetComparePlansBtn");if(compareClick){openCompareSavedPlans();return}
+ const planMore=e.target.closest(".savedPlanMoreBtn");if(planMore){
+  const id=planMore.dataset.planid,panel=$$(".saved-plan-more-panel").find(x=>x.dataset.planmore===id),opening=panel?.classList.contains("hidden");
+  $$(".saved-plan-more-panel").forEach(x=>x.classList.add("hidden"));$$('.savedPlanMoreBtn').forEach(x=>{x.setAttribute('aria-expanded','false');const c=x.querySelector('span:last-child');if(c)c.textContent='⌄'});
+  if(panel&&opening){panel.classList.remove("hidden");planMore.setAttribute("aria-expanded","true");const c=planMore.querySelector('span:last-child');if(c)c.textContent='⌃'}
+  return
+ }
  const scheduled=e.target.closest(".savedPlanScheduleBtn");if(scheduled){openScheduleSavedPlan(scheduled.dataset.planid);return}
  const saveDate=e.target.closest(".savePlanStartBtn");if(saveDate){
   const value=$("#plannedStartInput")?.value||"";
   if(!validCalendarDate(value))return alert("Choose a valid calendar date.");
-  if(storePlanStart(saveDate.dataset.planid,value)){save();openPlanLibrary();renderSavedPlanSummary();renderScheduledPlanReminder();toast("Planned date saved")}return
+  if(storePlanStart(saveDate.dataset.planid,value)){save();openPlanLibrary();renderSavedPlanSummary();renderScheduledPlanReminder();toast("Start reminder saved")}return
  }
  const clearDate=e.target.closest(".clearPlanStartBtn");if(clearDate){
-  if(storePlanStart(clearDate.dataset.planid,null)){save();openPlanLibrary();renderSavedPlanSummary();renderScheduledPlanReminder();toast("Planned date cleared")}return
+  if(storePlanStart(clearDate.dataset.planid,null)){save();openPlanLibrary();renderSavedPlanSummary();renderScheduledPlanReminder();toast("Start reminder cleared")}return
  }
  const csv=e.target.closest(".csvExportChoice");if(csv){exportCsvKind(csv.dataset.csv);return}
  const repeat=e.target.closest(".repeatSetBtn");if(repeat){
