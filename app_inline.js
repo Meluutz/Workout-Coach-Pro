@@ -2023,7 +2023,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.9.19 — Reliability Report",
+  "Adaptive Workout Coach v7.9.20 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -2931,9 +2931,9 @@ function startRestFor(slot,seconds,label,auto=true){stopTimer();timer.slot=slot;
 function openRestSheet(){$("#timerTitle").textContent=timer.label||"Rest timer";renderTimerUI();$("#timerSheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#timerSheet .sheetcard").scrollTop=0})}
 function cancelRest(){stopTimer();timer.remaining=timer.base;timer.label="";timer.slot=null;renderRestMini()}
 
-function openSheet(label,title,html){$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet","workout-calendar-sheet");$("#sheetLabel").textContent=label;$("#sheetTitle").textContent=title;$("#sheetContent").innerHTML=html;$("#sheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#sheet .sheetcard").scrollTop=0})}
+function openSheet(label,title,html){$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet","workout-calendar-sheet","week-transition-sheet");$("#sheetLabel").textContent=label;$("#sheetTitle").textContent=title;$("#sheetContent").innerHTML=html;$("#sheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#sheet .sheetcard").scrollTop=0})}
 function closeSheet(){
- $("#sheet").classList.add("hidden");$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet","workout-calendar-sheet");
+ $("#sheet").classList.add("hidden");$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet","workout-calendar-sheet","week-transition-sheet");
  if(planCreationMode?.reviewing)planCreationMode=null;
 }
 function editTarget(slot){
@@ -3126,23 +3126,59 @@ function weekSummary(){
   coachStatus:coach.status,progressing:coach.progressing,stalled:coach.stalled,regressing:coach.regressing,
   fatigueSignals:coach.fatigue.signalCount,deloadRecommended:coach.fatigue.deloadRecommended};
 }
-function advanceWeek(){
- const c=cycle();
- if(c.week<c.length){
-   if(!confirm(`Advance from Week ${c.week} to Week ${c.week+1}?\n\nYou can undo this afterward.`))return;
-   pushUndo(`Advanced from Week ${c.week}`);
-   const summary=weekSummary();archiveWeekReview(summary,buildCoachIntelligence());
-   c.weekSummaries??=[];c.weekSummaries.push(summary);
-   completePlanTransitionForNextWeek();c.week++;currentDay=0;const cs=coachingState();cs.deloadActive=false;cs.deloadCycle=null;cs.deloadWeek=null;save();renderAll();toast(`Week ${c.week} started · Coach updated · Undo available`);
- }else{
-   if(confirm("Finish this training block and start the next block? Exercise choices will be kept, while manual target adjustments reset.\n\nYou can undo this afterward.")){
-     pushUndo("Started a new training block");
-     const summary=weekSummary();archiveWeekReview(summary,buildCoachIntelligence());
-     c.weekSummaries??=[];c.weekSummaries.push(summary);
-     completePlanTransitionForNextWeek();startCycle(c.length,true);renderAll();toast("New training block started · Undo available")
-   }
- }
+function weekTransitionOverview(){
+ const c=cycle(),sessions=currentWeekSessions(),plannedDays=plan().map((d,i)=>({d,i})).filter(x=>x.d&&!x.d.transitionRest&&(x.d.items||[]).length>0);
+ const completedIndices=new Set(sessions.map(s=>Number(s.dayIndex)).filter(Number.isInteger));
+ const completedSlots=completedIndices.size?plannedDays.filter(x=>completedIndices.has(x.i)).length:Math.min(plannedDays.length,sessions.length);
+ const remaining=Math.max(0,plannedDays.length-completedSlots),inProgressDays=currentWeekInProgressDayIndices(),summary=weekSummary();
+ return{c,sessions,planned:plannedDays.length,completed:completedSlots,remaining,inProgress:inProgressDays.length,summary,transition:activePlanTransition()};
 }
+function commitWeekAdvance(){
+ const c=cycle();if(!c||c.week>=c.length)return false;
+ pushUndo(`Advanced from Week ${c.week}`);
+ const summary=weekSummary();archiveWeekReview(summary,buildCoachIntelligence());
+ c.weekSummaries??=[];c.weekSummaries.push(summary);
+ completePlanTransitionForNextWeek();c.week++;currentDay=0;const cs=coachingState();cs.deloadActive=false;cs.deloadCycle=null;cs.deloadWeek=null;
+ save();closeSheet();renderAll();toast(`Week ${c.week} started · Coach updated · Undo available`);return true;
+}
+function commitProgramFinish(){
+ const c=cycle();if(!c||c.week<c.length)return false;
+ pushUndo("Started a new training block");
+ const summary=weekSummary();archiveWeekReview(summary,buildCoachIntelligence());
+ c.weekSummaries??=[];c.weekSummaries.push(summary);
+ const length=c.length;completePlanTransitionForNextWeek();startCycle(length,true);closeSheet();renderAll();toast("New training block started · Undo available");return true;
+}
+function openWeekTransitionReview(){
+ const x=weekTransitionOverview(),c=x.c;if(!c)return;
+ const finishing=c.week>=c.length,nextWeek=Math.min(c.length,c.week+1),nextCycle=finishing?nextGlobalCycleNumber():Number(c.number);
+ const completion=x.summary.avgCompletion||0,readiness=x.summary.readiness===null?"—":`${x.summary.readiness}/10`;
+ const stateBox=x.remaining===0&&x.inProgress===0
+  ?`<div class="week-transition-ready"><strong>Week ready to close.</strong><br>All scheduled workout slots that can be identified are complete.</div>`
+  :`<div class="week-transition-warning"><strong>${x.remaining} scheduled workout${x.remaining===1?"":"s"} still unfinished${x.inProgress?` · ${x.inProgress} with recorded/in-progress work`:""}.</strong><br>Advancing will not mark them complete. Completed sessions stay in history, and Undo can return you to this week.</div>`;
+ const transitionNote=x.transition?`<div class="week-transition-info"><strong>Plan switch handoff</strong><br>The temporary mixed-plan week ends here. ${esc(activeSavedPlan()?.name||"The new plan")} becomes the full weekly schedule after this transition.</div>`:"";
+ const nextText=finishing?`Program ${nextCycle} · Week 1 of ${c.length}`:`Program ${c.number} · Week ${nextWeek} of ${c.length}`;
+ openSheet(finishing?"PROGRAM COMPLETE":"WEEK REVIEW",finishing?`Finish Program ${c.number}`:`Week ${c.week} → Week ${nextWeek}`,
+  `<div class="week-transition-shell">
+    <div class="week-transition-hero"><strong>${finishing?"Finish this training block":"Close this week and continue"}</strong><p class="tiny">${finishing?`Your final Week ${c.week} review will be archived, then a new training block begins at Week 1.`:`Your Week ${c.week} review will be archived before Week ${nextWeek} begins.`}</p></div>
+    <div class="week-transition-stats">
+      <div class="week-transition-stat"><strong>${x.sessions.length}</strong><span>completed workout${x.sessions.length===1?"":"s"} saved</span></div>
+      <div class="week-transition-stat"><strong>${completion}%</strong><span>average saved completion</span></div>
+      <div class="week-transition-stat"><strong>${readiness}</strong><span>current readiness</span></div>
+    </div>
+    ${stateBox}${transitionNote}
+    <div class="week-transition-list">
+      <div><span class="week-transition-check">✓</span><span><strong>Completed workouts stay in history.</strong><br>Your saved sessions and their original plan/week attribution are not rewritten.</span></div>
+      <div><span class="week-transition-check">✓</span><span><strong>Coach review is archived.</strong><br>Week-specific Coach Evidence starts fresh in the next week while long-term evidence remains available.</span></div>
+      ${finishing?`<div><span class="week-transition-check">↻</span><span><strong>Exercise choices are kept.</strong><br>Manual set, rep, RPE and load target adjustments reset for the new training block.</span></div>`:`<div><span class="week-transition-check">→</span><span><strong>Next:</strong> ${esc(nextText)}</span></div>`}
+    </div>
+    <div class="week-transition-actions"><button id="cancelWeekTransitionBtn">Not yet</button><button id="confirmWeekTransitionBtn" class="primary">${finishing?"Finish & start next block":`Advance to Week ${nextWeek}`}</button></div>
+    <p class="tiny week-transition-undo">This structural change can be undone afterward from Program → More program tools.</p>
+   </div>`);
+ $("#sheet").classList.add("week-transition-sheet");
+ $("#cancelWeekTransitionBtn").onclick=closeSheet;
+ $("#confirmWeekTransitionBtn").onclick=finishing?commitProgramFinish:commitWeekAdvance;
+}
+function advanceWeek(){openWeekTransitionReview()}
 function analyticsRangeDays(range=analyticsRange){
  return ({ "4w":28,"8w":56,"12w":84,all:0 })[range]??56;
 }

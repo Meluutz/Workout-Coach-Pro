@@ -1,8 +1,18 @@
-# Adaptive Workout Coach — v7.9.19
+# Adaptive Workout Coach — v7.9.20
 
-GitHub-ready PWA build. Current release: **v7.9.19 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+GitHub-ready PWA build. Current release: **v7.9.20 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
 
+
+
+## v7.9.20 — Guided Week / Program Transition
+- Replaced browser confirm prompts for **Advance week** and **Finish program** with a Workout Coach review sheet.
+- Shows completed workouts, average saved completion, readiness, unfinished scheduled workouts, and in-progress entries before closing the week.
+- Warns clearly that unfinished workouts are not silently marked complete; completed sessions and original plan/week attribution remain intact.
+- If a mid-week plan switch is active, the sheet explains that the temporary mixed-plan week ends and the new plan becomes the full schedule next week.
+- Explains Coach behavior: the closing week review is archived; week-specific Coach Evidence starts fresh next week while long-term evidence remains available.
+- Final-week flow explicitly states that exercise choices are kept while manual target adjustments reset, then starts the next training block at Week 1.
+- Both transitions remain Undo-protected.
 
 ## v7.9.19 — Program Workout Calendar
 - Added **Workout calendar** to the open space in Program → More program tools.

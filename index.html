@@ -1129,11 +1129,21 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .workout-calendar-items{display:grid;gap:8px;padding:10px}.workout-calendar-item{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:10px}.workout-calendar-item-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.workout-calendar-item strong{display:block}.workout-calendar-item .tiny{margin-top:3px;line-height:1.4}.workout-calendar-item-badge{font-size:9px;font-weight:900;color:var(--muted);white-space:nowrap}.workout-calendar-legend{display:flex;flex-wrap:wrap;gap:12px;margin:12px 2px 0;color:var(--muted);font-size:10px;font-weight:750}.workout-calendar-legend span{display:inline-flex;align-items:center;gap:5px}.workout-calendar-note{margin:9px 2px 0;line-height:1.45}
 @media(max-width:390px){.program-tool-action{font-size:10.5px;padding-left:9px;padding-right:9px}.program-tool-glyph{width:22px;height:22px;flex-basis:22px}.workout-calendar-day{min-height:46px;border-radius:10px}.workout-calendar-daynum{font-size:11px}.calendar-dot{width:6px;height:6px}.workout-calendar-detail-head{align-items:flex-start;flex-direction:column}.workout-calendar-status{align-self:flex-start}}
 
+/* v7.9.20 — guided Advance Week / Finish Program review */
+.week-transition-shell{display:grid;gap:11px;padding-bottom:4px}
+.week-transition-hero{border:1px solid var(--line);border-radius:16px;background:var(--surface-2);padding:13px}
+.week-transition-hero strong{display:block;font-size:18px;letter-spacing:-.02em}.week-transition-hero p{margin:5px 0 0;line-height:1.45}
+.week-transition-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.week-transition-stat{border:1px solid var(--line);border-radius:13px;background:var(--surface-2);padding:10px 7px;text-align:center;min-width:0}.week-transition-stat strong{display:block;font-size:19px;font-variant-numeric:tabular-nums}.week-transition-stat span{display:block;margin-top:3px;font-size:9px;line-height:1.3;color:var(--muted);font-weight:800}
+.week-transition-ready,.week-transition-warning,.week-transition-info{border:1px solid var(--line);border-radius:13px;padding:11px;line-height:1.45;font-size:12px}.week-transition-ready{background:color-mix(in srgb,var(--good) 8%,var(--surface));border-color:color-mix(in srgb,var(--good) 28%,var(--line))}.week-transition-warning{background:color-mix(in srgb,var(--warn) 9%,var(--surface));border-color:color-mix(in srgb,var(--warn) 32%,var(--line))}.week-transition-info{background:var(--surface-2)}
+.week-transition-list{display:grid;gap:7px}.week-transition-list>div{display:flex;align-items:flex-start;gap:9px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);padding:10px;font-size:12px;line-height:1.4}.week-transition-check{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;flex:0 0 22px;border-radius:50%;background:color-mix(in srgb,var(--blue) 13%,var(--surface));color:var(--blue);font-size:12px;font-weight:900}
+.week-transition-actions{display:grid;grid-template-columns:1fr 1.35fr;gap:8px;margin-top:2px}.week-transition-actions button{min-height:48px}.week-transition-actions .primary{font-weight:900}.week-transition-undo{margin:0;text-align:center;line-height:1.4}
+@media(max-width:390px){.week-transition-stats{grid-template-columns:1fr 1fr}.week-transition-stat:last-child{grid-column:1/-1}.week-transition-actions{grid-template-columns:1fr}.week-transition-actions .primary{order:-1}}
+
 </style>
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.19 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.20 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1342,7 +1352,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.19</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.20</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -3512,7 +3522,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.9.19 — Reliability Report",
+  "Adaptive Workout Coach v7.9.20 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -4420,9 +4430,9 @@ function startRestFor(slot,seconds,label,auto=true){stopTimer();timer.slot=slot;
 function openRestSheet(){$("#timerTitle").textContent=timer.label||"Rest timer";renderTimerUI();$("#timerSheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#timerSheet .sheetcard").scrollTop=0})}
 function cancelRest(){stopTimer();timer.remaining=timer.base;timer.label="";timer.slot=null;renderRestMini()}
 
-function openSheet(label,title,html){$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet","workout-calendar-sheet");$("#sheetLabel").textContent=label;$("#sheetTitle").textContent=title;$("#sheetContent").innerHTML=html;$("#sheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#sheet .sheetcard").scrollTop=0})}
+function openSheet(label,title,html){$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet","workout-calendar-sheet","week-transition-sheet");$("#sheetLabel").textContent=label;$("#sheetTitle").textContent=title;$("#sheetContent").innerHTML=html;$("#sheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#sheet .sheetcard").scrollTop=0})}
 function closeSheet(){
- $("#sheet").classList.add("hidden");$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet","workout-calendar-sheet");
+ $("#sheet").classList.add("hidden");$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet","workout-calendar-sheet","week-transition-sheet");
  if(planCreationMode?.reviewing)planCreationMode=null;
 }
 function editTarget(slot){
@@ -4615,23 +4625,59 @@ function weekSummary(){
   coachStatus:coach.status,progressing:coach.progressing,stalled:coach.stalled,regressing:coach.regressing,
   fatigueSignals:coach.fatigue.signalCount,deloadRecommended:coach.fatigue.deloadRecommended};
 }
-function advanceWeek(){
- const c=cycle();
- if(c.week<c.length){
-   if(!confirm(`Advance from Week ${c.week} to Week ${c.week+1}?\n\nYou can undo this afterward.`))return;
-   pushUndo(`Advanced from Week ${c.week}`);
-   const summary=weekSummary();archiveWeekReview(summary,buildCoachIntelligence());
-   c.weekSummaries??=[];c.weekSummaries.push(summary);
-   completePlanTransitionForNextWeek();c.week++;currentDay=0;const cs=coachingState();cs.deloadActive=false;cs.deloadCycle=null;cs.deloadWeek=null;save();renderAll();toast(`Week ${c.week} started · Coach updated · Undo available`);
- }else{
-   if(confirm("Finish this training block and start the next block? Exercise choices will be kept, while manual target adjustments reset.\n\nYou can undo this afterward.")){
-     pushUndo("Started a new training block");
-     const summary=weekSummary();archiveWeekReview(summary,buildCoachIntelligence());
-     c.weekSummaries??=[];c.weekSummaries.push(summary);
-     completePlanTransitionForNextWeek();startCycle(c.length,true);renderAll();toast("New training block started · Undo available")
-   }
- }
+function weekTransitionOverview(){
+ const c=cycle(),sessions=currentWeekSessions(),plannedDays=plan().map((d,i)=>({d,i})).filter(x=>x.d&&!x.d.transitionRest&&(x.d.items||[]).length>0);
+ const completedIndices=new Set(sessions.map(s=>Number(s.dayIndex)).filter(Number.isInteger));
+ const completedSlots=completedIndices.size?plannedDays.filter(x=>completedIndices.has(x.i)).length:Math.min(plannedDays.length,sessions.length);
+ const remaining=Math.max(0,plannedDays.length-completedSlots),inProgressDays=currentWeekInProgressDayIndices(),summary=weekSummary();
+ return{c,sessions,planned:plannedDays.length,completed:completedSlots,remaining,inProgress:inProgressDays.length,summary,transition:activePlanTransition()};
 }
+function commitWeekAdvance(){
+ const c=cycle();if(!c||c.week>=c.length)return false;
+ pushUndo(`Advanced from Week ${c.week}`);
+ const summary=weekSummary();archiveWeekReview(summary,buildCoachIntelligence());
+ c.weekSummaries??=[];c.weekSummaries.push(summary);
+ completePlanTransitionForNextWeek();c.week++;currentDay=0;const cs=coachingState();cs.deloadActive=false;cs.deloadCycle=null;cs.deloadWeek=null;
+ save();closeSheet();renderAll();toast(`Week ${c.week} started · Coach updated · Undo available`);return true;
+}
+function commitProgramFinish(){
+ const c=cycle();if(!c||c.week<c.length)return false;
+ pushUndo("Started a new training block");
+ const summary=weekSummary();archiveWeekReview(summary,buildCoachIntelligence());
+ c.weekSummaries??=[];c.weekSummaries.push(summary);
+ const length=c.length;completePlanTransitionForNextWeek();startCycle(length,true);closeSheet();renderAll();toast("New training block started · Undo available");return true;
+}
+function openWeekTransitionReview(){
+ const x=weekTransitionOverview(),c=x.c;if(!c)return;
+ const finishing=c.week>=c.length,nextWeek=Math.min(c.length,c.week+1),nextCycle=finishing?nextGlobalCycleNumber():Number(c.number);
+ const completion=x.summary.avgCompletion||0,readiness=x.summary.readiness===null?"—":`${x.summary.readiness}/10`;
+ const stateBox=x.remaining===0&&x.inProgress===0
+  ?`<div class="week-transition-ready"><strong>Week ready to close.</strong><br>All scheduled workout slots that can be identified are complete.</div>`
+  :`<div class="week-transition-warning"><strong>${x.remaining} scheduled workout${x.remaining===1?"":"s"} still unfinished${x.inProgress?` · ${x.inProgress} with recorded/in-progress work`:""}.</strong><br>Advancing will not mark them complete. Completed sessions stay in history, and Undo can return you to this week.</div>`;
+ const transitionNote=x.transition?`<div class="week-transition-info"><strong>Plan switch handoff</strong><br>The temporary mixed-plan week ends here. ${esc(activeSavedPlan()?.name||"The new plan")} becomes the full weekly schedule after this transition.</div>`:"";
+ const nextText=finishing?`Program ${nextCycle} · Week 1 of ${c.length}`:`Program ${c.number} · Week ${nextWeek} of ${c.length}`;
+ openSheet(finishing?"PROGRAM COMPLETE":"WEEK REVIEW",finishing?`Finish Program ${c.number}`:`Week ${c.week} → Week ${nextWeek}`,
+  `<div class="week-transition-shell">
+    <div class="week-transition-hero"><strong>${finishing?"Finish this training block":"Close this week and continue"}</strong><p class="tiny">${finishing?`Your final Week ${c.week} review will be archived, then a new training block begins at Week 1.`:`Your Week ${c.week} review will be archived before Week ${nextWeek} begins.`}</p></div>
+    <div class="week-transition-stats">
+      <div class="week-transition-stat"><strong>${x.sessions.length}</strong><span>completed workout${x.sessions.length===1?"":"s"} saved</span></div>
+      <div class="week-transition-stat"><strong>${completion}%</strong><span>average saved completion</span></div>
+      <div class="week-transition-stat"><strong>${readiness}</strong><span>current readiness</span></div>
+    </div>
+    ${stateBox}${transitionNote}
+    <div class="week-transition-list">
+      <div><span class="week-transition-check">✓</span><span><strong>Completed workouts stay in history.</strong><br>Your saved sessions and their original plan/week attribution are not rewritten.</span></div>
+      <div><span class="week-transition-check">✓</span><span><strong>Coach review is archived.</strong><br>Week-specific Coach Evidence starts fresh in the next week while long-term evidence remains available.</span></div>
+      ${finishing?`<div><span class="week-transition-check">↻</span><span><strong>Exercise choices are kept.</strong><br>Manual set, rep, RPE and load target adjustments reset for the new training block.</span></div>`:`<div><span class="week-transition-check">→</span><span><strong>Next:</strong> ${esc(nextText)}</span></div>`}
+    </div>
+    <div class="week-transition-actions"><button id="cancelWeekTransitionBtn">Not yet</button><button id="confirmWeekTransitionBtn" class="primary">${finishing?"Finish & start next block":`Advance to Week ${nextWeek}`}</button></div>
+    <p class="tiny week-transition-undo">This structural change can be undone afterward from Program → More program tools.</p>
+   </div>`);
+ $("#sheet").classList.add("week-transition-sheet");
+ $("#cancelWeekTransitionBtn").onclick=closeSheet;
+ $("#confirmWeekTransitionBtn").onclick=finishing?commitProgramFinish:commitWeekAdvance;
+}
+function advanceWeek(){openWeekTransitionReview()}
 function analyticsRangeDays(range=analyticsRange){
  return ({ "4w":28,"8w":56,"12w":84,all:0 })[range]??56;
 }
