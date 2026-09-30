@@ -1,11 +1,20 @@
-# Adaptive Workout Coach — v8.0.4
+# Adaptive Workout Coach — v8.0.5
 
-GitHub-ready PWA build. Current release: **v8.0.4 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
-
-
+GitHub-ready PWA build. Current release: **v8.0.5 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
 
 
+
+
+
+
+## v8.0.5 — Background-Safe Rest Timer & Alerts
+- Reworked the rest countdown around an absolute finish timestamp instead of subtracting one second per browser interval, so screen locking, app switching, and browser throttling no longer pause elapsed rest.
+- Persists the active rest timer separately from workout backups, allowing a still-valid countdown to recover after a page/app resume or reload.
+- Adds a configurable rest-complete alert: **3 beeps + vibration**, **3 beeps only**, **vibration only**, or **silent**, plus a Test Rest Alert control.
+- Adds an optional **Keep screen awake during workouts** setting using the Screen Wake Lock API when supported. The lock is held only while a workout session or rest timer is running and releases when no longer needed.
+- If the app resumes after rest already expired, it immediately reconciles to 0:00 and reports Rest complete rather than showing a stale countdown.
+- Native lock-screen live countdowns / guaranteed locked-screen audio are not emulated in the PWA; those remain a future native-wrapper capability.
 
 ## v8.0.4 — Settings & Onboarding Mobile Audit
 - Reorganized Settings around the most-used actions: profile, training setup, workout experience and backup protection.

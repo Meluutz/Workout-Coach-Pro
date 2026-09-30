@@ -284,9 +284,10 @@ select option{background:#ffffff;color:#0f172a}
 .exercise-detail-meta{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.detail-cell{border:1px solid var(--line);border-radius:13px;padding:10px}.detail-visual{margin:12px 0}.sub-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
 .library-controls{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:8px;margin:12px 0}.library-results{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.library-item{border:1px solid var(--line);border-radius:14px;padding:10px;min-width:0}.library-thumb{aspect-ratio:16/10;overflow:hidden;background:#fff;border-radius:10px;margin:8px 0}.library-thumb img{width:100%;height:100%;object-fit:contain;display:block}.library-item button{width:100%}
 .finish-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:12px 0}.finish-stat{border:1px solid var(--line);border-radius:14px;padding:10px}.finish-stat strong{display:block;font-size:22px;margin-top:3px}.summary-pr{border-left:4px solid var(--good);padding:9px 11px;background:var(--soft);border-radius:10px;margin-top:7px}
-.settings-switch{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.settings-switch:last-child{border-bottom:0}.settings-switch input{width:22px;height:22px}
+.settings-switch{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.settings-switch:last-child{border-bottom:0}.settings-switch input[type="checkbox"]{width:22px;height:22px;flex:0 0 auto}.settings-switch select{width:min(210px,46%);min-height:42px;padding:7px 9px;font-size:13px;flex:0 0 auto}.rest-alert-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:10px}.rest-alert-tools button{min-height:40px}.wake-lock-status{margin-top:8px}.rest-timer-status{display:inline-flex;align-items:center;gap:6px;margin-top:5px}.rest-timer-status:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--good)}
 @media(max-width:760px){
  button{min-height:44px}.actions button{flex:1 1 135px}.targetrow button,.fast-actions button{min-height:42px}
+ .settings-switch.rest-alert-mode{align-items:flex-start;flex-direction:column}.settings-switch.rest-alert-mode select{width:100%}.rest-alert-tools{align-items:stretch;flex-direction:column}.rest-alert-tools button{width:100%}
  .session-strip{grid-template-columns:1fr}.session-controls{justify-content:flex-start}.session-clock{font-size:22px}
  .library-controls{grid-template-columns:1fr 1fr}.library-controls .search{grid-column:1/-1}.library-results{grid-template-columns:1fr}.detail-grid,.finish-grid{grid-template-columns:1fr 1fr}
  .setrow input,.warmup-row input,.field,.search{font-size:16px}.check{width:44px;height:44px}
@@ -1275,7 +1276,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v8.0.4 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v8.0.5 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1479,6 +1480,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  <div class="label">Training preferences</div><h2>Workout experience</h2>
  <div class="settings-switch"><div><strong>Auto-start rest timer</strong><div class="tiny">Start the programmed rest period after a completed working set.</div></div><input id="autoRestSetting" type="checkbox" aria-label="Auto-start rest timer"></div>
  <div class="settings-switch"><div><strong>Start session automatically</strong><div class="tiny">Start the session clock with the first completed set.</div></div><input id="autoSessionSetting" type="checkbox" aria-label="Start session automatically"></div>
+ <div class="settings-switch rest-alert-mode"><div><strong>Rest completion alert</strong><div class="tiny">Choose how Workout Coach alerts you when rest reaches 0:00.</div></div><select id="restAlertSetting" class="field" aria-label="Rest completion alert"><option value="sound_vibrate">3 beeps + vibration</option><option value="sound">3 beeps only</option><option value="vibrate">Vibration only</option><option value="silent">Silent</option></select></div>
+ <div class="settings-switch"><div><strong>Keep screen awake during workouts</strong><div class="tiny">Prevents automatic screen lock while a session or rest timer is running when your browser supports it. Uses more battery.</div><div id="wakeLockSupportText" class="tiny wake-lock-status"></div></div><input id="keepAwakeSetting" type="checkbox" aria-label="Keep screen awake during workouts"></div>
+ <div class="rest-alert-tools"><div><div class="tiny"><strong>Background-safe rest timing</strong></div><div class="tiny">The countdown uses the actual finish time, so locking or backgrounding the phone no longer pauses elapsed rest.</div></div><button id="testRestAlertBtn" type="button">Test rest alert</button></div>
 </section>
 
 <details class="card settings-details settings-preferences-card">
@@ -1527,7 +1531,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v8.0.4</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v8.0.5</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -1684,8 +1688,10 @@ const DATA={"EXERCISES":[{"id":"bb_bench","name":"Barbell Bench Press","pattern"
 const EX=DATA.EXERCISES, EXMAP=Object.fromEntries(EX.map(e=>[e.id,e]));
 const KEY="adaptiveWorkoutCoachV6", OLDKEY="adaptiveWorkoutCoachV5";
 const UNDO_KEY="adaptiveWorkoutCoachV6Undo", REDO_KEY="adaptiveWorkoutCoachV6Redo";
+const REST_TIMER_KEY="adaptiveWorkoutCoachV6RestTimer";
 let undoStack=[], redoStack=[];
-let state={}, currentDay=0, currentView="today", viewScroll={today:0,progress:0,cycle:0,recovery:0,settings:0}, obStep=1, editingProfile=false, builderDraft=null, pendingFinish=null, sessionTicker=null, timer={base:180,remaining:180,running:false,id:null,slot:null,label:"",auto:false};
+let state={}, currentDay=0, currentView="today", viewScroll={today:0,progress:0,cycle:0,recovery:0,settings:0}, obStep=1, editingProfile=false, builderDraft=null, pendingFinish=null, sessionTicker=null, timer={base:180,remaining:180,running:false,id:null,slot:null,label:"",auto:false,endAt:null,completedNotified:false,completionPending:false};
+let restAudioContext=null,wakeLockSentinel=null;
 let reliabilityRunning=false,lastReliabilityResult=null;
 let analyticsRange="8w",analyticsExerciseId=null;
 let customOrderDrag={active:false,id:null,targetId:null,pointerId:null,after:false};
@@ -2933,9 +2939,11 @@ function applyPlanPersonalization(){
 }
 
 function executionSettings(){
- state.executionSettings??={autoRest:true,autoSession:true,warmupRest:60};
+ state.executionSettings??={autoRest:true,autoSession:true,warmupRest:60,restAlert:"sound_vibrate",keepAwake:false};
  if(state.executionSettings.autoRest===undefined)state.executionSettings.autoRest=true;
  if(state.executionSettings.autoSession===undefined)state.executionSettings.autoSession=true;
+ if(!["sound_vibrate","sound","vibrate","silent"].includes(state.executionSettings.restAlert))state.executionSettings.restAlert="sound_vibrate";
+ if(state.executionSettings.keepAwake===undefined)state.executionSettings.keepAwake=false;
  state.executionSettings.warmupRest=Number(state.executionSettings.warmupRest)||60;
  return state.executionSettings;
 }
@@ -2956,9 +2964,9 @@ function sessionRuntime(dayIdx=currentDay){
 }
 function sessionElapsed(dayIdx=currentDay){const r=sessionRuntime(dayIdx);return Math.max(0,Math.floor((Number(r.elapsed)||0)+(r.running&&r.startedAt?(Date.now()-Number(r.startedAt))/1000:0)))}
 function fmtLong(sec){sec=Math.max(0,Math.floor(Number(sec)||0));const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;return h?`${h}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`:`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`}
-function startSession(auto=false){const r=sessionRuntime();if(r.running)return;r.running=true;r.startedAt=Date.now();save();renderSessionClock();if(!auto)toast("Session timer started")}
-function pauseSession(){const r=sessionRuntime();if(!r.running)return;r.elapsed=sessionElapsed();r.running=false;r.startedAt=null;save();renderSessionClock()}
-function resetSessionTimer(){const r=sessionRuntime();if(sessionElapsed()>0&&!confirm("Reset the current session timer to 00:00? Workout entries will not be deleted."))return;r.elapsed=0;r.running=false;r.startedAt=null;save();renderSessionClock();toast("Session timer reset")}
+function startSession(auto=false){const r=sessionRuntime();if(r.running)return;r.running=true;r.startedAt=Date.now();save();renderSessionClock();syncScreenWakeLock();if(!auto)toast("Session timer started")}
+function pauseSession(){const r=sessionRuntime();if(!r.running)return;r.elapsed=sessionElapsed();r.running=false;r.startedAt=null;save();renderSessionClock();syncScreenWakeLock()}
+function resetSessionTimer(){const r=sessionRuntime();if(sessionElapsed()>0&&!confirm("Reset the current session timer to 00:00? Workout entries will not be deleted."))return;r.elapsed=0;r.running=false;r.startedAt=null;save();renderSessionClock();syncScreenWakeLock();toast("Session timer reset")}
 function currentDayHasCompletedSet(){
  const d=plan()?.[currentDay];if(!d?.items?.length)return false;
  return d.items.some((it,slot)=>{const t=effectiveTarget(it),sets=state.weekLogs?.[String(cycle()?.week||1)]?.[currentDay]?.[slot]?.sets||[];return sets.slice(0,t.sets).some(x=>x?.done)});
@@ -2992,7 +3000,7 @@ function renderSessionClock(){
  const r=sessionRuntime(),elapsed=sessionElapsed();clock.textContent=fmtLong(elapsed);status.textContent=r.running?"Workout in progress":elapsed?"Paused":"Not started";btn.textContent=r.running?"Pause session":elapsed?"Resume session":"Start session";
  renderRestMini();syncMobileSessionBar(false);
 }
-function clearSessionRuntime(dayIdx=currentDay){if(state.sessionRuntime)delete state.sessionRuntime[sessionKey(dayIdx)]}
+function clearSessionRuntime(dayIdx=currentDay){if(state.sessionRuntime)delete state.sessionRuntime[sessionKey(dayIdx)];syncScreenWakeLock()}
 function isCompoundExercise(ex){return !!ex&&COMPOUND_PATTERNS.has(ex.pattern)}
 function lastPerformanceSummary(exId){
  const row=exerciseHistoryRows(exId).at(-1);if(!row)return null;
@@ -3719,7 +3727,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v8.0.4 — Reliability Report",
+  "Adaptive Workout Coach v8.0.5 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -4616,20 +4624,87 @@ function autoAdvanceAfterExerciseComplete(slot){
  },420);
 }
 
+function persistRestTimer(){
+ try{
+  const payload={base:Number(timer.base)||180,remaining:Math.max(0,Number(timer.remaining)||0),running:!!timer.running,endAt:timer.endAt?Number(timer.endAt):null,slot:timer.slot??null,label:String(timer.label||""),auto:!!timer.auto,completedNotified:!!timer.completedNotified,completionPending:!!timer.completionPending,savedAt:Date.now()};
+  localStorage.setItem(REST_TIMER_KEY,JSON.stringify(payload));
+ }catch{}
+}
+function clearPersistedRestTimer(){try{localStorage.removeItem(REST_TIMER_KEY)}catch{}}
+function restoreRestTimer(){
+ try{
+  const raw=JSON.parse(localStorage.getItem(REST_TIMER_KEY)||"null");
+  if(!raw||!Number.isFinite(Number(raw.savedAt))||Date.now()-Number(raw.savedAt)>12*60*60*1000){clearPersistedRestTimer();return}
+  timer.base=Math.max(15,Number(raw.base)||180);timer.remaining=Math.max(0,Number(raw.remaining)||timer.base);timer.running=!!raw.running;timer.endAt=raw.endAt?Number(raw.endAt):null;timer.slot=raw.slot??null;timer.label=String(raw.label||"");timer.auto=!!raw.auto;timer.completedNotified=!!raw.completedNotified;timer.completionPending=!!raw.completionPending;
+  if(timer.running&&!Number.isFinite(timer.endAt)){timer.running=false;timer.endAt=null}
+ }catch{clearPersistedRestTimer()}
+}
+function restRemainingFromClock(){
+ if(timer.running&&Number.isFinite(Number(timer.endAt)))return Math.max(0,Math.ceil((Number(timer.endAt)-Date.now())/1000));
+ return Math.max(0,Math.ceil(Number(timer.remaining)||0));
+}
+async function primeRestAlertAudio(){
+ const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return false;
+ try{restAudioContext??=new Ctx();if(restAudioContext.state==="suspended")await restAudioContext.resume();return restAudioContext.state==="running"}catch{return false}
+}
+async function playThreeRestBeeps(){
+ if(!await primeRestAlertAudio())return false;
+ try{
+  const ctx=restAudioContext,start=ctx.currentTime+.025;
+  [0,.28,.56].forEach(offset=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type="sine";osc.frequency.setValueAtTime(880,start+offset);gain.gain.setValueAtTime(.0001,start+offset);gain.gain.exponentialRampToValueAtTime(.22,start+offset+.015);gain.gain.exponentialRampToValueAtTime(.0001,start+offset+.16);osc.connect(gain);gain.connect(ctx.destination);osc.start(start+offset);osc.stop(start+offset+.18)});
+  return true;
+ }catch{return false}
+}
+function fireRestCompleteAlert(test=false){
+ const mode=executionSettings().restAlert;
+ if(mode==="sound_vibrate"||mode==="sound")playThreeRestBeeps();
+ if((mode==="sound_vibrate"||mode==="vibrate")&&navigator.vibrate)try{navigator.vibrate([180,110,180,110,180])}catch{}
+ if(!test)toast("Rest complete")
+}
+async function syncScreenWakeLock(){
+ const supported=!!navigator.wakeLock?.request,activeSession=!!(profile()&&sessionRuntime().running),shouldHold=supported&&!!executionSettings().keepAwake&&document.visibilityState==="visible"&&(timer.running||activeSession);
+ if(shouldHold){
+  if(!wakeLockSentinel||wakeLockSentinel.released){
+   try{
+    wakeLockSentinel=await navigator.wakeLock.request("screen");
+    wakeLockSentinel.addEventListener("release",()=>{wakeLockSentinel=null},{once:true});
+   }catch{wakeLockSentinel=null}
+  }
+ }else if(wakeLockSentinel){
+  const current=wakeLockSentinel;wakeLockSentinel=null;try{await current.release()}catch{}
+ }
+}
+function completeRestTimer(notify=true){
+ if(timer.id)clearInterval(timer.id);timer.id=null;timer.remaining=0;timer.running=false;timer.endAt=null;
+ const shouldNotify=notify&&!timer.completedNotified,visible=document.visibilityState==="visible";
+ if(shouldNotify&&visible){timer.completedNotified=true;timer.completionPending=false}else if(shouldNotify){timer.completedNotified=false;timer.completionPending=true}
+ persistRestTimer();renderTimerUI();syncScreenWakeLock();if(shouldNotify&&visible)fireRestCompleteAlert(false);
+}
+function syncRestTimerFromClock(notify=true){
+ if(!timer.running){
+  if(notify&&timer.completionPending&&document.visibilityState==="visible"){timer.completionPending=false;timer.completedNotified=true;persistRestTimer();fireRestCompleteAlert(false)}
+  renderTimerUI();return
+ }
+ timer.remaining=restRemainingFromClock();
+ if(timer.remaining<=0){completeRestTimer(notify);return}
+ renderTimerUI();
+}
 function renderTimerUI(){
- const display=$("#timerDisplay");if(display)display.textContent=fmt(Math.max(0,timer.remaining));const toggle=$("#timerToggle");if(toggle)toggle.textContent=timer.running?"Pause":timer.remaining<=0?"Restart":"Start";renderRestMini();
+ if(timer.running)timer.remaining=restRemainingFromClock();const display=$("#timerDisplay");if(display)display.textContent=fmt(Math.max(0,timer.remaining));const toggle=$("#timerToggle");if(toggle)toggle.textContent=timer.running?"Pause":timer.remaining<=0?"Restart":"Start";renderRestMini();
 }
 function renderRestMini(){
  const mini=$("#restMini");if(!mini)return;const active=timer.running||timer.remaining<timer.base;mini.classList.toggle("hidden",!active);if(!active)return;
- const label=$("#restMiniLabel"),time=$("#restMiniTime");if(label)label.textContent=timer.label||"Rest";if(time)time.textContent=fmt(Math.max(0,timer.remaining));
+ const label=$("#restMiniLabel"),time=$("#restMiniTime");if(label)label.textContent=timer.label||"Rest";if(time)time.textContent=fmt(Math.max(0,timer.running?restRemainingFromClock():timer.remaining));
 }
-function stopTimer(resetRunningOnly=true){if(timer.id)clearInterval(timer.id);timer.id=null;timer.running=false;renderTimerUI()}
+function stopTimer(){
+ if(timer.running)timer.remaining=restRemainingFromClock();if(timer.id)clearInterval(timer.id);timer.id=null;timer.running=false;timer.endAt=null;persistRestTimer();renderTimerUI();syncScreenWakeLock();
+}
 function startTimer(){
- if(timer.running)return;if(timer.remaining<=0)timer.remaining=timer.base;timer.running=true;renderTimerUI();timer.id=setInterval(()=>{timer.remaining=Math.max(0,timer.remaining-1);renderTimerUI();if(timer.remaining<=0){stopTimer();navigator.vibrate?.([200,100,200]);toast("Rest complete")}},1000)
+ if(timer.running)return;if(timer.remaining<=0)timer.remaining=timer.base;timer.remaining=Math.max(1,Math.ceil(Number(timer.remaining)||timer.base));timer.endAt=Date.now()+timer.remaining*1000;timer.running=true;timer.completedNotified=false;timer.completionPending=false;persistRestTimer();primeRestAlertAudio();renderTimerUI();if(timer.id)clearInterval(timer.id);timer.id=setInterval(()=>syncRestTimerFromClock(true),500);syncScreenWakeLock();
 }
-function startRestFor(slot,seconds,label,auto=true){stopTimer();timer.slot=slot;timer.base=timer.remaining=Math.max(15,Number(seconds)||60);timer.label=label||"Rest";timer.auto=auto;renderTimerUI();startTimer()}
-function openRestSheet(){$("#timerTitle").textContent=timer.label||"Rest timer";renderTimerUI();$("#timerSheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#timerSheet .sheetcard").scrollTop=0})}
-function cancelRest(){stopTimer();timer.remaining=timer.base;timer.label="";timer.slot=null;renderRestMini()}
+function startRestFor(slot,seconds,label,auto=true){stopTimer();timer.slot=slot;timer.base=timer.remaining=Math.max(15,Number(seconds)||60);timer.label=label||"Rest";timer.auto=auto;timer.completedNotified=false;timer.completionPending=false;persistRestTimer();renderTimerUI();startTimer()}
+function openRestSheet(){$("#timerTitle").textContent=timer.label||"Rest timer";syncRestTimerFromClock(true);$("#timerSheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#timerSheet .sheetcard").scrollTop=0})}
+function cancelRest(){stopTimer();timer.remaining=timer.base;timer.label="";timer.slot=null;timer.completedNotified=false;timer.completionPending=false;clearPersistedRestTimer();renderRestMini()}
 
 function openSheet(label,title,html){$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet","workout-calendar-sheet","week-transition-sheet");$("#sheetLabel").textContent=label;$("#sheetTitle").textContent=title;$("#sheetContent").innerHTML=html;$("#sheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#sheet .sheetcard").scrollTop=0})}
 function closeSheet(){
@@ -5174,7 +5249,7 @@ function renderSettings(){
  <p class="tiny">${esc(scheduleNotice(p.weekdays||defaultWeekdays(p.days)))}</p>
  ${p.limitations?.length?`<p class="tiny">Protected areas: ${p.limitations.map(esc).join(", ")}</p>`:""}`;
 
- const es=executionSettings();if($("#autoRestSetting"))$("#autoRestSetting").checked=!!es.autoRest;if($("#autoSessionSetting"))$("#autoSessionSetting").checked=!!es.autoSession;
+ const es=executionSettings();if($("#autoRestSetting"))$("#autoRestSetting").checked=!!es.autoRest;if($("#autoSessionSetting"))$("#autoSessionSetting").checked=!!es.autoSession;if($("#restAlertSetting"))$("#restAlertSetting").value=es.restAlert;if($("#keepAwakeSetting")){const supported=!!navigator.wakeLock?.request;$("#keepAwakeSetting").checked=!!es.keepAwake;$("#keepAwakeSetting").disabled=!supported;const msg=$("#wakeLockSupportText");if(msg)msg.textContent=supported?"Available on this device when Workout Coach is visible.":"Screen wake lock is not supported by this browser/device."}
  const ps=personalizationSettings();
  const loadedMode=["gym","dumbbells"].includes(p.equipment);
  if(loadedMode&&ps.exerciseBias==="bodyweight"){ps.exerciseBias="balanced";ps.exerciseBiasExplicit=false;save()}
@@ -5399,7 +5474,9 @@ document.addEventListener("change",e=>{
  if(["cycleA","cycleB"].includes(e.target.id)){renderCycleComparisonResult();return}
  if(["libraryMuscle","libraryEquipment","libraryDifficulty"].includes(e.target.id)){renderExerciseLibraryResults();return}
  if(e.target.id==="autoRestSetting"){executionSettings().autoRest=e.target.checked;save();return}
- if(e.target.id==="autoSessionSetting"){executionSettings().autoSession=e.target.checked;save();return}
+ if(e.target.id==="autoSessionSetting"){executionSettings().autoSession=e.target.checked;save();syncScreenWakeLock();return}
+ if(e.target.id==="restAlertSetting"){executionSettings().restAlert=e.target.value;save();return}
+ if(e.target.id==="keepAwakeSetting"){executionSettings().keepAwake=e.target.checked;save();syncScreenWakeLock();return}
  if(["visualAvatarSetting","visualFallbackSetting"].includes(e.target.id)){
   const ps=personalizationSettings(),oldA=ps.visualAvatar,oldF=ps.visualFallback;
   ps.visualAvatar=$("#visualAvatarSetting").value;ps.visualFallback=$("#visualFallbackSetting").value;renderAvatarPackStatus();ps.visualAvatar=oldA;ps.visualFallback=oldF;return
@@ -5676,6 +5753,7 @@ $("#changeDaysBtn").onclick=openDayEditor;
 $("#browseVisualsBtn").onclick=openExerciseLibrary;
 $("#saveDisplayPreferencesBtn").onclick=saveDisplayPersonalization;
 $("#applyPlanPreferencesBtn").onclick=applyPlanPersonalization;
+$("#testRestAlertBtn").onclick=()=>{primeRestAlertAudio();fireRestCompleteAlert(true);toast("Rest alert test")};
 $("#regenBtn").onclick=()=>{if(confirm("Regenerate the exercise plan using your current Plan Builder mode? History and body data stay, but current week logs reset.\n\nYou can undo this afterward.")){pushUndo("Regenerated plan");generatePlan(true);renderAll();toast("Plan regenerated · Undo available")}};
 $("#newCycleBtn").onclick=()=>{if(confirm("Start a new training cycle at Week 1? Your current plan exercises will be kept and current-cycle manual target adjustments will reset. Workout history and analytics stay intact.\n\nYou can undo this afterward.")){pushUndo("Started a new training cycle");startCycle(profile().cycleLength||6,true);renderAll();toast("New training cycle started · Undo available")}};
 $("#exportBtn").onclick=exportData;$("#settingsExportBtn").onclick=exportData;
@@ -5726,12 +5804,12 @@ $("#importInput").onchange=async e=>{
   toast("Validated backup imported");
  }catch(err){reportBackupValidation({ok:false,errors:[err.message||"Invalid backup file"],warnings:[]},"Import");alert("Backup import failed: "+(err.message||"Invalid backup."))}
 };
-$("#resetAllBtn").onclick=()=>{if(confirm("Permanently delete ALL local profile data, plans, workout logs, history, recovery entries and measurements on this device? This cannot be undone from inside the app unless you have an exported backup.")){localStorage.removeItem(KEY);localStorage.removeItem(UNDO_KEY);localStorage.removeItem(REDO_KEY);undoStack=[];redoStack=[];state={};showOnboarding(false)}};
+$("#resetAllBtn").onclick=()=>{if(confirm("Permanently delete ALL local profile data, plans, workout logs, history, recovery entries and measurements on this device? This cannot be undone from inside the app unless you have an exported backup.")){localStorage.removeItem(KEY);localStorage.removeItem(UNDO_KEY);localStorage.removeItem(REDO_KEY);localStorage.removeItem(REST_TIMER_KEY);undoStack=[];redoStack=[];timer={base:180,remaining:180,running:false,id:null,slot:null,label:"",auto:false,endAt:null,completedNotified:false,completionPending:false};syncScreenWakeLock();state={};showOnboarding(false)}};
 $("#closeSheet").onclick=closeSheet;
 $("#closeTimer").onclick=()=>{$("#timerSheet").classList.add("hidden")};
 $("#timerToggle").onclick=()=>timer.running?stopTimer():startTimer();
-$("#timerReset").onclick=()=>{stopTimer();timer.remaining=timer.base;renderTimerUI()};
-$$('.preset').forEach(b=>b.onclick=()=>{stopTimer();timer.base=timer.remaining=Number(b.dataset.sec);renderTimerUI()});
+$("#timerReset").onclick=()=>{stopTimer();timer.remaining=timer.base;timer.completedNotified=false;timer.completionPending=false;persistRestTimer();renderTimerUI()};
+$$('.preset').forEach(b=>b.onclick=()=>{stopTimer();timer.base=timer.remaining=Number(b.dataset.sec);timer.completedNotified=false;timer.completionPending=false;persistRestTimer();renderTimerUI()});
 $("#restOpenBtn").onclick=openRestSheet;$("#restSkipBtn").onclick=()=>{cancelRest();toast("Rest skipped")};
 $("#sessionToggle").onclick=()=>sessionRuntime().running?pauseSession():startSession(false);$("#sessionReset").onclick=resetSessionTimer;
 function syncThemeUI(){
@@ -5766,9 +5844,12 @@ syncVisualViewport();
 window.addEventListener("resize",syncVisualViewport,{passive:true});
 window.visualViewport?.addEventListener("resize",syncVisualViewport,{passive:true});
 window.visualViewport?.addEventListener("scroll",syncVisualViewport,{passive:true});
-sessionTicker=setInterval(()=>{if(profile())renderSessionClock()},1000);
+document.addEventListener("visibilitychange",()=>{syncRestTimerFromClock(true);syncScreenWakeLock()});
+window.addEventListener("focus",()=>{syncRestTimerFromClock(true);syncScreenWakeLock()});
+window.addEventListener("pageshow",()=>{syncRestTimerFromClock(true);syncScreenWakeLock()});
+sessionTicker=setInterval(()=>{if(profile())renderSessionClock();if(timer.running)syncRestTimerFromClock(true)},1000);
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
-loadState();state.savedPlans=Array.isArray(state.savedPlans)?state.savedPlans:[];state.activeSavedPlanId=state.activeSavedPlanId||null;if(repairLegacyEquipmentPersonalization())save();loadUndoStacks();
+loadState();state.savedPlans=Array.isArray(state.savedPlans)?state.savedPlans:[];state.activeSavedPlanId=state.activeSavedPlanId||null;if(repairLegacyEquipmentPersonalization())save();loadUndoStacks();restoreRestTimer();syncRestTimerFromClock(true);
 if(!profile()){showOnboarding(false)}else{if(!cycle())state.cycle={number:nextGlobalCycleNumber(),week:1,length:profile().cycleLength||6,start:new Date().toISOString(),weekSummaries:[],planId:state.activeSavedPlanId||null};repairPlanIfNeeded();currentDay=scheduledTrainDayIndex();save();renderAll()}
 </script>
 </body>
