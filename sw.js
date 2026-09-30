@@ -1,4 +1,4 @@
-const CACHE='adaptive-workout-coach-v8-0-1-progress-mobile-1';
+const CACHE='adaptive-workout-coach-v8-0-3-recovery-guidance-1';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png','./assets/branding/workout-coach-app-icon.png'];
 self.addEventListener('install',e=>{
   self.skipWaiting();

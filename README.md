@@ -1,9 +1,24 @@
-# Adaptive Workout Coach — v8.0.1
+# Adaptive Workout Coach — v8.0.3
 
-GitHub-ready PWA build. Current release: **v8.0.1 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+GitHub-ready PWA build. Current release: **v8.0.3 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
 
 
+
+
+## v8.0.3 — Recovery Guidance & Check-in Management
+- Adds **Today’s training guidance** directly below Current Readiness, translating the saved current-day score into neutral training actions while preserving the Coach’s existing joint-discomfort and low-readiness safeguards.
+- A same-day check-in is now **updated in place** instead of creating another duplicate entry; the button changes to **Update today’s check-in** once today has been saved.
+- Adds **What changed?** to compare readiness and all five recovery factors with the previous saved check-in.
+- Adds a compact **7-day readiness trend** using the latest saved check-in per calendar day plus a 7-day average.
+- Adds an optional recovery note for context such as sleep, travel, work stress, or soreness. Notes are stored for reference only and do not automatically alter Coach recommendations.
+- Keeps older recovery entries available for history and long-term Coach fatigue evidence while immediate workout guidance continues to require a check-in saved today.
+
+## v8.0.2 — Recovery Mobile Audit
+- Recovery is now a mobile-first current-day workflow with a clear readiness summary, larger slider cards, live readiness preview, and recent check-in history.
+- Readiness no longer silently carries a prior week forward. Older recovery entries remain preserved, while current workout guidance uses only a recovery check-in saved today.
+- Previous values may be copied into the sliders as a convenience, but they are explicitly labeled as unsaved starting values until the user saves a current-day check-in.
+- Long-term fatigue analysis can still use earlier recovery history; this change only prevents stale recovery from presenting as current readiness or immediate workout guidance.
 
 ## v8.0.1 — Progress Mobile Audit
 - Reorganized Progress around the three things users are most likely to check during normal use: summary metrics, exercise progress, and weekly workload.

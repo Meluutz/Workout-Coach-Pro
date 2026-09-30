@@ -696,6 +696,19 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  .progress-subhead{align-items:stretch;flex-direction:column}.progress-subhead button{width:100%}
 }
 
+/* v8.0.2 — mobile-first Recovery */
+.recovery-view{max-width:760px;margin:0 auto}.recovery-readiness-card,.recovery-checkin-card,.recovery-more-card{overflow:hidden}.recovery-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.recovery-card-head h2,.recovery-card-head h3{margin:4px 0 0}.recovery-week-badge,.recovery-draft-score{display:inline-flex;align-items:center;justify-content:center;min-height:30px;padding:5px 9px;border:1px solid var(--line);border-radius:999px;background:var(--surface-2);font-size:11px;font-weight:850;color:var(--muted);white-space:nowrap}.recovery-draft-score{color:var(--blue)}
+.recovery-status{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:15px;background:var(--surface-2)}.recovery-score-ring{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;border:7px solid color-mix(in srgb,var(--blue) 22%,var(--line));background:var(--surface);text-align:center}.recovery-score-ring strong{display:block;font-size:21px;line-height:1}.recovery-score-ring span{font-size:9px;color:var(--muted);font-weight:800}.recovery-status.good .recovery-score-ring{border-color:color-mix(in srgb,var(--good) 50%,var(--line))}.recovery-status.low .recovery-score-ring{border-color:color-mix(in srgb,var(--bad) 50%,var(--line))}.recovery-status-copy strong{display:block;font-size:17px}.recovery-status-copy p{margin:4px 0 0;line-height:1.4}.recovery-factor-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:10px}.recovery-factor{padding:8px 6px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2);text-align:center}.recovery-factor strong{display:block;font-size:15px}.recovery-factor span{font-size:8.5px;color:var(--muted);font-weight:750}.recovery-no-current{margin-top:12px;padding:13px;border:1px dashed var(--line);border-radius:14px;background:var(--surface-2)}.recovery-no-current strong{display:block;margin-bottom:4px}.recovery-prefill-note{margin:10px 0 8px;line-height:1.4}.recovery-form{display:grid;gap:9px}.recovery-field{border:1px solid var(--line);border-radius:14px;background:var(--surface-2);padding:10px 11px}.recovery-field-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.recovery-field-head strong{font-size:13px}.recovery-value{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:31px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:900;color:var(--blue)}.recovery-field input[type=range]{width:100%;margin:9px 0 3px;padding:0!important}.recovery-scale{display:flex;justify-content:space-between;gap:10px;font-size:9px;color:var(--muted)}.recovery-save-btn{width:100%;min-height:48px;margin-top:11px}.recovery-details{border:1px solid var(--line);border-radius:13px;background:var(--surface-2);overflow:hidden}.recovery-details+ .recovery-details{margin-top:8px}.recovery-details>summary{list-style:none;cursor:pointer;min-height:46px;display:flex;align-items:center;padding:11px 12px;font-weight:850}.recovery-details>summary::-webkit-details-marker{display:none}.recovery-details>summary::after{content:'⌄';margin-left:auto;color:var(--muted)}.recovery-details[open]>summary::after{content:'⌃'}.recovery-details-body{padding:0 12px 12px}.recovery-history-list{display:grid;gap:7px}.recovery-history-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--line);border-radius:11px;background:var(--surface)}.recovery-history-item strong{font-size:12px}.recovery-history-item span{font-size:10px;color:var(--muted)}.recovery-history-score{font-weight:900!important;color:var(--text)!important;white-space:nowrap}
+@media(max-width:760px){.recovery-view .card{margin-bottom:9px}.recovery-readiness-card,.recovery-checkin-card,.recovery-more-card{padding:12px}.recovery-factor-grid{grid-template-columns:repeat(5,1fr)}.recovery-field{padding:10px}.recovery-field input[type=range]{min-height:32px}}
+@media(max-width:390px){.recovery-score-ring{width:64px;height:64px}.recovery-factor-grid{grid-template-columns:repeat(3,1fr)}.recovery-factor:nth-child(4),.recovery-factor:nth-child(5){grid-column:auto}.recovery-status{grid-template-columns:64px minmax(0,1fr)}}
+
+/* v8.0.3 — recovery guidance, updates, deltas & 7-day trend */
+.recovery-guidance{margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--surface-2)}.recovery-guidance-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:5px}.recovery-guidance-head span{font-size:9px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}.recovery-guidance-head strong{font-size:13px}.recovery-guidance p{margin:0;line-height:1.45}.recovery-guidance.good{border-left:3px solid var(--good)}.recovery-guidance.warn{border-left:3px solid var(--warn)}.recovery-guidance.low{border-left:3px solid var(--bad)}.recovery-guidance.none{border-style:dashed}
+.recovery-note-field{display:block;margin-top:10px;font-size:12px;font-weight:800}.recovery-note-field textarea{margin-top:6px;min-height:62px;resize:vertical;font-size:16px;font-weight:500}.recovery-note-help{display:block;margin-top:4px;font-size:9.5px;color:var(--muted);font-weight:600}.recovery-change-card{overflow:hidden}.recovery-change-card h3{margin:4px 0 0}.recovery-change-summary{margin-top:10px}.recovery-change-score{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 11px;border:1px solid var(--line);border-radius:13px;background:var(--surface-2)}.recovery-change-score strong{font-size:17px}.recovery-change-score span{font-size:11px;color:var(--muted)}.recovery-delta-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:8px}.recovery-delta{padding:8px 5px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2);text-align:center;min-width:0}.recovery-delta strong{display:block;font-size:13px}.recovery-delta span{display:block;font-size:8.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.recovery-delta.better strong{color:var(--good)}.recovery-delta.worse strong{color:var(--bad)}.recovery-delta.same strong{color:var(--muted)}
+.recovery-trend-wrap{padding-top:2px}.recovery-trend-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:4px}.recovery-trend-head strong{font-size:14px}.recovery-trend-head span{font-size:10px;color:var(--muted)}.recovery-trend-svg{width:100%;height:105px;display:block;margin:4px 0}.recovery-trend-svg .gridline{stroke:var(--line);stroke-width:1}.recovery-trend-svg .trendline{fill:none;stroke:var(--blue);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.recovery-trend-svg .trendarea{fill:color-mix(in srgb,var(--blue) 12%,transparent)}.recovery-trend-svg .dot{fill:var(--card);stroke:var(--blue);stroke-width:2.5}.recovery-trend-svg text{fill:var(--muted);font-size:9px;font-weight:700}.recovery-history-note{margin-top:3px!important;color:var(--muted)!important;white-space:normal}.recovery-history-copy{min-width:0}.recovery-history-copy>span{display:block}
+@media(max-width:760px){.recovery-change-card{padding:12px}.recovery-guidance{padding:11px}.recovery-delta-grid{grid-template-columns:repeat(5,1fr)}}
+@media(max-width:390px){.recovery-delta-grid{grid-template-columns:repeat(3,1fr)}.recovery-delta:nth-child(4),.recovery-delta:nth-child(5){grid-column:auto}}
+
 /* v7.3.6 — compact Coach + simplified warm-up */
 .coach-strip{
  margin:0 10px 9px;padding:8px 9px;
@@ -1235,7 +1248,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v8.0.1 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v8.0.3 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1385,9 +1398,28 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </section>
 </section>
 
-<section id="recovery" class="view">
-<section class="card"><h2 style="margin-top:0">Recovery check-in</h2><p class="muted">Used to modify training recommendations. Nothing leaves this device.</p><div id="recoveryForm"></div><button id="saveRecoveryBtn" class="primary">Save check-in</button></section>
-<section class="card"><h3 style="margin-top:0">Current readiness</h3><div id="readinessBox"></div></section>
+<section id="recovery" class="view recovery-view">
+<section class="card recovery-readiness-card">
+ <div class="recovery-card-head"><div><div class="label">Recovery</div><h2>Current readiness</h2></div><span id="recoveryWeekBadge" class="recovery-week-badge">This week</span></div>
+ <div id="readinessBox"></div>
+ <div id="recoveryTrainingGuidance"></div>
+</section>
+<section class="card recovery-checkin-card">
+ <div class="recovery-card-head"><div><div class="label">Check-in</div><h3>How are you feeling?</h3></div><span id="recoveryDraftReadiness" class="recovery-draft-score">—</span></div>
+ <p id="recoveryPrefillNote" class="tiny recovery-prefill-note"></p>
+ <div id="recoveryForm" class="recovery-form"></div>
+ <label class="recovery-note-field">Anything affecting recovery today?<textarea id="recoveryNote" class="field" rows="2" maxlength="240" placeholder="Optional — e.g. poor sleep, travel, long workday, soreness"></textarea><span class="recovery-note-help">Saved for your reference only. This note does not automatically change Coach recommendations.</span></label>
+ <button id="saveRecoveryBtn" class="primary recovery-save-btn">Save check-in</button>
+</section>
+<section class="card recovery-change-card">
+ <div class="recovery-card-head"><div><div class="label">Since last check-in</div><h3>What changed?</h3></div></div>
+ <div id="recoveryChangeSummary" class="recovery-change-summary"></div>
+</section>
+<section class="card recovery-more-card">
+ <details class="recovery-details"><summary>7-day readiness trend</summary><div id="recoveryTrend" class="recovery-details-body"></div></details>
+ <details class="recovery-details"><summary>Recent check-ins</summary><div id="recoveryHistory" class="recovery-details-body"></div></details>
+ <details class="recovery-details"><summary>How readiness works</summary><div class="recovery-details-body"><p class="tiny">Recovery, sleep and energy raise the readiness score. Stress and joint/tendon discomfort lower it. The Coach uses the latest check-in saved today for today's workout guidance.</p><p class="tiny"><strong>Earlier check-ins do not carry forward as current readiness.</strong> They remain in history and can still contribute to longer-term fatigue patterns.</p><p class="tiny">Recovery guidance is training support, not a medical assessment. Persistent or significant pain or concerning symptoms should be handled outside the app.</p></div></details>
+</section>
 </section>
 
 <section id="settings" class="view">
@@ -1455,7 +1487,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v8.0.1</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v8.0.3</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -2608,7 +2640,7 @@ function coachExerciseHistoryRows(exId){
 }
 function coachLastRecord(exId){return coachExerciseHistoryRows(exId).at(-1)?.record||null}
 function coachLastSessionForExercise(exId){return coachExerciseHistoryRows(exId).at(-1)?.session||null}
-function coachLatestRecovery(){return coachEvidenceRecovery().slice().sort((a,b)=>new Date(a.date||0)-new Date(b.date||0)).at(-1)||null}
+function coachLatestRecovery(){const today=calendarToday();return currentWeekCoachRecovery().filter(r=>recoveryLocalDay(r)===today).slice().sort((a,b)=>new Date(a.date||0)-new Date(b.date||0)).at(-1)||null}
 function coachReadinessScore(){const r=coachLatestRecovery();return r?recoveryEntryScore(r):null}
 function currentWeekCoachSessions(){
  const c=cycle();return c?coachEvidenceHistory(currentWeekSessions()).filter(s=>Number(s.cycleNumber)===Number(c.number)&&Number(s.week)===Number(c.week)):[];
@@ -3642,7 +3674,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v8.0.1 — Reliability Report",
+  "Adaptive Workout Coach v8.0.3 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -4010,17 +4042,21 @@ function exLog(dayIdx,slot,sets){
  return d[slot];
 }
 
-function latestRecovery(){
- const c=cycle(),w=c?.week,pid=c?.planId||null;
- const same=recoveryEntries().filter(r=>r.cycleNumber===c?.number&&r.week===w&&(!pid||r.planId===pid));
- return same.at(-1)||recoveryEntries().at(-1)||null;
+function currentWeekRecoveryEntries(){
+ const c=cycle();if(!c)return[];
+ return recoveryEntries().filter(r=>Number(r?.cycleNumber)===Number(c.number)&&Number(r?.week)===Number(c.week))
+  .slice().sort((a,b)=>new Date(a.date||0)-new Date(b.date||0));
 }
+function recoveryLocalDay(r){const d=new Date(r?.date||0);return Number.isFinite(d.getTime())?[d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-"):""}
+function currentDayRecoveryEntries(){const today=calendarToday();return currentWeekRecoveryEntries().filter(r=>recoveryLocalDay(r)===today)}
+function latestRecovery(){return currentDayRecoveryEntries().at(-1)||null}
+function latestRecoveryOverall(){return recoveryEntries().slice().sort((a,b)=>new Date(a.date||0)-new Date(b.date||0)).at(-1)||null}
 function readinessScore(){
  const r=latestRecovery();if(!r)return null;
- return Math.round(((r.recovery+r.sleep+r.energy+(11-r.stress)+(11-r.joint))/5)*10)/10;
+ return recoveryEntryScore(r);
 }
 function readinessLabel(){
- const s=readinessScore();if(s===null)return{text:"No recovery check-in yet",cls:"warn"};
+ const s=readinessScore();if(s===null)return{text:"No check-in today",cls:"warn"};
  if(s>=7)return{text:`Good readiness (${s}/10)`,cls:"good"};
  if(s>=5)return{text:`Moderate readiness (${s}/10)`,cls:"warn"};
  return{text:`Low readiness (${s}/10)`,cls:"low"};
@@ -4996,11 +5032,69 @@ function logBody(){
  openSheet("BODY TRACKING","Log measurement",`<div class="grid2"><label>Bodyweight (${unit()})<input id="bodyWeight" class="field" type="number" step="0.1"></label><label>Date<input id="bodyDate" class="field" type="date" value="${new Date().toISOString().slice(0,10)}"></label><label>Waist (${measureUnit()})<input id="waist" class="field" type="number" step="0.1"></label><label>Chest (${measureUnit()})<input id="chest" class="field" type="number" step="0.1"></label><label>Arm (${measureUnit()})<input id="arm" class="field" type="number" step="0.1"></label><label>Thigh (${measureUnit()})<input id="thigh" class="field" type="number" step="0.1"></label></div><button id="saveBody" class="primary" style="margin-top:12px">Save measurement</button>`);
  setTimeout(()=>$("#saveBody").onclick=()=>{const weight=Number($("#bodyWeight").value);if(!weight)return alert("Enter bodyweight first.");bodyEntries().push({date:$("#bodyDate").value||new Date().toISOString(),weight,waist:Number($("#waist").value)||null,chest:Number($("#chest").value)||null,arm:Number($("#arm").value)||null,thigh:Number($("#thigh").value)||null,unit:unit(),measureUnit:measureUnit()});save();closeSheet();renderProgress();toast("Measurement saved")},0);
 }
+function recoveryDraftScore(){
+ const vals={};$$('.recRange').forEach(x=>vals[x.dataset.k]=Number(x.value));
+ if(Object.keys(vals).length<5)return null;return recoveryEntryScore(vals);
+}
+function updateRecoveryDraftScore(){const el=$("#recoveryDraftReadiness"),s=recoveryDraftScore();if(el)el.textContent=s===null?"—":`Preview ${s}/10`}
+function recoveryFieldHtml(k,label,value,low,high){
+ return `<label class="recovery-field"><div class="recovery-field-head"><strong>${esc(label)}</strong><span id="${k}Val" class="recovery-value">${value}/10</span></div><input class="recRange" data-k="${k}" type="range" min="1" max="10" value="${value}"><div class="recovery-scale"><span>${esc(low)}</span><span>${esc(high)}</span></div></label>`;
+}
+function recoveryPreviousEntry(current=null){
+ const rows=recoveryEntries().slice().filter(r=>r&&r!==current&&Number.isFinite(Date.parse(r.date||""))).sort((a,b)=>new Date(a.date)-new Date(b.date));
+ if(!current)return rows.at(-1)||null;
+ const t=Date.parse(current.date||"");return rows.filter(r=>Date.parse(r.date||"")<t).at(-1)||rows.at(-1)||null;
+}
+function recoveryTrainingGuidance(current){
+ if(!current)return{cls:"none",title:"Check in before training",text:"Save today's recovery check-in to get guidance tied to your current readiness."};
+ const score=recoveryEntryScore(current),joint=Number(current.joint)||0;
+ if(joint>=7)return{cls:"low",title:"Protect irritated joints",text:"Hold progression today. If the planned movement aggravates the affected area, use the exercise-swap option rather than forcing it."};
+ if(score<5)return{cls:"low",title:"Recovery priority",text:"Hold load today and consider one fewer working set if performance is clearly below normal."};
+ if(score<7)return{cls:"warn",title:"Proceed with caution",text:"Keep the planned targets, but do not force progression if reps, technique, or logged RPE are worse than expected."};
+ return{cls:"good",title:"Train normally",text:"Readiness supports the planned workout. Progress only when completed reps and working-set RPE support it."};
+}
+function recoveryDailySeries(days=7){
+ const all=recoveryEntries().slice().filter(r=>r&&Number.isFinite(Date.parse(r.date||""))).sort((a,b)=>new Date(a.date)-new Date(b.date));
+ const byDay=new Map();all.forEach(r=>byDay.set(recoveryLocalDay(r),r));
+ const out=[];const now=new Date();now.setHours(12,0,0,0);
+ for(let i=days-1;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const key=[d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");const r=byDay.get(key);if(r)out.push({key,date:d,entry:r,score:recoveryEntryScore(r)})}
+ return out;
+}
+function recoveryTrendSvg(series){
+ if(!series.length)return'<p class="tiny">No saved recovery check-ins in the last 7 days.</p>';
+ if(series.length===1)return`<div class="recovery-trend-head"><strong>${series[0].score}/10</strong><span>1 check-in in the last 7 days</span></div><p class="tiny">Save another check-in on a different day to build a trend.</p>`;
+ const vals=series.map(x=>x.score),w=500,h=105,padL=18,padR=18,padT=10,padB=20,min=0,max=10,x=i=>padL+i*((w-padL-padR)/(vals.length-1)),y=v=>padT+(max-v)/(max-min)*(h-padT-padB),pts=vals.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" "),area=`${padL},${h-padB} ${pts} ${w-padR},${h-padB}`,dots=vals.map((v,i)=>`<circle class="dot" cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="3.8"></circle>`).join(""),avg=vals.reduce((a,b)=>a+b,0)/vals.length,first=series[0],last=series.at(-1);
+ return `<div class="recovery-trend-head"><strong>7-day average ${avg.toFixed(1)}/10</strong><span>${series.length} check-ins</span></div><svg class="recovery-trend-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="Readiness trend from ${first.score} to ${last.score} out of 10"><line class="gridline" x1="${padL}" x2="${w-padR}" y1="${y(7)}" y2="${y(7)}"></line><line class="gridline" x1="${padL}" x2="${w-padR}" y1="${y(5)}" y2="${y(5)}"></line><polygon class="trendarea" points="${area}"></polygon><polyline class="trendline" points="${pts}"></polyline>${dots}<text x="${padL}" y="${h-3}">${esc(first.date.toLocaleDateString(undefined,{month:"short",day:"numeric"}))}</text><text text-anchor="end" x="${w-padR}" y="${h-3}">${esc(last.date.toLocaleDateString(undefined,{month:"short",day:"numeric"}))}</text></svg><p class="tiny">This is a simple trend of saved readiness scores, not a medical or physiological measurement.</p>`;
+}
+function recoveryDeltaHtml(current,previous){
+ if(!current)return'<p class="tiny">Save today\'s check-in to compare it with your previous one.</p>';
+ if(!previous)return'<p class="tiny">This is your first saved check-in. Another check-in will create a comparison here.</p>';
+ const currentScore=recoveryEntryScore(current),previousScore=recoveryEntryScore(previous),scoreDelta=Number((currentScore-previousScore).toFixed(1));
+ const defs=[["recovery","Recovery",1],["sleep","Sleep",1],["energy","Energy",1],["stress","Stress",-1],["joint","Joint",-1]];
+ const cells=defs.map(([k,label,direction])=>{const raw=Number(current[k])-Number(previous[k]),impact=raw*direction,cls=impact>0?"better":impact<0?"worse":"same",txt=raw===0?"No change":`${raw>0?"+":""}${raw}`;return `<div class="recovery-delta ${cls}"><strong>${txt}</strong><span>${esc(label)}</span></div>`}).join("");
+ const when=previous.date&&Number.isFinite(Date.parse(previous.date))?new Date(previous.date).toLocaleString():"previous check-in";
+ return `<div class="recovery-change-score"><div><span>Readiness</span><br><strong>${previousScore} → ${currentScore}</strong></div><strong class="${scoreDelta>0?"goodText":scoreDelta<0?"badText":""}">${scoreDelta===0?"No change":`${scoreDelta>0?"+":""}${scoreDelta}`}</strong></div><div class="recovery-delta-grid">${cells}</div><p class="tiny" style="margin:8px 0 0">Compared with ${esc(when)}.</p>`;
+}
 function renderRecovery(){
- const r=latestRecovery()||{recovery:7,sleep:7,energy:7,stress:4,joint:1};
- const fields=[["recovery","General recovery"],["sleep","Sleep quality"],["energy","Energy / mood"],["stress","Stress"],["joint","Joint / tendon discomfort"]];
- $("#recoveryForm").innerHTML=fields.map(([k,l])=>`<label>${l}: <strong id="${k}Val">${r[k]}</strong>/10<input class="field recRange" data-k="${k}" type="range" min="1" max="10" value="${r[k]}" style="padding:0"></label><br><br>`).join("");
- const x=readinessLabel();$("#readinessBox").innerHTML=`<div class="metric ${x.cls==="good"?"goodText":x.cls==="low"?"badText":"warnText"}">${esc(x.text)}</div><p class="tiny">Higher recovery, sleep, and energy improve readiness; higher stress and joint discomfort reduce it.</p>`;
+ const current=latestRecovery(),previousOverall=latestRecoveryOverall(),seed=current||previousOverall||{recovery:7,sleep:7,energy:7,stress:4,joint:1};
+ const fields=[["recovery","General recovery","Worn down","Fully recovered"],["sleep","Sleep quality","Poor","Excellent"],["energy","Energy / mood","Very low","High"],["stress","Stress","Low","Very high"],["joint","Joint / tendon discomfort","None","Severe"]];
+ $("#recoveryForm").innerHTML=fields.map(([k,l,low,high])=>recoveryFieldHtml(k,l,Number(seed[k])||1,low,high)).join("");
+ const badge=$("#recoveryWeekBadge");if(badge)badge.textContent=`Week ${cycle()?.week||1}`;
+ const note=$("#recoveryPrefillNote");if(note)note.textContent=current?"These sliders show your saved check-in today. Adjust anything that has changed, then update it.":previousOverall?`Starting values copied from your previous check-in (${new Date(previousOverall.date).toLocaleDateString()}). They do not count as current readiness until you save.`:"Start with the sliders below, then save your first check-in today.";
+ const noteInput=$("#recoveryNote");if(noteInput)noteInput.value=current?.note||"";
+ const saveBtn=$("#saveRecoveryBtn");if(saveBtn)saveBtn.textContent=current?"Update today's check-in":"Save check-in";
+ if(current){
+  const score=recoveryEntryScore(current),x=readinessLabel(),when=current.date&&Number.isFinite(Date.parse(current.date))?new Date(current.date).toLocaleString():"Saved today";
+  $("#readinessBox").innerHTML=`<div class="recovery-status ${x.cls}"><div class="recovery-score-ring"><div><strong>${score}</strong><span>out of 10</span></div></div><div class="recovery-status-copy"><strong>${esc(x.text.replace(/ \([^)]*\)$/,''))}</strong><p class="tiny">Latest check-in: ${esc(when)}. The Coach uses this saved check-in for today's workout guidance.</p></div></div><div class="recovery-factor-grid"><div class="recovery-factor"><strong>${current.recovery}</strong><span>Recovery</span></div><div class="recovery-factor"><strong>${current.sleep}</strong><span>Sleep</span></div><div class="recovery-factor"><strong>${current.energy}</strong><span>Energy</span></div><div class="recovery-factor"><strong>${current.stress}</strong><span>Stress</span></div><div class="recovery-factor"><strong>${current.joint}</strong><span>Joint</span></div></div>`;
+ }else{
+  $("#readinessBox").innerHTML=`<div class="recovery-no-current"><strong>No recovery check-in saved today.</strong><p class="tiny">Earlier check-ins are preserved, but they are not treated as today's readiness. Save a check-in below before the Coach uses recovery for today's workout guidance.</p></div>`;
+ }
+ const guide=recoveryTrainingGuidance(current),guideBox=$("#recoveryTrainingGuidance");if(guideBox)guideBox.innerHTML=`<div class="recovery-guidance ${guide.cls}"><div class="recovery-guidance-head"><span>Today's training guidance</span><strong>${esc(guide.title)}</strong></div><p class="tiny">${esc(guide.text)}</p></div>`;
+ const prior=recoveryPreviousEntry(current),change=$("#recoveryChangeSummary");if(change)change.innerHTML=recoveryDeltaHtml(current,prior);
+ const trend=$("#recoveryTrend");if(trend)trend.innerHTML=`<div class="recovery-trend-wrap">${recoveryTrendSvg(recoveryDailySeries(7))}</div>`;
+ const hist=$("#recoveryHistory"),rows=recoveryEntries().slice().filter(r=>r&&Number.isFinite(Date.parse(r.date||""))).sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,8);
+ if(hist)hist.innerHTML=rows.length?`<div class="recovery-history-list">${rows.map(r=>`<div class="recovery-history-item"><div class="recovery-history-copy"><strong>${esc(new Date(r.date).toLocaleString())}</strong><span>Cycle ${Number(r.cycleNumber)||"—"} · Week ${Number(r.week)||"—"}</span>${String(r.note||"").trim()?`<span class="recovery-history-note">${esc(r.note)}</span>`:""}</div><span class="recovery-history-score">${recoveryEntryScore(r)}/10</span></div>`).join("")}</div>`:'<p class="tiny">No recovery check-ins saved yet.</p>';
+ updateRecoveryDraftScore();
 }
 function openDayEditor(){
  const p=profile(),current=p.weekdays?.length===p.days?p.weekdays:defaultWeekdays(p.days),completed=currentWeekSessions().length,inProgress=currentWeekInProgressDayIndices().length;
@@ -5492,7 +5586,7 @@ document.addEventListener("input",e=>{
  if(e.target.id==="librarySearch")renderExerciseLibraryResults();
  if(e.target.matches("input[data-slot]")){const s=Number(e.target.dataset.slot),j=Number(e.target.dataset.set),f=e.target.dataset.f,it=plan()[currentDay].items[s],t=effectiveTarget(it);exLog(currentDay,s,t.sets).sets[j][f]=e.target.value;save()}
  if(e.target.matches("textarea[data-note]")){const s=Number(e.target.dataset.note),it=plan()[currentDay].items[s],t=effectiveTarget(it);exLog(currentDay,s,t.sets).note=e.target.value;save()}
- if(e.target.classList.contains("recRange"))$("#"+e.target.dataset.k+"Val").textContent=e.target.value;
+ if(e.target.classList.contains("recRange")){const v=$("#"+e.target.dataset.k+"Val");if(v)v.textContent=e.target.value+"/10";updateRecoveryDraftScore()}
 });
 
 $("#finishBtn").onclick=finishSession;
@@ -5515,7 +5609,7 @@ $("#trainFinishBtn").onclick=finishSession;
 $("#mobileSessionBtn").onclick=()=>{dayIsComplete(currentDay)?finishSession():openMobileSessionPanel()};
 $("#undoBtn").onclick=undoLast;
 $("#redoBtn").onclick=redoLast;
-$("#saveRecoveryBtn").onclick=()=>{const o={date:new Date().toISOString(),planId:cycle().planId||state.activeSavedPlanId||null,cycleNumber:cycle().number,week:cycle().week};$$(".recRange").forEach(x=>o[x.dataset.k]=Number(x.value));recoveryEntries().push(o);save();renderRecovery();renderToday();toast("Recovery check-in saved")};
+$("#saveRecoveryBtn").onclick=()=>{const c=cycle();if(!c)return;const existing=latestRecovery(),o=existing||{date:new Date().toISOString(),planId:c.planId||state.activeSavedPlanId||null,cycleNumber:c.number,week:c.week};o.date=new Date().toISOString();o.planId=c.planId||state.activeSavedPlanId||null;o.cycleNumber=c.number;o.week=c.week;$$(".recRange").forEach(x=>o[x.dataset.k]=Number(x.value));o.note=String($("#recoveryNote")?.value||"").trim().slice(0,240);if(!existing)recoveryEntries().push(o);save();renderRecovery();renderToday();toast(`${existing?"Recovery updated":"Recovery saved"} · readiness ${recoveryEntryScore(o)}/10`)};
 $("#editProfileBtn").onclick=openPersonalProfileEditor;
 $("#planBuilderBtn").onclick=()=>showOnboarding(true,6);
 $("#changeDaysBtn").onclick=openDayEditor;
