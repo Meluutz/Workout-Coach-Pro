@@ -1,9 +1,17 @@
-# Adaptive Workout Coach — v7.9.20
+# Adaptive Workout Coach — v7.9.21
 
-GitHub-ready PWA build. Current release: **v7.9.20 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+GitHub-ready PWA build. Current release: **v7.9.21 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
 
 
+
+## v7.9.21 — Compare Plans Mobile Audit
+- Reworked **Compare plans** into a compact mobile-first comparison instead of a long wall of plan data.
+- Keeps Plan A / Plan B selectors together and adds a neutral **Swap Plan A / Plan B** control.
+- Adds an at-a-glance summary for days/week, planned exercise count, working sets, session-time target, and exercise overlap.
+- Moves full training-day exercise lists and planned muscle exposure into separate expandable sections.
+- Preserves the existing descriptive-only behavior: no winner, score, automatic plan selection, or plan changes occur from comparison.
+- Adds plain-language methodology notes so prescribed sets/exercises are not confused with completed training or measured muscle growth.
 
 ## v7.9.20 — Guided Week / Program Transition
 - Replaced browser confirm prompts for **Advance week** and **Finish program** with a Workout Coach review sheet.

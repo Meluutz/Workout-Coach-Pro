@@ -1,4 +1,4 @@
-const CACHE='adaptive-workout-coach-v7-9-20-week-transition-1';
+const CACHE='adaptive-workout-coach-v7-9-21-compare-plans-1';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png','./assets/branding/workout-coach-app-icon.png'];
 self.addEventListener('install',e=>{
   self.skipWaiting();

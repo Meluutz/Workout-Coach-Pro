@@ -719,25 +719,32 @@ function planStatsForCompare(p){
 function renderPlanComparison(){
  const a=savedPlans().find(p=>p.id===$("#compareA")?.value),b=savedPlans().find(p=>p.id===$("#compareB")?.value),box=$("#planCompareResult");
  if(!box)return;
- if(!a||!b||a.id===b.id){box.innerHTML='<p class="tiny">Choose two different saved plans to compare.</p>';return}
+ if(!a||!b||a.id===b.id){box.innerHTML='<div class="saved-plan-sheet-note">Choose two different saved plans to compare.</div>';return}
  const x=planStatsForCompare(a),y=planStatsForCompare(b),overlap=[...x.unique].filter(id=>y.unique.has(id)).length;
- const kpis=[["Days per week",x.days,y.days],["Planned exercises",x.exercises,y.exercises],["Planned working sets",x.sets,y.sets],["Target minutes / session",x.minutes,y.minutes],["Unique shared exercises",overlap,overlap]];
- box.innerHTML=`<div class="plan-compare-grid"><div><strong>${esc(a.name)}</strong><span class="tiny">${esc(planModeLabel(a))} · ${esc(planEquipmentLabel(a.profile?.equipment))}</span></div><div><strong>${esc(b.name)}</strong><span class="tiny">${esc(planModeLabel(b))} · ${esc(planEquipmentLabel(b.profile?.equipment))}</span></div></div>
- <div class="tiny" style="margin-top:8px">Same-exercise overlap: ${overlap} shared of ${x.unique.size} and ${y.unique.size} unique movements. No program is automatically selected.</div>
- ${kpis.filter(r=>r[0]!=="Unique shared exercises").map(([label,v,w])=>`<div class="cycle-compare-row"><strong>${esc(label)}</strong><span>${v} / ${w}</span></div>`).join("")}
- <h4>Prescribed exercises by training day</h4>
- <div class="plan-compare-days">${[a,b].map(p=>`<div><strong>${esc(p.name)}</strong>${(p.plan||[]).map((d,i)=>`<p><strong>${esc(d.weekday||`Day ${i+1}`)} · ${esc(d.title||d.type||"Workout")}</strong></p>${(d.items||[]).map(it=>`<p>${esc(EXMAP[it.id]?.name||it.id)} · ${esc(it.baseSets)} sets × ${esc(it.baseReps||"—")} reps · RPE ${esc(it.baseRpe||"—")}</p>`).join("")||'<p>No exercises</p>'}`).join("")}</div>`).join("")}</div>
- <h4>Planned muscle exposure (fractional sets)</h4>
- ${PRIORITY_MUSCLES.map(m=>`<div class="cycle-compare-row"><strong>${esc(m)}</strong>${(x.workload[m]||0).toFixed(1)} / ${(y.workload[m]||0).toFixed(1)}</div>`).join("")}
- <p class="tiny">Left / right follow the selected plans. Planned exposure is estimated from prescribed sets and muscle mapping; it is not measured muscle growth. Session minutes are user-selected time targets, not measured durations. Exercise and set totals are prescribed, not completed.</p>`;
+ const kpis=[["Days / week",x.days,y.days],["Planned exercises",x.exercises,y.exercises],["Working sets",x.sets,y.sets],["Minutes / session",x.minutes||"—",y.minutes||"—"]];
+ const planDayCards=p=>`<div class="plan-compare-plan-column">${(p.plan||[]).map((d,i)=>`<div class="plan-compare-day-card"><strong>${esc(d.weekday||`Day ${i+1}`)} · ${esc(d.title||d.type||"Workout")}</strong>${(d.items||[]).map(it=>`<div class="plan-compare-exercise">${esc(EXMAP[it.id]?.name||it.id)} · ${esc(it.baseSets)} × ${esc(it.baseReps||"—")} · RPE ${esc(it.baseRpe||"—")}</div>`).join("")||'<div class="plan-compare-exercise">No exercises</div>'}</div>`).join("")}</div>`;
+ box.innerHTML=`<div class="plan-compare-shell">
+  <div class="plan-compare-summary">
+   <div class="plan-compare-summary-card"><strong>${esc(a.name)}</strong><span>Plan A · ${esc(planModeLabel(a))} · ${esc(planEquipmentLabel(a.profile?.equipment))}</span></div>
+   <div class="plan-compare-summary-card"><strong>${esc(b.name)}</strong><span>Plan B · ${esc(planModeLabel(b))} · ${esc(planEquipmentLabel(b.profile?.equipment))}</span></div>
+  </div>
+  <div class="plan-compare-overlap"><strong>Exercise overlap</strong><span>${overlap} shared movement${overlap===1?"":"s"} · ${x.unique.size} unique in A · ${y.unique.size} unique in B</span></div>
+  <div class="plan-compare-kpis">
+   <div class="plan-compare-kpi plan-compare-kpi-head"><span class="plan-compare-kpi-label">At a glance</span><span class="plan-compare-kpi-value">Plan A</span><span class="plan-compare-kpi-value">Plan B</span></div>
+   ${kpis.map(([label,v,w])=>`<div class="plan-compare-kpi"><span class="plan-compare-kpi-label">${esc(label)}</span><span class="plan-compare-kpi-value">${esc(v)}</span><span class="plan-compare-kpi-value">${esc(w)}</span></div>`).join("")}
+  </div>
+  <details class="plan-compare-details"><summary>Training days &amp; exercises</summary><div class="plan-compare-details-body"><div class="plan-compare-grid"><div><strong>${esc(a.name)}</strong>${planDayCards(a)}</div><div><strong>${esc(b.name)}</strong>${planDayCards(b)}</div></div></div></details>
+  <details class="plan-compare-details"><summary>Planned muscle exposure</summary><div class="plan-compare-details-body"><div class="plan-compare-muscle-row"><strong>Muscle group</strong><span><b>A</b></span><span><b>B</b></span></div>${PRIORITY_MUSCLES.map(m=>`<div class="plan-compare-muscle-row"><strong>${esc(m)}</strong><span>${(x.workload[m]||0).toFixed(1)}</span><span>${(y.workload[m]||0).toFixed(1)}</span></div>`).join("")}<p class="plan-compare-note">Exposure is estimated from prescribed sets and muscle mapping. It is not measured muscle growth or a rating of which plan is better.</p></div></details>
+  <details class="plan-compare-details"><summary>What these numbers mean</summary><div class="plan-compare-details-body"><p class="plan-compare-note">This is a descriptive comparison only. Exercise and set totals are prescribed, not completed. Session minutes are your selected time targets, not measured workout durations. No plan is automatically selected or changed from this screen.</p></div></details>
+ </div>`;
 }
 function openCompareSavedPlans(){
  const plans=savedPlans();
  if(plans.length<2){toast("Save at least two plans to compare");return}
  const opts=plans.map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join("");
- openSheet("PLAN COMPARISON","Compare two saved plans",
- `<div class="saved-plan-sheet-note">This is a descriptive comparison of programming, not a recommendation to switch plans.</div>
- <div class="plan-compare-fields"><label>Plan A<select id="compareA" class="field">${opts}</select></label><label>Plan B<select id="compareB" class="field">${opts}</select></label></div><div id="planCompareResult"></div>`);
+ openSheet("PLAN COMPARISON","Compare saved plans",
+ `<div class="saved-plan-sheet-note"><strong>Compare programming without changing anything.</strong><br>Choose any two saved plans. This screen describes their structure; it does not recommend a winner or switch your active plan.</div>
+ <div class="plan-compare-picker"><div class="plan-compare-fields"><label>Plan A<select id="compareA" class="field">${opts}</select></label><label>Plan B<select id="compareB" class="field">${opts}</select></label></div><button id="swapComparedPlansBtn" class="plan-compare-swap">Swap Plan A / Plan B</button></div><div id="planCompareResult"></div>`);
  $("#compareA").value=plans[0].id;$("#compareB").value=plans[1].id;renderPlanComparison();
 }
 function backupMeta(){state.backupMeta??={};return state.backupMeta}
@@ -2023,7 +2030,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.9.20 — Reliability Report",
+  "Adaptive Workout Coach v7.9.21 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -3733,6 +3740,7 @@ document.addEventListener("click",e=>{
  const sourceChoice=e.target.closest(".create-plan-source");if(sourceChoice&&!sourceChoice.disabled){beginPlanCreation(sourceChoice.dataset.createSource);return}
  const sheetCreate=e.target.closest("#sheetCreateNewPlanBtn");if(sheetCreate){openCreatePlanSourceChooser();return}
  const compareClick=e.target.closest("#sheetComparePlansBtn");if(compareClick){openCompareSavedPlans();return}
+ const swapCompared=e.target.closest("#swapComparedPlansBtn");if(swapCompared){const a=$("#compareA"),b=$("#compareB");if(a&&b){const v=a.value;a.value=b.value;b.value=v;renderPlanComparison()}return}
  const planMore=e.target.closest(".savedPlanMoreBtn");if(planMore){
   const id=planMore.dataset.planid,panel=$$(".saved-plan-more-panel").find(x=>x.dataset.planmore===id),opening=panel?.classList.contains("hidden");
   $$(".saved-plan-more-panel").forEach(x=>x.classList.add("hidden"));$$('.savedPlanMoreBtn').forEach(x=>{x.setAttribute('aria-expanded','false');const c=x.querySelector('span:last-child');if(c)c.textContent='⌄'});
