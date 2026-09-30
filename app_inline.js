@@ -2040,7 +2040,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v8.0.0 — Reliability Report",
+  "Adaptive Workout Coach v8.0.1 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -3352,7 +3352,7 @@ function renderWeeklyAnalytics(h){
   <div class="analytics-mini-stat"><span class="tiny">Training time</span><strong>${analyticsNumber(minutes/60,1)} h</strong></div>
   <div class="analytics-mini-stat"><span class="tiny">Schedule pace</span><strong>${pace?`${analyticsNumber(pace.pace,1)} / ${pace.target} wk`:"—"}</strong></div>
  </div>
- <div class="analytics-week-row" style="margin-top:10px">${weeks.slice(-8).map(w=>`<div class="analytics-week-chip"><strong>${w.sets} sets</strong><span>${esc(analyticsWeekLabel(w.key))} · ${w.sessions} session${w.sessions===1?"":"s"}</span></div>`).join("")}</div>`;
+ <details class="progress-inline-details"><summary>View weekly breakdown</summary><div class="analytics-week-row">${weeks.slice(-8).map(w=>`<div class="analytics-week-chip"><strong>${w.sets} sets</strong><span>${esc(analyticsWeekLabel(w.key))} · ${w.sessions} session${w.sessions===1?"":"s"}</span></div>`).join("")}</div></details>`;
 }
 function renderMuscleAnalytics(h){
  const workload=analyticsMuscleWorkload(h),ordered=Object.entries(workload).sort((a,b)=>b[1]-a[1]),max=Math.max(1,...ordered.map(x=>x[1]));

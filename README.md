@@ -1,8 +1,17 @@
-# Adaptive Workout Coach — v8.0.0
+# Adaptive Workout Coach — v8.0.1
 
-GitHub-ready PWA build. Current release: **v8.0.0 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+GitHub-ready PWA build. Current release: **v8.0.1 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
 
+
+
+## v8.0.1 — Progress Mobile Audit
+- Reorganized Progress around the three things users are most likely to check during normal use: summary metrics, exercise progress, and weekly workload.
+- Keeps the 4W / 8W / 12W / All range selector prominent and now explains which sections the date range actually filters.
+- Moves the exercise selector below the Performance heading on phones and gives it a full-width 44px+ control for easier selection.
+- Keeps the core exercise trend and weekly workload visible, while moving cycle comparison, muscle workload, body tracking, PRs, and recent sessions into clearly labeled expandable insight sections.
+- Collapses the horizontal per-week workload chips behind **View weekly breakdown** so the main workload card stays compact.
+- Preserves every existing calculation, stored workout/body record, cycle comparison, PR, analytics range, and unit-safety rule; this is a hierarchy/readability audit rather than a change to analytics math.
 
 
 ## v8.0.0 — Program Tools & History Audit

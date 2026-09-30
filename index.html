@@ -652,6 +652,49 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  .program-table-row{grid-template-columns:minmax(0,1fr) 42px 64px}
 }
 
+/* v8.0.1 — mobile-first Progress hierarchy */
+.progress-range-note{margin:0 0 10px;line-height:1.4}
+.progress-exercise-picker{display:grid;gap:4px;min-width:min(290px,52%);font-weight:800}
+.progress-exercise-picker .tiny{color:var(--muted);font-weight:800}
+.progress-exercise-picker .analytics-ex-select{width:100%;max-width:none}
+.progress-insights-card{padding:0;overflow:hidden}
+.progress-insights-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:14px}
+.progress-insights-head h3{margin:4px 0 0}
+.progress-insight-details{border-top:1px solid var(--line);background:var(--card)}
+.progress-insight-details>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 14px;min-height:58px}
+.progress-insight-details>summary::-webkit-details-marker{display:none}
+.progress-insight-details>summary>span:first-child{display:grid;gap:3px;min-width:0}
+.progress-insight-details>summary strong{font-size:14px}
+.progress-insight-details>summary small{font-size:10px;line-height:1.35;color:var(--muted);font-weight:650}
+.progress-insight-details>summary>span:last-child{color:var(--muted);font-size:17px;transition:transform .18s ease}
+.progress-insight-details[open]>summary>span:last-child{transform:rotate(180deg)}
+.progress-insight-body{padding:0 14px 14px}
+.progress-subhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 10px}
+.progress-subhead button{min-height:42px}
+.progress-history-block+ .progress-history-block{border-top:1px solid var(--line);margin-top:14px;padding-top:14px}
+.progress-history-block h4{margin:4px 0 8px}
+.progress-inline-details{margin-top:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);overflow:hidden}
+.progress-inline-details>summary{cursor:pointer;list-style:none;padding:10px 11px;font-size:11px;font-weight:850;color:var(--blue)}
+.progress-inline-details>summary::-webkit-details-marker{display:none}
+.progress-inline-details>summary:after{content:'⌄';float:right;color:var(--muted)}
+.progress-inline-details[open]>summary:after{content:'⌃'}
+.progress-inline-details .analytics-week-row{padding:0 10px 10px}
+@media(max-width:760px){
+ #progress .card{margin-bottom:9px}
+ .progress-mobile-hero{padding:12px}
+ .progress-mobile-hero .analytics-heading h2{font-size:20px}
+ .analytics-range{margin:10px 0 8px;gap:5px}.analytics-range button{min-height:42px}
+ .analytics-exercise-heading{flex-direction:column;align-items:stretch}
+ .progress-exercise-picker{min-width:0;width:100%}.analytics-ex-select{width:100%!important;font-size:16px;min-height:44px}
+ .progress-primary-card{padding:12px}.progress-primary-card .analytics-main-stat{margin-top:8px}
+ .progress-insights-head{padding:12px}.progress-insights-head h3{font-size:17px}.progress-insights-head>.tiny{max-width:85px;text-align:right}
+ .progress-insight-details>summary{padding:12px;min-height:60px}.progress-insight-body{padding:0 12px 12px}
+ .progress-subhead{align-items:flex-end}.progress-subhead button{min-height:44px}
+}
+@media(max-width:390px){
+ .progress-insights-head{align-items:flex-start}.progress-insights-head>.tiny{display:none}
+ .progress-subhead{align-items:stretch;flex-direction:column}.progress-subhead button{width:100%}
+}
 
 /* v7.3.6 — compact Coach + simplified warm-up */
 .coach-strip{
@@ -1192,7 +1235,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v8.0.0 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v8.0.1 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1235,45 +1278,54 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </section>
 
 <section id="progress" class="view">
-<section class="card analytics-hero-card">
- <div class="analytics-heading"><div><div class="label">Progress analytics</div><h2>Training trends</h2></div><span id="analyticsRangeLabel" class="tiny"></span></div>
- <div id="analyticsRangeControls" class="analytics-range">
+<section class="card analytics-hero-card progress-mobile-hero">
+ <div class="analytics-heading"><div><div class="label">Progress analytics</div><h2>Your progress</h2></div><span id="analyticsRangeLabel" class="tiny"></span></div>
+ <div id="analyticsRangeControls" class="analytics-range" aria-label="Progress date range">
   <button data-range="4w">4W</button><button data-range="8w" class="active">8W</button><button data-range="12w">12W</button><button data-range="all">All</button>
  </div>
+ <p class="tiny progress-range-note">This range filters training analytics, PRs and recent sessions. Cycle comparison and body measurements keep their own saved-history view.</p>
  <div id="progressSummary"></div>
 </section>
 
-<section class="card analytics-card">
- <div class="analytics-heading">
-  <div><div class="label">Performance</div><h3>Exercise trend</h3></div>
-  <select id="analyticsExerciseSelect" class="field analytics-ex-select" aria-label="Exercise for progress trend"></select>
+<section class="card analytics-card progress-primary-card">
+ <div class="analytics-heading analytics-exercise-heading">
+  <div><div class="label">Performance</div><h3>Exercise progress</h3></div>
+  <label class="progress-exercise-picker"><span class="tiny">Exercise</span><select id="analyticsExerciseSelect" class="field analytics-ex-select" aria-label="Exercise for progress trend"></select></label>
  </div>
  <div id="strengthAnalytics"></div>
 </section>
 
-<section class="card analytics-card">
+<section class="card analytics-card progress-primary-card">
  <div class="analytics-heading"><div><div class="label">Training load</div><h3>Weekly workload</h3></div></div>
  <div id="weeklyAnalytics"></div>
 </section>
 
-<section class="card analytics-card">
- <div class="analytics-heading"><div><div class="label">Cycles & consistency</div><h3>Long-term comparison</h3></div></div>
- <div id="cycleComparison"></div>
-</section>
+<section class="card progress-insights-card">
+ <div class="progress-insights-head"><div><div class="label">More progress insights</div><h3>History, balance & body tracking</h3></div><span class="tiny">Open what you need</span></div>
 
-<section class="card analytics-card">
- <div class="analytics-heading"><div><div class="label">Muscle balance</div><h3>Completed-set workload</h3></div></div>
- <p class="tiny analytics-note">Primary completed sets count as 1.0; secondary involvement uses the same fractional muscle map as the Program view. This estimates training exposure, not physiological stimulus.</p>
- <div id="muscleAnalytics"></div>
-</section>
+ <details class="progress-insight-details">
+  <summary><span><strong>Cycles & consistency</strong><small>Compare recorded training cycles and recent session consistency</small></span><span aria-hidden="true">⌄</span></summary>
+  <div class="progress-insight-body"><div id="cycleComparison"></div></div>
+ </details>
 
-<section class="card">
- <div class="row"><div><div class="label">Body tracking</div><h3 style="margin:4px 0 0">Body & measurements</h3></div><button id="logBodyBtn">Log measurement</button></div>
- <div id="bodySummary"></div>
-</section>
+ <details class="progress-insight-details">
+  <summary><span><strong>Muscle workload</strong><small>Completed-set exposure by muscle group</small></span><span aria-hidden="true">⌄</span></summary>
+  <div class="progress-insight-body"><p class="tiny analytics-note">Primary completed sets count as 1.0; secondary involvement uses the same fractional muscle map as the Program view. This estimates training exposure, not physiological stimulus.</p><div id="muscleAnalytics"></div></div>
+ </details>
 
-<section class="card"><div class="label">Milestones</div><h3 style="margin:4px 0 10px">Recent PRs</h3><div id="prList"></div></section>
-<section class="card"><div class="label">Training log</div><h3 style="margin:4px 0 10px">Recent sessions</h3><div id="historyList"></div></section>
+ <details class="progress-insight-details">
+  <summary><span><strong>Body & measurements</strong><small>Weight and optional body measurements</small></span><span aria-hidden="true">⌄</span></summary>
+  <div class="progress-insight-body"><div class="progress-subhead"><div><div class="label">Body tracking</div><strong>Saved measurements</strong></div><button id="logBodyBtn">Log measurement</button></div><div id="bodySummary"></div></div>
+ </details>
+
+ <details class="progress-insight-details">
+  <summary><span><strong>Milestones & training log</strong><small>Recent PRs and completed sessions</small></span><span aria-hidden="true">⌄</span></summary>
+  <div class="progress-insight-body">
+   <div class="progress-history-block"><div class="label">Milestones</div><h4>Recent PRs</h4><div id="prList"></div></div>
+   <div class="progress-history-block"><div class="label">Training log</div><h4>Recent sessions</h4><div id="historyList"></div></div>
+  </div>
+ </details>
+</section>
 </section>
 
 <section id="cycle" class="view">
@@ -1403,7 +1455,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v8.0.0</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v8.0.1</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -3590,7 +3642,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v8.0.0 — Reliability Report",
+  "Adaptive Workout Coach v8.0.1 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -4902,7 +4954,7 @@ function renderWeeklyAnalytics(h){
   <div class="analytics-mini-stat"><span class="tiny">Training time</span><strong>${analyticsNumber(minutes/60,1)} h</strong></div>
   <div class="analytics-mini-stat"><span class="tiny">Schedule pace</span><strong>${pace?`${analyticsNumber(pace.pace,1)} / ${pace.target} wk`:"—"}</strong></div>
  </div>
- <div class="analytics-week-row" style="margin-top:10px">${weeks.slice(-8).map(w=>`<div class="analytics-week-chip"><strong>${w.sets} sets</strong><span>${esc(analyticsWeekLabel(w.key))} · ${w.sessions} session${w.sessions===1?"":"s"}</span></div>`).join("")}</div>`;
+ <details class="progress-inline-details"><summary>View weekly breakdown</summary><div class="analytics-week-row">${weeks.slice(-8).map(w=>`<div class="analytics-week-chip"><strong>${w.sets} sets</strong><span>${esc(analyticsWeekLabel(w.key))} · ${w.sessions} session${w.sessions===1?"":"s"}</span></div>`).join("")}</div></details>`;
 }
 function renderMuscleAnalytics(h){
  const workload=analyticsMuscleWorkload(h),ordered=Object.entries(workload).sort((a,b)=>b[1]-a[1]),max=Math.max(1,...ordered.map(x=>x[1]));
