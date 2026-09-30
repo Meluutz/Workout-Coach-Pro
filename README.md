@@ -1,8 +1,15 @@
-# Adaptive Workout Coach — v7.9.18
+# Adaptive Workout Coach — v7.9.19
 
-GitHub-ready PWA build. Current release: **v7.9.18 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+GitHub-ready PWA build. Current release: **v7.9.19 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
 
+
+## v7.9.19 — Program Workout Calendar
+- Added **Workout calendar** to the open space in Program → More program tools.
+- Mobile calendar shows completed workouts on their actual saved dates and planned workouts for the active program through the remaining weeks of the current cycle.
+- Tap any date for a compact workout/rest-day summary; month navigation and a Today shortcut are included.
+- Mid-week plan switches respect the transition week: protected completed/in-progress workouts remain tied to their original plan while remaining planned slots reflect the incoming plan.
+- The calendar is read-only and does not rewrite prior weeks using the current program.
 
 ## v7.9.18 — Coach Recommendations management
 - Coach Review now separates **Active recommendations**, **Resolved recently**, and **Hidden** items.

@@ -160,6 +160,7 @@ body.custom-reordering{user-select:none;-webkit-user-select:none;overflow:hidden
 }
 
 /* v7.9.18 — Coach Recommendation management */
+/* v7.9.19 — Program workout calendar */
 .coach-review-section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 0 7px}
 .coach-review-section-head strong{font-size:13px}.coach-review-count{display:inline-flex;align-items:center;justify-content:center;min-width:25px;height:25px;padding:0 7px;border-radius:999px;background:var(--soft);color:var(--muted);font-size:10px;font-weight:900}
 .coach-review-list-note{margin:6px 0 0;font-size:10px;color:var(--muted)}
@@ -1118,11 +1119,21 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 }
 @media(max-width:390px){.program-hero-actions{grid-template-columns:1fr}.program-plan-actions{grid-template-columns:1fr 1fr}.program-more-actions{grid-template-columns:1fr 1fr}}
 
+/* v7.9.19 — workout calendar */
+.program-tool-action{display:flex;align-items:center;justify-content:flex-start;gap:9px;text-align:left}.program-tool-glyph{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--blue);font-size:14px;font-weight:900;flex:0 0 24px}
+#comparePlansBtn{grid-column:1/-1}
+.workout-calendar-shell{max-width:680px;margin:0 auto;padding-bottom:4px}.workout-calendar-toolbar{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:8px;margin:4px 0 10px}.workout-calendar-toolbar button{width:44px;height:44px;padding:0;font-size:22px}.workout-calendar-month{text-align:center}.workout-calendar-month strong{display:block;font-size:18px}.workout-calendar-month span{display:block;margin-top:2px;font-size:10px;color:var(--muted);font-weight:750}.workout-calendar-today{width:100%;min-height:40px;margin-bottom:10px}
+.workout-calendar-weekdays,.workout-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}.workout-calendar-weekdays{margin-bottom:4px}.workout-calendar-weekdays span{text-align:center;font-size:9px;font-weight:850;color:var(--muted);text-transform:uppercase;padding:4px 0}
+.workout-calendar-day{position:relative;min-width:0;min-height:50px;padding:6px 2px 5px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-weight:850}.workout-calendar-day.outside{opacity:.42}.workout-calendar-day.today{box-shadow:inset 0 0 0 1px var(--blue)}.workout-calendar-day.selected{background:var(--blue);border-color:var(--blue);color:#fff}.workout-calendar-day.selected .calendar-dot{border-color:rgba(255,255,255,.5)}.workout-calendar-daynum{font-size:12px;line-height:1}.workout-calendar-dots{display:flex;align-items:center;justify-content:center;gap:3px;min-height:7px}.calendar-dot{width:7px;height:7px;border-radius:50%;border:1px solid transparent}.calendar-dot.planned{background:var(--blue)}.calendar-dot.completed{background:var(--good)}.workout-calendar-day.selected .calendar-dot.planned{background:#fff}.workout-calendar-day.selected .calendar-dot.completed{background:#7ef0ad}
+.workout-calendar-detail{margin-top:12px;border:1px solid var(--line);border-radius:15px;background:var(--surface-2);overflow:hidden}.workout-calendar-detail-head{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px;border-bottom:1px solid var(--line)}.workout-calendar-detail-head strong{font-size:15px}.workout-calendar-status{display:inline-flex;align-items:center;min-height:25px;padding:4px 8px;border-radius:999px;border:1px solid var(--line);font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}.workout-calendar-status.completed{color:var(--good)}.workout-calendar-status.planned{color:var(--blue)}.workout-calendar-status.rest{color:var(--muted)}
+.workout-calendar-items{display:grid;gap:8px;padding:10px}.workout-calendar-item{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:10px}.workout-calendar-item-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.workout-calendar-item strong{display:block}.workout-calendar-item .tiny{margin-top:3px;line-height:1.4}.workout-calendar-item-badge{font-size:9px;font-weight:900;color:var(--muted);white-space:nowrap}.workout-calendar-legend{display:flex;flex-wrap:wrap;gap:12px;margin:12px 2px 0;color:var(--muted);font-size:10px;font-weight:750}.workout-calendar-legend span{display:inline-flex;align-items:center;gap:5px}.workout-calendar-note{margin:9px 2px 0;line-height:1.45}
+@media(max-width:390px){.program-tool-action{font-size:10.5px;padding-left:9px;padding-right:9px}.program-tool-glyph{width:22px;height:22px;flex-basis:22px}.workout-calendar-day{min-height:46px;border-radius:10px}.workout-calendar-daynum{font-size:11px}.calendar-dot{width:6px;height:6px}.workout-calendar-detail-head{align-items:flex-start;flex-direction:column}.workout-calendar-status{align-self:flex-start}}
+
 </style>
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.18 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.19 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1246,7 +1257,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 <section class="card program-more-card">
  <button id="programMoreToggle" class="program-more-toggle" aria-expanded="false"><span><strong>More program tools</strong><small>Schedule, comparison, history &amp; insights</small></span><span aria-hidden="true">⌄</span></button>
  <div id="programMorePanel" class="program-more-panel hidden">
-  <div class="program-more-actions"><button id="programChangeDaysBtn">Change workout days</button><button id="comparePlansBtn">Compare plans</button></div>
+  <div class="program-more-actions">
+   <button id="programChangeDaysBtn" class="program-tool-action"><span class="program-tool-glyph" aria-hidden="true">▦</span><span>Change workout days</span></button>
+   <button id="workoutCalendarBtn" class="program-tool-action"><span class="program-tool-glyph" aria-hidden="true">▣</span><span>Workout calendar</span></button>
+   <button id="comparePlansBtn" class="program-tool-action"><span class="program-tool-glyph" aria-hidden="true">▥</span><span>Compare plans</span></button>
+  </div>
   <div class="plan-history-row program-history-row">
    <div><div class="label">Recent plan change</div><div id="lastChangeText" class="muted">No changes to undo</div></div>
    <div class="plan-history-actions"><button id="undoBtn">Undo</button><button id="redoBtn">Redo</button></div>
@@ -1327,7 +1342,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.18</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.19</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -2072,6 +2087,98 @@ function validCalendarDate(s){
  if(!/^\d{4}-\d{2}-\d{2}$/.test(String(s||"")))return false;
  const d=new Date(`${s}T12:00:00Z`);
  return Number.isFinite(d.getTime())&&d.toISOString().slice(0,10)===s;
+}
+let workoutCalendarCursor=null,workoutCalendarSelected=null;
+const WORKOUT_CALENDAR_WEEKDAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+function workoutCalendarDateKey(date){
+ const d=date instanceof Date?date:new Date(date);if(!Number.isFinite(d.getTime()))return"";
+ return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");
+}
+function workoutCalendarDateFromKey(key){
+ if(!validCalendarDate(key))return null;const [y,m,d]=key.split("-").map(Number);return new Date(y,m-1,d,12,0,0,0);
+}
+function workoutCalendarMonday(date){
+ const d=new Date(date.getFullYear(),date.getMonth(),date.getDate(),12),offset=(d.getDay()+6)%7;d.setDate(d.getDate()-offset);return d;
+}
+function workoutCalendarSameWeek(a,b){return workoutCalendarDateKey(workoutCalendarMonday(a))===workoutCalendarDateKey(workoutCalendarMonday(b))}
+function workoutCalendarCycleWeekOffset(date){
+ const now=workoutCalendarMonday(new Date()),target=workoutCalendarMonday(date);return Math.round((target-now)/604800000);
+}
+function workoutCalendarScheduleForDate(date){
+ const c=cycle();if(!c||!profile())return null;
+ const offset=workoutCalendarCycleWeekOffset(date),remaining=Math.max(0,Number(c.length||1)-Number(c.week||1));
+ if(offset<0||offset>remaining)return null;
+ const source=offset===0?plan():canonicalPlan(),weekday=WORKOUT_CALENDAR_WEEKDAYS[date.getDay()];
+ const dayIdx=source.findIndex(d=>d&&!d.transitionRest&&d.weekday===weekday);
+ if(dayIdx<0)return null;
+ const day=source[dayIdx],planId=offset===0?activeWorkoutPlanId(dayIdx):(state.activeSavedPlanId||c.planId||null);
+ const named=savedPlans().find(p=>p.id===planId)?.name||activeSavedPlan()?.name||"Current plan";
+ return{dayIdx,day,planId,planName:named,cycleWeek:Number(c.week||1)+offset};
+}
+function workoutCalendarSessionsForKey(key){return history().filter(s=>workoutCalendarDateKey(s?.date)===key)}
+function workoutCalendarPlanMatchesSession(planned,session){
+ if(!planned||!session)return false;
+ if(session.title&&planned.day?.title&&session.title===planned.day.title)return true;
+ return Number.isInteger(Number(session.dayIndex))&&Number(session.dayIndex)===Number(planned.dayIdx)&&Number(session.cycleNumber)===Number(cycle()?.number)&&Number(session.week)===Number(planned.cycleWeek);
+}
+function workoutCalendarInfoForDate(date){
+ const key=workoutCalendarDateKey(date),sessions=workoutCalendarSessionsForKey(key),planned=workoutCalendarScheduleForDate(date);
+ const plannedOutstanding=!!(planned&&!sessions.some(s=>workoutCalendarPlanMatchesSession(planned,s)));
+ return{key,date,sessions,planned,plannedOutstanding,status:sessions.length?"completed":planned?"planned":"rest"};
+}
+function workoutCalendarSessionPlanName(session){return savedPlans().find(p=>p.id===session?.planId)?.name||(session?.planId?"Previously saved plan":"Workout history")}
+function workoutCalendarDetailHtml(info){
+ const label=info.date.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric",year:"numeric"});
+ const status=info.sessions.length?"Completed":info.planned?"Planned":"Rest day";
+ const completed=info.sessions.map(s=>{
+  const sets=(s.exercises||[]).reduce((n,e)=>n+(e.sets||[]).filter(z=>z&&z.done===true).length,0);
+  const duration=Number(s.durationSec)>0?` · ${fmtLong(Number(s.durationSec))}`:"";
+  return `<div class="workout-calendar-item"><div class="workout-calendar-item-head"><div><strong>${esc(s.title||"Completed workout")}</strong><div class="tiny">${esc(workoutCalendarSessionPlanName(s))} · ${sets} completed set${sets===1?"":"s"} · ${Number(s.completion)||0}% complete${duration}</div></div><span class="workout-calendar-item-badge">COMPLETED</span></div></div>`;
+ }).join("");
+ let planned="";
+ if(info.planned&&(!info.sessions.length||info.plannedOutstanding)){
+  const d=info.planned.day,count=(d.items||[]).length,totalSets=(d.items||[]).reduce((n,it)=>n+Number(effectiveTarget(it).sets||0),0);
+  planned=`<div class="workout-calendar-item"><div class="workout-calendar-item-head"><div><strong>${esc(d.title||d.type||"Planned workout")}</strong><div class="tiny">${esc(info.planned.planName)} · Week ${info.planned.cycleWeek} · ${count} exercise${count===1?"":"s"} · ${totalSets} working sets</div></div><span class="workout-calendar-item-badge">PLANNED</span></div></div>`;
+ }
+ const rest=!completed&&!planned?'<div class="workout-calendar-item"><strong>Recovery / rest day</strong><div class="tiny">No workout is scheduled for this date in the active program.</div></div>':"";
+ return `<div class="workout-calendar-detail-head"><strong>${esc(label)}</strong><span class="workout-calendar-status ${info.status}">${status}</span></div><div class="workout-calendar-items">${completed}${planned}${rest}</div>`;
+}
+function workoutCalendarMonthStats(year,month){
+ let completed=0,planned=0;
+ const days=new Date(year,month+1,0).getDate();
+ for(let day=1;day<=days;day++){
+  const info=workoutCalendarInfoForDate(new Date(year,month,day,12));
+  completed+=info.sessions.length;
+  if(info.plannedOutstanding)planned++;
+ }
+ return{completed,planned};
+}
+function renderWorkoutCalendar(){
+ const grid=$("#workoutCalendarGrid"),detail=$("#workoutCalendarDetail"),title=$("#workoutCalendarMonthTitle"),meta=$("#workoutCalendarMonthMeta");if(!grid||!detail||!title)return;
+ const cursor=workoutCalendarCursor||new Date(),year=cursor.getFullYear(),month=cursor.getMonth();
+ title.textContent=new Date(year,month,1).toLocaleDateString(undefined,{month:"long",year:"numeric"});
+ const stats=workoutCalendarMonthStats(year,month);if(meta)meta.textContent=`${stats.completed} completed · ${stats.planned} still planned`;
+ const first=new Date(year,month,1,12),start=new Date(first);start.setDate(1-first.getDay());
+ const todayKey=calendarToday(),cells=[];
+ for(let i=0;i<42;i++){
+  const d=new Date(start);d.setDate(start.getDate()+i);const info=workoutCalendarInfoForDate(d),outside=d.getMonth()!==month,selected=info.key===workoutCalendarSelected;
+  const matched=info.planned&&info.sessions.some(s=>workoutCalendarPlanMatchesSession(info.planned,s));
+  const dots=`${info.sessions.length?'<span class="calendar-dot completed"></span>':""}${info.planned&&(!matched||!info.sessions.length)?'<span class="calendar-dot planned"></span>':""}`;
+  const aria=[d.toLocaleDateString(),info.sessions.length?`${info.sessions.length} completed workout${info.sessions.length===1?"":"s"}`:"",info.plannedOutstanding?"planned workout":""].filter(Boolean).join(", ");
+  cells.push(`<button class="workout-calendar-day${outside?" outside":""}${info.key===todayKey?" today":""}${selected?" selected":""}" data-caldate="${info.key}" aria-label="${esc(aria)}"><span class="workout-calendar-daynum">${d.getDate()}</span><span class="workout-calendar-dots">${dots}</span></button>`);
+ }
+ grid.innerHTML=cells.join("");
+ const selectedDate=workoutCalendarDateFromKey(workoutCalendarSelected)||new Date();detail.innerHTML=workoutCalendarDetailHtml(workoutCalendarInfoForDate(selectedDate));
+ $$(".workout-calendar-day").forEach(btn=>btn.onclick=()=>{workoutCalendarSelected=btn.dataset.caldate;const d=workoutCalendarDateFromKey(workoutCalendarSelected);if(d&&d.getMonth()!==month){workoutCalendarCursor=new Date(d.getFullYear(),d.getMonth(),1)}renderWorkoutCalendar()});
+}
+function openWorkoutCalendar(){
+ const now=new Date();workoutCalendarCursor=new Date(now.getFullYear(),now.getMonth(),1);workoutCalendarSelected=calendarToday();
+ openSheet("PROGRAM CALENDAR","Workout calendar",`<div class="workout-calendar-shell"><button id="workoutCalendarTodayBtn" class="workout-calendar-today">Today</button><div class="workout-calendar-toolbar"><button id="workoutCalendarPrevBtn" aria-label="Previous month">‹</button><div class="workout-calendar-month"><strong id="workoutCalendarMonthTitle"></strong><span id="workoutCalendarMonthMeta"></span></div><button id="workoutCalendarNextBtn" aria-label="Next month">›</button></div><div class="workout-calendar-weekdays"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div><div id="workoutCalendarGrid" class="workout-calendar-grid"></div><div id="workoutCalendarDetail" class="workout-calendar-detail"></div><div class="workout-calendar-legend"><span><i class="calendar-dot planned"></i>Planned workout</span><span><i class="calendar-dot completed"></i>Completed workout</span></div><p class="tiny workout-calendar-note">Completed workouts use their actual saved dates. Planned dates show the active program for the current training week and the remaining weeks of this cycle; the calendar does not rewrite past weeks with today’s plan.</p></div>`);
+ $("#sheet").classList.add("workout-calendar-sheet");
+ $("#workoutCalendarPrevBtn").onclick=()=>{workoutCalendarCursor=new Date(workoutCalendarCursor.getFullYear(),workoutCalendarCursor.getMonth()-1,1);renderWorkoutCalendar()};
+ $("#workoutCalendarNextBtn").onclick=()=>{workoutCalendarCursor=new Date(workoutCalendarCursor.getFullYear(),workoutCalendarCursor.getMonth()+1,1);renderWorkoutCalendar()};
+ $("#workoutCalendarTodayBtn").onclick=()=>{const d=new Date();workoutCalendarCursor=new Date(d.getFullYear(),d.getMonth(),1);workoutCalendarSelected=calendarToday();renderWorkoutCalendar()};
+ renderWorkoutCalendar();
 }
 function renderScheduledPlanReminder(){
  const box=$("#plannedPlanReminder");if(!box)return;
@@ -3405,7 +3512,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.9.18 — Reliability Report",
+  "Adaptive Workout Coach v7.9.19 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -4313,9 +4420,9 @@ function startRestFor(slot,seconds,label,auto=true){stopTimer();timer.slot=slot;
 function openRestSheet(){$("#timerTitle").textContent=timer.label||"Rest timer";renderTimerUI();$("#timerSheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#timerSheet .sheetcard").scrollTop=0})}
 function cancelRest(){stopTimer();timer.remaining=timer.base;timer.label="";timer.slot=null;renderRestMini()}
 
-function openSheet(label,title,html){$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet");$("#sheetLabel").textContent=label;$("#sheetTitle").textContent=title;$("#sheetContent").innerHTML=html;$("#sheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#sheet .sheetcard").scrollTop=0})}
+function openSheet(label,title,html){$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet","workout-calendar-sheet");$("#sheetLabel").textContent=label;$("#sheetTitle").textContent=title;$("#sheetContent").innerHTML=html;$("#sheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#sheet .sheetcard").scrollTop=0})}
 function closeSheet(){
- $("#sheet").classList.add("hidden");$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet");
+ $("#sheet").classList.add("hidden");$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet","workout-calendar-sheet");
  if(planCreationMode?.reviewing)planCreationMode=null;
 }
 function editTarget(slot){
@@ -5231,6 +5338,7 @@ $("#saveCurrentPlanBtn").onclick=openSaveCurrentPlan;
 $("#openPlanLibraryBtn").onclick=openPlanLibrary;
 $("#comparePlansBtn").onclick=openCompareSavedPlans;
 $("#programChangeDaysBtn").onclick=openDayEditor;
+$("#workoutCalendarBtn").onclick=openWorkoutCalendar;
 $("#programOpenTrainBtn").onclick=()=>{setCurrentTrainDay(scheduledTrainDayIndex(),true);switchView("today",true);renderToday()};
 $("#programMoreToggle").onclick=()=>{const panel=$("#programMorePanel"),btn=$("#programMoreToggle");if(!panel||!btn)return;const willOpen=panel.classList.contains("hidden");panel.classList.toggle("hidden",!willOpen);btn.setAttribute("aria-expanded",String(willOpen));const arrow=btn.lastElementChild;if(arrow)arrow.textContent=willOpen?"⌃":"⌄"};
 $("#coachEvidenceBtn").onclick=openCoachEvidence;
