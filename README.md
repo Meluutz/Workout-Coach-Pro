@@ -1,10 +1,19 @@
-# Adaptive Workout Coach — v8.0.3
+# Adaptive Workout Coach — v8.0.4
 
-GitHub-ready PWA build. Current release: **v8.0.3 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
-
-
+GitHub-ready PWA build. Current release: **v8.0.4 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
 
+
+
+
+
+## v8.0.4 — Settings & Onboarding Mobile Audit
+- Reorganized Settings around the most-used actions: profile, training setup, workout experience and backup protection.
+- Moved destructive/structural plan actions into a clearly labeled Plan reset tools section while preserving existing confirmations and Undo.
+- Made Export Backup the primary backup action; import, validation and CSV export remain available under a secondary tools section.
+- Collapsed Coach/display personalization and diagnostics to reduce mobile page length without removing functionality.
+- Added a live Review your setup summary to the final onboarding/plan-builder step before anything is created or regenerated.
+- Fixed the backup download filename so it no longer carries an obsolete v7.9.15 label; backup data format and restore behavior are unchanged.
 
 ## v8.0.3 — Recovery Guidance & Check-in Management
 - Adds **Today’s training guidance** directly below Current Readiness, translating the saved current-day score into neutral training actions while preserving the Coach’s existing joint-discomfort and low-readiness safeguards.

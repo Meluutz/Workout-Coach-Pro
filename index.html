@@ -702,6 +702,33 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 @media(max-width:760px){.recovery-view .card{margin-bottom:9px}.recovery-readiness-card,.recovery-checkin-card,.recovery-more-card{padding:12px}.recovery-factor-grid{grid-template-columns:repeat(5,1fr)}.recovery-field{padding:10px}.recovery-field input[type=range]{min-height:32px}}
 @media(max-width:390px){.recovery-score-ring{width:64px;height:64px}.recovery-factor-grid{grid-template-columns:repeat(3,1fr)}.recovery-factor:nth-child(4),.recovery-factor:nth-child(5){grid-column:auto}.recovery-status{grid-template-columns:64px minmax(0,1fr)}}
 
+
+/* v8.0.4 — Settings & onboarding mobile hierarchy */
+.settings-v804 .card{overflow:hidden}
+.settings-overview-card .profile-kv{margin-bottom:10px}
+.settings-local-note{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--line);border-radius:13px;padding:10px;background:var(--surface-2);margin-top:10px}
+.settings-local-note>span{color:var(--good);font-size:12px;line-height:1.5}.settings-local-note strong{display:block;font-size:12px}.settings-local-note .tiny{margin-top:2px}
+.settings-primary-actions button,.settings-reset-actions button{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:3px;text-align:left}
+.settings-primary-actions button span,.settings-reset-actions button span{font-size:10px;color:var(--muted);font-weight:650;line-height:1.3}
+.settings-primary-actions>button:last-child{grid-column:1/-1}
+.settings-details{padding:0!important}
+.settings-details>summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;font-weight:850;min-height:58px}
+.settings-details>summary::-webkit-details-marker{display:none}.settings-details>summary>span:first-child{min-width:0}.settings-details>summary strong{display:block;font-size:14px}.settings-details>summary small{display:block;color:var(--muted);font-size:10px;font-weight:650;margin-top:3px;line-height:1.35}
+.settings-details>summary>span:last-child:not(.coach-status-badge){color:var(--muted);font-size:18px}.settings-details[open]>summary>span:last-child:not(.coach-status-badge){transform:rotate(180deg)}
+.settings-details-body{border-top:1px solid var(--line);padding:12px 14px 14px}
+.settings-plan-tools{margin-top:10px;border:1px solid var(--line);border-radius:14px;background:var(--surface-2)}
+.settings-plan-tools .settings-details-body{padding:11px}
+.settings-caution-note{display:grid;gap:3px;border:1px solid color-mix(in srgb,var(--warn) 35%,var(--line));border-radius:12px;padding:10px;background:color-mix(in srgb,var(--warn) 7%,var(--surface))}.settings-caution-note strong{font-size:12px}.settings-caution-note span{font-size:10px;color:var(--muted);line-height:1.4}
+.settings-reset-actions{margin-top:9px}
+.settings-backup-card .settings-card-head{align-items:center}.settings-backup-card #settingsExportBtn{min-width:132px}
+.settings-backup-tools{border:1px solid var(--line);border-radius:14px;background:var(--surface-2);margin-top:10px}
+.settings-safe-box{border:1px solid var(--line);border-radius:12px;padding:9px;background:var(--surface);display:flex;flex-direction:column;justify-content:center}.settings-safe-box strong{font-size:11px}.settings-safe-box span{font-size:9px;color:var(--muted);line-height:1.35;margin-top:2px}
+.settings-advanced-card>summary .coach-status-badge{flex:0 0 auto}
+.onboarding-review-card{margin-top:14px;border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--surface-2)}
+.onboarding-review-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.onboarding-review-head strong{display:block;margin-top:3px}.onboarding-review-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}.onboarding-review-item{border:1px solid var(--line);border-radius:11px;background:var(--surface);padding:9px;min-width:0}.onboarding-review-item span{display:block;font-size:9px;color:var(--muted);font-weight:750;text-transform:uppercase;letter-spacing:.04em}.onboarding-review-item strong{display:block;font-size:12px;margin-top:3px;overflow-wrap:anywhere;line-height:1.3}.onboarding-review-safety{margin:9px 0 0;line-height:1.45}
+@media(max-width:760px){.onboard-actions button{min-width:0!important}.onboard-actions #obCancel,.onboard-actions #obBack{flex:0 0 74px}.onboard-actions #obNext{flex:1 1 auto;min-width:0!important}.settings-v804 .card{margin-bottom:9px}.settings-primary-actions{grid-template-columns:1fr 1fr}.settings-primary-actions>button:last-child{grid-column:1/-1}.settings-details>summary{min-height:56px;padding:12px}.settings-details-body{padding:10px 11px 12px}.settings-backup-card .settings-card-head{align-items:flex-start}.settings-backup-card #settingsExportBtn{min-height:44px}.settings-backup-tools .grid2{grid-template-columns:1fr}.onboarding-review-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:390px){.settings-primary-actions,.settings-reset-actions{grid-template-columns:1fr}.settings-primary-actions>button:last-child{grid-column:auto}.settings-backup-card .settings-card-head{flex-direction:column;align-items:stretch}.settings-backup-card #settingsExportBtn{width:100%}.onboarding-review-grid{grid-template-columns:1fr}}
+
 /* v8.0.3 — recovery guidance, updates, deltas & 7-day trend */
 .recovery-guidance{margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--surface-2)}.recovery-guidance-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:5px}.recovery-guidance-head span{font-size:9px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}.recovery-guidance-head strong{font-size:13px}.recovery-guidance p{margin:0;line-height:1.45}.recovery-guidance.good{border-left:3px solid var(--good)}.recovery-guidance.warn{border-left:3px solid var(--warn)}.recovery-guidance.low{border-left:3px solid var(--bad)}.recovery-guidance.none{border-style:dashed}
 .recovery-note-field{display:block;margin-top:10px;font-size:12px;font-weight:800}.recovery-note-field textarea{margin-top:6px;min-height:62px;resize:vertical;font-size:16px;font-weight:500}.recovery-note-help{display:block;margin-top:4px;font-size:9.5px;color:var(--muted);font-weight:600}.recovery-change-card{overflow:hidden}.recovery-change-card h3{margin:4px 0 0}.recovery-change-summary{margin-top:10px}.recovery-change-score{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 11px;border:1px solid var(--line);border-radius:13px;background:var(--surface-2)}.recovery-change-score strong{font-size:17px}.recovery-change-score span{font-size:11px;color:var(--muted)}.recovery-delta-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:8px}.recovery-delta{padding:8px 5px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2);text-align:center;min-width:0}.recovery-delta strong{display:block;font-size:13px}.recovery-delta span{display:block;font-size:8.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.recovery-delta.better strong{color:var(--good)}.recovery-delta.worse strong{color:var(--bad)}.recovery-delta.same strong{color:var(--muted)}
@@ -1248,7 +1275,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v8.0.3 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v8.0.4 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1422,72 +1449,85 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </section>
 </section>
 
-<section id="settings" class="view">
-<section class="card settings-profile-card">
- <div class="settings-card-head"><div><div class="label">Profile</div><h2>Your training setup</h2></div><button id="editProfileBtn">Edit profile</button></div>
+<section id="settings" class="view settings-v804">
+<section class="card settings-profile-card settings-overview-card">
+ <div class="settings-card-head"><div><div class="label">Settings</div><h2>Your training setup</h2></div><button id="editProfileBtn">Edit profile</button></div>
  <div id="profileSummary"></div>
+ <div class="settings-local-note"><span aria-hidden="true">●</span><div><strong>Local-first</strong><div class="tiny">Your workouts and settings stay in this browser unless you export a backup.</div></div></div>
 </section>
 
-<section class="card">
- <div class="label">Plan & schedule</div><h2>Program controls</h2>
- <div class="settings-action-grid">
-  <button id="planBuilderBtn">Training setup & priorities</button>
-  <button id="changeDaysBtn">Change workout days</button>
-  <button id="regenBtn">Regenerate plan</button>
-  <button id="browseVisualsBtn">Exercise library</button>
-  <button id="newCycleBtn">Start New Training Cycle</button>
+<section class="card settings-program-card">
+ <div class="label">Program & schedule</div><h2>Training setup</h2>
+ <div class="settings-action-grid settings-primary-actions">
+  <button id="planBuilderBtn"><strong>Training setup & priorities</strong><span>Goal, equipment, schedule and Plan Builder</span></button>
+  <button id="changeDaysBtn"><strong>Workout days</strong><span>Move your weekly training days</span></button>
+  <button id="browseVisualsBtn"><strong>Exercise library</strong><span>Browse exercises and exact visuals</span></button>
  </div>
- <p class="tiny">Edit profile changes only personal details and preferred units. Changing workout days keeps the exercises and history. Training setup &amp; Plan Builder changes require confirmation before regenerating exercises; regeneration resets in-progress logs, not completed history or your cycle week.</p>
+ <details class="settings-details settings-plan-tools">
+  <summary><span><strong>Plan reset tools</strong><small>Regenerate exercises or start a new cycle</small></span><span aria-hidden="true">⌄</span></summary>
+  <div class="settings-details-body">
+   <div class="settings-caution-note"><strong>These actions change the active program.</strong><span>Completed workout history and analytics are preserved. Each action asks for confirmation and supports Undo.</span></div>
+   <div class="settings-action-grid settings-reset-actions">
+    <button id="regenBtn"><strong>Regenerate plan</strong><span>Rebuild exercises using the current setup</span></button>
+    <button id="newCycleBtn"><strong>Start new training cycle</strong><span>Keep exercises and return to Week 1</span></button>
+   </div>
+  </div>
+ </details>
 </section>
 
-<section class="card">
+<section class="card settings-workout-card">
  <div class="label">Training preferences</div><h2>Workout experience</h2>
- <div class="settings-switch"><div><strong>Auto-start rest timer</strong><div class="tiny">Start the programmed rest period after a completed working set.</div></div><input id="autoRestSetting" type="checkbox"></div>
- <div class="settings-switch"><div><strong>Start session automatically</strong><div class="tiny">Start the session clock with the first completed set.</div></div><input id="autoSessionSetting" type="checkbox"></div>
- 
+ <div class="settings-switch"><div><strong>Auto-start rest timer</strong><div class="tiny">Start the programmed rest period after a completed working set.</div></div><input id="autoRestSetting" type="checkbox" aria-label="Auto-start rest timer"></div>
+ <div class="settings-switch"><div><strong>Start session automatically</strong><div class="tiny">Start the session clock with the first completed set.</div></div><input id="autoSessionSetting" type="checkbox" aria-label="Start session automatically"></div>
 </section>
 
-<section class="card">
- <div class="label">Personalization</div><h2>Coach preferences</h2>
- <div class="personal-grid settings-personal-grid">
-  <label class="personal-field"><strong>Visual avatar</strong><select id="visualAvatarSetting" class="field"><option value="auto">Auto</option><option value="male">Male</option><option value="female">Female</option><option value="neutral">Neutral</option></select></label>
-  <label class="personal-field"><strong>Visual fallback</strong><select id="visualFallbackSetting" class="field"><option value="available">Show available exact visual</option><option value="hide">Hide unavailable avatar visual</option></select></label>
-  <label class="personal-field"><strong>Exercise style</strong><select id="exerciseBiasSetting" class="field"><option value="balanced">Balanced</option><option value="free_weights">Prefer free weights</option><option value="machines_cables">Prefer machines & cables</option><option value="dumbbells">Prefer dumbbells</option><option value="bodyweight">Prefer bodyweight movements</option></select></label>
-  <label class="personal-field"><strong>Plan variety</strong><select id="varietySetting" class="field"><option value="stable">Keep familiar exercises</option><option value="balanced">Balanced</option><option value="variety">Favor variety</option></select></label>
-  <label class="personal-field"><strong>Coaching detail</strong><select id="coachingDetailSetting" class="field"><option value="concise">Concise</option><option value="standard">Standard</option><option value="detailed">Detailed</option></select></label>
+<details class="card settings-details settings-preferences-card">
+ <summary><span><span class="label">Personalization</span><strong>Coach & display preferences</strong><small>Visuals, exercise style, variety and coaching detail</small></span><span aria-hidden="true">⌄</span></summary>
+ <div class="settings-details-body">
+  <div class="personal-grid settings-personal-grid">
+   <label class="personal-field"><strong>Visual avatar</strong><select id="visualAvatarSetting" class="field"><option value="auto">Auto</option><option value="male">Male</option><option value="female">Female</option><option value="neutral">Neutral</option></select></label>
+   <label class="personal-field"><strong>Visual fallback</strong><select id="visualFallbackSetting" class="field"><option value="available">Show available exact visual</option><option value="hide">Hide unavailable avatar visual</option></select></label>
+   <label class="personal-field"><strong>Exercise style</strong><select id="exerciseBiasSetting" class="field"><option value="balanced">Balanced</option><option value="free_weights">Prefer free weights</option><option value="machines_cables">Prefer machines & cables</option><option value="dumbbells">Prefer dumbbells</option><option value="bodyweight">Prefer bodyweight movements</option></select></label>
+   <label class="personal-field"><strong>Plan variety</strong><select id="varietySetting" class="field"><option value="stable">Keep familiar exercises</option><option value="balanced">Balanced</option><option value="variety">Favor variety</option></select></label>
+   <label class="personal-field"><strong>Coaching detail</strong><select id="coachingDetailSetting" class="field"><option value="concise">Concise</option><option value="standard">Standard</option><option value="detailed">Detailed</option></select></label>
+  </div>
+  <p class="tiny settings-note">Visual avatar changes illustrations only. Exercise-style and variety changes affect future regenerated plans; they do not silently rewrite the active plan.</p>
+  <div class="personal-actions"><button id="saveDisplayPreferencesBtn">Save display preferences</button><button id="applyPlanPreferencesBtn" class="primary">Apply & regenerate plan</button></div>
  </div>
- <p class="tiny settings-note">Visual avatar changes illustrations only. Full Gym automatic plans use externally loaded exercises only. Dumbbells + Bench automatic plans use externally loaded dumbbell-compatible exercises only. Bodyweight-resistance and minimal-tool movements remain available through Exercise Swap and Build Your Own.</p>
- <div class="personal-actions"><button id="saveDisplayPreferencesBtn">Save display preferences</button><button id="applyPlanPreferencesBtn" class="primary">Apply & regenerate plan</button></div>
-</section>
+</details>
 
-<section class="card">
- <div class="label">Backup & transfer</div><h2>Move data between devices</h2>
+<section class="card settings-backup-card">
+ <div class="settings-card-head"><div><div class="label">Backup & transfer</div><h2>Protect your data</h2></div><button id="settingsExportBtn" class="primary">Export Backup</button></div>
  <p class="muted">Workout data is stored separately in each browser. Your phone and desktop do not automatically sync.</p>
  <div id="backupHealth" class="backup-health tiny" role="status"></div>
  <div id="historicalUnitsStatus" class="history-unit-status tiny" role="status"></div>
- <div class="grid2"><button id="settingsExportBtn">Export Backup</button><label class="import-label">Import backup<input id="importInput" type="file" accept="application/json,.json"></label></div>
- <div class="grid2" style="margin-top:8px"><label class="import-label">Validate backup only<input id="validateBackupInput" type="file" accept="application/json,.json"></label><button id="openCsvExportBtn">Export CSV data</button></div>
- <div id="backupValidation" class="tiny" role="status"></div>
- <p class="tiny">Backups are local files: exporting starts a download/share action, but the app cannot verify that the file was saved. Import replaces this device's app data only after validation and confirmation.</p>
+ <details class="settings-details settings-backup-tools">
+  <summary><span><strong>Import, validate & export data</strong><small>Use these when moving devices or checking a backup</small></span><span aria-hidden="true">⌄</span></summary>
+  <div class="settings-details-body">
+   <div class="grid2"><label class="import-label">Import backup<input id="importInput" type="file" accept="application/json,.json"></label><label class="import-label">Validate backup only<input id="validateBackupInput" type="file" accept="application/json,.json"></label></div>
+   <div class="grid2" style="margin-top:8px"><button id="openCsvExportBtn">Export CSV data</button><div class="settings-safe-box"><strong>Import protection</strong><span>Import validates first and asks before replacing this device's app data.</span></div></div>
+   <div id="backupValidation" class="tiny" role="status"></div>
+  </div>
+ </details>
+ <p class="tiny">Export starts a local download/share action. After exporting, verify the backup file exists in your Files or Downloads app.</p>
 </section>
 
-<section class="card reliability-card">
- <div class="row reliability-head">
-  <div><div class="label">Reliability & diagnostics</div><h2>Regression self-test</h2></div>
-  <span id="reliabilityStatus" class="coach-status-badge">Not run</span>
+<details class="card settings-details settings-advanced-card">
+ <summary><span><span class="label">Advanced</span><strong>Reliability & diagnostics</strong><small>Regression self-test and diagnostic details</small></span><span id="reliabilityStatus" class="coach-status-badge">Not run</span></summary>
+ <div class="settings-details-body reliability-card">
+  <p class="muted">Runs the real programming rules through 1,819 synthetic profiles and safety checks. Your current plan, history and settings are restored afterward.</p>
+  <button id="runReliabilityBtn" class="primary">Run reliability test</button>
+  <div id="reliabilitySummary" class="reliability-summary tiny">Recommended after installing an app update or changing programming logic.</div>
+  <div class="row" style="margin-top:8px;gap:8px">
+   <button id="viewReliabilityBtn" class="hidden">View test details</button>
+   <button id="copyReliabilityBtn" class="hidden">Copy diagnostics</button>
+  </div>
  </div>
- <p class="muted">Runs the real programming rules through 1,819 synthetic profiles and safety checks. Your current plan, history and settings are restored afterward.</p>
- <button id="runReliabilityBtn" class="primary">Run reliability test</button>
- <div id="reliabilitySummary" class="reliability-summary tiny">Recommended after installing an app update or changing programming logic.</div>
- <div class="row" style="margin-top:8px;gap:8px">
-  <button id="viewReliabilityBtn" class="hidden">View test details</button>
-  <button id="copyReliabilityBtn" class="hidden">Copy diagnostics</button>
- </div>
-</section>
+</details>
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v8.0.3</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v8.0.4</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -1624,6 +1664,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
    <p id="customOrderHelp" class="tiny custom-order-help"></p>
   </div>
   <div id="manualAssignments" class="manual-list hidden"></div>
+ </div>
+ <div class="onboarding-review-card" id="onboardingReviewCard">
+  <div class="onboarding-review-head"><div><div class="label">Before you finish</div><strong>Review your setup</strong></div><span id="onboardingReviewMode" class="tiny"></span></div>
+  <div id="onboardingReviewSummary" class="onboarding-review-grid"></div>
+  <p id="onboardingReviewSafety" class="tiny onboarding-review-safety"></p>
  </div>
 </div>
 
@@ -3674,7 +3719,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v8.0.3 — Reliability Report",
+  "Adaptive Workout Coach v8.0.4 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -5269,6 +5314,20 @@ function scrollOnboardingToPanel(selector){
  });
 }
 
+
+function renderOnboardingReview(){
+ const box=$("#onboardingReviewSummary"),mode=$("#onboardingReviewMode"),safety=$("#onboardingReviewSafety");if(!box)return;
+ const days=Number($("#obDays")?.value||3),weekdays=selectedOnboardingDays(),equipment=document.querySelector('input[name="equipment"]:checked')?.closest("label")?.textContent?.trim()||"—";
+ const limitations=$$(".limit:checked").map(x=>x.closest("label")?.textContent?.trim()||x.value);
+ const level=$("#obLevel")?.value||"—",goal=$("#obGoal")?.selectedOptions?.[0]?.textContent||"—",duration=$("#obDuration")?.value||"—",cycleLen=$("#obCycle")?.value||"—";
+ const builder=builderDraft?.mode==="priority"?"Muscle Priority":builderDraft?.mode==="custom"?(builderDraft.customMode==="manual"?"Build Your Own · Manual":"Build Your Own · Coach"):"Coach Suggested";
+ const unit=profile()&&editingProfile?profile().unit:($("#obUnit")?.value||profile()?.unit||"—");
+ const rows=[["Goal",`${goal} · ${level}`],["Schedule",`${days} day${days===1?"":"s"} · ${duration} min`],["Training days",weekdays.length?weekdays.map(x=>x.slice(0,3)).join(" · "):"Choose days"],["Program",`${cycleLen} weeks · ${builder}`],["Equipment",equipment],["Protected areas",limitations.length?limitations.join(", "):"None selected"],["Weight unit",unit],["Exercises to avoid",String($("#obAvoid")?.value||"").trim()||"None"]];
+ box.innerHTML=rows.map(([label,value])=>`<div class="onboarding-review-item"><span>${esc(label)}</span><strong>${esc(value)}</strong></div>`).join("");
+ if(mode)mode.textContent=planCreationMode?"New plan draft":editingProfile?"Training setup edit":"Initial setup";
+ if(safety)safety.innerHTML=planCreationMode?"Your active plan stays unchanged until you save and explicitly make this draft active.":editingProfile?"Nothing changes yet. Finishing this review asks for confirmation before regenerating the active exercise plan; completed history and the current cycle week remain protected.":"Your plan is created only after you tap Build my plan. You can go Back to change any answer.";
+}
+
 function renderOb(){
  $$(".step").forEach(s=>s.classList.toggle("active",Number(s.dataset.step)===obStep));
  const names={1:"Goal & experience",2:"Schedule",3:"Body profile",4:"Equipment",5:planCreationMode?"Exercise preferences":"Preferences",6:"Plan builder"};
@@ -5284,7 +5343,7 @@ function renderOb(){
  if($("#obBrandTitle"))$("#obBrandTitle").textContent=planCreationMode?(planCreationMode.source==="active"?"Create from Active Plan":"Create New Plan"):editingProfile?"Edit training setup":"Build your training plan";
  if($("#obBrandSub"))$("#obBrandSub").textContent=planCreationMode?"This draft is isolated. Your active plan will not change until you explicitly activate the new one.":editingProfile?"Only confirmed changes regenerate exercises. Cancel leaves all data untouched; your current cycle week and completed history stay.":"Six quick steps. Your answers stay on this device.";
  $("#obNext").textContent=obStep===6?(planCreationMode?"Review & save":editingProfile?"Review & regenerate plan":"Build my plan"):"Continue";
- if(obStep===2)updateDayPickHelp();if(obStep===3)updateHeightUI();if(obStep===4)renderEquipmentCoverageHint();if(obStep===6)renderBuilderUI();
+ if(obStep===2)updateDayPickHelp();if(obStep===3)updateHeightUI();if(obStep===4)renderEquipmentCoverageHint();if(obStep===6){renderBuilderUI();renderOnboardingReview()}
  scrollOnboardingTop();
 }
 function saveOnboarding(){
@@ -5326,7 +5385,7 @@ function exportData(){
  try{
   backupMeta().lastExportInitiatedAt=new Date().toISOString();
   const content=JSON.stringify(state,null,2);
-  downloadLocalFile(content,`adaptive-workout-coach-v7-9-15-backup-${calendarToday()}.json`,"application/json");
+  downloadLocalFile(content,`workout-coach-backup-${calendarToday()}.json`,"application/json");
   try{save()}catch(err){console.warn("Export initiated but backup timestamp could not persist",err)}
   renderBackupHealth();toast("Backup export started · verify the file in Files");
  }catch(err){backupMeta().lastExportInitiatedAt=old;renderBackupHealth();alert("Backup export could not start. Your stored workout data has not been replaced: "+(err.message||err))}
@@ -5345,15 +5404,15 @@ document.addEventListener("change",e=>{
   const ps=personalizationSettings(),oldA=ps.visualAvatar,oldF=ps.visualFallback;
   ps.visualAvatar=$("#visualAvatarSetting").value;ps.visualFallback=$("#visualFallbackSetting").value;renderAvatarPackStatus();ps.visualAvatar=oldA;ps.visualFallback=oldF;return
  }
- if(e.target.name==="equipment"){renderEquipmentCoverageHint();if(obStep===6)renderBuilderUI();return}
+ if(e.target.name==="equipment"){renderEquipmentCoverageHint();if(obStep===6){renderBuilderUI();renderOnboardingReview()}return}
  if(e.target.name==="planBuilder"){
-  builderDraft.mode=e.target.value;renderBuilderUI();
+  builderDraft.mode=e.target.value;renderBuilderUI();if(obStep===6)renderOnboardingReview();
   if(builderDraft.mode==="priority")scrollOnboardingToPanel("#priorityBuilder");
   if(builderDraft.mode==="custom")scrollOnboardingToPanel("#customBuilder");
   return;
  }
  if(e.target.name==="customProgramming"){
-  builderDraft.customMode=e.target.value;renderCustomOrderList();renderManualAssignments();
+  builderDraft.customMode=e.target.value;renderCustomOrderList();renderManualAssignments();if(obStep===6)renderOnboardingReview();
   if(builderDraft.customMode==="manual")scrollOnboardingToPanel("#customOrderPanel");
   return;
  }
@@ -5365,18 +5424,19 @@ document.addEventListener("change",e=>{
   }else{
    builderDraft.customExercises=builderDraft.customExercises.filter(x=>x!==id);delete builderDraft.manual[id];
   }
-  renderCustomCount();renderCustomOrderList();renderManualAssignments();return;
+  renderCustomCount();renderCustomOrderList();renderManualAssignments();if(obStep===6)renderOnboardingReview();return;
  }
  if(e.target.classList.contains("manualField")){
   const id=e.target.dataset.id,k=e.target.dataset.k,a=ensureManualDefaults(id);
   a[k]=k==="sets"?Number(e.target.value):e.target.value;
   if(k==="weekday")renderCustomOrderList();
+  if(obStep===6)renderOnboardingReview();
   return;
  }
 });
 document.addEventListener("input",e=>{
  if(e.target.classList.contains("priority-slider")){
-  rebalancePriorities(e.target.dataset.muscle,e.target.value);applyPriorityDom();renderPriorityPreview();return;
+  rebalancePriorities(e.target.dataset.muscle,e.target.value);applyPriorityDom();renderPriorityPreview();if(obStep===6)renderOnboardingReview();return;
  }
  if(e.target.id==="customSearch"){renderCustomExercisePicker();return}
 });
