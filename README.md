@@ -1,9 +1,17 @@
-# Adaptive Workout Coach — v7.9.21
+# Adaptive Workout Coach — v8.0.0
 
-GitHub-ready PWA build. Current release: **v7.9.21 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+GitHub-ready PWA build. Current release: **v8.0.0 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
 
 
+
+## v8.0.0 — Program Tools & History Audit
+- Begins the v8 series with a mobile-first audit of the remaining Program secondary tools while preserving all accepted Train, plan-switch, Coach, calendar, week-transition, and comparison behavior from v7.9.21.
+- Reworks **Program activity** so Undo/Redo clearly show the next available action and an expandable recent-change history rather than one ambiguous “last change” line.
+- Renames **Approximate weekly muscle volume** to **Planned weekly muscle exposure** and adds current-plan context for training days and planned working sets; the existing fractional muscle map remains descriptive only.
+- Reworks **Training week history** with a compact current-week status card plus clearer prior-week cards showing cycle/week, plan attribution, session count, average completion when available, and archived Coach status.
+- Improves **Change workout days** with a schedule-only safety explanation, current completed/in-progress counts, and a Save button that stays disabled until the required number of weekdays is selected.
+- No completed workout history is cleared or rewritten by these UI changes.
 
 ## v7.9.21 — Compare Plans Mobile Audit
 - Reworked **Compare plans** into a compact mobile-first comparison instead of a long wall of plan data.

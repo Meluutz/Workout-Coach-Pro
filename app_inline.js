@@ -106,13 +106,23 @@ function redoLast(){
   renderAll();
   toast("Redone");
 }
+function renderProgramChangeHistory(){
+  const list=$("#programChangeHistoryList"),badge=$("#programUndoCount");
+  if(badge)badge.textContent=undoStack.length?`${undoStack.length} undo available`:redoStack.length?"Redo available":"No pending changes";
+  if(!list)return;
+  const recent=undoStack.slice(-4).reverse(),redo=redoStack.at(-1);
+  const rows=recent.map((snap,i)=>`<div class="program-change-item"><div><strong>${esc(snap.label||"Program change")}</strong><span>${i===0?"Next Undo":"Earlier change"}</span></div><span>${snap.time&&Number.isFinite(Date.parse(snap.time))?new Date(snap.time).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):""}</span></div>`);
+  if(redo)rows.push(`<div class="program-change-item"><div><strong>${esc(String(redo.label||"Redo change").replace(/^Redo /,""))}</strong><span>Available to redo</span></div><span>Redo</span></div>`);
+  list.innerHTML=rows.join("")||'<div class="program-change-empty">No recent program changes are waiting to be undone or redone.</div>';
+}
 function updateUndoUI(){
-  const last=undoStack.at(-1);
-  const txt=last?`Last change: ${last.label}`:"No changes to undo";
+  const last=undoStack.at(-1),redo=redoStack.at(-1);
+  const txt=last?`Next Undo: ${last.label}`:redo?`No Undo available · Redo: ${String(redo.label||"").replace(/^Redo /,"")}`:"No recent program changes to undo";
   const planTxt=$("#lastChangeText");if(planTxt)planTxt.textContent=txt;
   const settingsTxt=$("#undoStatusSettings");if(settingsTxt)settingsTxt.textContent=last?`${last.label} · ${new Date(last.time).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}`:"No changes to undo.";
   ["#undoBtn","#undoTopBtn","#settingsUndoBtn"].forEach(s=>{const b=$(s);if(b)b.disabled=!undoStack.length});
   ["#redoBtn","#settingsRedoBtn"].forEach(s=>{const b=$(s);if(b)b.disabled=!redoStack.length});
+  renderProgramChangeHistory();
 }
 function profile(){return state.profile||null}
 function canonicalPlan(){return state.plan||[]}
@@ -2030,7 +2040,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.9.21 — Reliability Report",
+  "Adaptive Workout Coach v8.0.0 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -3054,26 +3064,26 @@ function historicalWeekLabel(entry){
 }
 function renderCurrentWeekCompleted(){
  const box=$("#currentWeekCompleted");if(!box)return;
- const rows=currentWeekSessions().slice().sort((a,b)=>String(a.date||"").localeCompare(String(b.date||"")));
- box.innerHTML=rows.length?`<p class="tiny">Completed workouts stay recorded under the plan used when they were performed, even if you switch plans mid-week.</p>`+rows.map(s=>{
-  const named=savedPlans().find(p=>p.id===s.planId);
-  const label=named?.name||(s.planId?"Previously saved plan":"Unlinked / legacy plan");
+ const rows=currentWeekSessions().slice().sort((a,b)=>String(a.date||"").localeCompare(String(b.date||""))),o=weekTransitionOverview(),c=cycle();
+ const avg=rows.length?Math.round(rows.reduce((n,x)=>n+(Number(x.completion)||0),0)/rows.length):null,read=readinessScore();
+ const statusNote=o.inProgress?`${o.inProgress} workout${o.inProgress===1?" is":"s are"} currently in progress.`:o.remaining?`${o.remaining} scheduled workout${o.remaining===1?" remains":"s remain"} unfinished.`:"All scheduled workouts are complete.";
+ const workoutRows=rows.map(s=>{
+  const named=savedPlans().find(p=>p.id===s.planId),label=named?.name||(s.planId?"Previously saved plan":"Unlinked / legacy plan");
   const done=(s.exercises||[]).reduce((n,e)=>n+(e.sets||[]).filter(z=>z&&z.done===true).length,0);
   return `<div class="historyitem"><strong>${esc(s.title||"Completed workout")}</strong><div class="tiny">${esc(label)} · ${esc(s.date&&Number.isFinite(Date.parse(s.date))?new Date(s.date).toLocaleString():"Date unavailable")} · ${done} completed sets · ${Number(s.completion)||0}% complete</div></div>`;
- }).join(""):'<p class="tiny">No completed workouts saved in this week yet.</p>';
+ }).join("");
+ box.innerHTML=`<div class="program-current-week-card"><div class="program-current-week-head"><div><div class="label">Current week</div><strong>Week ${Number(c?.week)||1} of ${Number(c?.length)||1}</strong></div><span class="program-current-week-badge">IN PROGRESS</span></div><div class="program-week-stats"><div class="program-week-stat"><strong>${o.completed}/${o.planned}</strong><span>workouts complete</span></div><div class="program-week-stat"><strong>${avg===null?"—":avg+"%"}</strong><span>avg completion</span></div><div class="program-week-stat"><strong>${read===null?"—":read+"/10"}</strong><span>readiness</span></div></div><p class="program-current-week-note">${esc(statusNote)} Completed workouts remain attached to the plan and date on which they were performed.</p></div>${workoutRows||'<p class="tiny">No completed workouts saved in this week yet.</p>'}`;
 }
 function renderCompletedWeekHistory(){
  const box=$("#weeklyReview");if(!box)return;
  renderCurrentWeekCompleted();
  const rows=completedWeekEntries();
- box.innerHTML=rows.length?`<p class="tiny">Read-only history. Select View for saved workout sessions and any coaching snapshot captured when that week ended. Earlier versions may have only a summary.</p>`+rows.map(w=>{
-  const ses=sessionsForCompletedWeek(w),summary=w.summary;
-  const sessionCount=summary?Number(summary.sessions)||0:ses.length;
-  const sessionLabel=`Week ${w.week} ${sessionCount===1?"Session":"Sessions"}`;
-  const metaParts=[historicalWeekLabel(w),`Cycle ${w.cycleNumber}`,`${sessionCount} saved ${sessionCount===1?"session":"sessions"}`];
-  if(summary)metaParts.push(summary.coachStatus||"Summary");
-  else metaParts.push("history only");
-  return `<div class="historyitem weekly-coach-history"><div class="week-review-row"><div><strong>${esc(sessionLabel)}</strong><div class="week-review-meta">${metaParts.map(part=>esc(String(part))).join(" · ")}</div></div><button class="viewCompletedWeek" data-weekkey="${esc(w.key)}" aria-label="View Cycle ${w.cycleNumber}, Week ${w.week}">View</button></div>${summary?`<div class="weekly-coach-note">${esc(summary.note||"")}</div>`:""}</div>`;
+ box.innerHTML=rows.length?rows.map(w=>{
+  const ses=sessionsForCompletedWeek(w),summary=w.summary,sessionCount=summary?Number(summary.sessions)||0:ses.length;
+  const avg=summary&&Number.isFinite(Number(summary.avgCompletion))?`${Math.round(Number(summary.avgCompletion))}% avg`:null;
+  const coach=summary?.coachStatus||null,planLabel=historicalWeekLabel(w);
+  const chips=[`${sessionCount} ${sessionCount===1?"session":"sessions"}`,avg,coach||(!summary?"history only":null)].filter(Boolean);
+  return `<div class="program-week-history-card"><div class="program-week-history-head"><div><strong>Cycle ${w.cycleNumber} · Week ${w.week}</strong><div class="program-week-history-meta">${esc(planLabel)}</div></div><button class="viewCompletedWeek" data-weekkey="${esc(w.key)}" aria-label="View Cycle ${w.cycleNumber}, Week ${w.week}">View</button></div><div class="program-week-history-chips">${chips.map(x=>`<span>${esc(x)}</span>`).join("")}</div>${summary?.note?`<div class="program-week-history-note">${esc(summary.note)}</div>`:""}</div>`;
  }).join(""):'<div class="historyitem">No completed weeks recorded yet. A week appears here after advancing; sessions from older cycles are also shown when identifiable.</div>';
 }
 function viewCompletedWeek(key){
@@ -3121,7 +3131,7 @@ function renderCycle(){
  else if(c.week>=c.length)$("#cycleAdvice").textContent="Final scheduled week. Deloading is no longer automatic; Coach Review uses accumulated performance and recovery data to recommend it only when supported.";
  else $("#cycleAdvice").textContent=`Current phase: ${phaseName()}. Progress load or reps only when performance and recovery support it.`;
  renderCoachIntelligence();renderProgramPlanOverview();renderSavedPlanSummary();renderScheduledPlanReminder();
- const v=muscleVolume(),max=Math.max(1,...Object.values(v));$("#volumeBox").innerHTML=Object.entries(v).sort((a,b)=>b[1]-a[1]).map(([m,n])=>`<div class="volumeRow"><strong>${esc(m)}</strong><div class="volbar"><div style="width:${Math.min(100,n/max*100)}%"></div></div><span>${n.toFixed(1)}</span></div>`).join("");
+ const v=muscleVolume(),max=Math.max(1,...Object.values(v)),plannedDays=plan().filter(d=>d&&!d.transitionRest&&(d.items||[]).length),plannedSets=plannedDays.reduce((n,d)=>n+(d.items||[]).reduce((a,it)=>a+Number(effectiveTarget(it).sets||0),0),0);$("#volumeBox").innerHTML=Object.entries(v).sort((a,b)=>b[1]-a[1]).map(([m,n])=>`<div class="volumeRow"><strong>${esc(m)}</strong><div class="volbar"><div style="width:${Math.min(100,n/max*100)}%"></div></div><span>${n.toFixed(1)}</span></div>`).join("");const volumeSummary=$("#volumeSummary");if(volumeSummary)volumeSummary.innerHTML=`<span class="program-insight-chip">${plannedDays.length} training day${plannedDays.length===1?"":"s"}</span><span class="program-insight-chip">${plannedSets} planned working sets</span><span class="program-insight-chip">Current plan</span>`;
  renderCompletedWeekHistory();
 }
 function weekSummary(){
@@ -3391,10 +3401,10 @@ function renderRecovery(){
  const x=readinessLabel();$("#readinessBox").innerHTML=`<div class="metric ${x.cls==="good"?"goodText":x.cls==="low"?"badText":"warnText"}">${esc(x.text)}</div><p class="tiny">Higher recovery, sleep, and energy improve readiness; higher stress and joint discomfort reduce it.</p>`;
 }
 function openDayEditor(){
- const p=profile(),current=p.weekdays?.length===p.days?p.weekdays:defaultWeekdays(p.days);
- openSheet("WORKOUT DAYS","Choose your training days",`<p>Select exactly <strong>${p.days}</strong> days. Your exercises, logs, and training block stay in place.</p><div id="editWeekdays" class="weekday-picker">${ALL_DAYS.map(d=>`<label class="weekday-pill"><input class="editWeekday" type="checkbox" value="${d}" ${current.includes(d)?"checked":""}><span>${d.slice(0,3)}</span></label>`).join("")}</div><div id="editDayCount" class="tiny" style="margin-top:9px"></div><button id="saveWorkoutDays" class="primary" style="margin-top:12px">Save workout days</button>`);
- const update=()=>{const n=$$(".editWeekday:checked").length;$("#editDayCount").textContent=`${n} of ${p.days} selected.`};update();$$(".editWeekday").forEach(x=>x.onchange=update);
- $("#saveWorkoutDays").onclick=()=>{const days=$$(".editWeekday:checked").map(x=>x.value);if(days.length!==p.days)return alert(`Choose exactly ${p.days} days.`);pushUndo("Changed workout days");p.weekdays=ALL_DAYS.filter(d=>days.includes(d));plan().forEach((d,i)=>{d.weekday=p.weekdays[i];d.title=`${p.weekdays[i]} · ${d.type[0].toUpperCase()+d.type.slice(1)}`});save();closeSheet();renderAll();toast("Workout days updated")};
+ const p=profile(),current=p.weekdays?.length===p.days?p.weekdays:defaultWeekdays(p.days),completed=currentWeekSessions().length,inProgress=currentWeekInProgressDayIndices().length;
+ openSheet("WORKOUT DAYS","Choose your training days",`<div class="saved-plan-sheet-note workout-day-editor-note"><strong>Schedule change only</strong><br>Choose exactly ${p.days} training days. Completed workout history keeps its saved dates and plan attribution. In-progress entries remain attached to the same workout slot; exercises and the current training block are not deleted.</div><div class="workout-day-editor-status"><div><strong>${completed}</strong><span>completed this week</span></div><div><strong>${inProgress}</strong><span>in-progress workout${inProgress===1?"":"s"}</span></div></div><div id="editWeekdays" class="weekday-picker">${ALL_DAYS.map(d=>`<label class="weekday-pill"><input class="editWeekday" type="checkbox" value="${d}" ${current.includes(d)?"checked":""}><span>${d.slice(0,3)}</span></label>`).join("")}</div><div id="editDayCount" class="tiny" style="margin-top:9px"></div><button id="saveWorkoutDays" class="primary" style="margin-top:12px">Save workout days</button>`);
+ const update=()=>{const n=$$(".editWeekday:checked").length,btn=$("#saveWorkoutDays");$("#editDayCount").textContent=n===p.days?`${n} of ${p.days} selected · ready to save`:`${n} of ${p.days} selected`;if(btn)btn.disabled=n!==p.days};update();$$(".editWeekday").forEach(x=>x.onchange=update);
+ $("#saveWorkoutDays").onclick=()=>{const days=$$(".editWeekday:checked").map(x=>x.value);if(days.length!==p.days)return;pushUndo("Changed workout days");p.weekdays=ALL_DAYS.filter(d=>days.includes(d));plan().forEach((d,i)=>{d.weekday=p.weekdays[i];d.title=`${p.weekdays[i]} · ${d.type[0].toUpperCase()+d.type.slice(1)}`});save();closeSheet();renderAll();toast("Workout days updated · history preserved")};
 }
 function renderVisualCoverage(){
  const total=EX.length,covered=EX.filter(e=>visualFor(e.id)).length,pct=Math.round(covered/total*100),requested=requestedVisualAvatar();
