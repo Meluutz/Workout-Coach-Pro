@@ -159,7 +159,7 @@ body.custom-reordering{user-select:none;-webkit-user-select:none;overflow:hidden
  .saved-plan-item-actions{display:none}
 }
 
-/* v7.9.16 — mid-week plan switching with protected completed/in-progress workouts */
+/* v7.9.17 — weekly Coach Evidence view + resettable long-term coaching baseline */
 .plan-switch-protection{padding:11px 12px;border:1px solid color-mix(in srgb,var(--blue) 18%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--blue) 6%,var(--surface));line-height:1.4}
 .plan-switch-protection strong{display:block;font-size:13px;margin-bottom:3px}.plan-switch-protection span{display:block;font-size:11px;color:var(--muted)}
 .plan-switch-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
@@ -976,6 +976,18 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .saved-plan-schedule{font-size:12px;color:var(--muted);margin-top:7px}
 #plannedPlanReminder{margin-top:8px;line-height:1.5}
 #coachEvidenceBtn{margin-top:8px;width:100%}
+.coach-evidence-week{margin:10px 0 12px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--surface-2)}
+.coach-evidence-week-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.coach-evidence-week-head strong{font-size:15px}.coach-evidence-week-head span{font-size:10px;font-weight:850;color:var(--muted);white-space:nowrap}
+.coach-evidence-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.coach-evidence-stat{padding:9px 6px;border:1px solid var(--line);border-radius:11px;background:var(--surface);text-align:center}
+.coach-evidence-stat strong{display:block;font-size:17px}.coach-evidence-stat span{display:block;margin-top:2px;font-size:9px;color:var(--muted);line-height:1.25}
+.coach-evidence-longterm{margin-top:10px;border:1px solid var(--line);border-radius:14px;background:var(--surface-2);overflow:hidden}
+.coach-evidence-longterm>summary{cursor:pointer;list-style:none;padding:12px;font-weight:850;font-size:13px}
+.coach-evidence-longterm>summary::-webkit-details-marker{display:none}.coach-evidence-longterm>summary::after{content:'⌄';float:right;color:var(--muted)}.coach-evidence-longterm[open]>summary::after{content:'⌃'}
+.coach-evidence-longterm-body{padding:0 12px 12px}
+.coach-evidence-reset{width:100%;min-height:44px;margin-top:12px}.coach-evidence-reset-note{margin:8px 0 0}
+@media(max-width:390px){.coach-evidence-stats{grid-template-columns:1fr 1fr}.coach-evidence-stat:last-child{grid-column:1/-1}}
 #comparePlansBtn{grid-column:1 / -1}
 .audit-exercise,.cycle-compare-row{padding:10px 0;border-bottom:1px solid var(--line)}
 .audit-exercise:last-child,.cycle-compare-row:last-child{border-bottom:0}
@@ -1088,7 +1100,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.16 · 169 exercises</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v7.9.17 · 169 exercises</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1293,7 +1305,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <section class="card settings-about-card">
  <div class="label">App & privacy</div>
- <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.16</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
+ <div class="settings-about-row"><div><strong>Adaptive Workout Coach v7.9.17</strong><div class="tiny">No login, analytics, trackers or cloud database.</div></div><button id="resetAllBtn" class="danger-button">Delete local data</button></div>
 </section>
 </section>
 </main>
@@ -2322,29 +2334,80 @@ function openCsvExport(){
  openSheet("DATA EXPORT","Export training data as CSV",`<div class="saved-plan-sheet-note">Choose a file to export. CSVs can be opened in spreadsheet software; Use Export Backup for a complete backup that can be restored; these spreadsheets are for analysis only. Historical set weights may not retain their original units if you changed units in older app versions.</div>
  <div class="saved-plan-list">${["sessions","sets","body","recovery"].map(k=>`<button class="csvExportChoice" data-csv="${k}">Export ${k==="sets"?"completed sets":k} CSV</button>`).join("")}</div>`);
 }
+function coachEvidenceBaselineAt(){
+ const raw=coachingState().evidenceBaselineAt||null,t=raw?Date.parse(raw):NaN;return Number.isFinite(t)?t:null;
+}
+function afterCoachEvidenceBaseline(record){
+ const baseline=coachEvidenceBaselineAt();if(baseline===null)return true;
+ const t=Date.parse(record?.date||"");return Number.isFinite(t)&&t>baseline;
+}
+function coachEvidenceHistory(source=history()){return (source||[]).filter(afterCoachEvidenceBaseline)}
+function coachEvidenceRecovery(source=recoveryEntries()){return (source||[]).filter(afterCoachEvidenceBaseline)}
+function coachExerciseHistoryRows(exId){
+ return coachEvidenceHistory().flatMap(session=>{const rec=(session.exercises||[]).find(x=>x.id===exId);return rec?[{session,record:rec}]:[]})
+  .sort((a,b)=>new Date(a.session.date||0)-new Date(b.session.date||0));
+}
+function coachLastRecord(exId){return coachExerciseHistoryRows(exId).at(-1)?.record||null}
+function coachLastSessionForExercise(exId){return coachExerciseHistoryRows(exId).at(-1)?.session||null}
+function coachLatestRecovery(){return coachEvidenceRecovery().slice().sort((a,b)=>new Date(a.date||0)-new Date(b.date||0)).at(-1)||null}
+function coachReadinessScore(){const r=coachLatestRecovery();return r?recoveryEntryScore(r):null}
+function currentWeekCoachSessions(){
+ const c=cycle();return c?coachEvidenceHistory(currentWeekSessions()).filter(s=>Number(s.cycleNumber)===Number(c.number)&&Number(s.week)===Number(c.week)):[];
+}
+function currentWeekCoachRecovery(){
+ const c=cycle();return c?coachEvidenceRecovery().filter(r=>Number(r.cycleNumber)===Number(c.number)&&Number(r.week)===Number(c.week)):[];
+}
 function coachEvidenceData(){
  const x=buildCoachIntelligence(),c=cycle(),ids=[...new Set(plan().flatMap(d=>(d.items||[]).map(it=>it.id)))];
- const recent=history().filter(s=>s.cycleNumber===c?.number&&(!c?.planId||s.planId===c.planId)).slice(-4);
+ const recent=coachEvidenceHistory().filter(s=>s.cycleNumber===c?.number&&(!c?.planId||s.planId===c.planId)).slice(-4);
  const completed=recent.flatMap(s=>analyticsCompletedSets(s)),reported=completed.filter(x=>Number(x.set.rpe)>0);
  const exposures=ids.map(id=>({id,trend:exerciseTrend(id)}));
  return {status:x.status,sessionCount:x.sessions,signals:x.fatigue.signals||[],signalCount:x.fatigue.signalCount,deload:x.fatigue.deloadRecommended,
   completion:x.fatigue.avgCompletion,reported:reported.length,completed:completed.length,exposures,
-  recommendations:x.recommendations};
+  recommendations:x.recommendations,baselineAt:coachingState().evidenceBaselineAt||null};
+}
+function currentWeekCoachEvidenceData(){
+ const sessions=currentWeekCoachSessions(),completed=sessions.flatMap(s=>analyticsCompletedSets(s)),reported=completed.filter(x=>Number(x.set.rpe)>0),recovery=currentWeekCoachRecovery(),latest=recovery.at(-1)||null;
+ return {sessions:sessions.length,completed:completed.length,reported:reported.length,recovery:recovery.length,readiness:latest?recoveryEntryScore(latest):null};
 }
 function openCoachEvidence(){
- const a=coachEvidenceData(),limited=a.sessionCount<4;
+ const a=coachEvidenceData(),w=currentWeekCoachEvidenceData(),limited=a.sessionCount<4;
  const rows=a.recommendations.map(r=>{
   const t=r.trend||{},support=(r.reasons||[]).slice(0,5);
   return `<div class="audit-exercise"><strong>${esc(r.name||r.title)} · ${esc(r.title)}</strong>
    <div class="tiny">${t.samples||0} comparable exposures · ${t.samples<2?"Not enough data for a trend":esc(t.label||"Learning")}${Number.isFinite(t.changePct)?` · measured change ${t.changePct.toFixed(1)}%`:""}${Number.isFinite(t.rpeChange)?` · RPE change ${t.rpeChange.toFixed(1)}`:t.samples>=2?" · RPE comparison unavailable (missing logged effort)":""}</div>
    <p class="tiny">${esc(r.text)}</p><details><summary>Why this recommendation?</summary>${support.map(z=>`<p class="tiny">${esc(z)}</p>`).join("")||'<p class="tiny">Not enough evidence yet.</p>'}</details></div>`;
  }).join("");
+ const weekEmpty=!w.sessions&&!w.completed&&!w.recovery;
+ const baselineText=a.baselineAt?`Coach baseline reset ${esc(new Date(a.baselineAt).toLocaleString())}. Earlier workouts remain in Progress and history but are excluded from coaching evidence.`:"The long-term coach is using available training evidence.";
  openSheet("COACH EVIDENCE",`Week ${cycle()?.week||1} · evidence inspection`,
- `<div class="saved-plan-sheet-note"><strong>${esc(a.status)}</strong> · ${a.sessionCount} completed sessions in current cycle.<br>${a.completed} completed working sets in last four current-cycle sessions · ${a.reported} with RPE (${a.completed?Math.round(a.reported/a.completed*100):0}%).<br>${limited?"Limited current-cycle history: treat trends as preliminary.":"Review these signals alongside your actual performance."}</div>
- <h4>Fatigue signals</h4>${a.signals.length?a.signals.map(s=>`<p class="tiny">• ${esc(s)}</p>`).join(""):'<p class="tiny">No qualifying fatigue signal currently detected.</p>'}
- <p class="tiny">Automatic deload: never. Deload threshold met: ${a.deload?"Yes":"No"}; requires at least four sessions in the current cycle plus multiple fatigue indicators.</p>
- <h4>Exercise-level evidence</h4>${rows||'<p class="tiny">No plan exercises yet.</p>'}
- <p class="tiny">This audit displays inputs and rule explanations, not a clinical or independently validated assessment of training effectiveness. Exercise trends use the last four recorded exposures across plans; current-cycle fatigue uses current-cycle sessions.</p>`);
+ `<div class="coach-evidence-week">
+   <div class="coach-evidence-week-head"><strong>This Week</strong><span>Week ${cycle()?.week||1}</span></div>
+   ${weekEmpty?'<div class="saved-plan-sheet-note"><strong>Learning</strong><br>No new coaching evidence has been collected this week yet. Complete workouts or recovery check-ins to build this week\'s evidence.</div>':`<div class="coach-evidence-stats"><div class="coach-evidence-stat"><strong>${w.sessions}</strong><span>completed sessions</span></div><div class="coach-evidence-stat"><strong>${w.completed}</strong><span>working sets</span></div><div class="coach-evidence-stat"><strong>${w.completed?Math.round(w.reported/w.completed*100):0}%</strong><span>sets with RPE</span></div></div><p class="tiny">${w.recovery?`${w.recovery} recovery check-in${w.recovery===1?"":"s"}${w.readiness!==null?` · latest readiness ${w.readiness}/10`:""}.`:"No recovery check-in logged this week."}</p>`}
+  </div>
+  <details class="coach-evidence-longterm"><summary>Long-Term Evidence</summary><div class="coach-evidence-longterm-body">
+   <div class="saved-plan-sheet-note"><strong>${esc(a.status)}</strong> · ${a.sessionCount} completed coaching-evidence session${a.sessionCount===1?"":"s"} in the current cycle.<br>${a.completed} completed working sets in the last four eligible current-cycle sessions · ${a.reported} with RPE (${a.completed?Math.round(a.reported/a.completed*100):0}%).<br>${limited?"Limited eligible history: treat trends as preliminary.":"Review these signals alongside your actual performance."}</div>
+   <h4>Fatigue signals</h4>${a.signals.length?a.signals.map(s=>`<p class="tiny">• ${esc(s)}</p>`).join(""):'<p class="tiny">No qualifying fatigue signal currently detected.</p>'}
+   <p class="tiny">Automatic deload: never. Deload threshold met: ${a.deload?"Yes":"No"}; requires at least four eligible sessions in the current cycle plus multiple fatigue indicators.</p>
+   <h4>Exercise-level evidence</h4>${rows||'<p class="tiny">No plan exercises yet.</p>'}
+   <p class="tiny">${baselineText}</p>
+  </div></details>
+  <button id="resetCoachBaselineBtn" class="coach-evidence-reset">Reset Coach Baseline</button>
+  <p class="tiny coach-evidence-reset-note">Resetting the baseline does not delete workouts, PRs, Progress data, recovery logs, saved plans, or undo plan changes already applied.</p>
+  <p class="tiny">This audit displays inputs and rule explanations, not a clinical or independently validated assessment of training effectiveness.</p>`);
+}
+function openResetCoachBaselineConfirm(){
+ openSheet("RESET COACH BASELINE","Start coaching evidence fresh?",
+ `<div class="saved-plan-sheet-note"><strong>Your training history will stay intact.</strong><br>The Coach will stop using earlier workouts and recovery evidence for future recommendations and begin learning again from new entries.</div>
+  <p class="tiny">Completed workouts, PRs, Progress analytics, recovery logs, saved plans and previously applied plan changes are not deleted or undone.</p>
+  <div class="saved-plan-activate-actions"><button id="confirmResetCoachBaselineBtn" class="primary">Reset Coach Baseline</button><button id="cancelResetCoachBaselineBtn">Cancel</button></div>`);
+}
+function resetCoachBaseline(){
+ const before=deepCopy(state.coaching||{}),cs=coachingState();
+ cs.evidenceBaselineAt=new Date().toISOString();
+ // Keep applied plan changes and any active deload state; reset only the historical evidence boundary.
+ try{save()}catch(err){state.coaching=before;alert("Could not reset the Coach baseline. Your existing evidence is unchanged.");return false}
+ closeSheet();renderAll();openCoachEvidence();toast("Coach baseline reset · training history preserved");return true;
 }
 function nextUnfinishedExerciseIndex(){
  const day=plan()[currentDay];if(!day)return-1;
@@ -3319,7 +3382,7 @@ function reliabilityCompactReport(r){
   groups[cat]=(groups[cat]||0)+1;
  });
  const lines=[
-  "Adaptive Workout Coach v7.9.16 — Reliability Report",
+  "Adaptive Workout Coach v7.9.17 — Reliability Report",
   `Result: ${r.passed?"PASS":"FAIL"}`,
   `Synthetic profiles: ${r.scenarios}`,
   `Assertions: ${r.assertions}`,
@@ -3475,6 +3538,13 @@ async function runReliabilitySuite(){
   state=beforeMidSwitch;currentDay=beforeMidDay;
 
 
+  // Coach Evidence baseline regression checks — history remains intact while coaching ignores pre-reset evidence.
+  state.coaching={planRevision:0,applied:{},evidenceBaselineAt:new Date(Date.now()+1000).toISOString()};
+  const baselineHistoryCount=history().length,baselineRecoveryCount=recoveryEntries().length;
+  check(coachEvidenceHistory().length===0,"Coach Evidence: baseline did not exclude earlier workout evidence");
+  check(coachEvidenceRecovery().length===0,"Coach Evidence: baseline did not exclude earlier recovery evidence");
+  check(history().length===baselineHistoryCount&&recoveryEntries().length===baselineRecoveryCount,"Coach Evidence: baseline altered stored history");
+  state.coaching={planRevision:0,applied:{}};
   // Create New Plan isolation regression checks.
   const activePlanBeforeCreate=JSON.stringify(plan()),activeIdBeforeCreate=state.activeSavedPlanId,historyBeforeCreate=history().length,bodyBeforeCreate=bodyEntries().length;
   const creatorProfile=reliabilityProfile("Advanced","dumbbells","muscle",4,75,{mode:"coach"});
@@ -3723,7 +3793,7 @@ function recordPerformanceMetric(row){
  };
 }
 function exerciseTrend(exId){
- const metrics=exerciseHistoryRows(exId).map(row=>{const m=recordPerformanceMetric(row);return m?{...m,weightUnit:recordedWeightUnit(row.session)}:null}).filter(Boolean).slice(-4);
+ const metrics=coachExerciseHistoryRows(exId).map(row=>{const m=recordPerformanceMetric(row);return m?{...m,weightUnit:recordedWeightUnit(row.session)}:null}).filter(Boolean).slice(-4);
  if(metrics.length<2)return{status:"learning",label:"Learning",samples:metrics.length,changePct:null,rpeChange:null,metrics};
  const comparable=metrics.filter(x=>x.kind===metrics.at(-1).kind&&(!x.kind||x.kind!=="e1rm"||x.weightUnit&&x.weightUnit===metrics.at(-1).weightUnit)),first=comparable[0],last=comparable.at(-1);
  if(comparable.length<2||!first?.metric)return{status:"learning",label:"Learning",samples:metrics.length,changePct:null,rpeChange:null,metrics};
@@ -3744,8 +3814,8 @@ function recoveryEntryScore(r){
  return Math.round(((Number(r.recovery||0)+Number(r.sleep||0)+Number(r.energy||0)+(11-Number(r.stress||0))+(11-Number(r.joint||0)))/5)*10)/10;
 }
 function trainingFatigueProfile(){
- const c=cycle(),pid=c?.planId||null,cycleSessions=history().filter(s=>s.cycleNumber===c?.number&&(!pid||s.planId===pid)).sort((a,b)=>new Date(a.date||0)-new Date(b.date||0)),recent=cycleSessions.slice(-4);
- const recents=recoveryEntries().slice(-4),readinesses=recents.map(recoveryEntryScore).filter(x=>x!==null);
+ const c=cycle(),pid=c?.planId||null,cycleSessions=coachEvidenceHistory().filter(s=>s.cycleNumber===c?.number&&(!pid||s.planId===pid)).sort((a,b)=>new Date(a.date||0)-new Date(b.date||0)),recent=cycleSessions.slice(-4);
+ const recents=coachEvidenceRecovery().slice(-4),readinesses=recents.map(recoveryEntryScore).filter(x=>x!==null);
  const lowReadiness=readinesses.slice(-3).filter(x=>x<5.5).length;
  const latestRec=recents.at(-1)||null;
  const uniqueIds=[...new Set(plan().flatMap(d=>(d.items||[]).map(it=>it.id)))];
@@ -3796,9 +3866,9 @@ function easierProgressionOption(e,p){
  return prev;
 }
 function longTermExerciseRecommendation(item,dayIdx,slot,fatigue){
- const ex=EXMAP[item.id],target=effectiveTarget(item),trend=exerciseTrend(item.id),last=lastRecord(item.id);
+ const ex=EXMAP[item.id],target=effectiveTarget(item),trend=exerciseTrend(item.id),last=coachLastRecord(item.id);
  const base={dayIdx,slot,exId:item.id,name:ex?.name||item.id,trend,priorityMuscle:item.priorityMuscle||exerciseCategory(ex),action:null,reasons:[]};
- if(last&&ex?.resistanceClass==="loaded"&&(last.sets||[]).some(s=>Number(s.weight)>0)&&recordedWeightUnit(lastSessionForExercise(item.id))!==unit())return{...base,id:recommendationId(dayIdx,slot,"unit-unknown"),kind:"hold",tone:"learning",title:"Confirm weight units",text:`${ex.name}: the previous recorded load is from an unknown or different unit. If you know the missing historical unit, confirm it in Settings → Backup & transfer; otherwise log a fresh comparable performance before considering load changes.`,reasons:["An older session did not preserve units, or its units differ from the current profile.","Never treat an unknown historical load as the current unit."]};
+ if(last&&ex?.resistanceClass==="loaded"&&(last.sets||[]).some(s=>Number(s.weight)>0)&&recordedWeightUnit(coachLastSessionForExercise(item.id))!==unit())return{...base,id:recommendationId(dayIdx,slot,"unit-unknown"),kind:"hold",tone:"learning",title:"Confirm weight units",text:`${ex.name}: the previous recorded load is from an unknown or different unit. If you know the missing historical unit, confirm it in Settings → Backup & transfer; otherwise log a fresh comparable performance before considering load changes.`,reasons:["An older session did not preserve units, or its units differ from the current profile.","Never treat an unknown historical load as the current unit."]};
  if(!last)return{...base,id:recommendationId(dayIdx,slot,"baseline"),kind:"baseline",tone:"learning",title:"Establish baseline",text:`${ex.name}: complete a clean baseline inside ${target.reps} reps at RPE ${target.rpe}.`,reasons:["No completed performance history exists for this exercise yet."]};
  const valid=(last.sets||[]).filter(s=>s.done!==false&&Number(s.reps)>0);
  if(!valid.length)return{...base,id:recommendationId(dayIdx,slot,"baseline2"),kind:"baseline",tone:"learning",title:"Re-establish baseline",text:`${ex.name}: prior data are incomplete; hold the programmed target and log the working sets.`,reasons:["The most recent saved exposure has no usable completed sets."]};
@@ -3948,12 +4018,12 @@ function previousBestE1RM(exId){
  let best=0;exerciseHistoryRows(exId).filter(row=>recordedWeightUnit(row.session)===unit()).forEach(row=>(row.record.sets||[]).forEach(s=>{if(s.done!==false)best=Math.max(best,e1rm(s.weight,s.reps))}));return best;
 }
 function suggestion(item){
- const target=effectiveTarget(item),ex=EXMAP[item.id],last=lastRecord(item.id),ready=readinessScore(),rec=latestRecovery();
+ const target=effectiveTarget(item),ex=EXMAP[item.id],last=coachLastRecord(item.id),ready=coachReadinessScore(),rec=coachLatestRecovery();
  if(isDeload())return{cls:"deload",type:"deload",text:"Deload week: reduce working sets and keep effort around RPE 6–7. Avoid chasing PRs.",why:["You applied a coach-recommended deload for the current week.","The app reduces effective set count and target effort temporarily.","The deload ends automatically when the week advances."]};
  if(rec&&rec.joint>=7)return{cls:"low",type:"hold",text:"High joint/tendon discomfort reported. Hold progression and consider swapping the exercise if it irritates the affected area.",why:["Latest joint/tendon discomfort is 7/10 or higher.","Progression is deprioritized when discomfort is high."]};
  if(ready!==null&&ready<5)return{cls:"low",type:"hold",text:"Recovery is low. Hold load today and consider one fewer set if performance drops.",why:[`Readiness is ${ready}/10.`,"Low readiness increases the chance that extra load or volume is poorly tolerated."]};
  if(!last)return{cls:"warn",type:"baseline",text:"Establish a clean baseline. Stay inside the rep range and target RPE.",why:["No completed previous session for this exercise is available."]};
- if(ex?.resistanceClass==="loaded"&&(last.sets||[]).some(s=>Number(s.weight)>0)&&recordedWeightUnit(lastSessionForExercise(item.id))!==unit())return{cls:"warn",type:"hold",text:"Previous load units are unknown or different. If the historic unit is missing and known, confirm it in Settings → Backup & transfer; otherwise record a comparable baseline before considering a load increase.",why:["Historical load may not use the current weight unit.","Do not compare or copy unverified weight units."]};
+ if(ex?.resistanceClass==="loaded"&&(last.sets||[]).some(s=>Number(s.weight)>0)&&recordedWeightUnit(coachLastSessionForExercise(item.id))!==unit())return{cls:"warn",type:"hold",text:"Previous load units are unknown or different. If the historic unit is missing and known, confirm it in Settings → Backup & transfer; otherwise record a comparable baseline before considering a load increase.",why:["Historical load may not use the current weight unit.","Do not compare or copy unverified weight units."]};
  const valid=(last.sets||[]).filter(s=>s.done!==false&&Number(s.reps)>0&&Number(s.weight)>=0);
  if(!valid.length)return{cls:"warn",type:"baseline",text:"Re-establish a baseline; prior set data were incomplete.",why:["The most recent session has no usable completed set data."]};
  const [lo,hi]=parseRange(target.reps),maxR=highRpe(target.rpe);
@@ -4963,6 +5033,9 @@ document.addEventListener("click",e=>{
   commitSavedPlanActivation(id,mode,"replace");return
  }
 
+ const resetCoach=e.target.closest("#resetCoachBaselineBtn");if(resetCoach){openResetCoachBaselineConfirm();return}
+ const confirmResetCoach=e.target.closest("#confirmResetCoachBaselineBtn");if(confirmResetCoach){resetCoachBaseline();return}
+ const cancelResetCoach=e.target.closest("#cancelResetCoachBaselineBtn");if(cancelResetCoach){closeSheet();openCoachEvidence();return}
  const runReliability=e.target.closest("#runReliabilityBtn");if(runReliability){runReliabilitySuite();return}
  const viewReliability=e.target.closest("#viewReliabilityBtn");if(viewReliability&&lastReliabilityResult){openSheet("RELIABILITY","Regression self-test",reliabilityResultHtml(lastReliabilityResult));return}
  const copyReliability=e.target.closest("#copyReliabilityBtn");if(copyReliability&&lastReliabilityResult){copyReliabilityReport();return}

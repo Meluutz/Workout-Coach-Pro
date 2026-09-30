@@ -1,7 +1,13 @@
-# Adaptive Workout Coach — v7.9.16
+# Adaptive Workout Coach — v7.9.17
 
-GitHub-ready PWA build. Current release: **v7.9.16 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
+GitHub-ready PWA build. Current release: **v7.9.17 · 169 exercises and 169 exact visuals**. The chronological changelog below includes older counts for historical releases.
 
+
+## v7.9.17 — Coach Evidence weekly view + resettable baseline
+- Coach Evidence now opens with a fresh **This Week** section based only on eligible evidence recorded in the current training week. Advancing the week therefore starts this section blank / Learning until new workouts or recovery check-ins are logged.
+- Existing multi-session trends remain available under a collapsed **Long-Term Evidence** section instead of visually carrying forward as if they were new weekly evidence.
+- Added **Reset Coach Baseline** with explicit confirmation. Resetting does not delete workout history, PRs, Progress analytics, recovery logs, saved plans, or previously applied plan changes; it only prevents earlier evidence from influencing future coaching recommendations.
+- Live Coach Logic, Long-Term Coach trends and fatigue analysis all respect the reset baseline, while ordinary history/Progress and the manual Repeat Last Set workflow remain intact.
 
 ## v7.9.16 — Mid-week plan switching
 
