@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-11",
+  "candidate": "universal-masculine-qa-v2",
+  "source_base": "v8.0.5",
+  "app_changed_files": [
+    "app_inline.js",
+    "sw.js",
+    "index.html"
+  ],
+  "source_file_inventory_count": 179,
+  "exercise_count": 169,
+  "png_hashes_and_decoding_verified": true,
+  "duplicate_image_hash_count": 0,
+  "recovery_provenance_summary": {
+    "EXISTING_VERIFIED_ARCHIVE_CARD": 129,
+    "RECOVERED_CANDIDATE_NOT_BITWISE_PROVEN_FINAL": 32,
+    "RECOVERED_CORRECTION_CANDIDATE": 4,
+    "RECOVERED_CANDIDATE_FINAL_CORRECTION_QA_REQUIRED": 4
+  },
+  "browser_simulated_viewports": [
+    360,
+    390,
+    430,
+    1200
+  ],
+  "browser_error_count": 0,
+  "browser_testing_limitations": "Isolated Chromium with a mocked localStorage because container policy blocks localhost and file URL navigation. Does not validate real installed PWA, service worker or real stored user data.",
+  "hold": "NOT FOR INSTALL: 40 candidate approvals lack cryptographically proven final screenshot, actual iPhone/Android PWA & backup/restore need real tests."
+}
