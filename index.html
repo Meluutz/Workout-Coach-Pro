@@ -1303,10 +1303,23 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 </style>
 <style id="exercise-rest-preference-style">#timerSheet .preset[aria-pressed="true"]{outline:2px solid #2563eb;outline-offset:2px}#exerciseRestNote{line-height:1.5}</style>
+<style id="compact-exercise-pickers-v9">
+/* Compact, consistent, thumb-first selection rows. The full Exercise Guide is never cropped. */
+#sessionExerciseResults,#swapExerciseResults,#swapSuggestedPanel{display:flex;flex-direction:column;gap:8px;min-width:0}
+.wc-picker-row{display:grid;grid-template-columns:76px minmax(0,1fr);gap:11px;align-items:center;padding:9px;border:1px solid var(--line);border-radius:14px;background:var(--card);min-width:0}
+.wc-picker-thumb{width:76px;height:76px;background:#f8fafc;border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;color:#64748b;flex-shrink:0}
+.wc-picker-thumb img{display:block;width:100%;height:100%;object-fit:contain}
+.wc-picker-main{min-width:0;display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.wc-picker-title{font-size:14px;font-weight:800;line-height:1.22;color:var(--text)}
+.wc-picker-meta{font-size:11px;color:var(--muted);line-height:1.35;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;overflow-wrap:anywhere}
+.wc-picker-action{margin-top:2px}.wc-picker-action button{border-radius:10px;min-height:34px;padding:7px 11px;font-size:12px;font-weight:800;white-space:nowrap}
+@media(min-width:700px){.wc-picker-row{grid-template-columns:88px minmax(0,1fr);gap:14px;padding:11px}.wc-picker-thumb{height:82px;width:88px}.wc-picker-title{font-size:15px}.wc-picker-meta{font-size:12px}}
+@media(max-width:359px){.wc-picker-row{grid-template-columns:66px minmax(0,1fr);gap:9px;padding:7px}.wc-picker-thumb{width:66px;height:70px}.wc-picker-title{font-size:13px}}
+</style>
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v8.0.5 · 169 guides · QA candidate v8</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v8.0.5 · 169 guides · QA candidate v9</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -4648,7 +4661,7 @@ function renderSessionExerciseResults(){
   .sort((a,b)=>a.name.localeCompare(b.name));
  const list=options.slice(0,36),meta=$("#sessionExerciseResultMeta");
  if(meta)meta.textContent=`${options.length} available exercise${options.length===1?"":"s"}${options.length>36?" · showing first 36; narrow your category or search":""}`;
- box.innerHTML=list.map(e=>`<div class="library-item"><strong>${esc(e.name)}</strong><div class="tiny">${esc(exerciseCategory(e))} · ${esc(e.muscles)} · ${esc(equipmentLabel(e))} · ${esc(e.difficulty||"Intermediate")}${esc(manualExperienceNote(e,p))}</div><button class="chooseSessionExtra" data-id="${esc(e.id)}">Add to this session</button></div>`).join("")||'<div class="historyitem">No exercises available for this category and search with your current equipment and protected-area settings.</div>';
+ box.innerHTML=list.map(e=>pickerExerciseRowHtml(e,`<button class="chooseSessionExtra" data-id="${esc(e.id)}">Add to this session</button>`,p)).join("")||'<div class="historyitem">No exercises available for this category and search with your current equipment and protected-area settings.</div>';
 }
 function addSessionExercise(exId){
  const e=EXMAP[exId],p=profile(),d=plan()?.[currentDay];
@@ -4883,8 +4896,20 @@ function editTarget(slot){
    item.userSetDelta=sets-item.baseSets;item.userRepDelta=now[0]-base[0];item.userRpe=$("#targetRpe").value.trim()||null;item.userLoad=$("#targetLoad").value?Number($("#targetLoad").value):null;save();closeSheet();renderToday();toast("Target adjusted");
  },0);
 }
+// Lightweight, approved-guide-derived movement thumbnails for Add & Swap only.
+// These previews never replace the full 169 approved Exercise Guide images.
+function pickerThumbHtml(e){
+ const guide=visualFor(e.id);
+ if(!guide)return `<span class="wc-picker-thumb wc-picker-thumb-empty" aria-hidden="true">⌁</span>`;
+ const name=guide.slice(guide.lastIndexOf("/")+1).replace(/\.png$/i,".webp");
+ return `<span class="wc-picker-thumb"><img src="./assets/exercise-thumbnails/${esc(name)}" alt="${esc(e.name)} movement preview" loading="lazy" decoding="async" width="144" height="120"></span>`;
+}
+function pickerExerciseRowHtml(e,buttonHtml,p,includeGuide=false){
+ const detail=`${esc(exerciseCategory(e))} · ${esc(e.muscles)} · ${esc(e.difficulty||"Intermediate")}${esc(manualExperienceNote(e,p))}${includeGuide?` · ${visualFor(e.id)?"Approved guide":"Guide unavailable"}`:""}`;
+ return `<div class="wc-picker-row">${pickerThumbHtml(e)}<div class="wc-picker-main"><strong class="wc-picker-title">${esc(e.name)}</strong><div class="wc-picker-meta">${detail}</div><div class="wc-picker-action">${buttonHtml}</div></div></div>`;
+}
 function swapOptionHtml(e,slot,p){
- return `<div class="swapitem"><strong>${esc(e.name)}</strong><div class="tiny">${esc(exerciseCategory(e))} · ${esc(e.muscles)} · ${esc(e.difficulty||"Intermediate")}${esc(manualExperienceNote(e,p))} · ${visualFor(e.id)?"Approved guide":"Guide unavailable"}</div><button class="chooseSwap" data-id="${esc(e.id)}" data-slot="${slot}" style="margin-top:8px">Use this exercise</button></div>`;
+ return pickerExerciseRowHtml(e,`<button class="chooseSwap" data-id="${esc(e.id)}" data-slot="${slot}">Use this exercise</button>`,p,true);
 }
 function openSwap(slot){
  const p=profile(),cur=trainingItems()[slot];if(!p||!cur)return;

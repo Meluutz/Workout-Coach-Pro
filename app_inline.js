@@ -2943,7 +2943,7 @@ function renderSessionExerciseResults(){
   .sort((a,b)=>a.name.localeCompare(b.name));
  const list=options.slice(0,36),meta=$("#sessionExerciseResultMeta");
  if(meta)meta.textContent=`${options.length} available exercise${options.length===1?"":"s"}${options.length>36?" · showing first 36; narrow your category or search":""}`;
- box.innerHTML=list.map(e=>`<div class="library-item"><strong>${esc(e.name)}</strong><div class="tiny">${esc(exerciseCategory(e))} · ${esc(e.muscles)} · ${esc(equipmentLabel(e))} · ${esc(e.difficulty||"Intermediate")}${esc(manualExperienceNote(e,p))}</div><button class="chooseSessionExtra" data-id="${esc(e.id)}">Add to this session</button></div>`).join("")||'<div class="historyitem">No exercises available for this category and search with your current equipment and protected-area settings.</div>';
+ box.innerHTML=list.map(e=>pickerExerciseRowHtml(e,`<button class="chooseSessionExtra" data-id="${esc(e.id)}">Add to this session</button>`,p)).join("")||'<div class="historyitem">No exercises available for this category and search with your current equipment and protected-area settings.</div>';
 }
 function addSessionExercise(exId){
  const e=EXMAP[exId],p=profile(),d=plan()?.[currentDay];
@@ -3178,8 +3178,20 @@ function editTarget(slot){
    item.userSetDelta=sets-item.baseSets;item.userRepDelta=now[0]-base[0];item.userRpe=$("#targetRpe").value.trim()||null;item.userLoad=$("#targetLoad").value?Number($("#targetLoad").value):null;save();closeSheet();renderToday();toast("Target adjusted");
  },0);
 }
+// Lightweight, approved-guide-derived movement thumbnails for Add & Swap only.
+// These previews never replace the full 169 approved Exercise Guide images.
+function pickerThumbHtml(e){
+ const guide=visualFor(e.id);
+ if(!guide)return `<span class="wc-picker-thumb wc-picker-thumb-empty" aria-hidden="true">⌁</span>`;
+ const name=guide.slice(guide.lastIndexOf("/")+1).replace(/\.png$/i,".webp");
+ return `<span class="wc-picker-thumb"><img src="./assets/exercise-thumbnails/${esc(name)}" alt="${esc(e.name)} movement preview" loading="lazy" decoding="async" width="144" height="120"></span>`;
+}
+function pickerExerciseRowHtml(e,buttonHtml,p,includeGuide=false){
+ const detail=`${esc(exerciseCategory(e))} · ${esc(e.muscles)} · ${esc(e.difficulty||"Intermediate")}${esc(manualExperienceNote(e,p))}${includeGuide?` · ${visualFor(e.id)?"Approved guide":"Guide unavailable"}`:""}`;
+ return `<div class="wc-picker-row">${pickerThumbHtml(e)}<div class="wc-picker-main"><strong class="wc-picker-title">${esc(e.name)}</strong><div class="wc-picker-meta">${detail}</div><div class="wc-picker-action">${buttonHtml}</div></div></div>`;
+}
 function swapOptionHtml(e,slot,p){
- return `<div class="swapitem"><strong>${esc(e.name)}</strong><div class="tiny">${esc(exerciseCategory(e))} · ${esc(e.muscles)} · ${esc(e.difficulty||"Intermediate")}${esc(manualExperienceNote(e,p))} · ${visualFor(e.id)?"Approved guide":"Guide unavailable"}</div><button class="chooseSwap" data-id="${esc(e.id)}" data-slot="${slot}" style="margin-top:8px">Use this exercise</button></div>`;
+ return pickerExerciseRowHtml(e,`<button class="chooseSwap" data-id="${esc(e.id)}" data-slot="${slot}">Use this exercise</button>`,p,true);
 }
 function openSwap(slot){
  const p=profile(),cur=trainingItems()[slot];if(!p||!cur)return;
