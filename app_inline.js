@@ -17,7 +17,7 @@ const KEY="adaptiveWorkoutCoachV6", OLDKEY="adaptiveWorkoutCoachV5";
 const UNDO_KEY="adaptiveWorkoutCoachV6Undo", REDO_KEY="adaptiveWorkoutCoachV6Redo";
 const REST_TIMER_KEY="adaptiveWorkoutCoachV6RestTimer";
 let undoStack=[], redoStack=[];
-let state={}, currentDay=0, currentView="today", viewScroll={today:0,progress:0,cycle:0,recovery:0,settings:0}, obStep=1, editingProfile=false, builderDraft=null, pendingFinish=null, sessionTicker=null, timer={base:180,remaining:180,running:false,id:null,slot:null,label:"",auto:false,endAt:null,completedNotified:false,completionPending:false};
+let state={}, currentDay=0, currentView="today", viewScroll={today:0,progress:0,cycle:0,recovery:0,settings:0}, obStep=1, editingProfile=false, builderDraft=null, pendingFinish=null, sessionTicker=null, timer={base:180,remaining:180,running:false,id:null,slot:null,exerciseId:null,label:"",auto:false,endAt:null,completedNotified:false,completionPending:false};
 let restAudioContext=null,wakeLockSentinel=null;
 let reliabilityRunning=false,lastReliabilityResult=null;
 let analyticsRange="8w",analyticsExerciseId=null;
@@ -969,6 +969,12 @@ function validateBackupPayload(x){
   });
   if(x.activeSavedPlanId!==undefined&&x.activeSavedPlanId!==null&&!ids.has(x.activeSavedPlanId))errors.push("The active saved-plan ID does not exist in the library; correct the backup before import.");
  }else if(x.activeSavedPlanId)errors.push("Active saved-plan ID is present without a valid library.");
+ if(x.exerciseRestSeconds!==undefined){
+  if(!isPlainRecord(x.exerciseRestSeconds)||Object.keys(x.exerciseRestSeconds).length>169)errors.push("Saved exercise rest preferences are malformed.");
+  else for(const [id,seconds] of Object.entries(x.exerciseRestSeconds)){
+   if(!EXMAP[id]||!Number.isInteger(seconds)||seconds<15||seconds>900){errors.push("Saved rest preference has an unknown exercise or invalid duration.");break}
+  }
+ }
  if(isPlainRecord(x.profile)&&Array.isArray(x.plan)&&x.profile.days!==undefined&&Number(x.profile.days)!==x.plan.length)warnings.push("Plan days differ from the profile schedule.");
  if(Array.isArray(x.history)&&x.history.some(h=>h&&!recordedWeightUnit(h)))warnings.push("Older sessions lack recorded weight units; those weights will be labeled unknown rather than guessed.");
  return{ok:errors.length===0,errors:errors.slice(0,35),warnings:warnings.slice(0,15),days:Array.isArray(x.plan)?x.plan.length:0,plans:Array.isArray(x.savedPlans)?x.savedPlans.length:0,sessions:Array.isArray(x.history)?x.history.length:0};
@@ -2991,7 +2997,7 @@ function renderToday(){
  d.items.forEach((item,slot)=>{
    const ex=EXMAP[item.id],t=effectiveTarget(item),log=exLog(currentDay,slot,t.sets),rec=item.sessionOnly?null:suggestion(item),prev=lastPerformanceSummary(item.id);
    const c=document.createElement("section");c.className="card exercise";c.dataset.exslot=String(slot);
-   c.innerHTML=`<div class="exhead"><div class="exercise-title-row"><h3>${slot+1}. ${esc(ex.name)}</h3><span class="exercise-rest">${fmt(item.rest)} rest</span></div><div class="muted exercise-target"><strong>${t.sets} sets · ${esc(t.reps)} reps · RPE ${esc(t.rpe)}${t.load?` · target ${t.load} ${unit()}`:""}</strong></div><span class="badge">${esc(ex.muscles)}</span>${isAdjusted(item)?'<span class="badge adjusted">User adjusted</span>':""}${item.sessionOnly?'<span class="badge adjusted">Added to this session</span>':""}</div>
+   c.innerHTML=`<div class="exhead"><div class="exercise-title-row"><h3>${slot+1}. ${esc(ex.name)}</h3><span class="exercise-rest">${fmt(exerciseRestSeconds(item.id,item.rest))} rest${rememberedExerciseRest(item.id)!==null?" · saved":""}</span></div><div class="muted exercise-target"><strong>${t.sets} sets · ${esc(t.reps)} reps · RPE ${esc(t.rpe)}${t.load?` · target ${t.load} ${unit()}`:""}</strong></div><span class="badge">${esc(ex.muscles)}</span>${isAdjusted(item)?'<span class="badge adjusted">User adjusted</span>':""}${item.sessionOnly?'<span class="badge adjusted">Added to this session</span>':""}</div>
    ${prev?`<div class="prevperf"><div class="row"><div><strong>Last performance</strong><br>${esc(prev.text)}</div><button class="useLastBtn" data-slot="${slot}">Prefill last</button></div></div>`:`<div class="prevperf"><strong>Last performance:</strong> No completed history yet.</div>`}
    ${item.sessionOnly?'<p class="tiny" style="margin:6px 0">Extra exercise · recorded in this session only. Your saved program stays unchanged.</p>':coachingRecommendationHtml(item,slot,rec)}
    <div class="actions exercise-main-actions"><button class="exerciseDetailBtn" data-exid="${item.id}">Exercise guide</button><button class="swapBtn" data-slot="${slot}">Swap</button><button class="exerciseMoreBtn" data-slot="${slot}" aria-expanded="false">More</button></div>
@@ -3039,9 +3045,38 @@ function autoAdvanceAfterExerciseComplete(slot){
  },420);
 }
 
+// User-chosen rest periods are keyed by the stable exercise ID, independent of
+// training day, plan, session slot, or swap position. They are part of the main
+// backed-up app state; the active countdown remains a separate short-lived key.
+function exerciseRestPreferences(){
+ if(!isPlainRecord(state.exerciseRestSeconds))state.exerciseRestSeconds={};
+ return state.exerciseRestSeconds;
+}
+function rememberedExerciseRest(exId){
+ if(!exId||!EXMAP[exId])return null;
+ const seconds=exerciseRestPreferences()[exId];
+ return Number.isInteger(seconds)&&seconds>=15&&seconds<=900?seconds:null;
+}
+function exerciseRestSeconds(exId,programmedSeconds){
+ return rememberedExerciseRest(exId)??Math.max(15,Math.round(Number(programmedSeconds)||180));
+}
+function saveExerciseRest(exId,seconds){
+ const secs=Number(seconds);
+ if(!exId||!EXMAP[exId]||!Number.isInteger(secs)||secs<15||secs>900)return false;
+ exerciseRestPreferences()[exId]=secs;save();return true;
+}
+function clearExerciseRest(exId){
+ if(!exId||!EXMAP[exId])return false;
+ delete exerciseRestPreferences()[exId];save();return true;
+}
+function programmedRestForExercise(exId){
+ const item=trainingItems().find(it=>it.id===exId);
+ return Math.max(15,Math.round(Number(item?.rest)||180));
+}
+
 function persistRestTimer(){
  try{
-  const payload={base:Number(timer.base)||180,remaining:Math.max(0,Number(timer.remaining)||0),running:!!timer.running,endAt:timer.endAt?Number(timer.endAt):null,slot:timer.slot??null,label:String(timer.label||""),auto:!!timer.auto,completedNotified:!!timer.completedNotified,completionPending:!!timer.completionPending,savedAt:Date.now()};
+  const payload={base:Number(timer.base)||180,remaining:Math.max(0,Number(timer.remaining)||0),running:!!timer.running,endAt:timer.endAt?Number(timer.endAt):null,slot:timer.slot??null,exerciseId:timer.exerciseId||null,label:String(timer.label||""),auto:!!timer.auto,completedNotified:!!timer.completedNotified,completionPending:!!timer.completionPending,savedAt:Date.now()};
   localStorage.setItem(REST_TIMER_KEY,JSON.stringify(payload));
  }catch{}
 }
@@ -3050,7 +3085,7 @@ function restoreRestTimer(){
  try{
   const raw=JSON.parse(localStorage.getItem(REST_TIMER_KEY)||"null");
   if(!raw||!Number.isFinite(Number(raw.savedAt))||Date.now()-Number(raw.savedAt)>12*60*60*1000){clearPersistedRestTimer();return}
-  timer.base=Math.max(15,Number(raw.base)||180);timer.remaining=Math.max(0,Number(raw.remaining)||timer.base);timer.running=!!raw.running;timer.endAt=raw.endAt?Number(raw.endAt):null;timer.slot=raw.slot??null;timer.label=String(raw.label||"");timer.auto=!!raw.auto;timer.completedNotified=!!raw.completedNotified;timer.completionPending=!!raw.completionPending;
+  timer.base=Math.max(15,Number(raw.base)||180);timer.remaining=Math.max(0,Number(raw.remaining)||timer.base);timer.running=!!raw.running;timer.endAt=raw.endAt?Number(raw.endAt):null;timer.slot=raw.slot??null;timer.exerciseId=EXMAP[raw.exerciseId]?raw.exerciseId:null;timer.label=String(raw.label||"");timer.auto=!!raw.auto;timer.completedNotified=!!raw.completedNotified;timer.completionPending=!!raw.completionPending;
   if(timer.running&&!Number.isFinite(timer.endAt)){timer.running=false;timer.endAt=null}
  }catch{clearPersistedRestTimer()}
 }
@@ -3105,7 +3140,16 @@ function syncRestTimerFromClock(notify=true){
  renderTimerUI();
 }
 function renderTimerUI(){
- if(timer.running)timer.remaining=restRemainingFromClock();const display=$("#timerDisplay");if(display)display.textContent=fmt(Math.max(0,timer.remaining));const toggle=$("#timerToggle");if(toggle)toggle.textContent=timer.running?"Pause":timer.remaining<=0?"Restart":"Start";renderRestMini();
+ if(timer.running)timer.remaining=restRemainingFromClock();const display=$("#timerDisplay");if(display)display.textContent=fmt(Math.max(0,timer.remaining));const toggle=$("#timerToggle");if(toggle)toggle.textContent=timer.running?"Pause":timer.remaining<=0?"Restart":"Start";
+ const exId=timer.exerciseId&&EXMAP[timer.exerciseId]?timer.exerciseId:null;
+ const note=$("#exerciseRestNote"),reset=$("#timerUseProgramRest");
+ if(note){
+  if(!exId)note.textContent="Choose a rest duration. Open an exercise's Rest timer to remember a time for that exercise.";
+  else note.textContent=rememberedExerciseRest(exId)!==null?`${EXMAP[exId].name}: ${fmt(rememberedExerciseRest(exId))} saved for future workouts.`:`${EXMAP[exId].name}: using the programmed ${fmt(programmedRestForExercise(exId))} rest. Choose a time to remember it.`;
+ }
+ if(reset){reset.classList.toggle("hidden",!exId||rememberedExerciseRest(exId)===null);reset.disabled=!exId||rememberedExerciseRest(exId)===null;}
+ $$("#timerSheet .preset").forEach(b=>{const chosen=Number(b.dataset.sec)===timer.base;b.setAttribute("aria-pressed",chosen?"true":"false");b.classList.toggle("selected",chosen)});
+ renderRestMini();
 }
 function renderRestMini(){
  const mini=$("#restMini");if(!mini)return;const active=timer.running||timer.remaining<timer.base;mini.classList.toggle("hidden",!active);if(!active)return;
@@ -3117,9 +3161,9 @@ function stopTimer(){
 function startTimer(){
  if(timer.running)return;if(timer.remaining<=0)timer.remaining=timer.base;timer.remaining=Math.max(1,Math.ceil(Number(timer.remaining)||timer.base));timer.endAt=Date.now()+timer.remaining*1000;timer.running=true;timer.completedNotified=false;timer.completionPending=false;persistRestTimer();primeRestAlertAudio();renderTimerUI();if(timer.id)clearInterval(timer.id);timer.id=setInterval(()=>syncRestTimerFromClock(true),500);syncScreenWakeLock();
 }
-function startRestFor(slot,seconds,label,auto=true){stopTimer();timer.slot=slot;timer.base=timer.remaining=Math.max(15,Number(seconds)||60);timer.label=label||"Rest";timer.auto=auto;timer.completedNotified=false;timer.completionPending=false;persistRestTimer();renderTimerUI();startTimer()}
+function startRestFor(slot,seconds,label,auto=true){stopTimer();const item=trainingItems()[slot];timer.slot=slot;timer.exerciseId=item&&EXMAP[item.id]?item.id:null;timer.base=timer.remaining=exerciseRestSeconds(timer.exerciseId,seconds);timer.label=label||"Rest";timer.auto=auto;timer.completedNotified=false;timer.completionPending=false;persistRestTimer();renderTimerUI();startTimer()}
 function openRestSheet(){$("#timerTitle").textContent=timer.label||"Rest timer";syncRestTimerFromClock(true);$("#timerSheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#timerSheet .sheetcard").scrollTop=0})}
-function cancelRest(){stopTimer();timer.remaining=timer.base;timer.label="";timer.slot=null;timer.completedNotified=false;timer.completionPending=false;clearPersistedRestTimer();renderRestMini()}
+function cancelRest(){stopTimer();timer.remaining=timer.base;timer.label="";timer.slot=null;timer.exerciseId=null;timer.completedNotified=false;timer.completionPending=false;clearPersistedRestTimer();renderRestMini()}
 
 function openSheet(label,title,html){$("#sheet").classList.remove("warmup-sheet","logic-sheet","coach-review-sheet","workout-calendar-sheet","week-transition-sheet");$("#sheetLabel").textContent=label;$("#sheetTitle").textContent=title;$("#sheetContent").innerHTML=html;$("#sheet").classList.remove("hidden");requestAnimationFrame(()=>{$("#sheet .sheetcard").scrollTop=0})}
 function closeSheet(){
@@ -4169,7 +4213,7 @@ document.addEventListener("click",e=>{
  const choose=e.target.closest(".chooseSwap");if(choose){const slot=Number(choose.dataset.slot),oldItem=trainingItems()[slot],oldTarget=effectiveTarget(oldItem),oldLog=exLog(currentDay,slot,oldTarget.sets),hasEntries=(oldLog.sets||[]).some(s=>s.done||s.weight||s.reps||s.rpe)||(oldLog.warmups||[]).some(s=>s.done||s.weight||s.reps);if(hasEntries&&!confirm("This exercise already has logged entries today. Swapping it will clear those entries. Continue?"))return;
  const replacement=EXMAP[choose.dataset.id];if(replacement?.pattern!==EXMAP[oldItem.id]?.pattern&&!confirm("This exercise is in a different movement category. Your current sets and rep targets will be retained; review them after swapping. Continue?"))return;
  pushUndo("Swapped exercise");oldItem.id=choose.dataset.id;dayLog(currentDay)[slot]={sets:[],warmups:[],note:""};save();closeSheet();renderToday();toast("Exercise swapped");return}
- const tb=e.target.closest(".timerBtn");if(tb){const slot=Number(tb.dataset.slot),it=trainingItems()[slot];stopTimer();timer.slot=slot;timer.base=timer.remaining=it.rest;timer.label=`${EXMAP[it.id].name} · rest`;timer.auto=false;openRestSheet();return}
+ const tb=e.target.closest(".timerBtn");if(tb){const slot=Number(tb.dataset.slot),it=trainingItems()[slot];stopTimer();timer.slot=slot;timer.exerciseId=it.id;timer.base=timer.remaining=exerciseRestSeconds(it.id,it.rest);timer.label=`${EXMAP[it.id].name} · rest`;timer.auto=false;timer.completedNotified=false;timer.completionPending=false;persistRestTimer();openRestSheet();return}
 });
 document.addEventListener("input",e=>{
  if(e.target.id==="librarySearch")renderExerciseLibraryResults();
@@ -4258,12 +4302,13 @@ $("#importInput").onchange=async e=>{
   toast("Validated backup imported");
  }catch(err){reportBackupValidation({ok:false,errors:[err.message||"Invalid backup file"],warnings:[]},"Import");alert("Backup import failed: "+(err.message||"Invalid backup."))}
 };
-$("#resetAllBtn").onclick=()=>{if(confirm("Permanently delete ALL local profile data, plans, workout logs, history, recovery entries and measurements on this device? This cannot be undone from inside the app unless you have an exported backup.")){localStorage.removeItem(KEY);localStorage.removeItem(UNDO_KEY);localStorage.removeItem(REDO_KEY);localStorage.removeItem(REST_TIMER_KEY);undoStack=[];redoStack=[];timer={base:180,remaining:180,running:false,id:null,slot:null,label:"",auto:false,endAt:null,completedNotified:false,completionPending:false};syncScreenWakeLock();state={};showOnboarding(false)}};
+$("#resetAllBtn").onclick=()=>{if(confirm("Permanently delete ALL local profile data, plans, workout logs, history, recovery entries and measurements on this device? This cannot be undone from inside the app unless you have an exported backup.")){localStorage.removeItem(KEY);localStorage.removeItem(UNDO_KEY);localStorage.removeItem(REDO_KEY);localStorage.removeItem(REST_TIMER_KEY);undoStack=[];redoStack=[];timer={base:180,remaining:180,running:false,id:null,slot:null,exerciseId:null,label:"",auto:false,endAt:null,completedNotified:false,completionPending:false};syncScreenWakeLock();state={};showOnboarding(false)}};
 $("#closeSheet").onclick=closeSheet;
 $("#closeTimer").onclick=()=>{$("#timerSheet").classList.add("hidden")};
 $("#timerToggle").onclick=()=>timer.running?stopTimer():startTimer();
 $("#timerReset").onclick=()=>{stopTimer();timer.remaining=timer.base;timer.completedNotified=false;timer.completionPending=false;persistRestTimer();renderTimerUI()};
-$$('.preset').forEach(b=>b.onclick=()=>{stopTimer();timer.base=timer.remaining=Number(b.dataset.sec);timer.completedNotified=false;timer.completionPending=false;persistRestTimer();renderTimerUI()});
+$$('.preset').forEach(b=>b.onclick=()=>{stopTimer();timer.base=timer.remaining=Number(b.dataset.sec);timer.completedNotified=false;timer.completionPending=false;if(timer.exerciseId&&EXMAP[timer.exerciseId]){saveExerciseRest(timer.exerciseId,timer.base);renderToday();}persistRestTimer();renderTimerUI()});
+$("#timerUseProgramRest").onclick=()=>{const id=timer.exerciseId;if(!id||!EXMAP[id])return;stopTimer();clearExerciseRest(id);timer.base=timer.remaining=programmedRestForExercise(id);timer.completedNotified=false;timer.completionPending=false;persistRestTimer();renderTimerUI();renderToday();toast("Programmed rest restored for this exercise")};
 $("#restOpenBtn").onclick=openRestSheet;$("#restSkipBtn").onclick=()=>{cancelRest();toast("Rest skipped")};
 $("#sessionToggle").onclick=()=>sessionRuntime().running?pauseSession():startSession(false);$("#sessionReset").onclick=resetSessionTimer;
 function syncThemeUI(){
