@@ -1284,11 +1284,28 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .universal-guide-image{display:block;width:100%;height:auto;max-width:100%;border-radius:10px;object-fit:contain;box-shadow:0 2px 14px rgba(15,23,42,.08)}
 [hidden]{display:none!important}
 
+
+/* Session-only extras: easy reach on mobile, no disruption to existing plan cards. */
+.session-add-action{display:flex;flex-direction:column;gap:7px;margin:12px 0 16px;padding:13px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.session-add-action button{width:100%;min-height:46px;font-weight:800}
+.session-add-action p{margin:0;line-height:1.4}
+.chooseSessionExtra{margin-top:8px;min-height:42px;width:100%}
+.removeSessionExtraBtn{color:var(--danger, #a33)}
+
+/* Session-only add and swap browsing — separate from the saved-plan builder. */
+.session-picker-controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.session-picker-controls label{min-width:0;font-weight:700;font-size:13px;display:grid;gap:6px}
+.session-picker-controls .field,.session-picker-controls .search{width:100%;min-width:0}
+.session-picker-tabs{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+.session-picker-tabs button{flex:1 1 140px;min-height:44px;border-radius:12px;border:1px solid var(--line);font-weight:800}
+.session-picker-tabs button.active{background:var(--navy);color:var(--bg);border-color:var(--navy)}
+@media(max-width:600px){.session-picker-controls{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v8.0.5 · 169 guides · QA candidate v3</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v8.0.5 · 169 guides · QA candidate v6</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -1317,7 +1334,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  <div class="progress train-progress"><div id="bar"></div></div>
  <div id="nextSetNotice" class="train-next-label tiny"></div>
  <div class="train-primary-row"><button id="nextUnfinishedBtn" class="primary">Continue workout</button><button id="trainToolsBtn" aria-expanded="false">Tools</button></div>
- <div id="trainToolsPanel" class="train-tools-panel hidden"><button id="warmBtn">Warm-up</button><button id="guideBtn">Workout visuals</button><button id="notesBtn">Session notes</button><button id="sessionReset">Reset timer</button><button id="trainFinishBtn">Finish workout</button></div>
+ <div id="trainToolsPanel" class="train-tools-panel hidden"><button class="addSessionExerciseShortcut">+ Add exercise</button><button id="warmBtn">Warm-up</button><button id="guideBtn">Workout visuals</button><button id="notesBtn">Session notes</button><button id="sessionReset">Reset timer</button><button id="trainFinishBtn">Finish workout</button></div>
  <div class="session-strip train-session-strip">
   <div><div class="label">Session</div><div id="sessionClock" class="session-clock">00:00</div><div id="sessionStatus" class="tiny">Not started</div></div>
   <div class="session-controls"><button id="sessionToggle" class="primary">Start session</button></div>
@@ -1326,6 +1343,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  <div id="restMini" class="rest-mini hidden"><div><div class="label">Current rest</div><strong id="restMiniLabel">—</strong> · <strong id="restMiniTime">0:00</strong></div><div class="rest-mini-actions"><button id="restOpenBtn">Open</button><button id="restSkipBtn">Skip</button></div></div>
 </section>
 <div id="exerciseList"></div>
+<div class="session-add-action"><button id="addSessionExerciseBtn" class="primary hidden" type="button">+ Add exercise to this session</button><p class="tiny">Optional extras appear in today's workout and completed history only. Your saved program is not changed.</p></div>
 <section class="card workout-tools-card desktop-workout-tools"><button id="finishBtn" class="primary" style="width:100%">Finish workout</button><button id="exportBtn" class="hidden" aria-hidden="true" tabindex="-1">Export Backup</button></section>
 <div id="mobileSessionBar" class="mobile-session-bar hidden"><button id="mobileSessionBtn" class="mobile-session-button" type="button" aria-label="Open session controls"><span class="mobile-session-kicker">Session</span><strong id="mobileSessionTime" class="mobile-session-time">00:00</strong><span id="mobileSessionMeta" class="mobile-session-meta">0% complete</span><span class="mobile-session-chevron" aria-hidden="true">›</span></button></div>
 </section>
@@ -1757,6 +1775,7 @@ function structuralSnapshot(label){
       plan:state.plan||[],
       cycle:state.cycle||null,
       weekLogs:state.weekLogs||{},
+      sessionExtras:state.sessionExtras||{},
       coaching:state.coaching||{},
       weekReviewArchive:state.weekReviewArchive||[],
       weekRecommendationDismissals:state.weekRecommendationDismissals||{},
@@ -1778,6 +1797,7 @@ function applySnapshot(snap){
   state.plan=snap.data.plan;
   state.cycle=snap.data.cycle;
   state.weekLogs=snap.data.weekLogs;
+  state.sessionExtras=snap.data.sessionExtras||{};
   state.coaching=snap.data.coaching||{};
   if(Object.prototype.hasOwnProperty.call(snap.data,"weekReviewArchive"))state.weekReviewArchive=snap.data.weekReviewArchive||[];
   if(Object.prototype.hasOwnProperty.call(snap.data,"weekRecommendationDismissals"))state.weekRecommendationDismissals=snap.data.weekRecommendationDismissals||{};
@@ -1829,6 +1849,18 @@ function cycle(){return state.cycle||null}
 function activeWorkoutPlanId(dayIdx=currentDay){
  const t=activePlanTransition(),pid=t?.dayPlanIds?.[dayIdx];
  return pid||cycle()?.planId||state.activeSavedPlanId||null;
+}
+// Session extras belong to one training day in one block/week/plan. Never mutate the programmed day.
+function sessionExtraKey(dayIdx=currentDay){return `${sessionKey(dayIdx)}:${activeWorkoutPlanId(dayIdx)||"unlinked"}`}
+function sessionExtrasForDay(dayIdx=currentDay){
+ const rows=state.sessionExtras?.[sessionExtraKey(dayIdx)];
+ return Array.isArray(rows)?rows.filter(it=>it&&EXMAP[it.id]&&it.sessionOnly===true):[];
+}
+function trainingItems(dayIdx=currentDay){
+ return [...(plan()?.[dayIdx]?.items||[]),...sessionExtrasForDay(dayIdx)];
+}
+function trainingDay(dayIdx=currentDay){
+ const d=plan()?.[dayIdx];return d?{...d,items:trainingItems(dayIdx)}:null;
 }
 function history(){state.history??=[];return state.history}
 function recoveryEntries(){state.recovery??=[];return state.recovery}
@@ -2598,6 +2630,21 @@ function validateBackupPayload(x){
   }
  }
  checkWeekLogs(x.weekLogs,"Current workout logs");
+ if(x.sessionExtras!==undefined){
+  if(!isPlainRecord(x.sessionExtras))errors.push("Session extras must be a map of training days.");
+  else {
+   const entries=Object.entries(x.sessionExtras);
+   if(entries.length>250)errors.push("Session extras contain too many stored training days.");
+   entries.forEach(([key,items])=>{
+    if(!Array.isArray(items)||items.length>SESSION_EXTRA_LIMIT){errors.push("Session extras are malformed for day "+key);return}
+    const seen=new Set();items.forEach(it=>{
+     if(!isPlainRecord(it)||it.sessionOnly!==true||!EXMAP[it.id]||seen.has(it.id)||!Number.isInteger(Number(it.baseSets))||Number(it.baseSets)<1||Number(it.baseSets)>8||typeof it.baseReps!=="string")errors.push("A session-only exercise has invalid target data.");
+     else seen.add(it.id);
+    });
+   });
+  }
+ }
+
  if(x.coaching!==undefined&&!isPlainRecord(x.coaching))errors.push("Coaching state is malformed.");
  if(Array.isArray(x.history)){
   if(x.history.length>100000)errors.push("Workout history exceeds the supported import limit.");
@@ -2766,7 +2813,7 @@ function resetCoachBaseline(){
  closeSheet();renderAll();openCoachEvidence();toast("Coach baseline reset · training history preserved");return true;
 }
 function nextUnfinishedExerciseIndex(){
- const day=plan()[currentDay];if(!day)return-1;
+ const day=trainingDay();if(!day)return-1;
  return day.items.findIndex((it,slot)=>{
   const t=effectiveTarget(it),l=exLog(currentDay,slot,t.sets);
   return l.sets.slice(0,t.sets).some(x=>!x.done);
@@ -2775,14 +2822,14 @@ function nextUnfinishedExerciseIndex(){
 function jumpToNextUnfinished(){
  const i=nextUnfinishedExerciseIndex();if(i<0){toast("All working sets marked complete");return}
  const el=document.querySelector(`.exercise[data-exslot="${i}"]`);
- const it=plan()[currentDay].items[i],target=effectiveTarget(it),firstPending=exLog(currentDay,i,target.sets).sets.findIndex(s=>!s.done);
+ const it=trainingItems()[i],target=effectiveTarget(it),firstPending=exLog(currentDay,i,target.sets).sets.findIndex(s=>!s.done);
  el?.scrollIntoView({behavior:"smooth",block:"center"});
  const first=el?.querySelector(`input[data-set="${firstPending}"][data-f="weight"]`);
  if(first&&!window.matchMedia("(pointer:coarse)").matches)first.focus({preventScroll:true});
- toast(`Next unfinished: ${EXMAP[plan()[currentDay].items[i].id]?.name||"exercise"}`);
+ toast(`Next unfinished: ${EXMAP[trainingItems()[i].id]?.name||"exercise"}`);
 }
 function repeatPriorCompletedSet(slot){
- const it=plan()?.[currentDay]?.items?.[slot];if(!it)return false;
+ const it=trainingItems()?.[slot];if(!it)return false;
  const t=effectiveTarget(it),sets=exLog(currentDay,slot,t.sets).sets;
  const next=sets.findIndex((s,i)=>i<t.sets&&!s.done);
  if(next<=0||!sets[next-1].done||Number(sets[next-1].reps)<=0)return false;
@@ -2974,11 +3021,11 @@ function startSession(auto=false){const r=sessionRuntime();if(r.running)return;r
 function pauseSession(){const r=sessionRuntime();if(!r.running)return;r.elapsed=sessionElapsed();r.running=false;r.startedAt=null;save();renderSessionClock();syncScreenWakeLock()}
 function resetSessionTimer(){const r=sessionRuntime();if(sessionElapsed()>0&&!confirm("Reset the current session timer to 00:00? Workout entries will not be deleted."))return;r.elapsed=0;r.running=false;r.startedAt=null;save();renderSessionClock();syncScreenWakeLock();toast("Session timer reset")}
 function currentDayHasCompletedSet(){
- const d=plan()?.[currentDay];if(!d?.items?.length)return false;
+ const d=trainingDay();if(!d?.items?.length)return false;
  return d.items.some((it,slot)=>{const t=effectiveTarget(it),sets=state.weekLogs?.[String(cycle()?.week||1)]?.[currentDay]?.[slot]?.sets||[];return sets.slice(0,t.sets).some(x=>x?.done)});
 }
 function currentWorkoutProgress(){
- const d=plan()?.[currentDay];if(!d?.items?.length)return 0;let total=0,done=0;
+ const d=trainingDay();if(!d?.items?.length)return 0;let total=0,done=0;
  d.items.forEach((it,s)=>{const t=effectiveTarget(it);total+=t.sets;done+=exLog(currentDay,s,t.sets).sets.slice(0,t.sets).filter(x=>x.done).length});
  return total?Math.round(done/total*100):0;
 }
@@ -2991,7 +3038,7 @@ function syncMobileSessionBar(hasDone=false){
  const btn=$("#mobileSessionBtn");if(btn)btn.setAttribute("aria-label",complete?"Finish workout":"Open session controls");
 }
 function openMobileSessionPanel(){
- const d=plan()?.[currentDay];if(!d)return;const pct=currentWorkoutProgress(),r=sessionRuntime(),elapsed=sessionElapsed();
+ const d=trainingDay();if(!d)return;const pct=currentWorkoutProgress(),r=sessionRuntime(),elapsed=sessionElapsed();
  openSheet("SESSION",d.title,`<div class="finish-grid"><div class="finish-stat"><div class="label">Session time</div><strong>${fmtLong(elapsed)}</strong></div><div class="finish-stat"><div class="label">Completion</div><strong>${pct}%</strong></div></div><div class="grid2" style="margin-top:12px"><button id="mobileSheetToggle" class="primary">${r.running?"Pause session":elapsed?"Resume session":"Start session"}</button><button id="mobileSheetNotes">Session notes</button><button id="mobileSheetReset">Reset timer</button><button id="mobileSheetFinish">Finish workout</button></div><p class="tiny" style="margin-top:10px">Finishing early is allowed. If working sets are incomplete, you will review that before saving.</p>`);
  setTimeout(()=>{
   const toggle=$("#mobileSheetToggle"),notes=$("#mobileSheetNotes"),reset=$("#mobileSheetReset"),finish=$("#mobileSheetFinish");
@@ -4495,7 +4542,7 @@ function renderCycleHeader(){
 }
 function trainUiState(){state.uiState??={};return state.uiState}
 function dayIsComplete(dayIdx){
- const d=plan()?.[dayIdx];if(d?.transitionRest)return true;if(!d?.items?.length)return false;
+ const d=trainingDay(dayIdx);if(d?.transitionRest)return true;if(!d?.items?.length)return false;
  const logs=state.weekLogs?.[String(cycle()?.week||1)]?.[dayIdx]||{};
  return d.items.every((it,slot)=>{
   const t=effectiveTarget(it),sets=logs?.[slot]?.sets||[];
@@ -4535,7 +4582,7 @@ function visualHtml(exId,compact=false){
  return `<img class="exvisual approved-guide-visual${compact?" exvisual-compact":""}" loading="lazy" decoding="async" src="${path}" alt="${esc(ex.name)} approved Masculine exercise guide, including Start, Finish, Muscles Worked, and five Key Points">`;
 }
 function workoutVisualGrid(){
- const d=plan()[currentDay];
+ const d=trainingDay();
  return `<div class="visual-grid workout-guide-grid">${d.items.map(it=>`<div class="visual-card"><strong>${esc(EXMAP[it.id].name)}</strong><div style="margin-top:8px">${visualHtml(it.id,false)}</div><button class="exerciseDetailBtn" data-exid="${it.id}" style="margin-top:8px">Open full Exercise Guide</button></div>`).join("")}</div>`;
 }
 function movementLabel(pattern){return ({hpress:"Horizontal press",incline:"Incline press",vpress:"Vertical press",vpull:"Vertical pull",row:"Row",backfloor:"Bodyweight back / scapular",squat:"Squat",hinge:"Hip hinge",quad:"Quad isolation",hamstring:"Hamstring isolation",unilateral:"Unilateral legs",hip:"Hip extension",lateral:"Lateral delt",rear:"Rear delt",shrug:"Upper-trap shrug",biceps:"Biceps",triceps:"Triceps",calf:"Calves",core:"Core"})[pattern]||pattern}
@@ -4570,31 +4617,96 @@ function renderExerciseLibraryResults(){
  const shown=rows.slice(0,40),meta=$("#libraryResultMeta"),box=$("#libraryResults");if(meta)meta.textContent=`${rows.length} matching exercises${rows.length>40?" · showing first 40":""}`;if(!box)return;
  box.innerHTML=shown.map(e=>`<div class="library-item"><strong>${esc(e.name)}</strong><div class="tiny">${esc(exerciseCategory(e))} · ${esc(movementLabel(e.pattern))} · ${esc(equipmentLabel(e))}</div><div class="library-thumb">${visualHtml(e.id,true)}</div><button class="exerciseDetailBtn" data-exid="${e.id}">View full details</button></div>`).join("")||'<div class="historyitem">No exercises match those filters.</div>';
 }
+function sessionPickerCategoryOptions(){
+ const cats=[...PRIORITY_MUSCLES,"Conditioning"];
+ return `<option value="All">All categories</option>`+cats.map(cat=>`<option value="${cat}">${cat}</option>`).join("");
+}
+function sessionPickerSearchMatches(e,q){
+ return !q||`${e.name} ${e.muscles} ${exerciseCategory(e)} ${movementLabel(e.pattern)}`.toLowerCase().includes(q);
+}
+const SESSION_EXTRA_LIMIT=12;
+function openAddSessionExercise(){
+ if(!profile()||!hasUsablePlan()||plan()?.[currentDay]?.transitionRest)return;
+ const count=sessionExtrasForDay().length;
+ if(count>=SESSION_EXTRA_LIMIT){alert(`This session already has ${SESSION_EXTRA_LIMIT} extra exercises. Adjust the sets of an existing movement or finish the session before adding more.`);return}
+ openSheet("ADD EXERCISE","Add to this workout",`<p class="tiny">Add an exercise to <strong>this session only</strong>. It will be included in your logged sets and completed workout history, but won't alter your saved program or future workouts.</p><div class="session-picker-controls"><label>Browse by category<select id="sessionExerciseCategory" class="field" aria-label="Exercise category">${sessionPickerCategoryOptions()}</select></label><label>Search exercise or muscle<input id="sessionExerciseSearch" class="search" type="search" placeholder="Search all 169 exercises" aria-label="Search exercises"></label></div><div id="sessionExerciseResultMeta" class="tiny" aria-live="polite"></div><div class="grid2" style="margin-top:8px"><label>Working sets<input id="sessionExtraSets" class="field" type="number" min="1" max="8" value="3" inputmode="numeric"></label><label>Rep target<input id="sessionExtraReps" class="field" type="text" maxlength="16" value="8–12" placeholder="8–12"></label></div><p class="tiny">Available choices match your selected equipment and protected-area limits. You can adjust targets after adding.</p><div id="sessionExerciseResults" class="library-results"></div>`);
+ renderSessionExerciseResults();
+}
+function renderSessionExerciseResults(){
+ const box=$("#sessionExerciseResults");if(!box)return;
+ const q=($("#sessionExerciseSearch")?.value||"").trim().toLowerCase(),category=$("#sessionExerciseCategory")?.value||"All";
+ const p=profile(),avoid=(p?.avoid||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean);
+ const selected=new Set(trainingItems().map(x=>x.id));
+ const options=EX.filter(e=>!selected.has(e.id)&&allowed(e,p,avoid)&&(category==="All"||exerciseCategory(e)===category)&&sessionPickerSearchMatches(e,q))
+  .sort((a,b)=>a.name.localeCompare(b.name));
+ const list=options.slice(0,36),meta=$("#sessionExerciseResultMeta");
+ if(meta)meta.textContent=`${options.length} available exercise${options.length===1?"":"s"}${options.length>36?" · showing first 36; narrow your category or search":""}`;
+ box.innerHTML=list.map(e=>`<div class="library-item"><strong>${esc(e.name)}</strong><div class="tiny">${esc(exerciseCategory(e))} · ${esc(e.muscles)} · ${esc(equipmentLabel(e))} · ${esc(e.difficulty||"Intermediate")}${esc(manualExperienceNote(e,p))}</div><button class="chooseSessionExtra" data-id="${esc(e.id)}">Add to this session</button></div>`).join("")||'<div class="historyitem">No exercises available for this category and search with your current equipment and protected-area settings.</div>';
+}
+function addSessionExercise(exId){
+ const e=EXMAP[exId],p=profile(),d=plan()?.[currentDay];
+ if(!e||!p||!d||d.transitionRest||trainingItems().some(it=>it.id===exId)||sessionExtrasForDay().length>=SESSION_EXTRA_LIMIT)return false;
+ const avoid=(p.avoid||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean);
+ if(!allowed(e,p,avoid)){alert("This exercise doesn't match your current equipment or protected-area settings.");return false}
+ const sets=Number($("#sessionExtraSets")?.value),reps=($("#sessionExtraReps")?.value||"").trim();
+ if(!Number.isInteger(sets)||sets<1||sets>8){alert("Choose 1–8 working sets.");return false}
+ if(!/^\d{1,2}(?:\s*[-–]\s*\d{1,2})?$/.test(reps)){alert("Enter a rep target such as 8 or 8–12.");return false}
+ const range=parseRange(reps);if(range[0]<1||range[0]>30||range[range.length-1]>30||range[range.length-1]<range[0]){alert("Choose a rep target between 1 and 30.");return false}
+ const cfg=goalConfig(p.goal,p.level),item={...makePlanItem(e,p,cfg,false),baseSets:sets,baseReps:reps,sessionOnly:true};
+ const k=sessionExtraKey();state.sessionExtras??={};state.sessionExtras[k]??=[];state.sessionExtras[k].push(item);
+ save();closeSheet();renderToday();toast(`${e.name} added to this session`);
+ document.querySelector('.exercise[data-exslot="'+(trainingItems().length-1)+'"]')?.scrollIntoView({block:"start",behavior:"smooth"});
+ return true;
+}
+function removeSessionExercise(slot){
+ const d=plan()?.[currentDay],base=d?.items?.length||0,extras=sessionExtrasForDay(),i=slot-base;
+ if(i<0||i>=extras.length)return false;
+ const logs=dayLog(currentDay),l=logs[slot];
+ const hasEntries=(l?.sets||[]).some(s=>s.done||String(s.weight??"").trim()||String(s.reps??"").trim()||String(s.rpe??"").trim())||
+  (l?.warmups||[]).some(s=>s.done||String(s.weight??"").trim()||String(s.reps??"").trim())||String(l?.note||"").trim();
+ if(hasEntries&&!confirm("This extra exercise has logged entries or notes. Remove it and discard those entries? The rest of the workout will be kept."))return false;
+ // Shift later extra-exercise logs with their exercise, rather than changing their slot meaning.
+ for(let s=slot;s<base+extras.length-1;s++){
+  if(Object.prototype.hasOwnProperty.call(logs,s+1))logs[s]=logs[s+1];else delete logs[s];
+ }
+ delete logs[base+extras.length-1];
+ if(timer.slot!==null&&timer.slot>=slot)cancelRest();
+ state.sessionExtras[sessionExtraKey()].splice(i,1);
+ if(!state.sessionExtras[sessionExtraKey()].length)delete state.sessionExtras[sessionExtraKey()];
+ save();renderToday();toast("Extra exercise removed · program unchanged");return true;
+}
+function clearCompletedSessionExtras(dayIdx=currentDay){
+ const base=plan()?.[dayIdx]?.items?.length||0,extras=sessionExtrasForDay(dayIdx);
+ if(!extras.length)return;
+ const logs=dayLog(dayIdx);for(let i=0;i<extras.length;i++)delete logs[base+i];
+ delete state.sessionExtras[sessionExtraKey(dayIdx)];
+}
 function renderToday(){
  if(!profile())return;
  if(!hasUsablePlan()&&!repairPlanIfNeeded()){
-   renderCycleHeader();const box=$("#exerciseList");if(box)box.innerHTML=noPlanHtml();
+   renderCycleHeader();const box=$("#exerciseList");if(box)box.innerHTML=noPlanHtml();$("#addSessionExerciseBtn")?.classList.add("hidden");
    $("#dayTitle").textContent="No plan on this browser";$("#dayFocus").textContent="Build or import a plan to begin.";return
  }
  renderCycleHeader();renderDayTabs();
- const d=plan()[currentDay];$("#dayTitle").textContent=d.title;
+ const d=trainingDay();$("#dayTitle").textContent=d.title;
  const pb=profile().planBuilder||{},priorityText=pb.mode==="priority"&&d.prioritySummary?` · ${d.prioritySummary.topMuscle} ${d.prioritySummary.topPct}% requested`:"";
  $("#dayFocus").textContent=`${profile().goal.replace("both","muscle + strength")} · ${profile().level} · ${profile().duration} min · ${equipmentChoiceLabel(profile().equipment)}${priorityText}`;
  const box=$("#exerciseList");box.innerHTML="";
  d.items.forEach((item,slot)=>{
-   const ex=EXMAP[item.id],t=effectiveTarget(item),log=exLog(currentDay,slot,t.sets),rec=suggestion(item),prev=lastPerformanceSummary(item.id);
+   const ex=EXMAP[item.id],t=effectiveTarget(item),log=exLog(currentDay,slot,t.sets),rec=item.sessionOnly?null:suggestion(item),prev=lastPerformanceSummary(item.id);
    const c=document.createElement("section");c.className="card exercise";c.dataset.exslot=String(slot);
-   c.innerHTML=`<div class="exhead"><div class="exercise-title-row"><h3>${slot+1}. ${esc(ex.name)}</h3><span class="exercise-rest">${fmt(item.rest)} rest</span></div><div class="muted exercise-target"><strong>${t.sets} sets · ${esc(t.reps)} reps · RPE ${esc(t.rpe)}${t.load?` · target ${t.load} ${unit()}`:""}</strong></div><span class="badge">${esc(ex.muscles)}</span>${isAdjusted(item)?'<span class="badge adjusted">User adjusted</span>':""}</div>
+   c.innerHTML=`<div class="exhead"><div class="exercise-title-row"><h3>${slot+1}. ${esc(ex.name)}</h3><span class="exercise-rest">${fmt(item.rest)} rest</span></div><div class="muted exercise-target"><strong>${t.sets} sets · ${esc(t.reps)} reps · RPE ${esc(t.rpe)}${t.load?` · target ${t.load} ${unit()}`:""}</strong></div><span class="badge">${esc(ex.muscles)}</span>${isAdjusted(item)?'<span class="badge adjusted">User adjusted</span>':""}${item.sessionOnly?'<span class="badge adjusted">Added to this session</span>':""}</div>
    ${prev?`<div class="prevperf"><div class="row"><div><strong>Last performance</strong><br>${esc(prev.text)}</div><button class="useLastBtn" data-slot="${slot}">Prefill last</button></div></div>`:`<div class="prevperf"><strong>Last performance:</strong> No completed history yet.</div>`}
-   ${coachingRecommendationHtml(item,slot,rec)}
+   ${item.sessionOnly?'<p class="tiny" style="margin:6px 0">Extra exercise · recorded in this session only. Your saved program stays unchanged.</p>':coachingRecommendationHtml(item,slot,rec)}
    <div class="actions exercise-main-actions"><button class="exerciseDetailBtn" data-exid="${item.id}">Exercise guide</button><button class="swapBtn" data-slot="${slot}">Swap</button><button class="exerciseMoreBtn" data-slot="${slot}" aria-expanded="false">More</button></div>
-   <div class="exercise-more-panel hidden" data-exmore="${slot}"><button class="adjustTargetBtn" data-slot="${slot}" aria-expanded="false">Adjust target</button><button class="timerBtn" data-slot="${slot}">Rest timer</button><button class="repeatSetBtn" data-slot="${slot}">Repeat last set</button></div>
+   <div class="exercise-more-panel hidden" data-exmore="${slot}"><button class="adjustTargetBtn" data-slot="${slot}" aria-expanded="false">Adjust target</button><button class="timerBtn" data-slot="${slot}">Rest timer</button><button class="repeatSetBtn" data-slot="${slot}">Repeat last set</button>${item.sessionOnly?`<button class="removeSessionExtraBtn" data-slot="${slot}">Remove extra exercise</button>`:""}</div>
    <div class="targetrow hidden" data-targetrow="${slot}"><button class="repMinus" data-slot="${slot}">−1 rep</button><button class="repPlus" data-slot="${slot}">+1 rep</button><button class="setMinus" data-slot="${slot}">− set</button><button class="setPlus" data-slot="${slot}">+ set</button><button class="editTarget" data-slot="${slot}">Edit target</button>${isAdjusted(item)?`<button class="resetTarget" data-slot="${slot}">Reset target</button>`:""}</div>
    <div class="working-label">Working sets</div>
    <div class="sets"><div class="setrow head"><div>Set</div><div>Weight</div><div>Reps</div><div>RPE</div><div>Done</div></div>${log.sets.slice(0,t.sets).map((s,j)=>`<div class="setrow"><strong>${j+1}</strong><input data-slot="${slot}" data-set="${j}" data-f="weight" value="${esc(s.weight)}" inputmode="decimal" placeholder="${(ex.equipment||[]).includes("bodyweight")?"load "+unit():unit()}"><input data-slot="${slot}" data-set="${j}" data-f="reps" value="${esc(s.reps)}" inputmode="numeric" placeholder="reps"><input data-slot="${slot}" data-set="${j}" data-f="rpe" value="${esc(s.rpe)}" inputmode="decimal" placeholder="${esc(t.rpe)}"><button class="check ${s.done?"done":""}" data-check="${slot}:${j}">${s.done?"✓":""}</button></div>`).join("")}</div>
    <div class="note"><textarea data-note="${slot}" placeholder="Exercise notes...">${esc(log.note||"")}</textarea></div>`;
    box.appendChild(c);
  });
+ $("#addSessionExerciseBtn")?.classList.remove("hidden");
  updateProgress();renderSessionClock();
  const upcoming=nextUnfinishedExerciseIndex(),notice=$("#nextSetNotice"),nextBtn=$("#nextUnfinishedBtn");
  const nextName=upcoming<0?"":(EXMAP[d.items[upcoming].id]?.name||"Exercise");
@@ -4603,21 +4715,21 @@ function renderToday(){
  $("#bodyweightLimitation")?.classList.toggle("hidden",profile().equipment!=="bodyweight");const ui=trainUiState();ui.trainDay=currentDay;ui.trainDayDate=calendarToday();save();
 }
 function updateProgress(){
- const d=plan()[currentDay];let total=0,done=0;d.items.forEach((it,s)=>{const t=effectiveTarget(it);total+=t.sets;done+=exLog(currentDay,s,t.sets).sets.slice(0,t.sets).filter(x=>x.done).length});const p=total?Math.round(done/total*100):0;$("#pct").textContent=p+"%";$("#bar").style.width=p+"%";
+ const d=trainingDay();let total=0,done=0;d.items.forEach((it,s)=>{const t=effectiveTarget(it);total+=t.sets;done+=exLog(currentDay,s,t.sets).sets.slice(0,t.sets).filter(x=>x.done).length});const p=total?Math.round(done/total*100):0;$("#pct").textContent=p+"%";$("#bar").style.width=p+"%";
  syncMobileSessionBar(done>0);
 }
 
 
 function workingSetsCompleteForExercise(slot){
- const d=plan()?.[currentDay],it=d?.items?.[slot];if(!it)return false;
+ const d=trainingDay(),it=d?.items?.[slot];if(!it)return false;
  const t=effectiveTarget(it),sets=exLog(currentDay,slot,t.sets).sets.slice(0,t.sets);
  return sets.length>=t.sets&&sets.every(x=>!!x?.done);
 }
 function allWorkingSetsCompleteForDay(){
- const d=plan()?.[currentDay];return !!d?.items?.length&&d.items.every((_,slot)=>workingSetsCompleteForExercise(slot));
+ const d=trainingDay();return !!d?.items?.length&&d.items.every((_,slot)=>workingSetsCompleteForExercise(slot));
 }
 function autoAdvanceAfterExerciseComplete(slot){
- const d=plan()?.[currentDay],nextSlot=Number(slot)+1;
+ const d=trainingDay(),nextSlot=Number(slot)+1;
  if(!d?.items?.length)return;
  if(nextSlot>=d.items.length){if(allWorkingSetsCompleteForDay())toast("Workout complete ✓");return}
  const isMobile=window.matchMedia?window.matchMedia("(max-width:760px)").matches:window.innerWidth<=760;
@@ -4719,27 +4831,55 @@ function closeSheet(){
  if(planCreationMode?.reviewing)planCreationMode=null;
 }
 function editTarget(slot){
- const item=plan()[currentDay].items[slot],t=effectiveTarget(item),ex=EXMAP[item.id];
+ const item=trainingItems()[slot],t=effectiveTarget(item),ex=EXMAP[item.id];
  openSheet("MANUAL TARGET",ex.name,`<p class="tiny">Original program target: <strong>${item.baseSets} sets · ${esc(item.baseReps)} reps · RPE ${esc(item.baseRpe)}</strong></p><div class="grid2"><label>Sets<input id="targetSets" class="field" type="number" min="1" max="10" value="${t.sets}"></label><label>Rep range<input id="targetReps" class="field" value="${esc(t.reps)}" placeholder="8–10"></label><label>RPE target<input id="targetRpe" class="field" value="${esc(t.rpe)}" placeholder="7–8"></label><label>Target load (${unit()})<input id="targetLoad" class="field" type="number" step="0.5" value="${item.userLoad??""}" placeholder="Optional"></label></div><button id="saveTarget" class="primary" style="margin-top:12px">Save adjusted target</button>`);
  setTimeout(()=>$("#saveTarget").onclick=()=>{
    pushUndo("Edited exercise target");const sets=Math.max(1,Number($("#targetSets").value)||item.baseSets), repStr=$("#targetReps").value.trim(), base=parseRange(item.baseReps), now=parseRange(repStr);
    item.userSetDelta=sets-item.baseSets;item.userRepDelta=now[0]-base[0];item.userRpe=$("#targetRpe").value.trim()||null;item.userLoad=$("#targetLoad").value?Number($("#targetLoad").value):null;save();closeSheet();renderToday();toast("Target adjusted");
  },0);
 }
+function swapOptionHtml(e,slot,p){
+ return `<div class="swapitem"><strong>${esc(e.name)}</strong><div class="tiny">${esc(exerciseCategory(e))} · ${esc(e.muscles)} · ${esc(e.difficulty||"Intermediate")}${esc(manualExperienceNote(e,p))} · ${visualFor(e.id)?"Approved guide":"Guide unavailable"}</div><button class="chooseSwap" data-id="${esc(e.id)}" data-slot="${slot}" style="margin-top:8px">Use this exercise</button></div>`;
+}
 function openSwap(slot){
- const p=profile(),cur=plan()[currentDay].items[slot],ex=EXMAP[cur.id],avoid=(p.avoid||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean);
- const opts=EX.filter(e=>e.pattern===ex.pattern&&e.id!==ex.id&&allowed(e,p,avoid)&&autoExperienceEligible(e,p)).sort((a,b)=>exerciseQualityScore(b,p,{})-exerciseQualityScore(a,p,{})||a.name.localeCompare(b.name));
- openSheet("EXERCISE SWAP",ex.name,opts.length?opts.map(e=>`<div class="swapitem"><strong>${esc(e.name)}</strong><div class="tiny">${esc(e.muscles)} · ${esc(e.difficulty||"Intermediate")} · ${visualFor(e.id)?"Exact visual":"Visual hidden/unavailable"}</div><button class="chooseSwap" data-id="${e.id}" data-slot="${slot}" style="margin-top:8px">Use this exercise</button></div>`).join(""):"<p>No safe alternatives matching the current equipment and protected-area filters were found.</p>");
+ const p=profile(),cur=trainingItems()[slot];if(!p||!cur)return;
+ const ex=EXMAP[cur.id],avoid=(p.avoid||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean);
+ const opts=EX.filter(e=>e.pattern===ex.pattern&&e.id!==ex.id&&allowed(e,p,avoid)&&autoExperienceEligible(e,p))
+  .sort((a,b)=>exerciseQualityScore(b,p,{})-exerciseQualityScore(a,p,{})||a.name.localeCompare(b.name));
+ openSheet("EXERCISE SWAP",ex.name,`<p class="tiny">Choose a suggested replacement from the same movement family, or browse all compatible exercise categories. Swaps keep your current set and rep targets until you adjust them.</p>
+ <div class="session-picker-tabs" role="group" aria-label="Swap exercise browsing method"><button id="swapSuggestedTab" type="button" aria-pressed="true" class="active">Suggested replacements</button><button id="swapCategoriesTab" type="button" aria-pressed="false">Browse categories</button></div>
+ <div id="swapSuggestedPanel">${opts.length?opts.map(e=>swapOptionHtml(e,slot,p)).join(""):'<p class="tiny">No suggested alternatives match your current equipment and protected-area settings. Try Browse categories.</p>'}</div>
+ <div id="swapCategoriesPanel" class="hidden"><div class="session-picker-controls"><label>Browse by category<select id="swapExerciseCategory" class="field" aria-label="Swap exercise category">${sessionPickerCategoryOptions()}</select></label><label>Search exercise or muscle<input id="swapExerciseSearch" class="search" type="search" placeholder="Search compatible exercises" aria-label="Search replacement exercises"></label></div><p class="tiny">These choices follow your equipment and protected-area settings. A different movement category may need new set and rep targets.</p><div id="swapExerciseResultMeta" class="tiny" aria-live="polite"></div><div id="swapExerciseResults" class="library-results" data-slot="${slot}"></div></div>`);
+}
+function toggleSwapBrowse(showCategories){
+ const suggested=$("#swapSuggestedPanel"),browse=$("#swapCategoriesPanel");if(!suggested||!browse)return;
+ suggested.classList.toggle("hidden",showCategories);browse.classList.toggle("hidden",!showCategories);
+ const btnS=$("#swapSuggestedTab"),btnB=$("#swapCategoriesTab");
+ btnS?.classList.toggle("active",!showCategories);btnB?.classList.toggle("active",showCategories);
+ btnS?.setAttribute("aria-pressed",String(!showCategories));btnB?.setAttribute("aria-pressed",String(showCategories));
+ if(showCategories)renderSwapCategoryResults();
+}
+function renderSwapCategoryResults(){
+ const box=$("#swapExerciseResults");if(!box)return;
+ const q=($("#swapExerciseSearch")?.value||"").trim().toLowerCase(),category=$("#swapExerciseCategory")?.value||"All";
+ const p=profile(),avoid=(p?.avoid||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean),
+  slot=Number($("#swapExerciseResults")?.dataset.slot ?? $("#swapSuggestedPanel")?.querySelector(".chooseSwap")?.dataset.slot ?? -1);
+ if(!Number.isInteger(slot)||slot<0)return;
+ const current=trainingItems()[slot];if(!current)return;
+ const options=EX.filter(e=>e.id!==current.id&&allowed(e,p,avoid)&&(category==="All"||exerciseCategory(e)===category)&&sessionPickerSearchMatches(e,q))
+  .sort((a,b)=>a.name.localeCompare(b.name));
+ const meta=$("#swapExerciseResultMeta");if(meta)meta.textContent=`${options.length} compatible replacement${options.length===1?"":"s"}${options.length>36?" · showing first 36; narrow your category or search":""}`;
+ box.innerHTML=options.slice(0,36).map(e=>swapOptionHtml(e,slot,p)).join("")||'<div class="historyitem">No matching exercises. Try another category or search.</div>';
 }
 function warmup(type){if(["lower","legs"].includes(type))return["5 min easy cardio","Bodyweight squat × 10","Hip hinge × 10","2–4 progressive warm-up sets for the first compound"];if(["upper","push","pull"].includes(type))return["5 min easy cardio","Shoulder circles × 15","Light rows or band pull-aparts × 15","2–4 progressive warm-up sets for the first compound"];return["5 min easy cardio","Dynamic mobility 3 min","2–4 progressive warm-up sets for the first compound"]}
 
 function computeFinishSummary(){
- const d=plan()[currentDay],records=[],prs=[];let total=0,done=0,warmupDone=0,volume=0;
+ const d=trainingDay(),records=[],prs=[];let total=0,done=0,warmupDone=0,volume=0;
  d.items.forEach((it,slot)=>{
   const t=effectiveTarget(it),l=exLog(currentDay,slot,t.sets);total+=t.sets;const completed=l.sets.slice(0,t.sets).map(x=>({...x}));done+=completed.filter(x=>x.done).length;warmupDone+=(l.warmups||[]).filter(x=>x.done).length;
   const prev=previousBestE1RM(it.id);let bestNow=0,bestSet=null;completed.filter(s=>s.done).forEach(s=>{volume+=(Number(s.weight)||0)*(Number(s.reps)||0);const est=e1rm(s.weight,s.reps);if(est>bestNow){bestNow=est;bestSet=s}});
   if(bestNow>0&&bestNow>prev*1.005)prs.push({id:it.id,name:EXMAP[it.id].name,e1rm:bestNow,weight:Number(bestSet.weight),reps:Number(bestSet.reps),unit:unit()});
-  records.push({id:it.id,target:{...t},sets:completed,warmups:(l.warmups||[]).map(x=>({...x})),note:l.note||""});
+  records.push({id:it.id,sessionOnly:!!it.sessionOnly,target:{...t},sets:completed,warmups:(l.warmups||[]).map(x=>({...x})),note:l.note||""});
  });
  return {d,records,prs,total,done,warmupDone,volume,completion:total?Math.round(done/total*100):0,durationSec:sessionElapsed()};
 }
@@ -4752,7 +4892,7 @@ function finalizeSession(){
  const s=computeFinishSummary(),pid=activeWorkoutPlanId(currentDay),existing=history().findIndex(x=>x.cycleNumber===cycle().number&&x.week===cycle().week&&(!pid||x.planId===pid)&&(x.dayIndex===currentDay||(x.dayIndex===undefined&&x.title===s.d.title)));
  if(existing>=0&&!confirm("A saved session already exists for this training day and week. Replace that saved session instead of creating a duplicate?"))return;
  pauseSession();const record={date:new Date().toISOString(),weightUnit:unit(),planId:pid,cycleNumber:cycle().number,week:cycle().week,dayIndex:currentDay,title:s.d.title,completion:s.completion,durationSec:s.durationSec,volume:s.volume,warmupSets:s.warmupDone,prs:s.prs,exercises:s.records};
- if(existing>=0)history()[existing]=record;else history().push(record);clearSessionRuntime();save();renderProgress();closeSheet();
+ if(existing>=0)history()[existing]=record;else history().push(record);clearSessionRuntime();clearCompletedSessionExtras(currentDay);save();renderProgress();closeSheet();
  openSheet("SESSION COMPLETE",s.d.title,`<div class="finish-grid"><div class="finish-stat"><div class="label">Completion</div><strong>${s.completion}%</strong></div><div class="finish-stat"><div class="label">Duration</div><strong>${fmtLong(s.durationSec)}</strong></div><div class="finish-stat"><div class="label">Working volume</div><strong>${Math.round(s.volume).toLocaleString()}</strong></div><div class="finish-stat"><div class="label">PRs</div><strong>${s.prs.length}</strong></div></div>${s.prs.length?s.prs.map(p=>`<div class="summary-pr"><strong>PR · ${esc(p.name)}</strong><br>${p.weight} ${p.unit} × ${p.reps} · estimated 1RM ${Math.round(p.e1rm*10)/10} ${p.unit}</div>`).join(""):'<p class="muted">No new estimated-1RM PRs this session. Consistent quality work still counts.</p>'}<p class="tiny">Warm-up work was recorded separately and excluded from working-volume and PR calculations.</p>`);renderToday();toast("Session saved")
 }
 function muscleVolume(){
@@ -5480,6 +5620,8 @@ document.addEventListener("change",e=>{
  if(["compareA","compareB"].includes(e.target.id)){renderPlanComparison();return}
  if(["cycleA","cycleB"].includes(e.target.id)){renderCycleComparisonResult();return}
  if(["libraryMuscle","libraryEquipment","libraryDifficulty"].includes(e.target.id)){renderExerciseLibraryResults();return}
+ if(e.target.id==="sessionExerciseCategory"){renderSessionExerciseResults();return}
+ if(e.target.id==="swapExerciseCategory"){renderSwapCategoryResults();return}
  if(e.target.id==="autoRestSetting"){executionSettings().autoRest=e.target.checked;save();return}
  if(e.target.id==="autoSessionSetting"){executionSettings().autoSession=e.target.checked;save();syncScreenWakeLock();return}
  if(e.target.id==="restAlertSetting"){executionSettings().restAlert=e.target.value;save();return}
@@ -5667,7 +5809,7 @@ document.addEventListener("click",e=>{
  const rangeBtn=e.target.closest("#analyticsRangeControls button");if(rangeBtn){analyticsRange=rangeBtn.dataset.range||"8w";analyticsExerciseId=null;renderProgress();return}
  const customMove=e.target.closest(".custom-order-move");if(customMove){moveCustomExercise(customMove.dataset.orderId,Number(customMove.dataset.dir));return}
  const v=e.target.closest(".vtab");if(v)return switchView(v.dataset.view);
- const c=e.target.closest("[data-check]");if(c){const[s,j]=c.dataset.check.split(":").map(Number),it=plan()[currentDay].items[s],t=effectiveTarget(it),log=exLog(currentDay,s,t.sets),set=log.sets[j],was=set.done;set.done=!set.done;const completedExercise=!was&&set.done&&j+1===t.sets&&log.sets.slice(0,t.sets).length>=t.sets&&log.sets.slice(0,t.sets).every(x=>!!x?.done);if(!was&&set.done){if(executionSettings().autoSession&&!sessionRuntime().running&&!sessionElapsed())startSession(true);if(executionSettings().autoRest)startRestFor(s,it.rest,`${EXMAP[it.id].name} · rest`,true)}save();renderToday();if(!was&&set.done&&j+1<t.sets)setTimeout(()=>document.querySelector(`input[data-slot="${s}"][data-set="${j+1}"][data-f="weight"]`)?.focus(),0);if(completedExercise)autoAdvanceAfterExerciseComplete(s);return}
+ const c=e.target.closest("[data-check]");if(c){const[s,j]=c.dataset.check.split(":").map(Number),it=trainingItems()[s],t=effectiveTarget(it),log=exLog(currentDay,s,t.sets),set=log.sets[j],was=set.done;set.done=!set.done;const completedExercise=!was&&set.done&&j+1===t.sets&&log.sets.slice(0,t.sets).length>=t.sets&&log.sets.slice(0,t.sets).every(x=>!!x?.done);if(!was&&set.done){if(executionSettings().autoSession&&!sessionRuntime().running&&!sessionElapsed())startSession(true);if(executionSettings().autoRest)startRestFor(s,it.rest,`${EXMAP[it.id].name} · rest`,true)}save();renderToday();if(!was&&set.done&&j+1<t.sets)setTimeout(()=>document.querySelector(`input[data-slot="${s}"][data-set="${j+1}"][data-f="weight"]`)?.focus(),0);if(completedExercise)autoAdvanceAfterExerciseComplete(s);return}
 
  const hideCoach=e.target.closest(".hideCoachRec");if(hideCoach){hideCoachRecommendationByKey(hideCoach.dataset.reckey);return}
  const showCoach=e.target.closest(".showCoachRec");if(showCoach){showCoachRecommendationByKey(showCoach.dataset.reckey);return}
@@ -5696,20 +5838,23 @@ document.addEventListener("click",e=>{
  const emptyBuild=e.target.closest(".emptyBuildBtn");if(emptyBuild){showOnboarding(!!profile(),1);return}
  const emptyImport=e.target.closest(".emptyImportBtn");if(emptyImport){switchView("settings");renderSettings();setTimeout(()=>$("#importInput")?.click(),50);return}
  const jump=e.target.closest(".jumpToTrainBtn");if(jump){const idx=Number(jump.dataset.day)||0;if(plan()?.[idx]?.transitionRest)return;setCurrentTrainDay(idx,true);switchView("today",true);renderToday();return}
+ const chooseExtra=e.target.closest(".chooseSessionExtra");if(chooseExtra){addSessionExercise(chooseExtra.dataset.id);return}
+ const removeExtra=e.target.closest(".removeSessionExtraBtn");if(removeExtra){removeSessionExercise(Number(removeExtra.dataset.slot));return}
+ const addExtra=e.target.closest("#addSessionExerciseBtn, .addSessionExerciseShortcut");if(addExtra){openAddSessionExercise();return}
  const more=e.target.closest(".exerciseMoreBtn");if(more){const slot=Number(more.dataset.slot),panel=document.querySelector(`[data-exmore="${slot}"]`),open=panel?.classList.contains("hidden");panel?.classList.toggle("hidden",!open);more.setAttribute("aria-expanded",open?"true":"false");more.textContent=open?"Less":"More";return}
  const adjust=e.target.closest(".adjustTargetBtn");if(adjust){const slot=Number(adjust.dataset.slot),row=document.querySelector(`[data-targetrow="${slot}"]`),open=row?.classList.contains("hidden");row?.classList.toggle("hidden",!open);adjust.setAttribute("aria-expanded",open?"true":"false");adjust.textContent=open?"Hide adjustments":"Adjust target";return}
- const ul=e.target.closest(".useLastBtn");if(ul){const s=Number(ul.dataset.slot),it=plan()[currentDay].items[s],t=effectiveTarget(it),last=lastRecord(it.id);if(!last)return;const recordedUnit=recordedWeightUnit(lastSessionForExercise(it.id));if((last.sets||[]).some(x=>Number(x.weight)>0)&&recordedUnit!==unit()){alert("Previous loaded performance uses an unknown or different weight unit. Enter weight manually to avoid copying incompatible values.");return}const l=exLog(currentDay,s,t.sets),src=(last.sets||[]).filter(x=>x.done!==false),hasToday=l.sets.slice(0,t.sets).some(x=>x.done||String(x.weight||"").trim()||String(x.reps||"").trim()||String(x.rpe||"").trim());if(hasToday&&!confirm("Today already has working-set entries for this exercise. Replace those entries with the last completed performance? Warm-up sets and notes will not be changed."))return;for(let j=0;j<Math.min(t.sets,src.length);j++){l.sets[j].weight=src[j].weight;l.sets[j].reps=src[j].reps;l.sets[j].rpe=src[j].rpe;l.sets[j].done=false}save();renderToday();toast("Last performance prefilled");return}
+ const ul=e.target.closest(".useLastBtn");if(ul){const s=Number(ul.dataset.slot),it=trainingItems()[s],t=effectiveTarget(it),last=lastRecord(it.id);if(!last)return;const recordedUnit=recordedWeightUnit(lastSessionForExercise(it.id));if((last.sets||[]).some(x=>Number(x.weight)>0)&&recordedUnit!==unit()){alert("Previous loaded performance uses an unknown or different weight unit. Enter weight manually to avoid copying incompatible values.");return}const l=exLog(currentDay,s,t.sets),src=(last.sets||[]).filter(x=>x.done!==false),hasToday=l.sets.slice(0,t.sets).some(x=>x.done||String(x.weight||"").trim()||String(x.reps||"").trim()||String(x.rpe||"").trim());if(hasToday&&!confirm("Today already has working-set entries for this exercise. Replace those entries with the last completed performance? Warm-up sets and notes will not be changed."))return;for(let j=0;j<Math.min(t.sets,src.length);j++){l.sets[j].weight=src[j].weight;l.sets[j].reps=src[j].reps;l.sets[j].rpe=src[j].rpe;l.sets[j].done=false}save();renderToday();toast("Last performance prefilled");return}
  const detailBtn=e.target.closest(".exerciseDetailBtn");if(detailBtn){openExerciseDetails(detailBtn.dataset.exid);return}
  const cf=e.target.closest("#confirmFinishBtn");if(cf){finalizeSession();return}
 
- const plus=e.target.closest(".repPlus");if(plus){pushUndo("Added rep target");plan()[currentDay].items[Number(plus.dataset.slot)].userRepDelta=(plan()[currentDay].items[Number(plus.dataset.slot)].userRepDelta||0)+1;save();renderToday();return}
- const minus=e.target.closest(".repMinus");if(minus){pushUndo("Reduced rep target");const it=plan()[currentDay].items[Number(minus.dataset.slot)];it.userRepDelta=(it.userRepDelta||0)-1;save();renderToday();return}
- const sp=e.target.closest(".setPlus");if(sp){pushUndo("Added working set");const it=plan()[currentDay].items[Number(sp.dataset.slot)];it.userSetDelta=(it.userSetDelta||0)+1;save();renderToday();return}
- const sm=e.target.closest(".setMinus");if(sm){pushUndo("Reduced working set");const it=plan()[currentDay].items[Number(sm.dataset.slot)],t=effectiveTarget(it);if(t.sets>1)it.userSetDelta=(it.userSetDelta||0)-1;save();renderToday();return}
+ const plus=e.target.closest(".repPlus");if(plus){pushUndo("Added rep target");trainingItems()[Number(plus.dataset.slot)].userRepDelta=(trainingItems()[Number(plus.dataset.slot)].userRepDelta||0)+1;save();renderToday();return}
+ const minus=e.target.closest(".repMinus");if(minus){pushUndo("Reduced rep target");const it=trainingItems()[Number(minus.dataset.slot)];it.userRepDelta=(it.userRepDelta||0)-1;save();renderToday();return}
+ const sp=e.target.closest(".setPlus");if(sp){pushUndo("Added working set");const it=trainingItems()[Number(sp.dataset.slot)];it.userSetDelta=(it.userSetDelta||0)+1;save();renderToday();return}
+ const sm=e.target.closest(".setMinus");if(sm){pushUndo("Reduced working set");const it=trainingItems()[Number(sm.dataset.slot)],t=effectiveTarget(it);if(t.sets>1)it.userSetDelta=(it.userSetDelta||0)-1;save();renderToday();return}
  const ed=e.target.closest(".editTarget");if(ed)return editTarget(Number(ed.dataset.slot));
- const rt=e.target.closest(".resetTarget");if(rt){pushUndo("Reset exercise target");const it=plan()[currentDay].items[Number(rt.dataset.slot)];it.userSetDelta=0;it.userRepDelta=0;it.userRpe=null;it.userLoad=null;save();renderToday();toast("Original target restored");return}
+ const rt=e.target.closest(".resetTarget");if(rt){pushUndo("Reset exercise target");const it=trainingItems()[Number(rt.dataset.slot)];it.userSetDelta=0;it.userRepDelta=0;it.userRpe=null;it.userLoad=null;save();renderToday();toast("Original target restored");return}
  const wh=e.target.closest(".whyBtn");if(wh){
-  const it=plan()[currentDay].items[Number(wh.dataset.slot)],s=suggestion(it);
+  const it=trainingItems()[Number(wh.dataset.slot)],s=suggestion(it);
   const rpeContext=/\bRPE\b/i.test([s.text,...(s.why||[])].join(" "));
   const rpeExplainer=rpeContext?`<div class="coach-rpe-explainer"><strong>What is RPE?</strong><p><b>RPE = Rate of Perceived Exertion.</b> It measures how hard a set felt on a 1–10 scale.</p><div class="coach-rpe-scale"><div><b>RPE 10</b> = no reps left</div><div><b>RPE 9</b> = about 1 rep left</div><div><b>RPE 8</b> = about 2 reps left</div><div><b>RPE 7</b> = about 3 reps left</div></div></div>`:"";
   openSheet("COACH LOGIC",EXMAP[it.id].name,
@@ -5721,15 +5866,21 @@ document.addEventListener("click",e=>{
   $("#sheet").classList.add("logic-sheet");
   return
 }
- const vb=e.target.closest(".visualBtn");if(vb){const slot=Number(vb.dataset.slot),it=plan()[currentDay].items[slot],ex=EXMAP[it.id];openSheet("EXERCISE VISUAL",ex.name,universalGuideHtml(it.id)+`<p class="tiny">${esc(ex.muscles)}${visualFor(it.id)?` · ${esc(visualStyleName(it.id))}`:""}</p><p class="tiny">Difficulty: ${esc(ex.difficulty||"Intermediate")} · Fatigue cost: ${esc(ex.fatigue||"moderate")} · Substitution group: ${esc(ex.substitutionGroup||ex.pattern)}</p>`);return}
+ const vb=e.target.closest(".visualBtn");if(vb){const slot=Number(vb.dataset.slot),it=trainingItems()[slot],ex=EXMAP[it.id];openSheet("EXERCISE VISUAL",ex.name,universalGuideHtml(it.id)+`<p class="tiny">${esc(ex.muscles)}${visualFor(it.id)?` · ${esc(visualStyleName(it.id))}`:""}</p><p class="tiny">Difficulty: ${esc(ex.difficulty||"Intermediate")} · Fatigue cost: ${esc(ex.fatigue||"moderate")} · Substitution group: ${esc(ex.substitutionGroup||ex.pattern)}</p>`);return}
  const sw=e.target.closest(".swapBtn");if(sw)return openSwap(Number(sw.dataset.slot));
- const choose=e.target.closest(".chooseSwap");if(choose){const slot=Number(choose.dataset.slot),oldItem=plan()[currentDay].items[slot],oldTarget=effectiveTarget(oldItem),oldLog=exLog(currentDay,slot,oldTarget.sets),hasEntries=(oldLog.sets||[]).some(s=>s.done||s.weight||s.reps||s.rpe)||(oldLog.warmups||[]).some(s=>s.done||s.weight||s.reps);if(hasEntries&&!confirm("This exercise already has logged entries today. Swapping it will clear those entries. Continue?"))return;pushUndo("Swapped exercise");oldItem.id=choose.dataset.id;dayLog(currentDay)[slot]={sets:[],warmups:[],note:""};save();closeSheet();renderToday();toast("Exercise swapped");return}
- const tb=e.target.closest(".timerBtn");if(tb){const slot=Number(tb.dataset.slot),it=plan()[currentDay].items[slot];stopTimer();timer.slot=slot;timer.base=timer.remaining=it.rest;timer.label=`${EXMAP[it.id].name} · rest`;timer.auto=false;openRestSheet();return}
+ if(e.target.closest("#swapSuggestedTab")){toggleSwapBrowse(false);return}
+ if(e.target.closest("#swapCategoriesTab")){toggleSwapBrowse(true);return}
+ const choose=e.target.closest(".chooseSwap");if(choose){const slot=Number(choose.dataset.slot),oldItem=trainingItems()[slot],oldTarget=effectiveTarget(oldItem),oldLog=exLog(currentDay,slot,oldTarget.sets),hasEntries=(oldLog.sets||[]).some(s=>s.done||s.weight||s.reps||s.rpe)||(oldLog.warmups||[]).some(s=>s.done||s.weight||s.reps);if(hasEntries&&!confirm("This exercise already has logged entries today. Swapping it will clear those entries. Continue?"))return;
+ const replacement=EXMAP[choose.dataset.id];if(replacement?.pattern!==EXMAP[oldItem.id]?.pattern&&!confirm("This exercise is in a different movement category. Your current sets and rep targets will be retained; review them after swapping. Continue?"))return;
+ pushUndo("Swapped exercise");oldItem.id=choose.dataset.id;dayLog(currentDay)[slot]={sets:[],warmups:[],note:""};save();closeSheet();renderToday();toast("Exercise swapped");return}
+ const tb=e.target.closest(".timerBtn");if(tb){const slot=Number(tb.dataset.slot),it=trainingItems()[slot];stopTimer();timer.slot=slot;timer.base=timer.remaining=it.rest;timer.label=`${EXMAP[it.id].name} · rest`;timer.auto=false;openRestSheet();return}
 });
 document.addEventListener("input",e=>{
  if(e.target.id==="librarySearch")renderExerciseLibraryResults();
- if(e.target.matches("input[data-slot]")){const s=Number(e.target.dataset.slot),j=Number(e.target.dataset.set),f=e.target.dataset.f,it=plan()[currentDay].items[s],t=effectiveTarget(it);exLog(currentDay,s,t.sets).sets[j][f]=e.target.value;save()}
- if(e.target.matches("textarea[data-note]")){const s=Number(e.target.dataset.note),it=plan()[currentDay].items[s],t=effectiveTarget(it);exLog(currentDay,s,t.sets).note=e.target.value;save()}
+ if(e.target.id==="sessionExerciseSearch")renderSessionExerciseResults();
+ if(e.target.id==="swapExerciseSearch")renderSwapCategoryResults();
+ if(e.target.matches("input[data-slot]")){const s=Number(e.target.dataset.slot),j=Number(e.target.dataset.set),f=e.target.dataset.f,it=trainingItems()[s],t=effectiveTarget(it);exLog(currentDay,s,t.sets).sets[j][f]=e.target.value;save()}
+ if(e.target.matches("textarea[data-note]")){const s=Number(e.target.dataset.note),it=trainingItems()[s],t=effectiveTarget(it);exLog(currentDay,s,t.sets).note=e.target.value;save()}
  if(e.target.classList.contains("recRange")){const v=$("#"+e.target.dataset.k+"Val");if(v)v.textContent=e.target.value+"/10";updateRecoveryDraftScore()}
 });
 
