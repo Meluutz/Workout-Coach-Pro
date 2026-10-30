@@ -2840,18 +2840,17 @@ function setCurrentTrainDay(dayIdx,persist=true){
 function renderDayTabs(){
  const b=$("#dayTabs");b.innerHTML="";plan().forEach((d,i)=>{const x=document.createElement("button");x.textContent=d.weekday;x.classList.toggle("active",i===currentDay);x.disabled=!!d.transitionRest;x.onclick=()=>{if(d.transitionRest)return;setCurrentTrainDay(i,true);renderToday()};b.appendChild(x)});
 }
-function visualFor(exId){return visualChoice(exId).path}
-function visualStyleName(exId){return visualFor(exId)?"Universal exercise illustration":"Exact exercise visual unavailable";}
+function visualFor(exId){return UNIVERSAL_GUIDES[exId]||null}
+function visualStyleName(exId){return visualFor(exId)?"Approved Masculine exercise guide":"Approved exercise guide unavailable";}
 function visualHtml(exId,compact=false){
- const ex=EXMAP[exId],c=visualChoice(exId),base=VISUALS[exId]||null;
- if(c.path)return `<img class="exvisual" loading="lazy" src="${c.path}" alt="${esc(ex.name)} exercise visual">${c.fallback?`<div class="avatar-note">${avatarLabel(c.shown)} avatar fallback · ${avatarLabel(c.requested)} pack pending</div>`:""}`;
- if(c.reason==="exact_variant_pending")return `<div class="visual-missing"><strong>${esc(ex.name)}</strong><br><span class="tiny">Exact visual pending for this specific ${ex.resistanceType?esc(ex.resistanceType.toLowerCase()):"exercise"} variant. A loaded or differently equipped version will not be substituted.</span></div>`;
- if(!base)return `<div class="visual-missing"><strong>${esc(ex.name)}</strong><br><span class="tiny">Exact visual pending for this exercise. The app will not substitute an image from a different exercise or resistance variant.</span></div>`;
- return `<div class="visual-missing"><strong>${esc(ex.name)}</strong><br><span class="tiny">This exact exercise has a visual in the current male pack, but your ${avatarLabel(c.requested)} avatar preference is set not to use fallback visuals. You can change this under Settings → Personalization.</span></div>`;
+ const ex=EXMAP[exId],path=visualFor(exId);
+ if(!ex)return '<div class="visual-missing">Unknown exercise</div>';
+ if(!path)return `<div class="visual-missing"><strong>${esc(ex.name)}</strong><br>Approved guide is unavailable for this exercise. No older or different exercise image will be substituted.</div>`;
+ return `<img class="exvisual approved-guide-visual${compact?" exvisual-compact":""}" loading="lazy" decoding="async" src="${path}" alt="${esc(ex.name)} approved Masculine exercise guide, including Start, Finish, Muscles Worked, and five Key Points">`;
 }
 function workoutVisualGrid(){
  const d=plan()[currentDay];
- return `<div class="visual-grid">${d.items.map(it=>`<div class="visual-card"><strong>${esc(EXMAP[it.id].name)}</strong><div style="margin-top:8px">${visualHtml(it.id,true)}</div><button class="exerciseDetailBtn" data-exid="${it.id}" style="margin-top:8px">Exercise details</button></div>`).join("")}</div>`;
+ return `<div class="visual-grid workout-guide-grid">${d.items.map(it=>`<div class="visual-card"><strong>${esc(EXMAP[it.id].name)}</strong><div style="margin-top:8px">${visualHtml(it.id,false)}</div><button class="exerciseDetailBtn" data-exid="${it.id}" style="margin-top:8px">Open full Exercise Guide</button></div>`).join("")}</div>`;
 }
 function movementLabel(pattern){return ({hpress:"Horizontal press",incline:"Incline press",vpress:"Vertical press",vpull:"Vertical pull",row:"Row",backfloor:"Bodyweight back / scapular",squat:"Squat",hinge:"Hip hinge",quad:"Quad isolation",hamstring:"Hamstring isolation",unilateral:"Unilateral legs",hip:"Hip extension",lateral:"Lateral delt",rear:"Rear delt",shrug:"Upper-trap shrug",biceps:"Biceps",triceps:"Triceps",calf:"Calves",core:"Core"})[pattern]||pattern}
 function equipmentLabel(e){return (e.equipment||[]).map(x=>x==="gym"?"Full gym":x==="dumbbells"?"Dumbbells":x==="minimal"?"Minimal equipment":x==="bodyweight"?"Bodyweight only":x).join(" · ")}
@@ -3549,12 +3548,12 @@ function renderVisualCoverage(){
  const count=$("#visualCoverageCount"),bar=$("#visualCoverageBar"),text=$("#visualCoverageText");
  if(count)count.textContent=`${covered}/${total}`;
  if(bar)bar.style.width=pct+"%";
- if(text)text.textContent=`${pct}% exact-exercise visual coverage (${covered}/${total}). Approved Masculine guides are universal for every profile. Exercise identities are unchanged.`;
+ if(text)text.textContent=`${pct}% exact-exercise approved guide coverage (${covered}/${total}). Approved Masculine guides are universal for every profile. Exercise identities are unchanged.`;
  renderAvatarPackStatus();
 }
 function openVisualCatalog(){
  const covered=EX.filter(e=>visualFor(e.id));
- openSheet("VISUAL LIBRARY",`${covered.length} exact exercise visuals`,`<div class="visual-grid">${covered.map(e=>`<div class="visual-card"><strong>${esc(e.name)}</strong><div class="tiny" style="margin:4px 0 8px">${esc(visualStyleName(e.id))}</div>${visualHtml(e.id,true)}</div>`).join("")}</div>`);
+ openSheet("VISUAL LIBRARY",`${covered.length} approved exercise guides`,`<div class="visual-grid">${covered.map(e=>`<div class="visual-card"><strong>${esc(e.name)}</strong><div class="tiny" style="margin:4px 0 8px">${esc(visualStyleName(e.id))}</div>${visualHtml(e.id,true)}</div>`).join("")}</div>`);
 }
 function renderSettings(){
  const p=profile();if(!p)return;

@@ -1273,6 +1273,12 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 @media(max-width:390px){.program-week-stats{grid-template-columns:1fr 1fr}.program-week-stat:last-child{grid-column:1/-1}.program-activity-head{align-items:center}}
 
 
+/* QA v3: every visual entry point uses the same user-approved Masculine card. */
+.workout-guide-grid{grid-template-columns:minmax(0,1fr);max-width:760px;margin:0 auto}
+.approved-guide-visual{display:block;width:100%;height:auto!important;max-height:none!important;object-fit:contain;object-position:center}
+.visual-card .approved-guide-visual{max-width:620px;margin:0 auto}
+.library-thumb .approved-guide-visual{width:100%;height:100%!important;max-height:100%!important;object-fit:contain}
+
 /* Universal approved Masculine guide: entire card is visible; originals not cropped */
 .universal-guide-container{max-width:850px;margin:0 auto 12px;overflow:visible}
 .universal-guide-image{display:block;width:100%;height:auto;max-width:100%;border-radius:10px;object-fit:contain;box-shadow:0 2px 14px rgba(15,23,42,.08)}
@@ -1282,7 +1288,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <header class="app-header"><div class="header-inner">
- <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v8.0.5 · 169 guides · QA candidate</div></div></div>
+ <div class="brand-lockup"><img class="app-mark" src="./assets/branding/workout-coach-app-icon.png" alt="" aria-hidden="true"><div class="brand-copy"><div class="eyebrow">ADAPTIVE TRAINING</div><h1>Workout Coach</h1><div class="sub" id="headerSub">Adaptive coaching · 169-exercise expanded library</div><div class="build">v8.0.5 · 169 guides · QA candidate v3</div></div></div>
  <div class="header-actions"><button id="themeBtn" class="icon-action" aria-label="Toggle dark mode">Dark</button></div>
 </div></header>
 
@@ -4520,18 +4526,17 @@ function setCurrentTrainDay(dayIdx,persist=true){
 function renderDayTabs(){
  const b=$("#dayTabs");b.innerHTML="";plan().forEach((d,i)=>{const x=document.createElement("button");x.textContent=d.weekday;x.classList.toggle("active",i===currentDay);x.disabled=!!d.transitionRest;x.onclick=()=>{if(d.transitionRest)return;setCurrentTrainDay(i,true);renderToday()};b.appendChild(x)});
 }
-function visualFor(exId){return visualChoice(exId).path}
-function visualStyleName(exId){return visualFor(exId)?"Universal exercise illustration":"Exact exercise visual unavailable";}
+function visualFor(exId){return UNIVERSAL_GUIDES[exId]||null}
+function visualStyleName(exId){return visualFor(exId)?"Approved Masculine exercise guide":"Approved exercise guide unavailable";}
 function visualHtml(exId,compact=false){
- const ex=EXMAP[exId],c=visualChoice(exId),base=VISUALS[exId]||null;
- if(c.path)return `<img class="exvisual" loading="lazy" src="${c.path}" alt="${esc(ex.name)} exercise visual">${c.fallback?`<div class="avatar-note">${avatarLabel(c.shown)} avatar fallback · ${avatarLabel(c.requested)} pack pending</div>`:""}`;
- if(c.reason==="exact_variant_pending")return `<div class="visual-missing"><strong>${esc(ex.name)}</strong><br><span class="tiny">Exact visual pending for this specific ${ex.resistanceType?esc(ex.resistanceType.toLowerCase()):"exercise"} variant. A loaded or differently equipped version will not be substituted.</span></div>`;
- if(!base)return `<div class="visual-missing"><strong>${esc(ex.name)}</strong><br><span class="tiny">Exact visual pending for this exercise. The app will not substitute an image from a different exercise or resistance variant.</span></div>`;
- return `<div class="visual-missing"><strong>${esc(ex.name)}</strong><br><span class="tiny">This exact exercise has a visual in the current male pack, but your ${avatarLabel(c.requested)} avatar preference is set not to use fallback visuals. You can change this under Settings → Personalization.</span></div>`;
+ const ex=EXMAP[exId],path=visualFor(exId);
+ if(!ex)return '<div class="visual-missing">Unknown exercise</div>';
+ if(!path)return `<div class="visual-missing"><strong>${esc(ex.name)}</strong><br>Approved guide is unavailable for this exercise. No older or different exercise image will be substituted.</div>`;
+ return `<img class="exvisual approved-guide-visual${compact?" exvisual-compact":""}" loading="lazy" decoding="async" src="${path}" alt="${esc(ex.name)} approved Masculine exercise guide, including Start, Finish, Muscles Worked, and five Key Points">`;
 }
 function workoutVisualGrid(){
  const d=plan()[currentDay];
- return `<div class="visual-grid">${d.items.map(it=>`<div class="visual-card"><strong>${esc(EXMAP[it.id].name)}</strong><div style="margin-top:8px">${visualHtml(it.id,true)}</div><button class="exerciseDetailBtn" data-exid="${it.id}" style="margin-top:8px">Exercise details</button></div>`).join("")}</div>`;
+ return `<div class="visual-grid workout-guide-grid">${d.items.map(it=>`<div class="visual-card"><strong>${esc(EXMAP[it.id].name)}</strong><div style="margin-top:8px">${visualHtml(it.id,false)}</div><button class="exerciseDetailBtn" data-exid="${it.id}" style="margin-top:8px">Open full Exercise Guide</button></div>`).join("")}</div>`;
 }
 function movementLabel(pattern){return ({hpress:"Horizontal press",incline:"Incline press",vpress:"Vertical press",vpull:"Vertical pull",row:"Row",backfloor:"Bodyweight back / scapular",squat:"Squat",hinge:"Hip hinge",quad:"Quad isolation",hamstring:"Hamstring isolation",unilateral:"Unilateral legs",hip:"Hip extension",lateral:"Lateral delt",rear:"Rear delt",shrug:"Upper-trap shrug",biceps:"Biceps",triceps:"Triceps",calf:"Calves",core:"Core"})[pattern]||pattern}
 function equipmentLabel(e){return (e.equipment||[]).map(x=>x==="gym"?"Full gym":x==="dumbbells"?"Dumbbells":x==="minimal"?"Minimal equipment":x==="bodyweight"?"Bodyweight only":x).join(" · ")}
@@ -5229,12 +5234,12 @@ function renderVisualCoverage(){
  const count=$("#visualCoverageCount"),bar=$("#visualCoverageBar"),text=$("#visualCoverageText");
  if(count)count.textContent=`${covered}/${total}`;
  if(bar)bar.style.width=pct+"%";
- if(text)text.textContent=`${pct}% exact-exercise visual coverage (${covered}/${total}). Approved Masculine guides are universal for every profile. Exercise identities are unchanged.`;
+ if(text)text.textContent=`${pct}% exact-exercise approved guide coverage (${covered}/${total}). Approved Masculine guides are universal for every profile. Exercise identities are unchanged.`;
  renderAvatarPackStatus();
 }
 function openVisualCatalog(){
  const covered=EX.filter(e=>visualFor(e.id));
- openSheet("VISUAL LIBRARY",`${covered.length} exact exercise visuals`,`<div class="visual-grid">${covered.map(e=>`<div class="visual-card"><strong>${esc(e.name)}</strong><div class="tiny" style="margin:4px 0 8px">${esc(visualStyleName(e.id))}</div>${visualHtml(e.id,true)}</div>`).join("")}</div>`);
+ openSheet("VISUAL LIBRARY",`${covered.length} approved exercise guides`,`<div class="visual-grid">${covered.map(e=>`<div class="visual-card"><strong>${esc(e.name)}</strong><div class="tiny" style="margin:4px 0 8px">${esc(visualStyleName(e.id))}</div>${visualHtml(e.id,true)}</div>`).join("")}</div>`);
 }
 function renderSettings(){
  const p=profile();if(!p)return;
