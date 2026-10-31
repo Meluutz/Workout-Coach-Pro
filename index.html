@@ -1301,6 +1301,31 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .session-picker-tabs button.active{background:var(--navy);color:var(--bg);border-color:var(--navy)}
 @media(max-width:600px){.session-picker-controls{grid-template-columns:1fr}}
 
+
+/* v10 — Edit saved plans (draft-only, no automatic activation). */
+.saved-plan-item-main-actions{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.saved-plan-item-main-actions button{padding:9px 4px;font-size:11px;white-space:normal;min-width:0}
+.plan-edit-label{display:block;font-weight:750;font-size:12px;margin:12px 0}
+.plan-edit-label .field{margin-top:5px}
+.plan-edit-days{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.plan-edit-days button{padding:8px 11px;min-height:40px;font-size:11px}
+.plan-edit-section-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:15px 0 8px}
+.plan-edit-exercises{display:grid;gap:9px}
+.plan-edit-exercise{border:1px solid var(--line);background:var(--surface-2);border-radius:13px;padding:11px;min-width:0}
+.plan-edit-exercise-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:7px}
+.plan-edit-exercise-head>strong{font-size:13px;overflow-wrap:anywhere;flex:1 1 135px}
+.plan-edit-exercise-actions{display:flex;gap:5px;flex-wrap:wrap}
+.plan-edit-exercise-actions button{min-height:36px;padding:7px 9px;font-size:11px;border-radius:10px}
+.plan-edit-targets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:10px}
+.plan-edit-targets label{font-size:11px;font-weight:650;min-width:0}
+.plan-edit-targets input{margin-top:4px;font-size:16px;width:100%;min-width:0}
+#planEditAddArea{border:1px solid var(--line);border-radius:13px;margin:12px 0;padding:12px}
+#planEditAddArea summary{font-weight:800;cursor:pointer}
+#planEditAddArea .session-picker-controls{margin-top:12px}
+.plan-edit-footer{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;padding-bottom:10px}
+.plan-edit-footer button{min-height:48px}
+@media(max-width:480px){.plan-edit-targets{grid-template-columns:repeat(2,minmax(0,1fr))}.plan-edit-exercise-actions button{padding:6px 8px}}
+
 </style>
 <style id="exercise-rest-preference-style">#timerSheet .preset[aria-pressed="true"]{outline:2px solid #2563eb;outline-offset:2px}#exerciseRestNote{line-height:1.5}</style>
 <style id="compact-exercise-pickers-v9">
@@ -1741,6 +1766,8 @@ let reliabilityRunning=false,lastReliabilityResult=null;
 let analyticsRange="8w",analyticsExerciseId=null;
 let customOrderDrag={active:false,id:null,targetId:null,pointerId:null,after:false};
 let planCreationMode=null;
+let savedPlanEditorDraft=null; // In-memory until user explicitly saves. Never edits current workout.
+
 
 function syncVisualViewport(){
  const vv=window.visualViewport;
@@ -2148,6 +2175,7 @@ function savedPlanItemHtml(entry){
   ${entry.scheduledStart?`<div class="saved-plan-schedule"><strong>Start reminder</strong> · ${esc(entry.scheduledStart)} · activates only when you choose it</div>`:""}
   <div class="saved-plan-item-main-actions">
    <button class="savedPlanPreviewBtn" data-planid="${esc(entry.id)}">View plan</button>
+   <button class="savedPlanEditBtn" data-planid="${esc(entry.id)}">${active?"Edit copy":"Edit plan"}</button>
    ${active?'<button class="savedPlanUpdateBtn" data-planid="'+esc(entry.id)+'">Update saved</button>':'<button class="savedPlanActivateBtn primary" data-planid="'+esc(entry.id)+'">Make active</button>'}
   </div>
   <button class="savedPlanMoreBtn" data-planid="${esc(entry.id)}" aria-expanded="false"><span>More options</span><span aria-hidden="true">⌄</span></button>
@@ -2280,7 +2308,132 @@ function savedPlanPreviewHtml(entry){
 }
 function openSavedPlanPreview(id){
  const entry=savedPlans().find(x=>x.id===id);if(!entry)return;
- openSheet("PLAN PREVIEW",entry.name,`${savedPlanPreviewHtml(entry)}<div class="saved-plan-activate-actions"><button id="previewBackToLibrary">Back to library</button>${entry.id===state.activeSavedPlanId?"":`<button class="savedPlanActivateBtn primary" data-planid="${esc(entry.id)}">Make active</button>`}</div>`);
+ openSheet("PLAN PREVIEW",entry.name,`${savedPlanPreviewHtml(entry)}<div class="saved-plan-activate-actions"><button id="previewBackToLibrary">Back to library</button><button class="savedPlanEditBtn" data-planid="${esc(entry.id)}">${entry.id===state.activeSavedPlanId?"Edit copy":"Edit plan"}</button>${entry.id===state.activeSavedPlanId?"":`<button class="savedPlanActivateBtn primary" data-planid="${esc(entry.id)}">Make active</button>`}</div>`);
+}
+// Saved Plan Editor — draft-only. Editing an active or historical plan creates a new template.
+// Existing active workout, completed history and old plan snapshots remain untouched.
+function openSavedPlanEditor(id){
+ const src=savedPlans().find(p=>p.id===id);if(!src)return;
+ const copyOnSave=id===state.activeSavedPlanId||!!(src.continuable&&src.cycle);
+ savedPlanEditorDraft={sourceId:id,copyOnSave,dayIndex:0,replaceSlot:null,plan:deepCopy(src.plan),
+  profile:deepCopy(src.profile),name:copyOnSave?uniquePlanName(`${src.name} Edited`):src.name};
+ renderSavedPlanEditor();
+}
+function readSavedPlanEditorFields(){
+ const ed=savedPlanEditorDraft;if(!ed)return;
+ const name=document.getElementById("planEditName");if(name)ed.name=name.value;
+ const day=ed.plan[ed.dayIndex];if(!day)return;
+ const title=document.getElementById("planEditDayTitle");if(title)day.title=title.value;
+ document.querySelectorAll(".plan-edit-exercise[data-edit-slot]").forEach(node=>{
+  const slot=Number(node.dataset.editSlot),it=day.items[slot];if(!it)return;
+  const get=k=>node.querySelector(`[data-edit-field="${k}"]`)?.value;
+  if(get("sets")!==undefined)it.baseSets=Number(get("sets"));
+  if(get("reps")!==undefined)it.baseReps=get("reps").trim();
+  if(get("rpe")!==undefined)it.baseRpe=get("rpe").trim();
+  if(get("rest")!==undefined)it.rest=Number(get("rest"));
+ });
+}
+function savedPlanEditorErrors(ed){
+ const issues=[];
+ if(!ed||!Array.isArray(ed.plan)||ed.plan.length<1||ed.plan.length>7)return["Plan must contain one to seven workout days."];
+ ed.plan.forEach((day,di)=>{
+  if(!day||!Array.isArray(day.items)||!day.items.length)issues.push(`Day ${di+1} needs at least one exercise.`);
+  if(String(day?.title||"").trim().length>90)issues.push(`Day ${di+1} title is too long.`);
+  const used=new Set();
+  (day?.items||[]).forEach((it,si)=>{
+   const label=`Day ${di+1}, exercise ${si+1}`;
+   if(!EXMAP[it?.id]||used.has(it.id))issues.push(`${label}: unknown or repeated exercise.`);else used.add(it.id);
+   if(!Number.isInteger(it.baseSets)||it.baseSets<1||it.baseSets>8)issues.push(`${label}: sets must be 1–8.`);
+   if(!String(it.baseReps||"").trim()||String(it.baseReps).length>24||!/\d/.test(String(it.baseReps)))issues.push(`${label}: enter a valid rep or time target (e.g. 8–12 or 30s).`);
+   if(!String(it.baseRpe||"").trim()||String(it.baseRpe).length>15)issues.push(`${label}: RPE target is required.`);
+   if(!Number.isInteger(it.rest)||it.rest<30||it.rest>600)issues.push(`${label}: rest must be 30–600 seconds.`);
+  });
+ });
+ return issues;
+}
+function savedPlanEditorEligible(){
+ const ed=savedPlanEditorDraft,day=ed?.plan?.[ed?.dayIndex];if(!day)return[];
+ const avoid=String(ed.profile?.avoid||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean);
+ const selected=new Set(day.items.map(it=>it.id));
+ const replacing=ed.replaceSlot;
+ if(replacing!==null)selected.delete(day.items[replacing]?.id);
+ return EX.filter(ex=>!selected.has(ex.id)&&allowed(ex,ed.profile,avoid)).sort((a,b)=>a.name.localeCompare(b.name));
+}
+function renderSavedPlanEditorResults(){
+ const box=document.getElementById("planEditResults");if(!box||!savedPlanEditorDraft)return;
+ const q=(document.getElementById("planEditSearch")?.value||"").trim().toLowerCase();
+ const cat=document.getElementById("planEditCategory")?.value||"All";
+ const rows=savedPlanEditorEligible().filter(ex=>(cat==="All"||exerciseCategory(ex)===cat)&&sessionPickerSearchMatches(ex,q));
+ const meta=document.getElementById("planEditResultMeta");
+ if(meta)meta.textContent=`${rows.length} available exercises${rows.length>30?" · showing first 30; narrow your search":""}`;
+ box.innerHTML=rows.slice(0,30).map(ex=>pickerExerciseRowHtml(ex,`<button class="planEditChooseExercise" data-exid="${esc(ex.id)}">${savedPlanEditorDraft.replaceSlot===null?"Add exercise":"Use replacement"}</button>`,savedPlanEditorDraft.profile)).join("")||'<p class="tiny">No matching exercises. Try another category.</p>';
+}
+function renderSavedPlanEditor(){
+ const ed=savedPlanEditorDraft;if(!ed)return;
+ const day=ed.plan[ed.dayIndex];if(!day)return;
+ const content=`<div class="saved-plan-sheet-note"><strong>${ed.copyOnSave?"Editing an independent copy":"Editing a saved template"}</strong><br>
+  These changes affect <strong>the saved plan only</strong>. Your currently active workout, completed sessions, logged sets and cycle are unchanged. Activate the edited plan separately when you want to use it.</div>
+  <label class="plan-edit-label">Plan name<input class="field" id="planEditName" maxlength="60" value="${esc(ed.name)}"></label>
+  <div class="plan-edit-days">${ed.plan.map((d,i)=>`<button class="planEditDayBtn ${i===ed.dayIndex?"primary":""}" data-day="${i}">${esc(d.weekday||`Day ${i+1}`)}</button>`).join("")}</div>
+  <label class="plan-edit-label">Day title<input class="field" id="planEditDayTitle" maxlength="90" value="${esc(day.title||"")}"></label>
+  <div class="plan-edit-section-heading"><strong>${day.items.length} exercises</strong><span class="tiny">Move, replace, edit targets or remove</span></div>
+  <div class="plan-edit-exercises">${day.items.map((it,i)=>{
+   const ex=EXMAP[it.id];return `<div class="plan-edit-exercise" data-edit-slot="${i}">
+    <div class="plan-edit-exercise-head"><strong>${i+1}. ${esc(ex?.name||it.id)}</strong><div class="plan-edit-exercise-actions">
+     <button class="planEditMove" data-slot="${i}" data-direction="-1" ${i===0?"disabled":""} aria-label="Move ${esc(ex?.name||it.id)} up">↑</button>
+     <button class="planEditMove" data-slot="${i}" data-direction="1" ${i===day.items.length-1?"disabled":""} aria-label="Move ${esc(ex?.name||it.id)} down">↓</button>
+     <button class="planEditReplace" data-slot="${i}">Swap</button>
+     <button class="planEditRemove" data-slot="${i}" ${day.items.length===1?"disabled":""}>Remove</button>
+    </div></div>
+    <div class="plan-edit-targets">
+     <label>Sets<input class="field" data-edit-field="sets" type="number" inputmode="numeric" min="1" max="8" value="${esc(it.baseSets)}"></label>
+     <label>Reps / time<input class="field" data-edit-field="reps" maxlength="24" value="${esc(it.baseReps)}"></label>
+     <label>RPE<input class="field" data-edit-field="rpe" maxlength="15" value="${esc(it.baseRpe)}"></label>
+     <label>Rest (seconds)<input class="field" data-edit-field="rest" type="number" inputmode="numeric" min="30" max="600" value="${esc(it.rest)}"></label>
+    </div>
+   </div>`}).join("")}</div>
+  <details id="planEditAddArea" ${ed.replaceSlot!==null?"open":""}><summary id="planEditPickerHeading">${ed.replaceSlot===null?"+ Add exercise to this day":`Replace exercise ${ed.replaceSlot+1}`}</summary>
+   <div class="session-picker-controls"><label>Category<select class="field" id="planEditCategory">${sessionPickerCategoryOptions()}</select></label>
+    <label>Search<input type="search" id="planEditSearch" class="search" placeholder="Exercise or muscle"></label></div>
+   <div class="tiny" id="planEditResultMeta" aria-live="polite"></div><div class="library-results" id="planEditResults"></div>
+  </details>
+  <div class="plan-edit-footer"><button id="planEditCancel">Cancel</button><button id="planEditSave" class="primary">${ed.copyOnSave?"Save as new plan":"Save plan changes"}</button></div>`;
+ openSheet("EDIT SAVED PLAN",ed.copyOnSave?"Edit a copy": "Edit workout plan",content);
+ renderSavedPlanEditorResults();
+}
+function savedPlanEditorChoose(exId){
+ const ed=savedPlanEditorDraft;if(!ed)return;
+ readSavedPlanEditorFields();
+ const ex=EXMAP[exId],day=ed.plan[ed.dayIndex];if(!ex||!savedPlanEditorEligible().some(e=>e.id===exId))return;
+ if(ed.replaceSlot===null){
+  if(day.items.length>=35)return alert("This workout day has reached the 35-exercise editing limit.");
+  day.items.push(makePlanItem(ex,ed.profile,goalConfig(ed.profile.goal||"muscle",ed.profile.level||"Intermediate"),false));
+ }else{
+  const i=ed.replaceSlot,prior=day.items[i];if(!prior)return;
+  const fresh=makePlanItem(ex,ed.profile,goalConfig(ed.profile.goal||"muscle",ed.profile.level||"Intermediate"),false);
+  fresh.baseSets=prior.baseSets;fresh.baseReps=prior.baseReps;fresh.baseRpe=prior.baseRpe;fresh.rest=prior.rest;
+  fresh.userSetDelta=0;fresh.userRepDelta=0;fresh.userRpe=null;fresh.userLoad=null;
+  day.items[i]=fresh;
+ }
+ ed.replaceSlot=null;renderSavedPlanEditor();
+}
+function commitSavedPlanEditor(){
+ const ed=savedPlanEditorDraft;if(!ed)return;
+ readSavedPlanEditorFields();
+ const issues=savedPlanEditorErrors(ed);if(issues.length){alert(`Please correct these plan details:\n\n${issues.slice(0,7).join("\n")}`);return}
+ const source=savedPlans().find(p=>p.id===ed.sourceId);if(!source){alert("This plan is no longer available. Your changes have not been saved.");return}
+ const next=deepCopy(source),now=new Date().toISOString();
+ next.name=uniquePlanName(cleanPlanName(ed.name),ed.copyOnSave?null:source.id);
+ next.plan=deepCopy(ed.plan);next.updatedAt=now;
+ if(ed.copyOnSave){next.id=planLibraryId();next.name=uniquePlanName(cleanPlanName(ed.name));next.createdAt=now;next.lastUsedAt=null;next.scheduledStart=null;next.cycle=null;next.weekLogs={};next.coaching={};next.continuable=false}
+ // Save the complete state atomically; no active workout fields are changed.
+ const before=state.savedPlans,idx=before.findIndex(p=>p.id===source.id);
+ const updated=before.slice();if(ed.copyOnSave)updated.push(next);else updated[idx]=next;
+ const proposed={...state,savedPlans:updated};
+ const report=validateBackupPayload(proposed);if(!report.ok){alert("The edited plan failed data validation: "+report.errors.slice(0,3).join(" "));return}
+ try{localStorage.setItem(KEY,JSON.stringify(proposed))}catch(err){alert("Could not save this plan. Your existing workouts and plans remain unchanged.");return}
+ pushUndo("Edited saved plan");state.savedPlans=updated;savedPlanEditorDraft=null;
+ openPlanLibrary();renderSavedPlanSummary();toast(ed.copyOnSave?"Edited copy saved · activate when ready":"Saved plan updated · active workout unchanged");
 }
 function openSavedPlanRename(id){
  const entry=savedPlans().find(x=>x.id===id);if(!entry)return;
@@ -5690,6 +5843,7 @@ document.addEventListener("change",e=>{
  if(["compareA","compareB"].includes(e.target.id)){renderPlanComparison();return}
  if(["cycleA","cycleB"].includes(e.target.id)){renderCycleComparisonResult();return}
  if(["libraryMuscle","libraryEquipment","libraryDifficulty"].includes(e.target.id)){renderExerciseLibraryResults();return}
+ if(e.target.id==="planEditCategory"){renderSavedPlanEditorResults();return}
  if(e.target.id==="sessionExerciseCategory"){renderSessionExerciseResults();return}
  if(e.target.id==="swapExerciseCategory"){renderSwapCategoryResults();return}
  if(e.target.id==="autoRestSetting"){executionSettings().autoRest=e.target.checked;save();return}
@@ -5828,6 +5982,14 @@ document.addEventListener("click",e=>{
  const saveCreatedOnly=e.target.closest("#saveCreatedPlanOnlyBtn");if(saveCreatedOnly){commitCreatedPlan(false);return}
  const saveCreatedActive=e.target.closest("#saveAndActivateCreatedPlanBtn");if(saveCreatedActive){commitCreatedPlan(true);return}
  const sheetSavePlan=e.target.closest("#sheetSaveCurrentPlanBtn");if(sheetSavePlan){openSaveCurrentPlan();return}
+ const editPlanBtn=e.target.closest(".savedPlanEditBtn");if(editPlanBtn){openSavedPlanEditor(editPlanBtn.dataset.planid);return}
+ const planEditDay=e.target.closest(".planEditDayBtn");if(planEditDay&&savedPlanEditorDraft){readSavedPlanEditorFields();savedPlanEditorDraft.dayIndex=Number(planEditDay.dataset.day);savedPlanEditorDraft.replaceSlot=null;renderSavedPlanEditor();return}
+ const planEditMove=e.target.closest(".planEditMove");if(planEditMove&&savedPlanEditorDraft){readSavedPlanEditorFields();const items=savedPlanEditorDraft.plan[savedPlanEditorDraft.dayIndex].items,i=Number(planEditMove.dataset.slot),j=i+Number(planEditMove.dataset.direction);if(j>=0&&j<items.length){[items[i],items[j]]=[items[j],items[i]];renderSavedPlanEditor()}return}
+ const planEditRemove=e.target.closest(".planEditRemove");if(planEditRemove&&savedPlanEditorDraft){readSavedPlanEditorFields();const items=savedPlanEditorDraft.plan[savedPlanEditorDraft.dayIndex].items;if(items.length>1){items.splice(Number(planEditRemove.dataset.slot),1);savedPlanEditorDraft.replaceSlot=null;renderSavedPlanEditor()}return}
+ const planEditReplace=e.target.closest(".planEditReplace");if(planEditReplace&&savedPlanEditorDraft){readSavedPlanEditorFields();savedPlanEditorDraft.replaceSlot=Number(planEditReplace.dataset.slot);renderSavedPlanEditor();return}
+ const planEditChoose=e.target.closest(".planEditChooseExercise");if(planEditChoose&&savedPlanEditorDraft){savedPlanEditorChoose(planEditChoose.dataset.exid);return}
+ if(e.target.closest("#planEditSave")&&savedPlanEditorDraft){commitSavedPlanEditor();return}
+ if(e.target.closest("#planEditCancel")&&savedPlanEditorDraft){savedPlanEditorDraft=null;openPlanLibrary();return}
  const previewBack=e.target.closest("#previewBackToLibrary");if(previewBack){openPlanLibrary();return}
  const previewPlan=e.target.closest(".savedPlanPreviewBtn");if(previewPlan){openSavedPlanPreview(previewPlan.dataset.planid);return}
  const activatePlan=e.target.closest(".savedPlanActivateBtn");if(activatePlan){openSavedPlanActivation(activatePlan.dataset.planid);return}
@@ -5948,6 +6110,7 @@ document.addEventListener("click",e=>{
 document.addEventListener("input",e=>{
  if(e.target.id==="librarySearch")renderExerciseLibraryResults();
  if(e.target.id==="sessionExerciseSearch")renderSessionExerciseResults();
+ if(e.target.id==="planEditSearch")renderSavedPlanEditorResults();
  if(e.target.id==="swapExerciseSearch")renderSwapCategoryResults();
  if(e.target.matches("input[data-slot]")){const s=Number(e.target.dataset.slot),j=Number(e.target.dataset.set),f=e.target.dataset.f,it=trainingItems()[s],t=effectiveTarget(it);exLog(currentDay,s,t.sets).sets[j][f]=e.target.value;save()}
  if(e.target.matches("textarea[data-note]")){const s=Number(e.target.dataset.note),it=trainingItems()[s],t=effectiveTarget(it);exLog(currentDay,s,t.sets).note=e.target.value;save()}
