@@ -7,7 +7,6 @@
 }catch{}})();
 
 
-
 // Release identifier: update the single meta[name="workout-coach-version"] when publishing a new release.
 const APP_VERSION = document.querySelector('meta[name="workout-coach-version"]')?.content || "unknown";
 function syncReleaseVersionLabels(){
@@ -634,9 +633,13 @@ function renderSavedPlanEditorResults(){
  if(meta)meta.textContent=`${rows.length} available exercises${rows.length>30?" · showing first 30; narrow your search":""}`;
  box.innerHTML=rows.slice(0,30).map(ex=>pickerExerciseRowHtml(ex,`<button class="planEditChooseExercise" data-exid="${esc(ex.id)}">${savedPlanEditorDraft.replaceSlot===null?"Add exercise":"Use replacement"}</button>`,savedPlanEditorDraft.profile)).join("")||'<p class="tiny">No matching exercises. Try another category.</p>';
 }
-function renderSavedPlanEditor(){
+function renderSavedPlanEditor(focusSlot=null){
  const ed=savedPlanEditorDraft;if(!ed)return;
  const day=ed.plan[ed.dayIndex];if(!day)return;
+ // One picker at a time. Swap choices appear directly under the exercise being changed.
+ const pickerControls=`<div class="session-picker-controls"><label>Category<select class="field" id="planEditCategory">${sessionPickerCategoryOptions()}</select></label>
+    <label>Search<input type="search" id="planEditSearch" class="search" placeholder="Exercise or muscle" aria-label="Search exercises"></label></div>
+   <div class="tiny" id="planEditResultMeta" aria-live="polite"></div><div class="library-results" id="planEditResults"></div>`;
  const content=`<div class="saved-plan-sheet-note"><strong>${ed.copyOnSave?"Editing an independent copy":"Editing a saved template"}</strong><br>
   These changes affect <strong>the saved plan only</strong>. Your currently active workout, completed sessions, logged sets and cycle are unchanged. Activate the edited plan separately when you want to use it.</div>
   <label class="plan-edit-label">Plan name<input class="field" id="planEditName" maxlength="60" value="${esc(ed.name)}"></label>
@@ -657,15 +660,27 @@ function renderSavedPlanEditor(){
      <label>RPE<input class="field" data-edit-field="rpe" maxlength="15" value="${esc(it.baseRpe)}"></label>
      <label>Rest (seconds)<input class="field" data-edit-field="rest" type="number" inputmode="numeric" min="30" max="600" value="${esc(it.rest)}"></label>
     </div>
+    ${ed.replaceSlot===i?`<section id="planEditSwapArea" class="plan-edit-swap-picker" aria-label="Choose replacement for ${esc(ex?.name||it.id)}">
+      <div class="plan-edit-swap-heading"><strong>Swap ${esc(ex?.name||it.id)}</strong><button type="button" id="planEditCancelSwap">Cancel swap</button></div>
+      <p class="tiny">Choose a replacement below. Your sets, reps, RPE and rest targets will be kept.</p>
+      ${pickerControls}
+     </section>`:""}
    </div>`}).join("")}</div>
-  <details id="planEditAddArea" ${ed.replaceSlot!==null?"open":""}><summary id="planEditPickerHeading">${ed.replaceSlot===null?"+ Add exercise to this day":`Replace exercise ${ed.replaceSlot+1}`}</summary>
-   <div class="session-picker-controls"><label>Category<select class="field" id="planEditCategory">${sessionPickerCategoryOptions()}</select></label>
-    <label>Search<input type="search" id="planEditSearch" class="search" placeholder="Exercise or muscle"></label></div>
-   <div class="tiny" id="planEditResultMeta" aria-live="polite"></div><div class="library-results" id="planEditResults"></div>
-  </details>
+  ${ed.replaceSlot===null?`<details id="planEditAddArea"><summary id="planEditPickerHeading">+ Add exercise to this day</summary>${pickerControls}</details>`:""}
   <div class="plan-edit-footer"><button id="planEditCancel">Cancel</button><button id="planEditSave" class="primary">${ed.copyOnSave?"Save as new plan":"Save plan changes"}</button></div>`;
  openSheet("EDIT SAVED PLAN",ed.copyOnSave?"Edit a copy": "Edit workout plan",content);
  renderSavedPlanEditorResults();
+ const targetSlot=focusSlot===null?ed.replaceSlot:focusSlot;
+ if(targetSlot!==null)requestAnimationFrame(()=>{
+  const scroller=document.querySelector("#sheet .sheetcard");
+  const card=document.querySelector(`#sheet .plan-edit-exercise[data-edit-slot="${targetSlot}"]`);
+  if(scroller&&card){
+   // Keep the selected exercise visible beneath the sticky sheet header, even on a phone.
+   const sticky=scroller.querySelector(":scope > .row");
+   const headHeight=sticky?.getBoundingClientRect().height||64;
+   scroller.scrollTop+=card.getBoundingClientRect().top-scroller.getBoundingClientRect().top-headHeight-8;
+  }
+ });
 }
 function savedPlanEditorChoose(exId){
  const ed=savedPlanEditorDraft;if(!ed)return;
@@ -681,7 +696,8 @@ function savedPlanEditorChoose(exId){
   fresh.userSetDelta=0;fresh.userRepDelta=0;fresh.userRpe=null;fresh.userLoad=null;
   day.items[i]=fresh;
  }
- ed.replaceSlot=null;renderSavedPlanEditor();
+ const editedSlot=ed.replaceSlot===null?day.items.length-1:ed.replaceSlot;
+ ed.replaceSlot=null;renderSavedPlanEditor(editedSlot);
 }
 function commitSavedPlanEditor(){
  const ed=savedPlanEditorDraft;if(!ed)return;
@@ -4250,9 +4266,10 @@ document.addEventListener("click",e=>{
  const sheetSavePlan=e.target.closest("#sheetSaveCurrentPlanBtn");if(sheetSavePlan){openSaveCurrentPlan();return}
  const editPlanBtn=e.target.closest(".savedPlanEditBtn");if(editPlanBtn){openSavedPlanEditor(editPlanBtn.dataset.planid);return}
  const planEditDay=e.target.closest(".planEditDayBtn");if(planEditDay&&savedPlanEditorDraft){readSavedPlanEditorFields();savedPlanEditorDraft.dayIndex=Number(planEditDay.dataset.day);savedPlanEditorDraft.replaceSlot=null;renderSavedPlanEditor();return}
- const planEditMove=e.target.closest(".planEditMove");if(planEditMove&&savedPlanEditorDraft){readSavedPlanEditorFields();const items=savedPlanEditorDraft.plan[savedPlanEditorDraft.dayIndex].items,i=Number(planEditMove.dataset.slot),j=i+Number(planEditMove.dataset.direction);if(j>=0&&j<items.length){[items[i],items[j]]=[items[j],items[i]];renderSavedPlanEditor()}return}
+ const planEditMove=e.target.closest(".planEditMove");if(planEditMove&&savedPlanEditorDraft){readSavedPlanEditorFields();const items=savedPlanEditorDraft.plan[savedPlanEditorDraft.dayIndex].items,i=Number(planEditMove.dataset.slot),j=i+Number(planEditMove.dataset.direction);if(j>=0&&j<items.length){[items[i],items[j]]=[items[j],items[i]];savedPlanEditorDraft.replaceSlot=null;renderSavedPlanEditor(j)}return}
  const planEditRemove=e.target.closest(".planEditRemove");if(planEditRemove&&savedPlanEditorDraft){readSavedPlanEditorFields();const items=savedPlanEditorDraft.plan[savedPlanEditorDraft.dayIndex].items;if(items.length>1){items.splice(Number(planEditRemove.dataset.slot),1);savedPlanEditorDraft.replaceSlot=null;renderSavedPlanEditor()}return}
- const planEditReplace=e.target.closest(".planEditReplace");if(planEditReplace&&savedPlanEditorDraft){readSavedPlanEditorFields();savedPlanEditorDraft.replaceSlot=Number(planEditReplace.dataset.slot);renderSavedPlanEditor();return}
+ const planEditReplace=e.target.closest(".planEditReplace");if(planEditReplace&&savedPlanEditorDraft){readSavedPlanEditorFields();const slot=Number(planEditReplace.dataset.slot);savedPlanEditorDraft.replaceSlot=savedPlanEditorDraft.replaceSlot===slot?null:slot;renderSavedPlanEditor(slot);return}
+ if(e.target.closest("#planEditCancelSwap")&&savedPlanEditorDraft){readSavedPlanEditorFields();const slot=savedPlanEditorDraft.replaceSlot;savedPlanEditorDraft.replaceSlot=null;renderSavedPlanEditor(slot);return}
  const planEditChoose=e.target.closest(".planEditChooseExercise");if(planEditChoose&&savedPlanEditorDraft){savedPlanEditorChoose(planEditChoose.dataset.exid);return}
  if(e.target.closest("#planEditSave")&&savedPlanEditorDraft){commitSavedPlanEditor();return}
  if(e.target.closest("#planEditCancel")&&savedPlanEditorDraft){savedPlanEditorDraft=null;openPlanLibrary();return}
