@@ -1,11 +1,9 @@
-
 (()=>{try{
  const t=localStorage.getItem("awc-theme");
  if(t==="dark")document.documentElement.classList.add("dark");
  if(t==="light")document.documentElement.classList.remove("dark");
  document.documentElement.style.colorScheme=t==="dark"?"dark":"light";
 }catch{}})();
-
 
 // Release identifier: update the single meta[name="workout-coach-version"] when publishing a new release.
 const APP_VERSION = document.querySelector('meta[name="workout-coach-version"]')?.content || "unknown";
@@ -1359,23 +1357,61 @@ function cycleVolumeText(c){
  if(keys.length!==1||keys[0]==="unknown")return"Unknown / mixed units";
  return `${Number(c.volumeByUnit[keys[0]].toFixed(1))} ${keys[0]}·reps`;
 }
+function cycleMuscleExposure(row){
+ const total=analyticsMuscleWorkload(row.sessions),den=Math.max(1,row.sessions.length);
+ return Object.fromEntries(PRIORITY_MUSCLES.map(m=>[m,{total:Number(total[m]||0),perSession:Number(total[m]||0)/den}]));
+}
+function cycleComparableLifts(a,b){
+ const idsA=new Set(a.sessions.flatMap(s=>(s.exercises||[]).map(r=>r.id)));
+ const idsB=new Set(b.sessions.flatMap(s=>(s.exercises||[]).map(r=>r.id)));
+ return [...idsA].filter(id=>idsB.has(id)&&EXMAP[id]).map(id=>{
+  const left=analyticsExerciseSeries(id,a.sessions),right=analyticsExerciseSeries(id,b.sessions);
+  if(!left.length||!right.length)return null;
+  const joined=[...left,...right],loaded=joined[0].loaded;
+  if(joined.some(p=>p.loaded!==loaded))return null;
+  const units=loaded?[...new Set(joined.map(p=>recordedWeightUnit(p.session)))]:[];
+  if(loaded&&(units.length!==1||!units[0]))return null;
+  const bestA=Math.max(...left.map(p=>p.value)),bestB=Math.max(...right.map(p=>p.value));
+  const pct=analyticsPctChange(bestA,bestB);
+  if(pct===null)return null;
+  return{id,name:EXMAP[id].name,countA:left.length,countB:right.length,bestA,bestB,pct,unit:loaded?units[0]:"reps",loaded};
+ }).filter(Boolean).sort((x,y)=>Math.min(y.countA,y.countB)-Math.min(x.countA,x.countB)).slice(0,5);
+}
 function renderCycleComparisonResult(){
  const box=$("#cycleCompareResult");if(!box)return;
  const all=cycleSummaryRows(),a=all.find(x=>x.key===$("#cycleA")?.value),b=all.find(x=>x.key===$("#cycleB")?.value);
  if(!a||!b){box.innerHTML="";return}
  if(a.key===b.key){box.innerHTML='<p class="tiny">Choose two different cycles.</p>';return}
  const span=c=>Math.max(1,Math.round((Date.parse(c.last)-Date.parse(c.first))/86400000)+1);
- const metrics=[["Recorded dates",a.first?.slice(0,10)+" – "+a.last?.slice(0,10),b.first?.slice(0,10)+" – "+b.last?.slice(0,10)],["Observed span (days)",span(a),span(b)],["Completed sessions",a.sessions.length,b.sessions.length],["Working sets",a.sets,b.sets],["Avg session completion",a.avgCompletion===null?"Unknown":a.avgCompletion.toFixed(0)+"%",b.avgCompletion===null?"Unknown":b.avgCompletion.toFixed(0)+"%"],["Training hours",Number((a.minutes/60).toFixed(1)),Number((b.minutes/60).toFixed(1))],["Logged volume",cycleVolumeText(a),cycleVolumeText(b)]];
- const ex=cycleExerciseChanges(b),differentPlans=a.planId!==b.planId;
+ const setsRate=c=>c.sets/Math.max(1,c.sessions.length);
+ const minsRate=c=>c.minutes/Math.max(1,c.sessions.length);
+ const muscleA=cycleMuscleExposure(a),muscleB=cycleMuscleExposure(b),maxRate=Math.max(1,...PRIORITY_MUSCLES.flatMap(m=>[muscleA[m].perSession,muscleB[m].perSession]));
+ const rows=PRIORITY_MUSCLES.map(m=>({m,left:muscleA[m].perSession,right:muscleB[m].perSession,diff:muscleB[m].perSession-muscleA[m].perSession}));
+ const rank=rows.slice().sort((x,y)=>Math.abs(y.diff)-Math.abs(x.diff));
+ const moved=rank.filter(x=>Math.abs(x.diff)>=0.3).slice(0,3);
+ const intro=moved.length?`The biggest differences in recorded muscle-group exposure per session were ${moved.map(x=>`${esc(x.m)} (${x.diff>=0?"+":""}${x.diff.toFixed(1)} sets/session in B)`).join("; ")}.`:'The two cycles have similar recorded muscle-group exposure per session at this level of detail.';
  const exerciseIds=c=>new Set(c.sessions.flatMap(s=>(Array.isArray(s.exercises)?s.exercises:[]).filter(isPlainRecord).map(x=>x.id)));
  const idsA=exerciseIds(a),idsB=exerciseIds(b),shared=[...idsA].filter(id=>idsB.has(id)),added=[...idsB].filter(id=>!idsA.has(id)),removed=[...idsA].filter(id=>!idsB.has(id));
  const names=ids=>ids.map(id=>EXMAP[id]?.name||id).join(", ")||"None";
- box.innerHTML=`<p class="tiny" style="margin-top:8px">Left / right represent different recorded cycles. Observed spans are ${span(a)===span(b)?"equal":"unequal"} (${span(a)} vs ${span(b)} days), and session counts may differ${differentPlans?"; these are different saved plans":""}. Volume uses recorded units only; unknown/mixed units cannot be fairly compared. Completion is the mean of available saved session percentages.</p>
- ${metrics.map(([name,x,y])=>`<div class="cycle-compare-row"><strong>${esc(name)}</strong>${esc(x)} / ${esc(y)}</div>`).join("")}
- <h4>Exercises across the cycles</h4><p class="tiny">Shared: ${shared.length} · only Cycle B: ${added.length} · only Cycle A: ${removed.length}. Recorded exercises reflect completed sessions, not an archived plan prescription.</p>
- <div class="cycle-compare-row"><strong>Only Cycle B</strong>${esc(names(added))}</div>
- <div class="cycle-compare-row"><strong>Only Cycle A</strong>${esc(names(removed))}</div>
- <h4>Exercise trends within Cycle B</h4>${ex.length?ex.map(e=>`<div class="cycle-compare-row"><strong>${esc(EXMAP[e.id]?.name||e.id)}</strong>${e.count} exposures · ${e.loaded?`estimated 1RM (${e.unit})`:"best-set reps"} ${e.first.toFixed(1)} → ${e.last.toFixed(1)} (${e.change>=0?"+":""}${e.change.toFixed(1)}%)</div>`).join(""):'<p class="tiny">At least two comparable completed exposures with known matching units are needed per exercise.</p>'}`;
+ const matched=cycleComparableLifts(a,b);
+ const metrics=[["Recorded dates",a.first?.slice(0,10)+" – "+a.last?.slice(0,10),b.first?.slice(0,10)+" – "+b.last?.slice(0,10)],["Observed span (days)",span(a),span(b)],["Completed sessions",a.sessions.length,b.sessions.length],["Working sets (total)",a.sets,b.sets],["Avg session completion",a.avgCompletion===null?"Unknown":a.avgCompletion.toFixed(0)+"%",b.avgCompletion===null?"Unknown":b.avgCompletion.toFixed(0)+"%"],["Training hours (total)",Number((a.minutes/60).toFixed(1)),Number((b.minutes/60).toFixed(1))],["Logged volume",cycleVolumeText(a),cycleVolumeText(b)]];
+ box.innerHTML=`<div class="cycle-diff-intro"><strong>What changed from A to B?</strong><span class="tiny">${intro}</span><p class="cycle-comparison-note">Based on completed sets, not assumed plan targets. Different session counts and observed spans make raw totals misleading; the comparison below uses per-session averages.</p></div>
+ <div class="cycle-summary-grid">
+  <div class="cycle-summary-kpi"><span class="tiny">Working sets per session</span><strong>${setsRate(a).toFixed(1)} → ${setsRate(b).toFixed(1)}</strong><em>A → B · ${setsRate(b)-setsRate(a)>=0?"+":""}${(setsRate(b)-setsRate(a)).toFixed(1)} sets</em></div>
+  <div class="cycle-summary-kpi"><span class="tiny">Training time per session</span><strong>${minsRate(a).toFixed(0)} → ${minsRate(b).toFixed(0)} min</strong><em>A → B · recorded duration</em></div>
+  <div class="cycle-summary-kpi"><span class="tiny">Muscle groups with recorded exposure</span><strong>${rows.filter(x=>x.left>0).length} → ${rows.filter(x=>x.right>0).length}</strong><em>A → B · library muscle mapping</em></div>
+  <div class="cycle-summary-kpi"><span class="tiny">Shared exercises</span><strong>${shared.length}</strong><em>${added.length} only in B · ${removed.length} only in A</em></div>
+ </div>
+ <h4>Muscle-group emphasis — A vs B</h4>
+ <p class="tiny">Estimated equivalent working sets <strong>per completed session</strong>. A primary muscle receives 1.0 per set; secondary muscles receive fractional credit using the app's exercise map. This is exposure, not a measurement of muscle growth.</p>
+ <div class="cycle-muscle-compare"><div class="cycle-muscle-head"><span>Muscle</span><span>Cycle A</span><span>Cycle B</span></div>
+ ${rows.map(x=>`<div class="cycle-muscle-line"><strong>${esc(x.m)}</strong><div class="cycle-muscle-col a"><span>${x.left.toFixed(1)}</span><div class="cycle-muscle-track"><i style="width:${Math.min(100,100*x.left/maxRate).toFixed(1)}%"></i></div></div><div class="cycle-muscle-col b"><span>${x.right.toFixed(1)}</span><div class="cycle-muscle-track"><i style="width:${Math.min(100,100*x.right/maxRate).toFixed(1)}%"></i></div></div></div>`).join("")}</div>
+ <p class="cycle-comparison-note">Averages include completed sessions even when a muscle group was not trained that day. This lets different schedules be compared on the same basis. Numbers are descriptive; they cannot establish that a plan is better, balanced, or sufficient for an individual.</p>
+ <h4>Shared exercise performance</h4>
+ ${matched.length?`<p class="tiny">Best recorded set performance in each cycle for matching exercises with comparable units. Loaded exercises use estimated 1RM; others use best-set reps. Peaks may reflect different effort levels or rep ranges.</p>${matched.map(x=>`<div class="cycle-compare-row"><strong>${esc(x.name)}</strong>Cycle A ${x.bestA.toFixed(1)} → Cycle B ${x.bestB.toFixed(1)} ${esc(x.unit)} · ${x.pct>=0?"+":""}${x.pct.toFixed(1)}%<div class="tiny">${x.countA} exposures in A; ${x.countB} in B · ${x.loaded?"estimated 1RM":"best set reps"}</div></div>`).join("")}`:'<p class="tiny">No shared exercises have comparable recorded performance in both cycles. Missing or different weight units are not converted or guessed.</p>'}
+ <details class="cycle-compare-detail"><summary>Exercise changes between cycles</summary><p class="tiny">${shared.length} shared exercises. These are from recorded completed sessions, not the historical saved-plan prescription.</p><div class="cycle-compare-row"><strong>Only Cycle B</strong>${esc(names(added))}</div><div class="cycle-compare-row"><strong>Only Cycle A</strong>${esc(names(removed))}</div></details>
+ <details class="cycle-compare-detail"><summary>Detailed training statistics</summary><p class="tiny">A / B represent different recorded cycles. Observed spans are ${span(a)} / ${span(b)} days. Total volume is displayed only in its recorded units; unknown/mixed units are not combined.</p>${metrics.map(([name,x,y])=>`<div class="cycle-compare-row"><strong>${esc(name)}</strong>${esc(x)} / ${esc(y)}</div>`).join("")}</details>
+ <p class="cycle-comparison-note">This report uses completed sessions only. It does not reconstruct an old plan from today's edited template, infer unrecorded workouts, or treat more training volume as automatically better.</p>`;
 }
 
 function personalizationSettings(){
@@ -3681,22 +3717,35 @@ function analyticsNumber(v,digits=0){
 }
 function analyticsLineSvg(values,labels=[],formatter=v=>analyticsNumber(v,0)){
  if(!values?.length)return"";
- if(values.length===1)return `<div class="analytics-empty">One data point logged. Complete another exposure to build a trend.</div>`;
  const w=500,h=118,padL=18,padR=18,padT=12,padB=20,min0=Math.min(...values),max0=Math.max(...values);
  const extra=Math.max((max0-min0)*.12,Math.abs(max0)*.02,.5),min=min0-extra,max=max0+extra,span=Math.max(.001,max-min);
- const x=i=>padL+i*((w-padL-padR)/(values.length-1)),y=v=>padT+(max-v)/span*(h-padT-padB);
+ const x=i=>values.length===1?w/2:padL+i*((w-padL-padR)/(values.length-1)),y=v=>padT+(max-v)/span*(h-padT-padB);
  const pts=values.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
- const area=`${padL},${h-padB} ${pts} ${w-padR},${h-padB}`;
+ const area=values.length>1?`<polygon class="trendarea" points="${padL},${h-padB} ${pts} ${w-padR},${h-padB}"></polygon>`:"";
  const y1=padT+(h-padT-padB)/3,y2=padT+2*(h-padT-padB)/3;
- const dots=values.map((v,i)=>`<circle class="dot" cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="3.8"></circle>`).join("");
- const leftLabel=labels[0]||"",rightLabel=labels.at(-1)||"";
- return `<svg class="analytics-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="Trend from ${esc(formatter(values[0]))} to ${esc(formatter(values.at(-1)))}">
+ const dots=values.map((v,i)=>{
+  const dateLabel=String(labels[i]||`Point ${i+1}`),valLabel=String(formatter(v));
+  return `<g class="chart-point${i===values.length-1?" selected":""}" tabindex="0" role="button" aria-label="${esc(dateLabel)}: ${esc(valLabel)}" data-point-label="${esc(dateLabel)}" data-point-value="${esc(valLabel)}"><circle class="dot" cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="3.8"></circle><circle class="chart-hit" cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="12"></circle><title>${esc(dateLabel)}: ${esc(valLabel)}</title></g>`;
+ }).join("");
+ const leftLabel=labels[0]||"",rightLabel=values.length>1?(labels.at(-1)||""):"";
+ return `<div class="analytics-interactive-chart"><svg class="analytics-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="group" aria-label="Interactive trend from ${esc(formatter(values[0]))} to ${esc(formatter(values.at(-1)))}">
   <line class="gridline" x1="${padL}" x2="${w-padR}" y1="${y1}" y2="${y1}"></line>
   <line class="gridline" x1="${padL}" x2="${w-padR}" y1="${y2}" y2="${y2}"></line>
-  <polygon class="trendarea" points="${area}"></polygon><polyline class="trendline" points="${pts}"></polyline>${dots}
+  ${area}${values.length>1?`<polyline class="trendline" points="${pts}"></polyline>`:""}${dots}
   <text x="${padL}" y="${h-3}">${esc(leftLabel)}</text><text text-anchor="end" x="${w-padR}" y="${h-3}">${esc(rightLabel)}</text>
- </svg>`;
+ </svg><div class="analytics-point-readout" role="status" aria-live="polite"><span class="chart-selected-date">${esc(labels.at(-1)||"Latest point")}</span><strong class="chart-selected-value">${esc(formatter(values.at(-1)))}</strong></div><p class="analytics-chart-hint">Touch, hover or focus any point to see its date and value.</p></div>`;
 }
+function inspectAnalyticsPoint(point){
+ const chart=point?.closest(".analytics-interactive-chart");if(!chart)return;
+ chart.querySelectorAll(".chart-point").forEach(p=>p.classList.toggle("selected",p===point));
+ const date=chart.querySelector(".chart-selected-date"),value=chart.querySelector(".chart-selected-value");
+ if(date)date.textContent=point.dataset.pointLabel||"Date unavailable";
+ if(value)value.textContent=point.dataset.pointValue||"—";
+}
+document.addEventListener("pointerover",e=>{const p=e.target?.closest?.(".chart-point");if(p)inspectAnalyticsPoint(p)});
+document.addEventListener("focusin",e=>{const p=e.target?.closest?.(".chart-point");if(p)inspectAnalyticsPoint(p)});
+document.addEventListener("click",e=>{const p=e.target?.closest?.(".chart-point");if(p)inspectAnalyticsPoint(p)});
+document.addEventListener("keydown",e=>{if(e.key!=="Enter"&&e.key!==" ")return;const p=e.target?.closest?.(".chart-point");if(p){e.preventDefault();inspectAnalyticsPoint(p)}});
 function analyticsMuscleWorkload(h){
  const out={};PRIORITY_MUSCLES.forEach(m=>out[m]=0);
  h.forEach(s=>(s.exercises||[]).forEach(rec=>{
@@ -3732,7 +3781,7 @@ function renderStrengthAnalytics(h){
  if(loaded&&!recordUnit){$("#strengthAnalytics").innerHTML='<div class="analytics-empty">The most recent loaded workout has no stored weight unit. Its weights are preserved, but a comparable trend cannot be calculated until you log a new session with a known unit.</div>';return}
  const series=raw.filter(x=>x.loaded===loaded&&(!loaded||recordedWeightUnit(x.session)===recordUnit));
  const excluded=raw.length-series.length,vals=series.map(x=>x.value),first=vals[0],last=vals.at(-1),delta=series.length>1?analyticsPctChange(first,last):null;
- const labels=series.map(x=>new Date(x.date).toLocaleDateString(undefined,{month:"short",day:"numeric"}));
+ const labels=series.map(x=>new Date(x.date).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}));
  const best=Math.max(...vals),lastSet=series.at(-1).bestSet;
  const deltaText=delta===null?"Baseline":`${delta>=0?"+":""}${delta.toFixed(1)}%`;
  const deltaClass=delta===null?"flat":delta>1?"up":delta<-1?"down":"flat";
@@ -3746,8 +3795,14 @@ function renderStrengthAnalytics(h){
   <div class="analytics-mini-stat"><span class="tiny">Progression</span><strong>${esc(progressionModeLabel(ex))}</strong></div>
  </div>`;
 }
+function analyticsWeekFullLabel(key){
+ const m=String(key).match(/^(\d{4})-W(\d{2})$/);if(!m)return String(key);
+ const jan4=new Date(Date.UTC(Number(m[1]),0,4));const day=jan4.getUTCDay()||7;
+ jan4.setUTCDate(jan4.getUTCDate()-day+1+(Number(m[2])-1)*7);
+ return `Week of ${jan4.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric",timeZone:"UTC"})}`;
+}
 function renderWeeklyAnalytics(h){
- const weeks=analyticsWeekly(h),sets=weeks.map(x=>x.sets),labels=weeks.map(x=>analyticsWeekLabel(x.key));
+ const weeks=analyticsWeekly(h),sets=weeks.map(x=>x.sets),labels=weeks.map(x=>analyticsWeekFullLabel(x.key));
  if(!weeks.length){$("#weeklyAnalytics").innerHTML='<div class="analytics-empty">No completed sessions in this range.</div>';return}
  const totalSets=sets.reduce((a,b)=>a+b,0),volume=weeks.reduce((a,b)=>a+b.volume,0),minutes=weeks.reduce((a,b)=>a+b.minutes,0),pace=analyticsSchedulePace(h);
  const latest=sets.at(-1),prev=sets.length>1?sets.at(-2):null,delta=prev?analyticsPctChange(prev,latest):null;
@@ -3787,18 +3842,18 @@ function renderProgress(){
  $("#historyList").innerHTML=h.length?h.slice().reverse().slice(0,20).map(s=>`<div class="historyitem"><strong>${esc(s.title)}</strong> · Week ${s.week||"—"}<br><span class="tiny">${new Date(s.date).toLocaleString()}</span><br>Completion: ${s.completion}%${Number(s.durationSec)?` · ${fmtLong(Number(s.durationSec))}`:""}${(s.prs||[]).length?` · <span class="goodText">${s.prs.length} PR${s.prs.length>1?"s":""}</span>`:""}</div>`).join(""):'<div class="historyitem">No completed sessions in this range.</div>';
  renderBody();
 }
-function sparkline(vals){
- if(vals.length<2)return"";
- return analyticsLineSvg(vals,[],v=>analyticsNumber(v,1));
+function sparkline(vals,labels=[]){
+ return analyticsLineSvg(vals,labels,v=>analyticsNumber(v,1));
 }
 function renderBody(){
  const b=bodyEntries(),last=b.at(-1),first=b[0];if(!last){$("#bodySummary").innerHTML='<div class="historyitem">No body measurements logged yet.</div>';return}
  const lastUnit=["kg","lb"].includes(last.unit)?last.unit:null;
  const firstComparable=b.find(x=>lastUnit&&x.unit===lastUnit&&Number.isFinite(Number(x.weight))&&Number(x.weight)>0);
  const change=firstComparable?Number(last.weight)-Number(firstComparable.weight):null;
- const vals=b.filter(x=>lastUnit&&x.unit===lastUnit).slice(-12).map(x=>Number(x.weight)).filter(x=>Number.isFinite(x)&&x>0);
+ const bodyPoints=b.filter(x=>lastUnit&&x.unit===lastUnit&&Number.isFinite(Number(x.weight))&&Number(x.weight)>0).slice(-12);
+ const vals=bodyPoints.map(x=>Number(x.weight)),bodyLabels=bodyPoints.map(x=>new Date(x.date).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}));
  const measure=["cm","in"].includes(last.measureUnit)?last.measureUnit:"unit unknown";
- $("#bodySummary").innerHTML=`<div class="grid3"><div class="summarybox"><div class="label">Latest weight</div><div class="metric small">${esc(last.weight)} ${lastUnit||"unit unknown"}</div></div><div class="summarybox"><div class="label">Change</div><div class="metric small">${change===null?"Not comparable":`${change>=0?"+":""}${change.toFixed(1)} ${lastUnit}`}</div></div><div class="summarybox"><div class="label">Entries</div><div class="metric small">${b.length}</div></div></div>${sparkline(vals)}<div class="tiny">Latest: ${new Date(last.date).toLocaleDateString()}${last.waist?` · Waist ${esc(last.waist)} ${measure}`:""}${last.chest?` · Chest ${esc(last.chest)} ${measure}`:""}${last.arm?` · Arm ${esc(last.arm)} ${measure}`:""}${last.thigh?` · Thigh ${esc(last.thigh)} ${measure}`:""}${!lastUnit?" · Historic bodyweight unit not recorded; change and trend cannot be computed.":""}</div>`;
+ $("#bodySummary").innerHTML=`<div class="grid3"><div class="summarybox"><div class="label">Latest weight</div><div class="metric small">${esc(last.weight)} ${lastUnit||"unit unknown"}</div></div><div class="summarybox"><div class="label">Change</div><div class="metric small">${change===null?"Not comparable":`${change>=0?"+":""}${change.toFixed(1)} ${lastUnit}`}</div></div><div class="summarybox"><div class="label">Entries</div><div class="metric small">${b.length}</div></div></div>${sparkline(vals,bodyLabels)}<div class="tiny">Latest: ${new Date(last.date).toLocaleDateString()}${last.waist?` · Waist ${esc(last.waist)} ${measure}`:""}${last.chest?` · Chest ${esc(last.chest)} ${measure}`:""}${last.arm?` · Arm ${esc(last.arm)} ${measure}`:""}${last.thigh?` · Thigh ${esc(last.thigh)} ${measure}`:""}${!lastUnit?" · Historic bodyweight unit not recorded; change and trend cannot be computed.":""}</div>`;
 }
 function logBody(){
  openSheet("BODY TRACKING","Log measurement",`<div class="grid2"><label>Bodyweight (${unit()})<input id="bodyWeight" class="field" type="number" step="0.1"></label><label>Date<input id="bodyDate" class="field" type="date" value="${new Date().toISOString().slice(0,10)}"></label><label>Waist (${measureUnit()})<input id="waist" class="field" type="number" step="0.1"></label><label>Chest (${measureUnit()})<input id="chest" class="field" type="number" step="0.1"></label><label>Arm (${measureUnit()})<input id="arm" class="field" type="number" step="0.1"></label><label>Thigh (${measureUnit()})<input id="thigh" class="field" type="number" step="0.1"></label></div><button id="saveBody" class="primary" style="margin-top:12px">Save measurement</button>`);
