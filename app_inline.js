@@ -54,7 +54,15 @@ function syncTransitionEditsToCanonical(){
   canonical[incomingIdx]=copy;
  });
 }
-function save(){syncTransitionEditsToCanonical();localStorage.setItem(KEY,JSON.stringify(state))}
+function save(){
+ syncTransitionEditsToCanonical();
+ // Once a new week or block begins, old Train-only replacements no longer apply.
+ if(state.sessionSwaps){
+  const activePrefix=`${cycle()?.number||1}:${cycle()?.week||1}:`;
+  for(const k of Object.keys(state.sessionSwaps))if(!k.startsWith(activePrefix))delete state.sessionSwaps[k];
+ }
+ localStorage.setItem(KEY,JSON.stringify(state));
+}
 function loadUndoStacks(){
   try{undoStack=JSON.parse(localStorage.getItem(UNDO_KEY)||"[]")}catch{undoStack=[]}
   try{redoStack=JSON.parse(localStorage.getItem(REDO_KEY)||"[]")}catch{redoStack=[]}
@@ -80,6 +88,7 @@ function structuralSnapshot(label){
       cycle:state.cycle||null,
       weekLogs:state.weekLogs||{},
       sessionExtras:state.sessionExtras||{},
+      sessionSwaps:state.sessionSwaps||{},
       coaching:state.coaching||{},
       weekReviewArchive:state.weekReviewArchive||[],
       weekRecommendationDismissals:state.weekRecommendationDismissals||{},
@@ -102,6 +111,7 @@ function applySnapshot(snap){
   state.cycle=snap.data.cycle;
   state.weekLogs=snap.data.weekLogs;
   state.sessionExtras=snap.data.sessionExtras||{};
+  state.sessionSwaps=snap.data.sessionSwaps||{};
   state.coaching=snap.data.coaching||{};
   if(Object.prototype.hasOwnProperty.call(snap.data,"weekReviewArchive"))state.weekReviewArchive=snap.data.weekReviewArchive||[];
   if(Object.prototype.hasOwnProperty.call(snap.data,"weekRecommendationDismissals"))state.weekRecommendationDismissals=snap.data.weekRecommendationDismissals||{};
@@ -160,8 +170,17 @@ function sessionExtrasForDay(dayIdx=currentDay){
  const rows=state.sessionExtras?.[sessionExtraKey(dayIdx)];
  return Array.isArray(rows)?rows.filter(it=>it&&EXMAP[it.id]&&it.sessionOnly===true):[];
 }
+// Train-page swaps are isolated to a single cycle/week/day/plan. The saved plan is never changed.
+function sessionSwapsForDay(dayIdx=currentDay){
+ const rows=state.sessionSwaps?.[sessionExtraKey(dayIdx)];
+ return rows&&typeof rows==="object"&&!Array.isArray(rows)?rows:{};
+}
 function trainingItems(dayIdx=currentDay){
- return [...(plan()?.[dayIdx]?.items||[]),...sessionExtrasForDay(dayIdx)];
+ const swaps=sessionSwapsForDay(dayIdx),base=plan()?.[dayIdx]?.items||[];
+ return [...base.map((item,slot)=>{
+  const replacement=swaps[slot];
+  return replacement&&replacement.sessionSwap===true&&replacement.sessionSwapOriginalId===item.id&&EXMAP[replacement.id]?replacement:item;
+ }),...sessionExtrasForDay(dayIdx)];
 }
 function trainingDay(dayIdx=currentDay){
  const d=plan()?.[dayIdx];return d?{...d,items:trainingItems(dayIdx)}:null;
@@ -3186,9 +3205,9 @@ function renderToday(){
  d.items.forEach((item,slot)=>{
    const ex=EXMAP[item.id],t=effectiveTarget(item),log=exLog(currentDay,slot,t.sets),rec=item.sessionOnly?null:suggestion(item),prev=lastPerformanceSummary(item.id);
    const c=document.createElement("section");c.className="card exercise";c.dataset.exslot=String(slot);
-   c.innerHTML=`<div class="exhead"><div class="exercise-title-row"><h3>${slot+1}. ${esc(ex.name)}</h3><span class="exercise-rest">${fmt(exerciseRestSeconds(item.id,item.rest))} rest${rememberedExerciseRest(item.id)!==null?" · saved":""}</span></div><div class="muted exercise-target"><strong>${t.sets} sets · ${esc(t.reps)} reps · RPE ${esc(t.rpe)}${t.load?` · target ${t.load} ${unit()}`:""}</strong></div><span class="badge">${esc(ex.muscles)}</span>${isAdjusted(item)?'<span class="badge adjusted">User adjusted</span>':""}${item.sessionOnly?'<span class="badge adjusted">Added to this session</span>':""}</div>
+   c.innerHTML=`<div class="exhead"><div class="exercise-title-row"><h3>${slot+1}. ${esc(ex.name)}</h3><span class="exercise-rest">${fmt(exerciseRestSeconds(item.id,item.rest))} rest${rememberedExerciseRest(item.id)!==null?" · saved":""}</span></div><div class="muted exercise-target"><strong>${t.sets} sets · ${esc(t.reps)} reps · RPE ${esc(t.rpe)}${t.load?` · target ${t.load} ${unit()}`:""}</strong></div><span class="badge">${esc(ex.muscles)}</span>${item.sessionSwap?'<span class="badge adjusted">Swapped for this session</span>':""}${isAdjusted(item)?'<span class="badge adjusted">User adjusted</span>':""}${item.sessionOnly?'<span class="badge adjusted">Added to this session</span>':""}</div>
    ${prev?`<div class="prevperf"><div class="row"><div><strong>Last performance</strong><br>${esc(prev.text)}</div><button class="useLastBtn" data-slot="${slot}">Prefill last</button></div></div>`:`<div class="prevperf"><strong>Last performance:</strong> No completed history yet.</div>`}
-   ${item.sessionOnly?'<p class="tiny" style="margin:6px 0">Extra exercise · recorded in this session only. Your saved program stays unchanged.</p>':coachingRecommendationHtml(item,slot,rec)}
+   ${item.sessionOnly?'<p class="tiny" style="margin:6px 0">Extra exercise · recorded in this session only. Your saved program stays unchanged.</p>':item.sessionSwap?'<p class="tiny" style="margin:6px 0">Session-only replacement. Your saved program remains unchanged; to change future workouts, edit the plan on Program.</p>':coachingRecommendationHtml(item,slot,rec)}
    <div class="actions exercise-main-actions"><button class="exerciseDetailBtn" data-exid="${item.id}">Exercise guide</button><button class="swapBtn" data-slot="${slot}">Swap</button><button class="exerciseMoreBtn" data-slot="${slot}" aria-expanded="false">More</button></div>
    <div class="exercise-more-panel hidden" data-exmore="${slot}"><button class="adjustTargetBtn" data-slot="${slot}" aria-expanded="false">Adjust target</button><button class="timerBtn" data-slot="${slot}">Rest timer</button><button class="repeatSetBtn" data-slot="${slot}">Repeat last set</button>${item.sessionOnly?`<button class="removeSessionExtraBtn" data-slot="${slot}">Remove extra exercise</button>`:""}</div>
    <div class="targetrow hidden" data-targetrow="${slot}"><button class="repMinus" data-slot="${slot}">−1 rep</button><button class="repPlus" data-slot="${slot}">+1 rep</button><button class="setMinus" data-slot="${slot}">− set</button><button class="setPlus" data-slot="${slot}">+ set</button><button class="editTarget" data-slot="${slot}">Edit target</button>${isAdjusted(item)?`<button class="resetTarget" data-slot="${slot}">Reset target</button>`:""}</div>
@@ -3388,6 +3407,7 @@ function openSwap(slot){
  const opts=EX.filter(e=>e.pattern===ex.pattern&&e.id!==ex.id&&allowed(e,p,avoid)&&autoExperienceEligible(e,p))
   .sort((a,b)=>exerciseQualityScore(b,p,{})-exerciseQualityScore(a,p,{})||a.name.localeCompare(b.name));
  openSheet("EXERCISE SWAP",ex.name,`<p class="tiny">Choose a suggested replacement from the same movement family, or browse all compatible exercise categories. Swaps keep your current set and rep targets until you adjust them.</p>
+ <p class="tiny"><strong>This session only.</strong> The saved program stays unchanged. To make a permanent change, use Program → Manage Plans → Edit plan → Save.</p>
  <div class="session-picker-tabs" role="group" aria-label="Swap exercise browsing method"><button id="swapSuggestedTab" type="button" aria-pressed="true" class="active">Suggested replacements</button><button id="swapCategoriesTab" type="button" aria-pressed="false">Browse categories</button></div>
  <div id="swapSuggestedPanel">${opts.length?opts.map(e=>swapOptionHtml(e,slot,p)).join(""):'<p class="tiny">No suggested alternatives match your current equipment and protected-area settings. Try Browse categories.</p>'}</div>
  <div id="swapCategoriesPanel" class="hidden"><div class="session-picker-controls"><label>Browse by category<select id="swapExerciseCategory" class="field" aria-label="Swap exercise category">${sessionPickerCategoryOptions()}</select></label><label>Search exercise or muscle<input id="swapExerciseSearch" class="search" type="search" placeholder="Search compatible exercises" aria-label="Search replacement exercises"></label></div><p class="tiny">These choices follow your equipment and protected-area settings. A different movement category may need new set and rep targets.</p><div id="swapExerciseResultMeta" class="tiny" aria-live="polite"></div><div id="swapExerciseResults" class="library-results" data-slot="${slot}"></div></div>`);
@@ -4442,7 +4462,22 @@ document.addEventListener("click",e=>{
  if(e.target.closest("#swapCategoriesTab")){toggleSwapBrowse(true);return}
  const choose=e.target.closest(".chooseSwap");if(choose){const slot=Number(choose.dataset.slot),oldItem=trainingItems()[slot],oldTarget=effectiveTarget(oldItem),oldLog=exLog(currentDay,slot,oldTarget.sets),hasEntries=(oldLog.sets||[]).some(s=>s.done||s.weight||s.reps||s.rpe)||(oldLog.warmups||[]).some(s=>s.done||s.weight||s.reps);if(hasEntries&&!confirm("This exercise already has logged entries today. Swapping it will clear those entries. Continue?"))return;
  const replacement=EXMAP[choose.dataset.id];if(replacement?.pattern!==EXMAP[oldItem.id]?.pattern&&!confirm("This exercise is in a different movement category. Your current sets and rep targets will be retained; review them after swapping. Continue?"))return;
- pushUndo("Swapped exercise");oldItem.id=choose.dataset.id;dayLog(currentDay)[slot]={sets:[],warmups:[],note:""};save();closeSheet();renderToday();toast("Exercise swapped");return}
+ pushUndo("Swapped exercise for this session");
+ const baseItem=plan()?.[currentDay]?.items?.[slot];
+ if(baseItem){
+  const key=sessionExtraKey();state.sessionSwaps??={};state.sessionSwaps[key]??={};
+  if(choose.dataset.id===baseItem.id){
+   // Selecting the programmed exercise again removes the temporary override.
+   delete state.sessionSwaps[key][slot];
+   if(!Object.keys(state.sessionSwaps[key]).length)delete state.sessionSwaps[key];
+  }else{
+   state.sessionSwaps[key][slot]={...deepCopy(oldItem),id:choose.dataset.id,sessionSwap:true,sessionSwapOriginalId:baseItem.id};
+  }
+ }else{
+  // Extra exercises are already stored only for this session.
+  oldItem.id=choose.dataset.id;
+ }
+ dayLog(currentDay)[slot]={sets:[],warmups:[],note:""};save();closeSheet();renderToday();toast("Swapped for this session · saved program unchanged");return}
  const tb=e.target.closest(".timerBtn");if(tb){const slot=Number(tb.dataset.slot),it=trainingItems()[slot];stopTimer();timer.slot=slot;timer.exerciseId=it.id;timer.base=timer.remaining=exerciseRestSeconds(it.id,it.rest);timer.label=`${EXMAP[it.id].name} · rest`;timer.auto=false;timer.completedNotified=false;timer.completionPending=false;persistRestTimer();openRestSheet();return}
 });
 document.addEventListener("input",e=>{
